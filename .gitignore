@@ -1,0 +1,7 @@
+# .gitignore
+
+# Mac files
+.DS_STORE
+
+# keys
+keys/
