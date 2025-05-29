@@ -143,7 +143,7 @@ def process_file(interface, file_path, output_dir, speaker_name=None):
         generate_audio(interface, line, output_file, speaker_name)
 
 
-def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
+def generate_lithuanian_audio(interface, text, output_path, speaker_file="lithuanian_ash.json"):
     """
     Generate audio for a Lithuanian word or phrase with proper pronunciation.
     
@@ -151,7 +151,7 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
         interface: The OuteTTS interface
         text: The Lithuanian word or phrase to pronounce
         output_path: Path to save the audio file
-        speaker_name: Speaker profile to use (default: None, will use a default speaker)
+        speaker_file: Optional speaker profile file (default is a generic Lithuanian speaker)
     
     Returns:
         Path to the generated audio file or None if failed
@@ -164,7 +164,7 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
     print(f"Generating Lithuanian pronunciation for: {text}")
     
     # Load speaker profile
-    if speaker_name is None:
+    if speaker_file is None:
         # Default to a female voice for Lithuanian
         # Using EN-FEMALE-1-NEUTRAL as it seems to handle Lithuanian pronunciation reasonably well
         # You may want to experiment with different speaker profiles for better results
@@ -172,8 +172,8 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
         speaker = interface.load_default_speaker(default_lithuanian_speaker)
         print(f"Using default speaker for Lithuanian: {default_lithuanian_speaker}")
     else:
-        speaker = interface.load_default_speaker(speaker_name)
-        print(f"Using speaker: {speaker_name}")
+        speaker = interface.load_speaker(speaker_file)
+        print(f"Using speaker from file: {speaker_file}")
     
     try:
         # Generate speech with just the Lithuanian text
@@ -196,7 +196,7 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
         return None
 
 
-def process_lithuanian_batch(interface, file_path, output_dir, speaker_name=None, force=False):
+def process_lithuanian_batch(interface, file_path, output_dir, force=False):
     """
     Process a batch of Lithuanian words or phrases from a file.
     
@@ -204,7 +204,6 @@ def process_lithuanian_batch(interface, file_path, output_dir, speaker_name=None
         interface: The OuteTTS interface
         file_path: Path to the file containing Lithuanian words or phrases (one per line)
         output_dir: Directory to save the audio files
-        speaker_name: Speaker profile to use
         force: Whether to overwrite existing files
     
     Returns:
@@ -245,7 +244,7 @@ def process_lithuanian_batch(interface, file_path, output_dir, speaker_name=None
             continue
         
         print(f"[{i}/{total_count}] Processing: {entry}")
-        if generate_lithuanian_audio(interface, entry, output_file, speaker_name):
+        if generate_lithuanian_audio(interface, entry, output_file):
             success_count += 1
             # Add a small delay between generations to avoid overloading
             time.sleep(0.5)
@@ -328,7 +327,7 @@ def main():
         elif args.lithuanian:
             if not output_path:
                 output_path = f"{sanitize_lithuanian_word(args.lithuanian)}.wav"
-            generate_lithuanian_audio(interface, args.lithuanian, output_path, args.speaker)
+            generate_lithuanian_audio(interface, args.lithuanian, output_path)
         
         elif args.lithuanian_batch:
             if not output_path:
@@ -338,7 +337,6 @@ def main():
                 interface, 
                 args.lithuanian_batch, 
                 output_path, 
-                args.speaker,
                 args.force
             )
             
