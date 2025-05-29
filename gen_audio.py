@@ -40,7 +40,7 @@ Read this word in Lithuanian with clear, accurate pronunciation.
 - The voice should be calm and clear at a moderate pace
 - Articulate each syllable distinctly without rushing
 - Use standard Lithuanian pronunciation, not dialectal or slang variants
-- Do not truncate the start or end of the word
+- Pronounce every phoneme fully - do not drop consonant clusters or reduce unstressed vowels
 """
 
 # Define voice groups
@@ -97,6 +97,7 @@ def generate_audio(
     output_dir: Path = None,
     organize_by_voice: bool = False,
     force: bool = False,
+    delay: float = 0.0,
 ) -> bool:
     """
     Generate audio pronunciation for a Lithuanian word using OpenAI TTS.
@@ -106,6 +107,7 @@ def generate_audio(
     :param output_dir: Directory to save the audio file
     :param organize_by_voice: Whether to organize files in subdirectories by voice
     :param force: Whether to overwrite existing files
+    :param delay: Delay in seconds to wait after successful API call
     :return: True if successful, False otherwise
     """
     if not output_dir:
@@ -150,6 +152,11 @@ def generate_audio(
             f.write(response.content)
         
         print(f"Saved: {file_path}")
+        
+        # Apply delay after successful API call if specified
+        if delay > 0:
+            time.sleep(delay)
+            
         return True
         
     except Exception as e:
@@ -179,12 +186,8 @@ def generate_multi_voice_audio(
     total_count = len(voices)
     
     for i, voice in enumerate(voices):
-        if generate_audio(word, voice, output_dir, organize_by_voice, force):
+        if generate_audio(word, voice, output_dir, organize_by_voice, force, delay):
             success_count += 1
-        
-        # Add delay between requests to respect rate limits
-        if i < len(voices) - 1 and delay > 0:
-            time.sleep(delay)
     
     return success_count, total_count
 
@@ -291,13 +294,9 @@ def main():
             total_success += success
             total_attempts += attempts
         else:
-            if generate_audio(word, args.voice, output_dir, args.organize_by_voice, args.force):
+            if generate_audio(word, args.voice, output_dir, args.organize_by_voice, args.force, args.delay):
                 total_success += 1
             total_attempts += 1
-        
-        # Add delay between words
-        if i < len(words) and args.delay > 0:
-            time.sleep(args.delay)
     
     print(f"\nCompleted: {total_success}/{total_attempts} files generated successfully")
     
