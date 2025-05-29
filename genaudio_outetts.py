@@ -163,13 +163,6 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
     
     print(f"Generating Lithuanian pronunciation for: {text}")
     
-    # Prepare the text with instructions for better Lithuanian pronunciation
-    is_phrase = ' ' in text
-    if is_phrase:
-        text_with_instructions = f"{LITHUANIAN_TTS_INSTRUCTIONS}\n\nPhrase: {text}"
-    else:
-        text_with_instructions = f"{LITHUANIAN_TTS_INSTRUCTIONS}\n\nWord: {text}"
-    
     # Load speaker profile
     if speaker_name is None:
         # Default to a female voice for Lithuanian
@@ -183,23 +176,20 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name=None):
         print(f"Using speaker: {speaker_name}")
     
     try:
-        # Generate speech with specific settings for Lithuanian
+        # Generate speech with just the Lithuanian text
+        # The model should handle Lithuanian pronunciation based on the characters
         output = interface.generate(
             config=outetts.GenerationConfig(
-                text=text_with_instructions,  # Use text with instructions for better pronunciation
-                speaker=speaker,
-                # Settings optimized for clear pronunciation
-                # temperature=0.5,  # Lower temperature for more consistent output
-                # top_p=0.95,
-                # Slower speed for clearer articulation
-                speed=0.9,
+                text=text,  # Just use the Lithuanian text directly
+                speaker=speaker
             )
         )
         
-        # Save to file
-        output.save(output_path)
-        print(f"Lithuanian audio saved to {output_path}")
-        return output_path
+        # Save to file - convert Path to string if needed
+        output_path_str = str(output_path) if hasattr(output_path, 'is_file') else output_path
+        output.save(output_path_str)
+        print(f"Lithuanian audio saved to {output_path_str}")
+        return output_path_str
         
     except Exception as e:
         print(f"Error generating Lithuanian audio for '{text}': {str(e)}")
