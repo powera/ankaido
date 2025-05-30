@@ -15,9 +15,7 @@ Usage:
     
     # Process a text file with each line as separate audio, convert to OGG format
     python genaudio_outetts.py --file input.txt --format ogg --quality high --output-dir ./audio_files
-    
-    # Interactive mode with ability to change speakers and audio formats
-    python genaudio_outetts.py --interactive
+
     
     # Lithuanian pronunciation examples
     python genaudio_outetts.py --lithuanian "duona" --format mp3 --output lithuanian_audio.mp3
@@ -363,104 +361,6 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False):
     return success_count, total_count
 
 
-def interactive_mode(interface):
-    """Run in interactive mode, allowing the user to generate multiple audio files."""
-    print("\nEntering interactive mode.")
-    print("Commands:")
-    print("  'exit' - Quit interactive mode")
-    print("  'speakers' - List and select available speakers")
-    print("  'formats' - List and select available audio formats")
-    print("  'help' - Show this help message")
-    
-    # Default settings
-    current_speaker = "EN-FEMALE-1-NEUTRAL"
-    speaker = interface.load_default_speaker(current_speaker)
-    current_format = "mp3"  # Default to MP3 for space efficiency
-    current_quality = "medium"
-    delete_original = True
-    
-    while True:
-        user_input = input("\nEnter text (or command): ").strip()
-        
-        if user_input.lower() == 'exit':
-            print("Exiting interactive mode.")
-            break
-        
-        elif user_input.lower() == 'help':
-            print("\nCommands:")
-            print("  'exit' - Quit interactive mode")
-            print("  'speakers' - List and select available speakers")
-            print("  'formats' - List and select available audio formats")
-            print("  'help' - Show this help message")
-        
-        elif user_input.lower() == 'speakers':
-            speakers = list_available_speakers(interface)
-            speaker_idx = input("Select speaker number (or press Enter to keep current): ")
-            if speaker_idx and speaker_idx.isdigit() and 1 <= int(speaker_idx) <= len(speakers):
-                current_speaker = speakers[int(speaker_idx) - 1]
-                speaker = interface.load_default_speaker(current_speaker)
-                print(f"Speaker changed to: {current_speaker}")
-            else:
-                print(f"Keeping current speaker: {current_speaker}")
-        
-        elif user_input.lower() == 'formats':
-            print("\nAvailable audio formats:")
-            for i, (format_key, format_info) in enumerate(AUDIO_FORMATS.items(), 1):
-                print(f"{i}. {format_key.upper()} - {format_info['description']}")
-            
-            format_idx = input("Select format number (or press Enter to keep current): ")
-            if format_idx and format_idx.isdigit() and 1 <= int(format_idx) <= len(AUDIO_FORMATS):
-                current_format = list(AUDIO_FORMATS.keys())[int(format_idx) - 1]
-                print(f"Format changed to: {current_format.upper()}")
-                
-                # Ask for quality if not WAV
-                if current_format != "wav":
-                    print("\nQuality options:")
-                    print("1. low - Smaller file size, lower quality")
-                    print("2. medium - Balanced file size and quality")
-                    print("3. high - Larger file size, better quality")
-                    
-                    quality_idx = input("Select quality (or press Enter for medium): ")
-                    if quality_idx == "1":
-                        current_quality = "low"
-                    elif quality_idx == "3":
-                        current_quality = "high"
-                    else:
-                        current_quality = "medium"
-                    
-                    print(f"Quality set to: {current_quality}")
-                    
-                    # Ask about keeping original WAV files
-                    keep_wav = input("Keep original WAV files after conversion? (y/N): ").lower()
-                    delete_original = keep_wav != 'y'
-            else:
-                print(f"Keeping current format: {current_format.upper()}")
-        
-        elif user_input:
-            # Determine default filename with appropriate extension
-            extension = AUDIO_FORMATS[current_format]["extension"]
-            default_filename = f"output{extension}"
-            
-            output_file = input(f"Enter output filename (default: {default_filename}): ").strip()
-            if not output_file:
-                output_file = default_filename
-            
-            # Add extension if not provided
-            if not any(output_file.endswith(fmt["extension"]) for fmt in AUDIO_FORMATS.values()):
-                output_file = f"{output_file}{extension}"
-            
-            # For non-WAV formats, we need to generate WAV first, then convert
-            if current_format != "wav" and not output_file.endswith(".wav"):
-                wav_path = Path(output_file).with_suffix(".wav")
-                generate_audio(interface, user_input, str(wav_path), current_speaker)
-                
-                # Convert to desired format
-                convert_audio(wav_path, current_format, current_quality, delete_original)
-            else:
-                # Generate audio directly
-                generate_audio(interface, user_input, output_file, current_speaker)
-
-
 def main():
     parser = argparse.ArgumentParser(description="Generate audio files using OuteTTS")
     
@@ -468,7 +368,6 @@ def main():
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("--text", type=str, help="Text to convert to speech")
     input_group.add_argument("--file", type=str, help="Path to a text file to process")
-    input_group.add_argument("--interactive", action="store_true", help="Run in interactive mode")
     input_group.add_argument("--lithuanian", type=str, help="Lithuanian word or phrase to generate pronunciation for")
     input_group.add_argument("--lithuanian-batch", type=str, help="Path to a file with Lithuanian words or phrases (one per line)")
     
@@ -498,10 +397,7 @@ def main():
         need_conversion = args.format != "wav"
         delete_original = not args.keep_wav
         
-        if args.interactive:
-            interactive_mode(interface)
-        
-        elif args.text:
+        if args.text:
             if not output_path:
                 # Use the appropriate extension based on format
                 extension = AUDIO_FORMATS[args.format]["extension"]
