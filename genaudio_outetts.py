@@ -16,7 +16,6 @@ Usage:
     # Process a text file with each line as separate audio, convert to OGG format
     python genaudio_outetts.py --file input.txt --format ogg --quality high --output-dir ./audio_files
 
-    
     # Lithuanian pronunciation examples
     python genaudio_outetts.py --lithuanian "duona" --format mp3 --output lithuanian_audio.mp3
     python genaudio_outetts.py --lithuanian "Laba diena" --format flac --output laba_diena.flac
@@ -167,7 +166,7 @@ def process_file(interface, file_path, output_dir, speaker_name=None):
         generate_audio(interface, line, output_file, speaker_name)
 
 
-def generate_lithuanian_audio(interface, text, output_path, speaker_file="lithuanian_ash.json"):
+def generate_lithuanian_audio(interface, text, output_path, speaker_name="ash"):
     """
     Generate audio for a Lithuanian word or phrase with proper pronunciation.
     
@@ -175,11 +174,16 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_file="lithua
         interface: The OuteTTS interface
         text: The Lithuanian word or phrase to pronounce
         output_path: Path to save the audio file
-        speaker_file: Optional speaker profile file (default is a generic Lithuanian speaker)
+        speaker_name: Speaker voice to use (ash, alloy, or nova). Default is ash.
     
     Returns:
         Path to the generated audio file or None if failed
     """
+    # Map speaker name to the corresponding JSON file
+    speaker_file = f"lithuanian_{speaker_name}.json"
+    # Verify that the speaker file exists
+    if not os.path.exists(speaker_file):
+        raise Exception(f"Speaker file {speaker_file} not found. Available options are: ash, alloy, nova.")
     sanitized_text = sanitize_lithuanian_word(text)
     if not sanitized_text:
         print(f"Error: Invalid Lithuanian text format: {text}")
@@ -189,12 +193,7 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_file="lithua
     
     # Load speaker profile
     if speaker_file is None:
-        # Default to a female voice for Lithuanian
-        # Using EN-FEMALE-1-NEUTRAL as it seems to handle Lithuanian pronunciation reasonably well
-        # You may want to experiment with different speaker profiles for better results
-        default_lithuanian_speaker = "EN-FEMALE-1-NEUTRAL"
-        speaker = interface.load_default_speaker(default_lithuanian_speaker)
-        print(f"Using default speaker for Lithuanian: {default_lithuanian_speaker}")
+        raise Exception("Speaker file is required for Lithuanian audio generation")
     else:
         speaker = interface.load_speaker(speaker_file)
         print(f"Using speaker from file: {speaker_file}")
@@ -305,7 +304,7 @@ def convert_audio(input_path, output_format="mp3", quality="medium", delete_orig
         return None
 
 
-def process_lithuanian_batch(interface, file_path, output_dir, force=False):
+def process_lithuanian_batch(interface, file_path, output_dir, force=False, speaker_name="ash"):
     """
     Process a batch of Lithuanian words or phrases from a file.
     
@@ -314,6 +313,7 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False):
         file_path: Path to the file containing Lithuanian words or phrases (one per line)
         output_dir: Directory to save the audio files
         force: Whether to overwrite existing files
+        speaker_name: Lithuanian speaker voice to use (ash, alloy, or nova). Default is ash.
     
     Returns:
         Tuple of (success_count, total_count)
@@ -353,7 +353,7 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False):
             continue
         
         print(f"[{i}/{total_count}] Processing: {entry}")
-        if generate_lithuanian_audio(interface, entry, output_file):
+        if generate_lithuanian_audio(interface, entry, output_file, speaker_name):
             success_count += 1
             # Add a small delay between generations to avoid overloading
             time.sleep(0.5)
@@ -374,6 +374,8 @@ def main():
     parser.add_argument("--output", type=str, help="Output audio file path (for single text) or directory (for file input)")
     parser.add_argument("--output-dir", type=str, help="Output directory for batch processing (alternative to --output)")
     parser.add_argument("--speaker", type=str, help="Speaker profile to use (default: EN-FEMALE-1-NEUTRAL)")
+    parser.add_argument("--lithuanian-speaker", type=str, choices=["ash", "alloy", "nova"], default="ash",
+                        help="Lithuanian speaker voice to use (ash, alloy, or nova) (default: ash)")
     parser.add_argument("--force", action="store_true", help="Overwrite existing files instead of skipping them")
     
     # Audio format options
@@ -435,34 +437,41 @@ def main():
             if not output_path:
                 sanitized = sanitize_lithuanian_word(args.lithuanian)
                 extension = AUDIO_FORMATS[args.format]["extension"]
-                output_path = f"{sanitized}{extension}"
+                # Use the new directory structure with speaker-specific subdirectory
+                output_dir = Path(f"lithuanian-audio-cache/{args.lithuanian_speaker}")
+                output_dir.mkdir(parents=True, exist_ok=True)
+                output_path = output_dir / f"{sanitized}{extension}"
             
             # Always generate WAV first if we need to convert
             if need_conversion and not output_path.endswith(".wav"):
                 wav_path = Path(output_path).with_suffix(".wav")
-                generate_lithuanian_audio(interface, args.lithuanian, str(wav_path))
+                generate_lithuanian_audio(interface, args.lithuanian, str(wav_path), args.lithuanian_speaker)
                 
                 # Convert to desired format
                 convert_audio(wav_path, args.format, args.quality, delete_original)
             else:
-                generate_lithuanian_audio(interface, args.lithuanian, output_path)
+                generate_lithuanian_audio(interface, args.lithuanian, output_path, args.lithuanian_speaker)
         
         elif args.lithuanian_batch:
             if not output_path:
-                output_path = "lithuanian_audio"
+                # Use the new directory structure with speaker-specific subdirectory
+                output_path = f"lithuanian-audio-cache/{args.lithuanian_speaker}"
             
             # Process batch to generate WAV files
             success_count, total_count = process_lithuanian_batch(
                 interface, 
                 args.lithuanian_batch, 
                 output_path, 
-                args.force
+                args.force,
+                args.lithuanian_speaker
             )
             
             # Convert all WAV files if needed
             if need_conversion:
                 print(f"\nConverting audio files to {args.format.upper()} format...")
-                wav_files = list(Path(output_path).glob("*.wav"))
+                # Make sure we're looking in the right directory
+                output_dir = Path(output_path)
+                wav_files = list(output_dir.glob("*.wav"))
                 
                 converted_count = 0
                 for wav_file in wav_files:
