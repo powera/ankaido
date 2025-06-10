@@ -8,9 +8,33 @@ const StudyMaterialsSelector = ({
   availableCorpora,
   corporaData,
   selectedGroups,
-  toggleGroup,
-  toggleCorpus
+  setSelectedGroups,
+  safeStorage
 }) => {
+  const toggleGroup = (corpus, group) => {
+    setSelectedGroups(prev => {
+      const currentGroups = prev[corpus] || [];
+      const newGroups = currentGroups.includes(group)
+        ? currentGroups.filter(g => g !== group)
+        : [...currentGroups, group];
+      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
+      return { ...prev, [corpus]: newGroups };
+    });
+  };
+
+  const toggleCorpus = (corpus) => {
+    setSelectedGroups(prev => {
+      const allGroups = Object.keys(corporaData[corpus]?.groups || {});
+      const currentGroups = prev[corpus] || [];
+      const allSelected = allGroups.length > 0 && allGroups.every(g => currentGroups.includes(g));
+      const newGroups = allSelected ? [] : allGroups;
+      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
+      return {
+        ...prev,
+        [corpus]: newGroups
+      };
+    });
+  };
   return (
     <div className="w-card">
       <div 

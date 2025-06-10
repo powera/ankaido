@@ -4,12 +4,38 @@ import AudioButton from './AudioButton';
 
 const VocabularyList = ({ 
   selectedVocabGroup,
+  setSelectedVocabGroup,
   vocabGroupOptions,
   vocabListWords,
-  loadVocabListForGroup,
+  setVocabListWords,
+  corporaData,
   audioEnabled,
   playAudio
 }) => {
+  const loadVocabListForGroup = (optionValue) => {
+    if (!optionValue) {
+      setSelectedVocabGroup(null);
+      setVocabListWords([]);
+      return;
+    }
+    
+    // Parse the combined value to get corpus and group
+    const [corpus, group] = optionValue.split('|');
+    if (!corpus || !group || !corporaData[corpus]?.groups[group]) return;
+    
+    setSelectedVocabGroup(optionValue);
+    
+    // Get words for this specific group
+    const words = corporaData[corpus].groups[group].map(word => ({
+      ...word,
+      corpus,
+      group
+    }));
+    
+    // Sort alphabetically by Lithuanian word
+    words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
+    setVocabListWords(words);
+  };
   return (
     <div className="w-card">
       <h3>Lithuanian Vocabulary List</h3>

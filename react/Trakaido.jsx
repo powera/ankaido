@@ -396,30 +396,7 @@ const FlashCardApp = () => {
     setVocabGroupOptions(options);
   }, [corporaData]);
 
-  const loadVocabListForGroup = (optionValue) => {
-    if (!optionValue) {
-      setSelectedVocabGroup(null);
-      setVocabListWords([]);
-      return;
-    }
-    
-    // Parse the combined value to get corpus and group
-    const [corpus, group] = optionValue.split('|');
-    if (!corpus || !group || !corporaData[corpus]?.groups[group]) return;
-    
-    setSelectedVocabGroup(optionValue);
-    
-    // Get words for this specific group
-    const words = corporaData[corpus].groups[group].map(word => ({
-      ...word,
-      corpus,
-      group
-    }));
-    
-    // Sort alphabetically by Lithuanian word
-    words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
-    setVocabListWords(words);
-  };
+  
 
   const resetAllSettings = () => {
     // Clear localStorage items
@@ -549,30 +526,7 @@ const FlashCardApp = () => {
     }
   };
 
-  const toggleGroup = (corpus, group) => {
-    setSelectedGroups(prev => {
-      const currentGroups = prev[corpus] || [];
-      const newGroups = currentGroups.includes(group)
-        ? currentGroups.filter(g => g !== group)
-        : [...currentGroups, g];
-      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
-      return { ...prev, [corpus]: newGroups };
-    });
-  };
-
-  const toggleCorpus = (corpus) => {
-    setSelectedGroups(prev => {
-      const allGroups = Object.keys(corporaData[corpus]?.groups || {});
-      const currentGroups = prev[corpus] || [];
-      const allSelected = allGroups.length > 0 && allGroups.every(g => currentGroups.includes(g));
-      const newGroups = allSelected ? [] : allGroups;
-      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
-      return {
-        ...prev,
-        [corpus]: newGroups
-      };
-    });
-  };
+  
 
   const currentWord = allWords[currentCard];
 
@@ -689,8 +643,8 @@ const FlashCardApp = () => {
           availableCorpora={availableCorpora}
           corporaData={corporaData}
           selectedGroups={selectedGroups}
-          toggleGroup={toggleGroup}
-          toggleCorpus={toggleCorpus}
+          setSelectedGroups={setSelectedGroups}
+          safeStorage={safeStorage}
         />
       )}
 
@@ -753,9 +707,11 @@ const FlashCardApp = () => {
       ) : quizMode === 'vocabulary-list' ? (
         <VocabularyList 
           selectedVocabGroup={selectedVocabGroup}
+          setSelectedVocabGroup={setSelectedVocabGroup}
           vocabGroupOptions={vocabGroupOptions}
           vocabListWords={vocabListWords}
-          loadVocabListForGroup={loadVocabListForGroup}
+          setVocabListWords={setVocabListWords}
+          corporaData={corporaData}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
         />
