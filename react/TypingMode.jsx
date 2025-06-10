@@ -151,6 +151,7 @@ const TypingMode = ({
                       borderRadius: 'var(--border-radius)',
                       border: '1px solid var(--color-border)',
                       background: 'var(--color-card-bg)',
+                      color: 'var(--color-text)',
                       cursor: 'pointer',
                       fontSize: '1.1rem',
                       minWidth: '2.5rem'
