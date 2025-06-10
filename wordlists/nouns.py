@@ -684,6 +684,5 @@ common_words = {
     { "english": "army", "lithuanian": "armija" },
     { "english": "navy", "lithuanian": "jūrų laivynas" },
     { "english": "battle", "lithuanian": "mūšis" },
-    { "english": "war", "lithuanian": "karas" },
   ]
 }
