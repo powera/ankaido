@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalSettings } from './useGlobalSettings';  // This is the correct syntax for now; it is awkward and possibly should be updated.
 import { useFullscreen } from './useFullscreen';
+import AudioButton from './AudioButton';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
@@ -113,47 +114,7 @@ const FlashCardApp = () => {
   const autoAdvance = settings.autoAdvance;
   const defaultDelay = settings.defaultDelay;
   
-  // AudioButton component with access to app settings and playAudio function
-  const AudioButton = ({ word, size = 'normal' }) => {
-    // Define styles based on size
-    const buttonStyle = {
-      fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '1.5rem' : '1rem',
-      cursor: 'pointer',
-      display: 'inline-flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    };
-    
-    // If audio is disabled, show muted icon
-    if (!audioEnabled) {
-      return (
-        <span 
-          className="w-audio-button w-audio-disabled"
-          title="Audio is disabled in settings"
-          style={{
-            ...buttonStyle,
-            opacity: 0.5
-          }}
-        >
-          🔇
-        </span>
-      );
-    }
-    
-    return (
-      <button 
-        className="w-audio-button"
-        onClick={(e) => {
-          e.stopPropagation();
-          playAudio(word);
-        }}
-        title="Play pronunciation"
-        style={buttonStyle}
-      >
-        🔊
-      </button>
-    );
-  };
+  
 
   // Load initial data
   useEffect(() => {
@@ -690,6 +651,8 @@ const FlashCardApp = () => {
                     <AudioButton 
                       word={conj.lithuanian}
                       size="small"
+                      audioEnabled={audioEnabled}
+                      playAudio={playAudio}
                     />
                   </td>
                 </tr>
@@ -782,6 +745,8 @@ const FlashCardApp = () => {
                     <AudioButton 
                       word={caseData.form}
                       size="small"
+                      audioEnabled={audioEnabled}
+                      playAudio={playAudio}
                     />
                   </td>
                 </tr>
@@ -1248,6 +1213,8 @@ const FlashCardApp = () => {
                         }}>
                           <AudioButton 
                             word={word.lithuanian}
+                            audioEnabled={audioEnabled}
+                            playAudio={playAudio}
                           />
                         </td>
                       </tr>
@@ -1274,6 +1241,8 @@ const FlashCardApp = () => {
               <span>{answer}</span>
               <AudioButton 
                 word={currentWord.lithuanian}
+                audioEnabled={audioEnabled}
+                playAudio={playAudio}
               />
             </div>
           )}
@@ -1300,6 +1269,8 @@ const FlashCardApp = () => {
                 <AudioButton 
                   word={currentWord.lithuanian}
                   size="large"
+                  audioEnabled={audioEnabled}
+                  playAudio={playAudio}
                 />
                 <span style={{ marginLeft: '0.5rem', fontSize: '1.2rem' }}>Play Audio</span>
               </div>
@@ -1449,6 +1420,8 @@ const FlashCardApp = () => {
                       <div style={{ display: 'inline-block', marginLeft: '8px' }}>
                         <AudioButton 
                           word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
+                          audioEnabled={audioEnabled}
+                          playAudio={playAudio}
                         />
                       </div>
                     )}
@@ -1472,7 +1445,11 @@ const FlashCardApp = () => {
               <div className="w-answer" style={{ marginBottom: 'var(--spacing-base)' }}>
                 <span style={{ fontWeight: 'bold' }}>Lithuanian:</span> {currentWord.lithuanian}
                 <span style={{ marginLeft: '0.5rem' }}>
-                  <AudioButton word={currentWord.lithuanian} />
+                  <AudioButton 
+                    word={currentWord.lithuanian} 
+                    audioEnabled={audioEnabled}
+                    playAudio={playAudio}
+                  />
                 </span>
               </div>
             ) : (
