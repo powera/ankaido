@@ -1,0 +1,31 @@
+{
+  "name": "trakaido-react-compiler",
+  "version": "1.0.0",
+  "description": "Compilation tools for Trakaido React app",
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-react": "^7.22.0",
+    "@babel/preset-env": "^7.23.0"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 versions"
+            ]
+          }
+        }
+      ],
+      [
+        "@babel/preset-react",
+        {
+          "runtime": "classic"
+        }
+      ]
+    ]
+  }
+}
