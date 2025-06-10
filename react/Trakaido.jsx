@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalSettings } from './useGlobalSettings';  // This is the correct syntax for now; it is awkward and possibly should be updated.
 import { useFullscreen } from './useFullscreen';
-import AudioButton from './AudioButton';
-import DeclensionTable from './DeclensionTable';
-import ConjugationTable from './ConjugationTable';
 import VocabularyList from './VocabularyList';
 import TypingMode from './TypingMode';
 import StatsDisplay from './StatsDisplay';
@@ -122,7 +119,6 @@ const FlashCardApp = () => {
   const [declensions, setDeclensions] = useState({});
   const [availableNouns, setAvailableNouns] = useState([]);
   const [selectedNoun, setSelectedNoun] = useState(null);
-  const [loadingDeclensions, setLoadingDeclensions] = useState(false);
   const [selectedVocabGroup, setSelectedVocabGroup] = useState(null);
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
@@ -137,8 +133,6 @@ const FlashCardApp = () => {
     wordListManager.setStateChangeCallback(setWordListState);
     wordListManager.settings = settings; // Update settings reference
   }, [wordListManager, settings]);
-  
-  
 
   // Load initial data
   useEffect(() => {
@@ -269,12 +263,6 @@ const FlashCardApp = () => {
     await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, selectedVoice);
   };
 
-
-
-  
-
-  
-
   // Generate all available groups from all corpuses
   useEffect(() => {
     if (Object.keys(corporaData).length === 0) return;
@@ -298,7 +286,6 @@ const FlashCardApp = () => {
   }, [corporaData]);
 
   
-
   const resetAllSettings = () => {
     // Clear localStorage items
     safeStorage.removeItem('flashcard-selected-groups');
@@ -320,8 +307,6 @@ const FlashCardApp = () => {
   const nextCard = () => wordListManager.nextCard();
   const prevCard = () => wordListManager.prevCard();
   const resetCards = () => wordListManager.resetCards();
-  const markCorrect = () => wordListManager.markCorrect(autoAdvance, defaultDelay);
-  const markIncorrect = () => wordListManager.markIncorrect(autoAdvance, defaultDelay);
   const handleMultipleChoiceAnswer = (selectedOption) => wordListManager.handleMultipleChoiceAnswer(selectedOption, studyMode, quizMode, autoAdvance, defaultDelay);
 
   const playAudio = async (word, onlyCached = false) => {
@@ -343,13 +328,8 @@ const FlashCardApp = () => {
     }
   };
 
-  
-
   const currentWord = wordListManager.getCurrentWord();
-
-  // Count total selected words
   const totalSelectedWords = wordListManager.getTotalWords();
-
 
   // Loading state
   if (loading) {
