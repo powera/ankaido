@@ -147,23 +147,54 @@ def generate_audio(interface, text, output_path, speaker_name=None):
     return output_path
 
 
-def process_file(interface, file_path, output_dir, speaker_name=None):
-    """Process a text file and generate audio for each line."""
+def process_file(interface, file_path, output_dir, speaker_name=None, force=False, output_format="wav"):
+    """
+    Process a text file and generate audio for each line.
+    
+    Args:
+        interface: The TTS interface
+        file_path: Path to the text file
+        output_dir: Directory to save the audio files
+        speaker_name: Speaker profile to use
+        force: Whether to overwrite existing files
+        output_format: The desired final output format (wav, mp3, ogg, flac)
+    """
     if not os.path.exists(file_path):
         print(f"Error: File {file_path} not found")
         return
     
     # Create output directory if it doesn't exist
-    os.makedirs(output_dir, exist_ok=True)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
     
     with open(file_path, 'r', encoding='utf-8') as f:
         lines = [line.strip() for line in f.readlines() if line.strip()]
     
+    if not lines:
+        print("No lines found in the file")
+        return
+    
     print(f"Processing {len(lines)} lines from {file_path}")
     
+    # Get the extension for the target format
+    target_extension = AUDIO_FORMATS.get(output_format, {}).get("extension", ".wav")
+    
     for i, line in enumerate(lines):
-        output_file = os.path.join(output_dir, f"audio_{i+1}.wav")
-        generate_audio(interface, line, output_file, speaker_name)
+        wav_file = output_dir / f"audio_{i+1}.wav"
+        target_file = output_dir / f"audio_{i+1}{target_extension}"
+        
+        # Skip if target file exists and not forcing overwrite
+        if target_file.exists() and not force:
+            print(f"Skipping line {i+1}: file already exists in {output_format} format")
+            continue
+        
+        # Skip if WAV file exists and not forcing overwrite
+        if wav_file.exists() and not force and output_format == "wav":
+            print(f"Skipping line {i+1}: WAV file already exists")
+            continue
+        
+        print(f"Processing line {i+1}/{len(lines)}")
+        generate_audio(interface, line, str(wav_file), speaker_name)
 
 
 def generate_lithuanian_audio(interface, text, output_path, speaker_name="ash"):
@@ -304,7 +335,7 @@ def convert_audio(input_path, output_format="mp3", quality="medium", delete_orig
         return None
 
 
-def process_lithuanian_batch(interface, file_path, output_dir, force=False, speaker_name="ash"):
+def process_lithuanian_batch(interface, file_path, output_dir, force=False, speaker_name="ash", output_format="wav"):
     """
     Process a batch of Lithuanian words or phrases from a file.
     
@@ -314,6 +345,7 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False, spea
         output_dir: Directory to save the audio files
         force: Whether to overwrite existing files
         speaker_name: Lithuanian speaker voice to use (ash, alloy, or nova). Default is ash.
+        output_format: The desired final output format (wav, mp3, ogg, flac)
     
     Returns:
         Tuple of (success_count, total_count)
@@ -338,22 +370,33 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False, spea
     success_count = 0
     total_count = len(entries)
     
+    # Get the extension for the target format
+    target_extension = AUDIO_FORMATS.get(output_format, {}).get("extension", ".wav")
+    
     for i, entry in enumerate(entries, 1):
         sanitized = sanitize_lithuanian_word(entry)
         if not sanitized:
             print(f"[{i}/{total_count}] Skipping invalid entry: {entry}")
             continue
         
-        output_file = output_dir / f"{sanitized}.wav"
+        # Check if the target format file already exists
+        target_file = output_dir / f"{sanitized}{target_extension}"
+        wav_file = output_dir / f"{sanitized}.wav"
         
-        # Skip if file exists and not forcing overwrite
-        if output_file.exists() and not force:
-            print(f"[{i}/{total_count}] Skipping {entry}: file already exists")
+        # Skip if target file exists and not forcing overwrite
+        if target_file.exists() and not force:
+            print(f"[{i}/{total_count}] Skipping {entry}: file already exists in {output_format} format")
+            success_count += 1  # Count as success since file exists
+            continue
+        
+        # Skip if WAV file exists and not forcing overwrite
+        if wav_file.exists() and not force:
+            print(f"[{i}/{total_count}] Skipping {entry}: WAV file already exists")
             success_count += 1  # Count as success since file exists
             continue
         
         print(f"[{i}/{total_count}] Processing: {entry}")
-        if generate_lithuanian_audio(interface, entry, output_file, speaker_name):
+        if generate_lithuanian_audio(interface, entry, wav_file, speaker_name):
             success_count += 1
             # Add a small delay between generations to avoid overloading
             time.sleep(0.5)
@@ -405,15 +448,26 @@ def main():
                 extension = AUDIO_FORMATS[args.format]["extension"]
                 output_path = f"output{extension}"
             
-            # Always generate WAV first if we need to convert
-            if need_conversion and not output_path.endswith(".wav"):
-                wav_path = Path(output_path).with_suffix(".wav")
-                generate_audio(interface, args.text, str(wav_path), args.speaker)
-                
-                # Convert to desired format
-                convert_audio(wav_path, args.format, args.quality, delete_original)
+            # Check if the target format file already exists
+            target_path = Path(output_path)
+            if target_path.exists() and not args.force:
+                print(f"Skipping generation: {target_path.name} already exists in {args.format} format")
             else:
-                generate_audio(interface, args.text, output_path, args.speaker)
+                # Always generate WAV first if we need to convert
+                if need_conversion and not output_path.endswith(".wav"):
+                    wav_path = Path(output_path).with_suffix(".wav")
+                    
+                    # Check if WAV exists and we're not forcing overwrite
+                    if wav_path.exists() and not args.force:
+                        print(f"WAV file {wav_path.name} already exists, using it for conversion")
+                    else:
+                        generate_audio(interface, args.text, str(wav_path), args.speaker)
+                    
+                    # Convert to desired format if target doesn't exist or force is True
+                    if not target_path.exists() or args.force:
+                        convert_audio(wav_path, args.format, args.quality, delete_original)
+                else:
+                    generate_audio(interface, args.text, output_path, args.speaker)
         
         elif args.file:
             if not output_path:
@@ -423,15 +477,25 @@ def main():
             os.makedirs(output_path, exist_ok=True)
             
             # Process file to generate WAV files
-            process_file(interface, args.file, output_path, args.speaker)
+            process_file(interface, args.file, output_path, args.speaker, args.force, args.format)
             
             # Convert all WAV files if needed
             if need_conversion:
                 print(f"\nConverting audio files to {args.format.upper()} format...")
                 wav_files = list(Path(output_path).glob("*.wav"))
                 
+                converted_count = 0
                 for wav_file in wav_files:
-                    convert_audio(wav_file, args.format, args.quality, delete_original)
+                    # Check if the target format file already exists
+                    target_file = wav_file.with_suffix(AUDIO_FORMATS[args.format]["extension"])
+                    if target_file.exists() and not args.force:
+                        print(f"Skipping conversion of {wav_file.name}: {target_file.name} already exists")
+                        continue
+                        
+                    if convert_audio(wav_file, args.format, args.quality, delete_original):
+                        converted_count += 1
+                
+                print(f"Converted {converted_count}/{len(wav_files)} files to {args.format.upper()} format")
         
         elif args.lithuanian:
             if not output_path:
@@ -442,28 +506,40 @@ def main():
                 output_dir.mkdir(parents=True, exist_ok=True)
                 output_path = output_dir / f"{sanitized}{extension}"
             
-            # Always generate WAV first if we need to convert
-            if need_conversion and not output_path.endswith(".wav"):
-                wav_path = Path(output_path).with_suffix(".wav")
-                generate_lithuanian_audio(interface, args.lithuanian, str(wav_path), args.lithuanian_speaker)
-                
-                # Convert to desired format
-                convert_audio(wav_path, args.format, args.quality, delete_original)
+            # Check if the target format file already exists
+            target_path = Path(output_path)
+            if target_path.exists() and not args.force:
+                print(f"Skipping generation: {target_path.name} already exists in {args.format} format")
             else:
-                generate_lithuanian_audio(interface, args.lithuanian, output_path, args.lithuanian_speaker)
+                # Always generate WAV first if we need to convert
+                if need_conversion and not output_path.endswith(".wav"):
+                    wav_path = Path(output_path).with_suffix(".wav")
+                    
+                    # Check if WAV exists and we're not forcing overwrite
+                    if wav_path.exists() and not args.force:
+                        print(f"WAV file {wav_path.name} already exists, using it for conversion")
+                    else:
+                        generate_lithuanian_audio(interface, args.lithuanian, str(wav_path), args.lithuanian_speaker)
+                    
+                    # Convert to desired format if target doesn't exist or force is True
+                    if not target_path.exists() or args.force:
+                        convert_audio(wav_path, args.format, args.quality, delete_original)
+                else:
+                    generate_lithuanian_audio(interface, args.lithuanian, output_path, args.lithuanian_speaker)
         
         elif args.lithuanian_batch:
             if not output_path:
                 # Use the new directory structure with speaker-specific subdirectory
                 output_path = f"lithuanian-audio-cache/{args.lithuanian_speaker}"
             
-            # Process batch to generate WAV files
+            # Process batch to generate WAV files, passing the target format
             success_count, total_count = process_lithuanian_batch(
                 interface, 
                 args.lithuanian_batch, 
                 output_path, 
                 args.force,
-                args.lithuanian_speaker
+                args.lithuanian_speaker,
+                args.format  # Pass the target format
             )
             
             # Convert all WAV files if needed
@@ -475,6 +551,12 @@ def main():
                 
                 converted_count = 0
                 for wav_file in wav_files:
+                    # Check if the target format file already exists
+                    target_file = wav_file.with_suffix(AUDIO_FORMATS[args.format]["extension"])
+                    if target_file.exists() and not args.force:
+                        print(f"Skipping conversion of {wav_file.name}: {target_file.name} already exists")
+                        continue
+                        
                     if convert_audio(wav_file, args.format, args.quality, delete_original):
                         converted_count += 1
                 
