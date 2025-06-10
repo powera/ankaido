@@ -41,31 +41,21 @@ const MultipleChoiceOptions = ({
           }
         }
 
-        // Find the translation for any answer when showAnswer is true
+        // Find the translation for all options when showAnswer is true
         let translation = null;
         if (wordListState.showAnswer) {
           if (isCorrect) {
             // For correct answer, show the opposite translation
             translation = studyMode === 'lithuanian-to-english' ? currentWord.lithuanian : currentWord.english;
           } else {
-            // For incorrect answers, find the word that matches this option
-            const wrongWord = wordListState.allWords.find(w => 
-              (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option
+            // For all other options, find the word that matches this option
+            const matchingWord = wordListState.allWords.find(w => 
+              (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option ||
+              (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
             );
-            if (wrongWord) {
-              translation = studyMode === 'lithuanian-to-english' ? wrongWord.lithuanian : wrongWord.english;
+            if (matchingWord) {
+              translation = studyMode === 'lithuanian-to-english' ? matchingWord.lithuanian : matchingWord.english;
             }
-          }
-        }
-
-        // Find the translation for incorrect selected answer (non-listening mode)
-        let incorrectTranslation = null;
-        if (wordListState.showAnswer && isSelected && !isCorrect && quizMode !== 'listening') {
-          const wrongWord = wordListState.allWords.find(w => 
-            (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
-          );
-          if (wrongWord) {
-            incorrectTranslation = studyMode === 'english-to-lithuanian' ? wrongWord.english : wrongWord.lithuanian;
           }
         }
 
@@ -84,16 +74,13 @@ const MultipleChoiceOptions = ({
             <div className="trakaido-choice-content">
               <div style={{ textAlign: 'center' }}>
                 <span>{option}</span>
-                {translation && wordListState.showAnswer && quizMode === 'listening' && (
-                  <div style={{ fontSize: '0.8rem', color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)', marginTop: '4px' }}>
-                    ({translation})
-                  </div>
-                )}
-                {incorrectTranslation && quizMode !== 'listening' && (
-                  <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
-                    ({incorrectTranslation})
-                  </div>
-                )}
+                <div style={{ fontSize: '0.8rem', marginTop: '4px', minHeight: '1.2em' }}>
+                  {wordListState.showAnswer && translation && (
+                    <span style={{ color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)' }}>
+                      ({translation})
+                    </span>
+                  )}
+                </div>
               </div>
               {wordListState.showAnswer && isCorrect && (
                 <div style={{ display: 'inline-block', marginLeft: '8px' }}>
