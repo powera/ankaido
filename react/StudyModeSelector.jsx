@@ -13,7 +13,9 @@ const StudyModeSelector = ({
   availableVoices,
   selectedVoice,
   setSelectedVoice,
-  isFullscreen
+  isFullscreen,
+  totalSelectedWords,
+  onOpenStudyMaterials
 }) => {
   return (
     <div className="w-mode-selector">
@@ -109,6 +111,13 @@ const StudyModeSelector = ({
         )}
       </div>
 
+      <button
+        className="w-mode-option"
+        onClick={onOpenStudyMaterials}
+        title="Select study materials and vocabulary groups"
+      >
+        📚 Study Materials ({totalSelectedWords} words)
+      </button>
       <button
         className="w-mode-option"
         onClick={resetAllSettings}

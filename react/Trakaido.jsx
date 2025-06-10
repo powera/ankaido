@@ -7,11 +7,12 @@ import StatsDisplay from './StatsDisplay';
 import FlashCardMode from './FlashCardMode';
 import ListeningMode from './ListeningMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
-import StudyMaterialsSelector from './StudyMaterialsSelector';
+import StudyMaterialsModal from './StudyMaterialsModal';
 import StudyModeSelector from './StudyModeSelector';
 import ConjugationsMode from './ConjugationsMode';
 import DeclensionsMode from './DeclensionsMode';
 import WordListManager from './WordListManager';
+import SplashScreen from './SplashScreen';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -83,7 +84,7 @@ const FlashCardApp = () => {
   const [studyMode, setStudyMode] = useState(() => {
     return safeStorage?.getItem('flashcard-study-mode') || 'english-to-lithuanian';
   });
-  const [showCorpora, setShowCorpora] = useState(false);
+
   const [quizMode, setQuizMode] = useState(() => {
     return safeStorage?.getItem('flashcard-quiz-mode') || 'flashcard';
   });
@@ -109,8 +110,10 @@ const FlashCardApp = () => {
   const [selectedVoice, setSelectedVoice] = useState(() => {
     return safeStorage?.getItem('flashcard-selected-voice') || null;
   });
+  const [showSplash, setShowSplash] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showStudyMaterialsModal, setShowStudyMaterialsModal] = useState(false);
   const [loadingWords, setLoadingWords] = useState(false);
   const [conjugations, setConjugations] = useState({});
   const [availableVerbs, setAvailableVerbs] = useState([]);
@@ -136,9 +139,21 @@ const FlashCardApp = () => {
     wordListManager.settings = settings; // Update settings reference
   }, [wordListManager, settings]);
 
+  // Handle splash screen timing
+  useEffect(() => {
+    const splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 2000); // Show splash for 2 seconds
+
+    return () => clearTimeout(splashTimer);
+  }, []);
+
   // Load initial data
   useEffect(() => {
     const loadInitialData = async () => {
+      // Don't start loading until splash is done
+      if (showSplash) return;
+      
       setLoading(true);
       setError(null);
       try {
@@ -192,7 +207,7 @@ const FlashCardApp = () => {
       }
     };
     loadInitialData();
-  }, []);
+  }, [showSplash]);
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
@@ -365,6 +380,11 @@ const FlashCardApp = () => {
   const currentWord = wordListManager.getCurrentWord();
   const totalSelectedWords = wordListManager.getTotalWords();
 
+  // Splash screen
+  if (showSplash) {
+    return <SplashScreen />;
+  }
+
   // Loading state
   if (loading) {
     return (
@@ -409,18 +429,7 @@ const FlashCardApp = () => {
 
       {!isFullscreen && <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>}
 
-      {!isFullscreen && (
-        <StudyMaterialsSelector 
-          showCorpora={showCorpora}
-          setShowCorpora={setShowCorpora}
-          totalSelectedWords={totalSelectedWords}
-          availableCorpora={availableCorpora}
-          corporaData={corporaData}
-          selectedGroups={selectedGroups}
-          setSelectedGroups={setSelectedGroups}
-          safeStorage={safeStorage}
-        />
-      )}
+
 
       <StudyModeSelector
         quizMode={quizMode}
@@ -437,6 +446,8 @@ const FlashCardApp = () => {
         selectedVoice={selectedVoice}
         setSelectedVoice={setSelectedVoice}
         isFullscreen={isFullscreen}
+        totalSelectedWords={totalSelectedWords}
+        onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
       />
 
       {!showNoGroupsMessage && (
@@ -554,6 +565,16 @@ const FlashCardApp = () => {
       )}
 
       <SettingsModal />
+      <StudyMaterialsModal
+        isOpen={showStudyMaterialsModal}
+        onClose={() => setShowStudyMaterialsModal(false)}
+        totalSelectedWords={totalSelectedWords}
+        availableCorpora={availableCorpora}
+        corporaData={corporaData}
+        selectedGroups={selectedGroups}
+        setSelectedGroups={setSelectedGroups}
+        safeStorage={safeStorage}
+      />
     </div>
   );
 };

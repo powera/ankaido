@@ -1,9 +1,8 @@
+import React, { useState, useRef, useEffect } from 'react';
 
-import React from 'react';
-
-const StudyMaterialsSelector = ({
-  showCorpora,
-  setShowCorpora,
+const StudyMaterialsModal = ({
+  isOpen,
+  onClose,
   totalSelectedWords,
   availableCorpora,
   corporaData,
@@ -11,6 +10,8 @@ const StudyMaterialsSelector = ({
   setSelectedGroups,
   safeStorage
 }) => {
+  const modalRef = useRef(null);
+
   const toggleGroup = (corpus, group) => {
     setSelectedGroups(prev => {
       const currentGroups = prev[corpus] || [];
@@ -35,23 +36,49 @@ const StudyMaterialsSelector = ({
       };
     });
   };
+
+  // Handle escape key and outside clicks
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    const handleClickOutside = (event) => {
+      if (modalRef.current && event.target && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
   return (
-    <div className="w-card">
-      <div 
-        className="w-game-header"
-        style={{ 
-          cursor: 'pointer', 
-          marginBottom: showCorpora ? 'var(--spacing-base)' : '0'
-        }}
-        onClick={() => setShowCorpora(!showCorpora)}
-      >
-        <h3>Study Materials ({totalSelectedWords} words selected)</h3>
-        <button className="w-button-secondary">
-          {showCorpora ? '▼' : '▶'}
-        </button>
-      </div>
-      {showCorpora && (
-        <div>
+    <div className="w-settings-overlay">
+      <div ref={modalRef} className="w-settings-modal">
+        <div className="w-settings-header">
+          <h2 className="w-settings-title">Study Materials ({totalSelectedWords} words selected)</h2>
+          <button
+            onClick={onClose}
+            className="w-settings-close"
+            aria-label="Close study materials"
+          >
+            ×
+          </button>
+        </div>
+
+        <div className="w-settings-form" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
           {availableCorpora.map(corpus => {
             const corporaStructure = corporaData[corpus];
             if (!corporaStructure) return null;
@@ -94,9 +121,18 @@ const StudyMaterialsSelector = ({
             );
           })}
         </div>
-      )}
+
+        <div className="w-settings-actions">
+          <button
+            onClick={onClose}
+            className="w-settings-button w-settings-button-primary"
+          >
+            Done
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default StudyMaterialsSelector;
+export default StudyMaterialsModal;
