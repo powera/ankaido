@@ -22,7 +22,6 @@ import sys
 import time
 from pathlib import Path
 from typing import List, Optional, Dict, Tuple, Set
-import re
 
 try:
     import openai
@@ -30,18 +29,15 @@ except ImportError:
     print("OpenAI library not installed. Install with: pip install openai")
     sys.exit(1)
 
-MODEL = "gpt-4o-mini-tts"
+from audio_utils import (
+    sanitize_lithuanian_word,
+    read_words_from_file,
+    read_api_key_from_file,
+    ensure_output_directory,
+    LITHUANIAN_TTS_INSTRUCTIONS
+)
 
-# TTS instructions for Lithuanian pronunciation
-LITHUANIAN_TTS_INSTRUCTIONS = """
-Read this word in Lithuanian with clear, accurate pronunciation.
-- Emphasize proper Lithuanian vowel length and stress patterns
-- Maintain proper Lithuanian intonation with a natural rise and fall
-- The voice should be calm and clear at a moderate pace
-- Articulate each syllable distinctly without rushing
-- Use standard Lithuanian pronunciation, not dialectal or slang variants
-- Pronounce every phoneme fully - do not drop consonant clusters or reduce unstressed vowels
-"""
+MODEL = "gpt-4o-mini-tts"
 
 # Define voice groups
 VOICE_GROUPS = {
@@ -52,44 +48,6 @@ VOICE_GROUPS = {
 
 # Default voices for multi-voice generation (one from each group)
 DEFAULT_MULTI_VOICES = ["onyx", "nova", "alloy"]
-
-# Complete list of Lithuanian letters and diacritics
-# Lithuanian alphabet: a ą b c č d e ę ė f g h i į y j k l m n o p r s š t u ų ū v z ž
-LITHUANIAN_CHARS = "aąbcčdeęėfghiįyjklmnoprsštuųūvzž"
-
-def sanitize_word(word: str) -> Optional[str]:
-    """
-    Sanitize a Lithuanian word for use as a filename.
-    
-    :param word: The Lithuanian word to sanitize
-    :return: Sanitized filename-safe version or None if invalid
-    """
-    word = word.strip().lower()
-    
-    # Allow all Lithuanian letters, basic Latin letters, and safe characters
-    sanitized = re.sub(r'[^a-z' + LITHUANIAN_CHARS + r'\-_]', '', word)
-    
-    if not sanitized or len(sanitized) > 100:
-        return None
-        
-    return sanitized
-
-def read_api_key_from_file(key_file: str = "keys/openai.key") -> Optional[str]:
-    """
-    Read OpenAI API key from a file.
-    
-    :param key_file: Path to the file containing the API key
-    :return: API key as string or None if file not found/readable
-    """
-    try:
-        key_path = Path(key_file)
-        if key_path.exists():
-            with open(key_path, 'r', encoding='utf-8') as f:
-                return f.read().strip()
-        return None
-    except Exception as e:
-        print(f"Error reading API key file: {str(e)}")
-        return None
 
 def generate_audio(
     word: str, 
@@ -114,7 +72,7 @@ def generate_audio(
         output_dir = Path("./audio_cache")
     
     # Sanitize word for filename
-    sanitized_word = sanitize_word(word)
+    sanitized_word = sanitize_lithuanian_word(word)
     if not sanitized_word:
         print(f"Error: Invalid word format: {word}")
         return False
@@ -191,21 +149,6 @@ def generate_multi_voice_audio(
     
     return success_count, total_count
 
-def read_words_from_file(file_path: str) -> List[str]:
-    """
-    Read words from a text file, one word per line.
-    
-    :param file_path: Path to the text file
-    :return: List of words
-    """
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            words = [line.strip() for line in f if line.strip()]
-        return words
-    except Exception as e:
-        print(f"Error reading words file: {str(e)}")
-        return []
-
 def main():
     parser = argparse.ArgumentParser(description="Generate Lithuanian pronunciation audio files")
     parser.add_argument('--word', type=str, help='Single word to generate audio for')
@@ -247,8 +190,7 @@ def main():
     openai.api_key = api_key
     
     # Create output directory
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = ensure_output_directory(args.output_dir)
     print(f"Output directory: {output_dir}")
     
     # Determine words to process

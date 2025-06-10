@@ -37,10 +37,12 @@ import subprocess
 import soundfile as sf
 from pathlib import Path
 
-
-# Complete list of Lithuanian letters and diacritics
-# Lithuanian alphabet: a ą b c č d e ę ė f g h i į y j k l m n o p r s š t u ų ū v z ž
-LITHUANIAN_CHARS = "aąbcčdeęėfghiįyjklmnoprsštuųūvzž"
+from audio_utils import (
+    sanitize_lithuanian_word,
+    read_words_from_file,
+    ensure_output_directory,
+    LITHUANIAN_TTS_INSTRUCTIONS
+)
 
 # Audio format options
 AUDIO_FORMATS = {
@@ -49,17 +51,6 @@ AUDIO_FORMATS = {
     "ogg": {"extension": ".ogg", "description": "OGG Vorbis (compressed, better quality/size ratio)"},
     "flac": {"extension": ".flac", "description": "FLAC (lossless compression, medium size)"}
 }
-
-# TTS instructions for Lithuanian pronunciation
-LITHUANIAN_TTS_INSTRUCTIONS = """
-Pronounce this Lithuanian word or phrase with clear, accurate pronunciation:
-- Emphasize proper Lithuanian vowel length and stress patterns
-- Maintain proper Lithuanian intonation with a natural rise and fall
-- Articulate each syllable distinctly without rushing
-- Use standard Lithuanian pronunciation, not dialectal variants
-- Pronounce every phoneme fully - do not drop consonant clusters or reduce unstressed vowels
-- For phrases, maintain proper spacing and natural flow between words
-"""
 
 def setup_tts_interface():
     """Initialize and return the TTS interface with the 1B model."""
@@ -77,30 +68,6 @@ def setup_tts_interface():
     )
     
     return interface
-
-
-def sanitize_lithuanian_word(word: str) -> str:
-    """
-    Sanitize a Lithuanian word or phrase for use as a filename.
-    
-    Args:
-        word: The Lithuanian word or phrase to sanitize
-    
-    Returns:
-        Sanitized filename-safe version or empty string if invalid
-    """
-    word = word.strip().lower()
-    
-    # Replace spaces with underscores for multi-word phrases
-    word_with_underscores = word.replace(' ', '_')
-    
-    # Allow all Lithuanian letters, basic Latin letters, and safe characters
-    sanitized = re.sub(r'[^a-z' + LITHUANIAN_CHARS + r'\-_]', '', word_with_underscores)
-    
-    if not sanitized or len(sanitized) > 100:
-        return ""
-        
-    return sanitized
 
 
 def list_available_speakers(interface):
@@ -164,11 +131,9 @@ def process_file(interface, file_path, output_dir, speaker_name=None, force=Fals
         return
     
     # Create output directory if it doesn't exist
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = ensure_output_directory(output_dir)
     
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = [line.strip() for line in f.readlines() if line.strip()]
+    lines = read_words_from_file(file_path)
     
     if not lines:
         print("No lines found in the file")
@@ -211,7 +176,10 @@ def generate_lithuanian_audio(interface, text, output_path, speaker_name="ash"):
         Path to the generated audio file or None if failed
     """
     # Map speaker name to the corresponding JSON file
-    speaker_file = f"lithuanian_{speaker_name}.json"
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    speaker_file = os.path.join(script_dir, f"lithuanian_{speaker_name}.json")
+    
     # Verify that the speaker file exists
     if not os.path.exists(speaker_file):
         raise Exception(f"Speaker file {speaker_file} not found. Available options are: ash, alloy, nova.")
@@ -355,11 +323,9 @@ def process_lithuanian_batch(interface, file_path, output_dir, force=False, spea
         return 0, 0
     
     # Create output directory if it doesn't exist
-    output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = ensure_output_directory(output_dir)
     
-    with open(file_path, 'r', encoding='utf-8') as f:
-        entries = [line.strip() for line in f.readlines() if line.strip()]
+    entries = read_words_from_file(file_path)
     
     if not entries:
         print("No entries found in the file")
@@ -502,8 +468,7 @@ def main():
                 sanitized = sanitize_lithuanian_word(args.lithuanian)
                 extension = AUDIO_FORMATS[args.format]["extension"]
                 # Use the new directory structure with speaker-specific subdirectory
-                output_dir = Path(f"lithuanian-audio-cache/{args.lithuanian_speaker}")
-                output_dir.mkdir(parents=True, exist_ok=True)
+                output_dir = ensure_output_directory(f"lithuanian-audio-cache/{args.lithuanian_speaker}")
                 output_path = output_dir / f"{sanitized}{extension}"
             
             # Check if the target format file already exists
