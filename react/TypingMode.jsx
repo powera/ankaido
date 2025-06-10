@@ -145,7 +145,7 @@ const TypingMode = ({
                   <button
                     key={char}
                     className="w-special-char"
-                    onClick={() => wordListManager.setTypedAnswer(prev => prev + char)}
+                    onClick={() => wordListManager.setTypedAnswer(wordListState.typedAnswer + char)}
                     style={{
                       padding: '0.5rem 0.7rem',
                       borderRadius: 'var(--border-radius)',
