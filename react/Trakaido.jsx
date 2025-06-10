@@ -12,6 +12,8 @@ import ListeningMode from './ListeningMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
 import StudyMaterialsSelector from './StudyMaterialsSelector';
 import StudyModeSelector from './StudyModeSelector';
+import ConjugationsMode from './ConjugationsMode';
+import DeclensionsMode from './DeclensionsMode';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
@@ -748,99 +750,31 @@ const FlashCardApp = () => {
           </div>
         </div>
       ) : quizMode === 'conjugations' ? (
-        <div className="w-card">
-          <h3>Lithuanian Verb Conjugations</h3>
-
-          {/* Corpus selector */}
-          <div style={{ marginBottom: 'var(--spacing-base)' }}>
-            <label htmlFor="corpus-select" style={{ marginRight: 'var(--spacing-small)' }}>
-              Verb tense:
-            </label>
-            <select 
-              id="corpus-select"
-              value={selectedVerbCorpus} 
-              onChange={(e) => setSelectedVerbCorpus(e.target.value)}
-              disabled={loadingConjugations}
-              className="w-mode-option"
-              style={{ minWidth: '150px', marginRight: 'var(--spacing-base)' }}
-            >
-              {availableVerbCorpuses.map(corpus => (
-                <option key={corpus} value={corpus}>
-                  {corpus === 'verbs_present' ? 'Present Tense' : 
-                   corpus === 'verbs_past' ? 'Past Tense' : 
-                   corpus.replace('verbs_', '').replace('_', ' ')}
-                </option>
-              ))}
-            </select>
-            {loadingConjugations && <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>Loading...</span>}
-          </div>
-
-          {/* Verb selector */}
-          <div style={{ marginBottom: 'var(--spacing-base)' }}>
-            <label htmlFor="verb-select" style={{ marginRight: 'var(--spacing-small)' }}>
-              Select a verb:
-            </label>
-            <select 
-              id="verb-select"
-              value={selectedVerb || ''} 
-              onChange={(e) => setSelectedVerb(e.target.value)}
-              disabled={loadingConjugations || availableVerbs.length === 0}
-              className="w-mode-option"
-              style={{ minWidth: '150px' }}
-            >
-              <option value="">Choose a verb...</option>
-              {availableVerbs.map(verb => (
-                <option key={verb} value={verb}>
-                  {verb}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {selectedVerb && (
-            <ConjugationTable 
-              verb={selectedVerb}
-              conjugations={conjugations}
-              audioEnabled={audioEnabled}
-              playAudio={playAudio}
-              handleHoverStart={handleHoverStart}
-              handleHoverEnd={handleHoverEnd}
-            />
-          )}
-        </div>
+        <ConjugationsMode 
+          selectedVerbCorpus={selectedVerbCorpus}
+          setSelectedVerbCorpus={setSelectedVerbCorpus}
+          availableVerbCorpuses={availableVerbCorpuses}
+          loadingConjugations={loadingConjugations}
+          selectedVerb={selectedVerb}
+          setSelectedVerb={setSelectedVerb}
+          availableVerbs={availableVerbs}
+          conjugations={conjugations}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+        />
       ) : quizMode === 'declensions' ? (
-        <div className="w-card">
-          <h3>Lithuanian Noun Declensions</h3>
-          <div style={{ marginBottom: 'var(--spacing-base)' }}>
-            <label htmlFor="noun-select" style={{ marginRight: 'var(--spacing-small)' }}>
-              Select a noun:
-            </label>
-            <select 
-              id="noun-select"
-              value={selectedNoun || ''} 
-              onChange={(e) => setSelectedNoun(e.target.value)}
-              className="w-mode-option"
-              style={{ minWidth: '150px' }}
-            >
-              <option value="">Choose a noun...</option>
-              {availableNouns.map(noun => (
-                <option key={noun} value={noun}>
-                  {noun} ({declensions[noun]?.english || ''})
-                </option>
-              ))}
-            </select>
-          </div>
-          {selectedNoun && (
-            <DeclensionTable 
-              noun={selectedNoun}
-              declensions={declensions}
-              audioEnabled={audioEnabled}
-              playAudio={playAudio}
-              handleHoverStart={handleHoverStart}
-              handleHoverEnd={handleHoverEnd}
-            />
-          )}
-        </div>
+        <DeclensionsMode 
+          selectedNoun={selectedNoun}
+          setSelectedNoun={setSelectedNoun}
+          availableNouns={availableNouns}
+          declensions={declensions}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+        />
       ) : quizMode === 'vocabulary-list' ? (
         <VocabularyList 
           selectedVocabGroup={selectedVocabGroup}
