@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """
 React Compilation Script for Trakaido
@@ -152,26 +153,75 @@ def transform_imports(jsx_content, filename):
     lines = jsx_content.split('\n')
     transformed_lines = []
     
+    # Component name mapping for global access
+    component_map = {
+        'AudioButton': 'window.AudioButton',
+        'StatsDisplay': 'window.StatsDisplay',
+        'MultipleChoiceOptions': 'window.MultipleChoiceOptions',
+        'ConjugationTable': 'window.ConjugationTable',
+        'DeclensionTable': 'window.DeclensionTable',
+        'VocabularyList': 'window.VocabularyList',
+        'TypingMode': 'window.TypingMode',
+        'FlashCardMode': 'window.FlashCardMode',
+        'ListeningMode': 'window.ListeningMode',
+        'MultipleChoiceMode': 'window.MultipleChoiceMode',
+        'StudyMaterialsSelector': 'window.StudyMaterialsSelector',
+        'StudyModeSelector': 'window.StudyModeSelector',
+        'ConjugationsMode': 'window.ConjugationsMode',
+        'DeclensionsMode': 'window.DeclensionsMode',
+        'useGlobalSettings': 'window.useGlobalSettings',
+        'useFullscreen': 'window.useFullscreen',
+        'WordListManager': 'window.WordListManager'
+    }
+    
     for line in lines:
-        # Skip import statements - we'll handle dependencies differently
+        # Remove import statements and replace with comments
         if line.strip().startswith('import ') and 'from' in line:
-            # Convert to comment for reference
             transformed_lines.append(f"// {line}")
         else:
             transformed_lines.append(line)
     
-    # For the main Trakaido component, we need to handle the export
-    if filename == "Trakaido.jsx":
-        # Replace the default export with a global assignment
-        transformed_content = '\n'.join(transformed_lines)
-        if 'export default FlashCardApp' in transformed_content:
-            transformed_content = transformed_content.replace(
-                'export default FlashCardApp',
-                'window.FlashCardApp = FlashCardApp'
-            )
-        return transformed_content
+    transformed_content = '\n'.join(transformed_lines)
     
-    return '\n'.join(transformed_lines)
+    # Add component to global scope
+    component_name = filename.replace('.jsx', '').replace('.js', '')
+    
+    # Handle exports and make components globally available
+    if 'export default' in transformed_content:
+        # Extract the exported component name
+        import re
+        export_match = re.search(r'export default (\w+)', transformed_content)
+        if export_match:
+            exported_name = export_match.group(1)
+            transformed_content = transformed_content.replace(
+                f'export default {exported_name}',
+                f'window.{component_name} = {exported_name};'
+            )
+    
+    # Handle named exports for hooks and utilities
+    if 'export ' in transformed_content and 'export default' not in transformed_content:
+        # For files like useGlobalSettings.jsx that export named functions
+        export_pattern = r'export\s+(const|function)\s+(\w+)'
+        matches = re.findall(export_pattern, transformed_content)
+        for match in matches:
+            func_name = match[1]
+            transformed_content = re.sub(
+                rf'export\s+(const|function)\s+{func_name}',
+                rf'\1 {func_name}',
+                transformed_content
+            )
+            transformed_content += f'\nwindow.{func_name} = {func_name};'
+    
+    # Special handling for the main Trakaido component
+    if filename == "Trakaido.jsx":
+        # Look for the main component export
+        if 'FlashCardApp' in transformed_content:
+            transformed_content = transformed_content.replace(
+                'window.Trakaido = FlashCardApp;',
+                'window.FlashCardApp = FlashCardApp; window.Trakaido = FlashCardApp;'
+            )
+    
+    return transformed_content
 
 def create_html_template(compiled_js_components):
     """Create the final HTML file with all components"""
@@ -186,13 +236,21 @@ def create_html_template(compiled_js_components):
     # Combine all compiled components
     all_js = '\n\n'.join(compiled_js_components)
     
-    # Add initialization code
+    # Add initialization code with React 17/18 compatibility
     init_js = """
-// Initialize the React app
+// Initialize the React app with React 17/18 compatibility
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('react-root');
-    const root = ReactDOM.createRoot(container);
-    root.render(React.createElement(FlashCardApp));
+    
+    // Check if we have React 18 createRoot or fall back to React 17 render
+    if (ReactDOM.createRoot) {
+        // React 18
+        const root = ReactDOM.createRoot(container);
+        root.render(React.createElement(window.FlashCardApp || window.Trakaido));
+    } else {
+        // React 17 fallback
+        ReactDOM.render(React.createElement(window.FlashCardApp || window.Trakaido), container);
+    }
 });
 """
     
@@ -206,6 +264,17 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- React CDN -->
     <script crossorigin src="{REACT_CDN}"></script>
     <script crossorigin src="{REACT_DOM_CDN}"></script> 
+    
+    <style>
+        body {{
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+        }}
+        #react-root {{
+            min-height: 100vh;
+        }}
+    </style>
 </head>
 <body>
     <div id="react-root"></div>
@@ -262,8 +331,8 @@ def main():
     print("\n🎉 Compilation complete!")
     print(f"📁 Output files:")
     print(f"   - {OUTPUT_FILE}")
-    print(f"\n📝 Note: You'll need to implement the actual API endpoints")
-    print(f"   in flask_server.py based on your data structure.")
+    print(f"\n📝 Note: You can now serve the build/index.html file")
+    print(f"   with any static web server.")
 
 if __name__ == "__main__":
     main()
