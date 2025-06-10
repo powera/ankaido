@@ -602,9 +602,6 @@ const FlashCardApp = () => {
   // Count total selected words
   const totalSelectedWords = allWords.length;
 
-  
-
-  
 
   // Loading state
   if (loading) {
@@ -876,7 +873,7 @@ const FlashCardApp = () => {
           showAnswer={showAnswer}
           handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         />
-      ) : currentWord ? (
+      ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
           currentCard={currentCard}
           allWords={allWords}
