@@ -125,6 +125,7 @@ const StudyModeSelector = ({
           onChange={(e) => setSelectedVoice(e.target.value)}
           className="w-mode-option"
         >
+          <option value="random">🎲 Random Voice</option>
           {availableVoices.map(voice => (
             <option key={voice} value={voice}>
               🎤 {voice}

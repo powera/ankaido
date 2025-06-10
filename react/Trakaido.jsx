@@ -14,7 +14,7 @@ import DeclensionsMode from './DeclensionsMode';
 import WordListManager from './WordListManager';
 
 // Use the namespaced lithuanianApi from window
-// These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
+// These are provided by the script tag in widget.html: /js/lithuanianApi.js
 const { 
   fetchCorpora, 
   fetchCorpusStructure, 
@@ -106,7 +106,9 @@ const FlashCardApp = () => {
   const [wordListManager] = useState(() => new WordListManager(safeStorage, settings));
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
-  const [selectedVoice, setSelectedVoice] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState(() => {
+    return safeStorage?.getItem('flashcard-selected-voice') || null;
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [loadingWords, setLoadingWords] = useState(false);
@@ -154,8 +156,8 @@ const FlashCardApp = () => {
         setAvailableVerbs(conjugationData.verbs);
         setDeclensions(declensionData.declensions);
         setAvailableNouns(declensionData.available_nouns);
-        if (voices.length > 0) {
-          setSelectedVoice(voices[0]);
+        if (voices.length > 0 && !selectedVoice) {
+          setSelectedVoice('random');
         }
         const corporaStructures = {};
         // Only set default groups if we don't have any saved in localStorage
@@ -204,6 +206,12 @@ const FlashCardApp = () => {
   useEffect(() => {
     safeStorage.setItem('flashcard-quiz-mode', quizMode);
   }, [quizMode]);
+
+  useEffect(() => {
+    if (selectedVoice) {
+      safeStorage.setItem('flashcard-selected-voice', selectedVoice);
+    }
+  }, [selectedVoice]);
 
   // Generate words list when selected groups change
   useEffect(() => {
@@ -260,7 +268,15 @@ const FlashCardApp = () => {
 
   const preloadMultipleChoiceAudio = async () => {
     if (!selectedVoice) return;
-    await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, selectedVoice);
+    
+    if (selectedVoice === 'random') {
+      // When random is selected, preload for all available voices
+      for (const voice of availableVoices) {
+        await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, voice);
+      }
+    } else {
+      await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, selectedVoice);
+    }
   };
 
   // Generate all available groups from all corpuses
@@ -291,10 +307,12 @@ const FlashCardApp = () => {
     safeStorage.removeItem('flashcard-selected-groups');
     safeStorage.removeItem('flashcard-study-mode');
     safeStorage.removeItem('flashcard-quiz-mode');
+    safeStorage.removeItem('flashcard-selected-voice');
 
     // Reset state to defaults
     setStudyMode('english-to-lithuanian');
     setQuizMode('flashcard');
+    setSelectedVoice('random');
 
     // For corpus groups, we need to reset to all groups
     const defaultSelectedGroups = {};
@@ -309,14 +327,30 @@ const FlashCardApp = () => {
   const resetCards = () => wordListManager.resetCards();
   const handleMultipleChoiceAnswer = (selectedOption) => wordListManager.handleMultipleChoiceAnswer(selectedOption, studyMode, quizMode, autoAdvance, defaultDelay);
 
+  // Helper function to get a random voice from available voices
+  const getRandomVoice = () => {
+    if (availableVoices.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * availableVoices.length);
+    return availableVoices[randomIndex];
+  };
+
+  // Helper function to get the actual voice to use (handles random selection)
+  const getVoiceToUse = () => {
+    if (selectedVoice === 'random') {
+      return getRandomVoice();
+    }
+    return selectedVoice;
+  };
+
   const playAudio = async (word, onlyCached = false) => {
-    audioManager.playAudio(word, selectedVoice, audioEnabled, onlyCached);
+    const voiceToUse = getVoiceToUse();
+    audioManager.playAudio(word, voiceToUse, audioEnabled, onlyCached);
   };
 
   const handleHoverStart = (word) => {
     if (!audioEnabled || !selectedVoice) return;
     const timeout = setTimeout(() => {
-      playAudio(word, onlyCached =true); // Only play if cached
+      playAudio(word, true); // Only play if cached
     }, 900);
     setHoverTimeout(timeout);
   };
