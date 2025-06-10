@@ -20,10 +20,12 @@ from pathlib import Path
 
 # Configuration
 REACT_DIR = Path(__file__).parent / "react"
+CSS_DIR = Path(__file__).parent / "css"
 BUILD_DIR = Path(__file__).parent / "build"
 OUTPUT_FILE = BUILD_DIR / "index.html"
 JS_OUTPUT_FILE = BUILD_DIR / "app.js"
 STATIC_DIR = BUILD_DIR / "static"
+CSS_BUILD_DIR = BUILD_DIR / "css"
 
 # React CDN URLs
 REACT_CDN = "https://unpkg.com/react@18/umd/react.production.min.js"
@@ -70,6 +72,29 @@ def install_babel_dependencies():
     except subprocess.CalledProcessError as e:
         print(f"Failed to install dependencies: {e}")
         return False
+
+def copy_css_files():
+    """Copy CSS files to the build directory"""
+    print("Copying CSS files...")
+    
+    # Create CSS build directory
+    CSS_BUILD_DIR.mkdir(exist_ok=True)
+    
+    # Check if CSS directory exists
+    if not CSS_DIR.exists():
+        print(f"Warning: CSS directory {CSS_DIR} not found, skipping CSS files...")
+        return []
+    
+    copied_files = []
+    
+    # Copy all CSS files from the css directory
+    for css_file in CSS_DIR.glob("*.css"):
+        dest_file = CSS_BUILD_DIR / css_file.name
+        shutil.copy2(css_file, dest_file)
+        copied_files.append(css_file.name)
+        print(f"Copied {css_file.name}")
+    
+    return copied_files
 
 def get_component_dependencies():
     """Get the correct order of components based on their dependencies"""
@@ -223,7 +248,7 @@ def transform_imports(jsx_content, filename):
     
     return transformed_content
 
-def create_html_template(compiled_js_components):
+def create_html_template(compiled_js_components, css_files):
     """Create the final HTML file with all components"""
     print("Creating HTML template...")
     
@@ -254,6 +279,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 """
     
+    # Generate CSS link tags for copied CSS files
+    css_links = ""
+    for css_file in css_files:
+        css_links += f'    <link rel="stylesheet" href="css/{css_file}">\n'
+    
     html_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -264,6 +294,9 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- React CDN -->
     <script crossorigin src="{REACT_CDN}"></script>
     <script crossorigin src="{REACT_DOM_CDN}"></script> 
+    
+    <!-- CSS Files -->
+{css_links}
     
     <style>
         body {{
@@ -316,6 +349,10 @@ def main():
     
     print("✅ Babel dependencies installed")
     
+    # Copy CSS files
+    css_files = copy_css_files()
+    print("✅ CSS files staged")
+    
     # Compile JSX components
     compiled_components = compile_jsx_components()
     if compiled_components is None:
@@ -325,12 +362,16 @@ def main():
     print("✅ JSX components compiled")
     
     # Create HTML template
-    create_html_template(compiled_components)
+    create_html_template(compiled_components, css_files)
     print("✅ HTML template created")
     
     print("\n🎉 Compilation complete!")
     print(f"📁 Output files:")
     print(f"   - {OUTPUT_FILE}")
+    if css_files:
+        print(f"   - CSS files in {CSS_BUILD_DIR}:")
+        for css_file in css_files:
+            print(f"     • {css_file}")
     print(f"\n📝 Note: You can now serve the build/index.html file")
     print(f"   with any static web server.")
 
