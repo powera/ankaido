@@ -1,5 +1,8 @@
 # .gitignore
 
+# Pycache
+__pycache__
+
 # Mac files
 .DS_STORE
 

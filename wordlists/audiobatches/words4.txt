@@ -1,0 +1,393 @@
+akimirka
+amžius
+anksti
+armija
+atsakymas
+aukštas
+aš atėjau
+aš buvau
+aš bėgau
+aš daviau
+aš dirbau
+aš galėjau
+aš gaminau
+aš grįžau
+aš gyvenau
+aš gėriau
+aš kalbėjau
+aš klausiau
+aš mačiau
+aš miegojau
+aš mokiau
+aš mokiausi
+aš mėgau
+aš norėjau
+aš pažinojau
+aš pirkau
+aš rašiau
+aš skaičiau
+aš turėjau
+aš valgiau
+aš važiavau
+aš verčiausi
+aš vykau
+aš ėjau
+aš ėmiau
+aš žaidžiau
+aš žinojau
+balsas
+berniukas
+bet kas
+blogas
+dešimtmetis
+didelis
+diena
+draugai
+drėgnas
+durys
+gatvė
+geras
+gilus
+gražus
+gyvenimas
+idėja
+ilgas
+informacija
+istorija
+jaunas
+jausmas
+ji atėjo
+ji buvo
+ji bėgo
+ji davė
+ji dirbo
+ji galėjo
+ji gamino
+ji grįžo
+ji gyveno
+ji gėrė
+ji kalbėjo
+ji klausė
+ji matė
+ji miegojo
+ji mokė
+ji mokėsi
+ji mėgo
+ji norėjo
+ji pažinojo
+ji pirko
+ji rašė
+ji skaitė
+ji turėjo
+ji valgė
+ji važiavo
+ji vertėsi
+ji vyko
+ji ėjo
+ji ėmė
+ji žaidė
+ji žinojo
+jie atėjo
+jie buvo
+jie bėgo
+jie davė
+jie dirbo
+jie galėjo
+jie gamino
+jie grįžo
+jie gyveno
+jie gėrė
+jie kalbėjo
+jie klausė
+jie matė
+jie miegojo
+jie mokė
+jie mokėsi
+jie mėgo
+jie norėjo
+jie pažinojo
+jie pirko
+jie rašė
+jie skaitė
+jie turėjo
+jie valgė
+jie važiavo
+jie vertėsi
+jie vyko
+jie ėjo
+jie ėmė
+jie žaidė
+jie žinojo
+jis atėjo
+jis buvo
+jis bėgo
+jis davė
+jis dirbo
+jis galėjo
+jis gamino
+jis grįžo
+jis gyveno
+jis gėrė
+jis kalbėjo
+jis klausė
+jis matė
+jis miegojo
+jis mokė
+jis mokėsi
+jis mėgo
+jis norėjo
+jis pažinojo
+jis pirko
+jis rašė
+jis skaitė
+jis turėjo
+jis valgė
+jis važiavo
+jis vertėsi
+jis vyko
+jis ėjo
+jis ėmė
+jis žaidė
+jis žinojo
+jos atėjo
+jos buvo
+jos bėgo
+jos davė
+jos dirbo
+jos galėjo
+jos gamino
+jos grįžo
+jos gyveno
+jos gėrė
+jos kalbėjo
+jos klausė
+jos matė
+jos miegojo
+jos mokė
+jos mokėsi
+jos mėgo
+jos norėjo
+jos pažinojo
+jos pirko
+jos rašė
+jos skaitė
+jos turėjo
+jos valgė
+jos važiavo
+jos vertėsi
+jos vyko
+jos ėjo
+jos ėmė
+jos žaidė
+jos žinojo
+jūrų laivynas
+jūs atėjote
+jūs buvote
+jūs bėgote
+jūs davėte
+jūs dirbote
+jūs galėjote
+jūs gaminote
+jūs grįžote
+jūs gyvenote
+jūs gėrėte
+jūs kalbėjote
+jūs klausėte
+jūs matėte
+jūs miegojote
+jūs mokėte
+jūs mokėtės
+jūs mėgote
+jūs norėjote
+jūs pažinojote
+jūs pirkote
+jūs rašėte
+jūs skaitėte
+jūs turėjote
+jūs valgėte
+jūs važiavote
+jūs vertėtės
+jūs vykote
+jūs ėjote
+jūs ėmėte
+jūs žaidėte
+jūs žinojote
+kalba
+kalbėti
+kambarys
+karas
+karinis
+karštas
+kažkas
+kelias
+klausimas
+klausyti
+lauke
+lengvas
+mažas
+mergaitė
+mes atėjome
+mes buvome
+mes bėgome
+mes davėme
+mes dirbome
+mes galėjome
+mes gaminome
+mes grįžome
+mes gyvenome
+mes gėrėme
+mes kalbėjome
+mes klausėme
+mes matėme
+mes miegojome
+mes mokėme
+mes mokėmės
+mes mėgome
+mes norėjome
+mes pažinojome
+mes pirkome
+mes rašėme
+mes skaitėme
+mes turėjome
+mes valgėme
+mes važiavome
+mes vertėmės
+mes vykome
+mes ėjome
+mes ėmėme
+mes žaidėme
+mes žinojome
+metai
+miestas
+mintis
+minutė
+mirtis
+moteris
+moterys
+motina
+mėnuo
+mūšis
+nacionalinis
+naktis
+namai
+naujienos
+niekas
+paslauga
+pavyzdys
+pietūs
+pinigai
+platus
+pojūtis
+politinis
+praeitis
+prekyba
+priežastis
+problema
+protas
+rytai
+rytas
+sausas
+savaitė
+senas
+siena
+socialinis
+sritis
+stiprus
+sunkus
+sūnus
+tai atėjo
+tai buvo
+tai bėgo
+tai davė
+tai dirbo
+tai galėjo
+tai gamino
+tai grįžo
+tai gyveno
+tai gėrė
+tai kalbėjo
+tai klausė
+tai matė
+tai miegojo
+tai mokė
+tai mokėsi
+tai mėgo
+tai norėjo
+tai pažinojo
+tai pirko
+tai rašė
+tai skaitė
+tai turėjo
+tai valgė
+tai važiavo
+tai vertėsi
+tai vyko
+tai ėjo
+tai ėmė
+tai žaidė
+tai žinojo
+taika
+tamsus
+tarptautinis
+tiesa
+tinklalapis
+trumpas
+tu atėjai
+tu buvai
+tu bėgai
+tu davei
+tu dirbai
+tu galėjai
+tu gaminai
+tu grįžai
+tu gyvenai
+tu gėrei
+tu kalbėjai
+tu klausei
+tu matei
+tu miegojai
+tu mokeisi
+tu mėgai
+tu norėjai
+tu pažinojai
+tu pirkai
+tu rašei
+tu skaitei
+tu turėjai
+tu valgei
+tu važiavai
+tu verteisi
+tu vykai
+tu ėjai
+tu ėmei
+tu žaidei
+tu žinojai
+už
+vaikai
+vaikas
+vakarai
+vakaras
+valanda
+valstija
+verslas
+viduje
+vieta
+viešas
+visi
+visuomenė
+vyrai
+vyras
+vyriausybė
+vėlu
+įmonė
+įstatymas
+šalis
+šaltas
+šeima
+šiandien
+šiaurė
+žemas
+žemė
+žmogus
+žmona
+žodis

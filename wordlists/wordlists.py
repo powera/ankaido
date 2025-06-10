@@ -42,50 +42,81 @@ def check_for_duplicates():
     """
     Checks for duplicate words in the wordlists.
     
-    This function identifies two types of duplicates:
-    1. Exact duplicates - the same English word appears multiple times
-    2. Semantic duplicates - the same English word with different Lithuanian translations
+    This function identifies four types of duplicates:
+    1. Exact English duplicates - the same English word appears multiple times
+    2. Semantic English duplicates - the same English word with different Lithuanian translations
+       (potentially different meanings)
+    3. Exact Lithuanian duplicates - the same Lithuanian word appears multiple times
+    4. Semantic Lithuanian duplicates - the same Lithuanian word with different English translations
        (potentially different meanings)
     
     Returns:
-        tuple: (exact_duplicates, semantic_duplicates)
-            - exact_duplicates: A list of English words that appear multiple times
-            - semantic_duplicates: A dictionary where keys are English words and values
+        tuple: (english_exact_duplicates, english_semantic_duplicates, 
+                lithuanian_exact_duplicates, lithuanian_semantic_duplicates)
+            - english_exact_duplicates: A list of English words that appear multiple times
+            - english_semantic_duplicates: A dictionary where keys are English words and values
               are lists of different Lithuanian translations
+            - lithuanian_exact_duplicates: A list of Lithuanian words that appear multiple times
+            - lithuanian_semantic_duplicates: A dictionary where keys are Lithuanian words and values
+              are lists of different English translations
     """
     flat_words = get_all_word_pairs_flat()
     
-    # Track word occurrences and translations
-    word_count = {}
-    word_translations = {}
+    # Track English word occurrences and translations
+    english_word_count = {}
+    english_word_translations = {}
+    
+    # Track Lithuanian word occurrences and translations
+    lithuanian_word_count = {}
+    lithuanian_word_translations = {}
     
     # Find duplicates
-    exact_duplicates = []
-    semantic_duplicates = {}
+    english_exact_duplicates = []
+    english_semantic_duplicates = {}
+    lithuanian_exact_duplicates = []
+    lithuanian_semantic_duplicates = {}
     
     for word_pair in flat_words:
         english = word_pair['english']
         lithuanian = word_pair['lithuanian']
         
-        # Track word count
-        if english in word_count:
-            word_count[english] += 1
-            if word_count[english] == 2:  # Only add to duplicates list once
-                exact_duplicates.append(english)
+        # Track English word count
+        if english in english_word_count:
+            english_word_count[english] += 1
+            if english_word_count[english] == 2:  # Only add to duplicates list once
+                english_exact_duplicates.append(english)
         else:
-            word_count[english] = 1
+            english_word_count[english] = 1
         
-        # Track different translations
-        if english in word_translations:
-            if lithuanian not in word_translations[english]:
-                word_translations[english].append(lithuanian)
+        # Track different Lithuanian translations for English words
+        if english in english_word_translations:
+            if lithuanian not in english_word_translations[english]:
+                english_word_translations[english].append(lithuanian)
                 # If we find a new translation, it's a semantic duplicate
-                if len(word_translations[english]) == 2:  # Only add to semantic duplicates once
-                    semantic_duplicates[english] = word_translations[english]
+                if len(english_word_translations[english]) == 2:  # Only add to semantic duplicates once
+                    english_semantic_duplicates[english] = english_word_translations[english]
         else:
-            word_translations[english] = [lithuanian]
+            english_word_translations[english] = [lithuanian]
+        
+        # Track Lithuanian word count
+        if lithuanian in lithuanian_word_count:
+            lithuanian_word_count[lithuanian] += 1
+            if lithuanian_word_count[lithuanian] == 2:  # Only add to duplicates list once
+                lithuanian_exact_duplicates.append(lithuanian)
+        else:
+            lithuanian_word_count[lithuanian] = 1
+        
+        # Track different English translations for Lithuanian words
+        if lithuanian in lithuanian_word_translations:
+            if english not in lithuanian_word_translations[lithuanian]:
+                lithuanian_word_translations[lithuanian].append(english)
+                # If we find a new translation, it's a semantic duplicate
+                if len(lithuanian_word_translations[lithuanian]) == 2:  # Only add to semantic duplicates once
+                    lithuanian_semantic_duplicates[lithuanian] = lithuanian_word_translations[lithuanian]
+        else:
+            lithuanian_word_translations[lithuanian] = [english]
     
-    return exact_duplicates, semantic_duplicates
+    return english_exact_duplicates, english_semantic_duplicates, lithuanian_exact_duplicates, lithuanian_semantic_duplicates
 
 
 def find_missing_words(input_words):
@@ -129,3 +160,53 @@ def find_missing_words(input_words):
             missing_words.append(word)
     
     return missing_words
+
+
+def find_lithuanian_words_not_in_audiobatches():
+    """
+    Find Lithuanian words from the app's wordlists that are NOT present in any 
+    of the audiobatches text files.
+    
+    This function reads all .txt files in the audiobatches subdirectory and 
+    compares them against all Lithuanian words in the app's wordlists to find
+    which words from the app are missing from the audiobatches.
+    
+    Returns:
+        list: A list of Lithuanian words from the app that are not found in any 
+              audiobatches file.
+    """
+    import os
+    import glob
+    
+    # Get all Lithuanian words from the app
+    app_lithuanian_words = set()
+    flat_words = get_all_word_pairs_flat()
+    for word_pair in flat_words:
+        app_lithuanian_words.add(word_pair['lithuanian'].lower())
+    
+    # Get the path to the audiobatches directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    audiobatches_dir = os.path.join(current_dir, 'audiobatches')
+    
+    # Read all words from all .txt files in audiobatches directory
+    audiobatch_words = set()
+    txt_files = glob.glob(os.path.join(audiobatches_dir, '*.txt'))
+    
+    for txt_file in txt_files:
+        try:
+            with open(txt_file, 'r', encoding='utf-8') as file:
+                for line in file:
+                    word = line.strip()
+                    if word:  # Skip empty lines
+                        audiobatch_words.add(word.lower())
+        except Exception as e:
+            print(f"Warning: Error reading file {txt_file}: {e}")
+            continue
+    
+    # Find Lithuanian words from app that are NOT in any audiobatch file
+    missing_from_audiobatches = []
+    for lithuanian_word in sorted(app_lithuanian_words):
+        if lithuanian_word not in audiobatch_words:
+            missing_from_audiobatches.append(lithuanian_word)
+    
+    return missing_from_audiobatches
