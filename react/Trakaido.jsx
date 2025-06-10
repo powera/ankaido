@@ -6,6 +6,7 @@ import DeclensionTable from './DeclensionTable';
 import ConjugationTable from './ConjugationTable';
 import VocabularyList from './VocabularyList';
 import TypingMode from './TypingMode';
+import StatsDisplay from './StatsDisplay';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
@@ -1241,32 +1242,7 @@ const FlashCardApp = () => {
 
       {/* Stats with Reset button */}
       {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && (
-        <div className="w-stats">
-          <div className="w-stat-item">
-            <div className="w-stat-value" style={{ color: 'var(--color-success)' }}>
-              {stats.correct}
-            </div>
-            <div className="w-stat-label">Correct</div>
-          </div>
-          <div className="w-stat-item">
-            <div className="w-stat-value" style={{ color: 'var(--color-error)' }}>
-              {stats.incorrect}
-            </div>
-            <div className="w-stat-label">Incorrect</div>
-          </div>
-          <div className="w-stat-item">
-            <div className="w-stat-value">
-              {stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0}%
-            </div>
-            <div className="w-stat-label">Accuracy</div>
-          </div>
-          <button 
-            className="w-button-secondary" 
-            onClick={resetCards}
-          >
-            🔄 Reset
-          </button>
-        </div>
+        <StatsDisplay stats={stats} onReset={resetCards} />
       )}
 
       <SettingsModal />
