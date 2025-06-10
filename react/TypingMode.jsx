@@ -8,14 +8,42 @@ const TypingMode = ({
   typedAnswer, 
   setTypedAnswer, 
   typingFeedback, 
-  handleTypedAnswer, 
+  setTypingFeedback,
+  setShowAnswer,
   nextCard, 
   audioEnabled, 
   playAudio, 
   autoAdvance, 
   autoAdvanceTimer, 
-  defaultDelay 
+  setAutoAdvanceTimer,
+  defaultDelay,
+  setStats
 }) => {
+  // Handle checking typed answer - always check against Lithuanian word
+  const handleTypedAnswer = () => {
+    if (!currentWord) return;
+    
+    const correctAnswer = currentWord.lithuanian; // Always check against Lithuanian
+    
+    // Check if typed answer exactly matches the correct answer (including accents)
+    if (typedAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
+      setTypingFeedback('correct');
+      setStats(prev => ({ ...prev, correct: prev.correct + 1, total: prev.total + 1 }));
+      
+      // Set auto-advance timer if enabled
+      if (autoAdvance) {
+        const timerId = setTimeout(() => {
+          nextCard();
+        }, defaultDelay * 1000);
+        setAutoAdvanceTimer(timerId);
+      }
+    } else {
+      setTypingFeedback('incorrect');
+      setStats(prev => ({ ...prev, incorrect: prev.incorrect + 1, total: prev.total + 1 }));
+    }
+    
+    setShowAnswer(true);
+  };
   if (!currentWord) {
     return (
       <div className="w-card">
