@@ -62,21 +62,21 @@ const StudyMaterialsSelector = ({
               return total + (corporaStructure.groups[g]?.length || 0);
             }, 0);
             return (
-              <div key={corpus} className="corpus-section">
-                <div className="corpus-header" onClick={() => toggleCorpus(corpus)}>
+              <div key={corpus} className="trakaido-corpus-section">
+                <div className="trakaido-corpus-header" onClick={() => toggleCorpus(corpus)}>
                   <div>
                     📚 {corpus} ({wordCount} words from {selectedCorpusGroups.length}/{groups.length} groups)
                   </div>
-                  <button className="corpus-toggle">
+                  <button className="trakaido-corpus-toggle">
                     {allSelected ? 'Deselect All' : 'Select All'}
                   </button>
                 </div>
-                <div className="group-grid">
+                <div className="trakaido-group-grid">
                   {groups.map(group => {
                     const groupWordCount = corporaStructure.groups[group]?.length || 0;
                     const isSelected = selectedCorpusGroups.includes(group);
                     return (
-                      <div key={group} className="group-item">
+                      <div key={group} className="trakaido-group-item">
                         <input
                           type="checkbox"
                           id={`${corpus}-${group}`}

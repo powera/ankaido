@@ -29,7 +29,7 @@ const FlashCardMode = ({
         {question}
       </div>
       {showAnswer && (
-        <div className="answer-text">
+        <div className="trakaido-answer-text">
           <span>{answer}</span>
           <AudioButton 
             word={currentWord.lithuanian}

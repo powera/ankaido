@@ -81,7 +81,7 @@ const MultipleChoiceOptions = ({
             onMouseLeave={() => shouldShowAudioOnHover && handleHoverEnd && handleHoverEnd()}
             disabled={showAnswer}
           >
-            <div className="choice-content">
+            <div className="trakaido-choice-content">
               <div style={{ textAlign: 'center' }}>
                 <span>{option}</span>
                 {translation && showAnswer && quizMode === 'listening' && (

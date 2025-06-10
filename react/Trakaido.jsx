@@ -401,64 +401,7 @@ const FlashCardApp = () => {
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
-      <style>{`
-        .answer-text {
-          font-size: 1.5rem;
-          color: var(--color-text-secondary);
-          margin-top: var(--spacing-base);
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-small);
-          justify-content: center;
-        }
-        .choice-content {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-small);
-          justify-content: center;
-        }
-        .corpus-section {
-          margin-bottom: var(--spacing-base);
-          border: 1px solid var(--color-border);
-          border-radius: var(--border-radius);
-          padding: var(--spacing-base);
-        }
-        .corpus-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--spacing-small);
-          cursor: pointer;
-          font-weight: bold;
-          color: var(--color-primary);
-        }
-        .group-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: var(--spacing-small);
-          margin-top: var(--spacing-small);
-        }
-        .group-item {
-          display: flex;
-          align-items: center;
-          gap: var(--spacing-small);
-          padding: var(--spacing-small);
-          background: var(--color-annotation-bg);
-          border-radius: var(--border-radius);
-        }
-        .corpus-toggle {
-          background: none;
-          border: 1px solid var(--color-border);
-          border-radius: var(--border-radius);
-          padding: var(--spacing-small) var(--spacing-base);
-          cursor: pointer;
-          color: var(--color-text);
-          font-size: 0.8rem;
-        }
-        .corpus-toggle:hover {
-          background: var(--color-annotation-bg);
-        }
-      `}</style>
+
 
       <button className="w-fullscreen-toggle" onClick={toggleFullscreen}>
         {isFullscreen ? '🗗' : '⛶'}
