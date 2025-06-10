@@ -192,6 +192,17 @@ class WordListManager {
     this.notifyStateChange();
   }
 
+  // Methods to update stats only (for typing mode)
+  updateStatsCorrect() {
+    this.stats = { ...this.stats, correct: this.stats.correct + 1, total: this.stats.total + 1 };
+    this.notifyStateChange();
+  }
+
+  updateStatsIncorrect() {
+    this.stats = { ...this.stats, incorrect: this.stats.incorrect + 1, total: this.stats.total + 1 };
+    this.notifyStateChange();
+  }
+
   markCorrect(autoAdvance, defaultDelay) {
     this.stats = { ...this.stats, correct: this.stats.correct + 1, total: this.stats.total + 1 };
     if (autoAdvance) {

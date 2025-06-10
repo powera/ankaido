@@ -500,6 +500,17 @@ const FlashCardApp = () => {
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
         />
+      ) : quizMode === 'typing' ? (
+        <TypingMode 
+          wordListManager={wordListManager}
+          wordListState={wordListState}
+          studyMode={studyMode}
+          nextCard={nextCard}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
+        />
       ) : quizMode === 'listening' && currentWord ? (
         <ListeningMode 
           wordListManager={wordListManager}
@@ -519,17 +530,6 @@ const FlashCardApp = () => {
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
-        />
-      ) : quizMode === 'typing' ? (
-        <TypingMode 
-          wordListManager={wordListManager}
-          wordListState={wordListState}
-          studyMode={studyMode}
-          nextCard={nextCard}
-          audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
         />
       ) : (
         <div className="w-card">

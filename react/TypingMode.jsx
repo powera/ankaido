@@ -25,10 +25,10 @@ const TypingMode = ({
 
     if (isCorrect) {
       wordListManager.setTypingFeedback('✅ Correct!');
-      wordListManager.markCorrect(autoAdvance, defaultDelay);
+      wordListManager.updateStatsCorrect();
     } else {
       wordListManager.setTypingFeedback(`❌ Incorrect. The answer is: ${correctAnswer}`);
-      wordListManager.markIncorrect(autoAdvance, defaultDelay);
+      wordListManager.updateStatsIncorrect();
     }
 
     wordListManager.setShowAnswer(true);

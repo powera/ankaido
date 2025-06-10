@@ -43,13 +43,13 @@ const MultipleChoiceOptions = ({
 
         // Find the translation for any answer when showAnswer is true
         let translation = null;
-        if (showAnswer) {
+        if (wordListState.showAnswer) {
           if (isCorrect) {
             // For correct answer, show the opposite translation
             translation = studyMode === 'lithuanian-to-english' ? currentWord.lithuanian : currentWord.english;
           } else {
             // For incorrect answers, find the word that matches this option
-            const wrongWord = allWords.find(w => 
+            const wrongWord = wordListState.allWords.find(w => 
               (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option
             );
             if (wrongWord) {
@@ -60,8 +60,8 @@ const MultipleChoiceOptions = ({
 
         // Find the translation for incorrect selected answer (non-listening mode)
         let incorrectTranslation = null;
-        if (showAnswer && isSelected && !isCorrect && quizMode !== 'listening') {
-          const wrongWord = allWords.find(w => 
+        if (wordListState.showAnswer && isSelected && !isCorrect && quizMode !== 'listening') {
+          const wrongWord = wordListState.allWords.find(w => 
             (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
           );
           if (wrongWord) {
@@ -76,15 +76,15 @@ const MultipleChoiceOptions = ({
           <button
             key={index}
             className={className}
-            onClick={() => !showAnswer && handleMultipleChoiceAnswer(option)}
+            onClick={() => !wordListState.showAnswer && handleMultipleChoiceAnswer(option)}
             onMouseEnter={() => shouldShowAudioOnHover && handleHoverStart && handleHoverStart(audioWord)}
             onMouseLeave={() => shouldShowAudioOnHover && handleHoverEnd && handleHoverEnd()}
-            disabled={showAnswer}
+            disabled={wordListState.showAnswer}
           >
             <div className="trakaido-choice-content">
               <div style={{ textAlign: 'center' }}>
                 <span>{option}</span>
-                {translation && showAnswer && quizMode === 'listening' && (
+                {translation && wordListState.showAnswer && quizMode === 'listening' && (
                   <div style={{ fontSize: '0.8rem', color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)', marginTop: '4px' }}>
                     ({translation})
                   </div>
@@ -95,7 +95,7 @@ const MultipleChoiceOptions = ({
                   </div>
                 )}
               </div>
-              {showAnswer && isCorrect && (
+              {wordListState.showAnswer && isCorrect && (
                 <div style={{ display: 'inline-block', marginLeft: '8px' }}>
                   <AudioButton 
                     word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
