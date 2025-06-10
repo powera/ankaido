@@ -14,6 +14,7 @@ import StudyMaterialsSelector from './StudyMaterialsSelector';
 import StudyModeSelector from './StudyModeSelector';
 import ConjugationsMode from './ConjugationsMode';
 import DeclensionsMode from './DeclensionsMode';
+import WordListManager from './WordListManager';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
@@ -69,8 +70,6 @@ const FlashCardApp = () => {
   const { isFullscreen, toggleFullscreen, containerRef } = useFullscreen();
 
   const [corporaData, setCorporaData] = useState({}); // Cache for corpus structures
-  const [currentCard, setCurrentCard] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
   const [availableCorpora, setAvailableCorpora] = useState([]);
   // Initialize selectedGroups from localStorage if available
   const [selectedGroups, setSelectedGroups] = useState(() => {
@@ -87,25 +86,33 @@ const FlashCardApp = () => {
   const [studyMode, setStudyMode] = useState(() => {
     return safeStorage?.getItem('flashcard-study-mode') || 'english-to-lithuanian';
   });
-  const [stats, setStats] = useState({ correct: 0, incorrect: 0, total: 0 });
   const [showCorpora, setShowCorpora] = useState(false);
   const [quizMode, setQuizMode] = useState(() => {
     return safeStorage?.getItem('flashcard-quiz-mode') || 'flashcard';
   });
-  const [multipleChoiceOptions, setMultipleChoiceOptions] = useState([]);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [typedAnswer, setTypedAnswer] = useState('');
-  const [typingFeedback, setTypingFeedback] = useState('');
   const [grammarMode, setGrammarMode] = useState('conjugations');
 
+  // WordListManager state
+  const [wordListState, setWordListState] = useState({
+    allWords: [],
+    currentCard: 0,
+    showAnswer: false,
+    selectedAnswer: null,
+    typedAnswer: '',
+    typingFeedback: '',
+    multipleChoiceOptions: [],
+    stats: { correct: 0, incorrect: 0, total: 0 },
+    autoAdvanceTimer: null
+  });
+
   const [audioManager] = useState(() => new AudioManager());
+  const [wordListManager] = useState(() => new WordListManager(safeStorage, settings));
   const [hoverTimeout, setHoverTimeout] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [loadingWords, setLoadingWords] = useState(false);
-  const [allWords, setAllWords] = useState([]);
   const [conjugations, setConjugations] = useState({});
   const [availableVerbs, setAvailableVerbs] = useState([]);
   const [selectedVerb, setSelectedVerb] = useState(null);
@@ -116,7 +123,6 @@ const FlashCardApp = () => {
   const [availableNouns, setAvailableNouns] = useState([]);
   const [selectedNoun, setSelectedNoun] = useState(null);
   const [loadingDeclensions, setLoadingDeclensions] = useState(false);
-  const [autoAdvanceTimer, setAutoAdvanceTimer] = useState(null);
   const [selectedVocabGroup, setSelectedVocabGroup] = useState(null);
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
@@ -125,6 +131,12 @@ const FlashCardApp = () => {
   const audioEnabled = settings.audioEnabled;
   const autoAdvance = settings.autoAdvance;
   const defaultDelay = settings.defaultDelay;
+
+  // Setup WordListManager callback
+  useEffect(() => {
+    wordListManager.setStateChangeCallback(setWordListState);
+    wordListManager.settings = settings; // Update settings reference
+  }, [wordListManager, settings]);
   
   
 
@@ -201,62 +213,35 @@ const FlashCardApp = () => {
 
   // Generate words list when selected groups change
   useEffect(() => {
-    const generateWordsList = () => {
-      if (Object.keys(corporaData).length === 0) {
-        setAllWords([]);
-        return;
-      }
-      let words = [];
-      Object.entries(selectedGroups).forEach(([corpus, groups]) => {
-        if (corporaData[corpus] && groups.length > 0) {
-          groups.forEach(group => {
-            if (corporaData[corpus].groups[group]) {
-              const groupWords = corporaData[corpus].groups[group].map(word => ({
-                ...word,
-                corpus,
-                group
-              }));
-              words.push(...groupWords);
-            }
-          });
-        }
-      });
-      // Always shuffle the cards
-      words = words.sort(() => Math.random() - 0.5);
-      setAllWords(words);
-      setCurrentCard(0);
-      setShowAnswer(false);
-      setSelectedAnswer(null);
-    };
     if (!loading) {
-      generateWordsList();
+      wordListManager.generateWordsList(selectedGroups, corporaData);
     }
-  }, [selectedGroups, loading, corporaData]);
+  }, [selectedGroups, loading, corporaData, wordListManager]);
 
   // Generate multiple choice options when card changes or mode changes
   useEffect(() => {
-    if ((quizMode === 'multiple-choice' || quizMode === 'listening') && allWords.length > 0) {
-      generateMultipleChoiceOptions();
+    if ((quizMode === 'multiple-choice' || quizMode === 'listening') && wordListState.allWords.length > 0) {
+      wordListManager.generateMultipleChoiceOptions(studyMode, quizMode);
     }
-  }, [currentCard, quizMode, allWords, studyMode, settings.difficulty]);
+  }, [wordListState.currentCard, quizMode, wordListState.allWords, studyMode, settings.difficulty, wordListManager]);
 
   // Pre-load audio for multiple choice options when audio is enabled
   useEffect(() => {
-    if (audioEnabled && (quizMode === 'multiple-choice' || quizMode === 'listening') && multipleChoiceOptions.length > 0) {
+    if (audioEnabled && (quizMode === 'multiple-choice' || quizMode === 'listening') && wordListState.multipleChoiceOptions.length > 0) {
       preloadMultipleChoiceAudio();
     }
-  }, [audioEnabled, quizMode, studyMode, multipleChoiceOptions, selectedVoice]);
+  }, [audioEnabled, quizMode, studyMode, wordListState.multipleChoiceOptions, selectedVoice]);
 
   // Auto-play audio in listening mode when card changes
   useEffect(() => {
-    if (quizMode === 'listening' && audioEnabled && allWords.length > 0 && allWords[currentCard]) {
+    if (quizMode === 'listening' && audioEnabled && wordListState.allWords.length > 0 && wordListState.allWords[wordListState.currentCard]) {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        playAudio(allWords[currentCard].lithuanian);
+        playAudio(wordListState.allWords[wordListState.currentCard].lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [currentCard, quizMode, audioEnabled, allWords]);
+  }, [wordListState.currentCard, quizMode, audioEnabled, wordListState.allWords]);
 
   // Reload conjugations when verb corpus changes
   useEffect(() => {
@@ -279,100 +264,16 @@ const FlashCardApp = () => {
     loadConjugationsForCorpus();
   }, [selectedVerbCorpus, loading]);
 
-  const generateMultipleChoiceOptions = () => {
-    const currentWord = allWords[currentCard];
-    if (!currentWord) return;
-
-    // For listening mode, determine correct answer based on listening mode type
-    let correctAnswer;
-    if (quizMode === 'listening') {
-      // In listening mode: LT->LT shows Lithuanian options, LT->EN shows English options
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
-    } else {
-      // Regular multiple choice mode
-      correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
-    }
-
-    // Determine number of options based on difficulty
-    const numOptions = settings.difficulty === 'easy' ? 4 : settings.difficulty === 'medium' ? 6 : 8;
-    const numWrongAnswers = numOptions - 1;
-
-    // Determine which field to use for filtering and generating wrong answers
-    let answerField;
-    if (quizMode === 'listening') {
-      answerField = studyMode === 'lithuanian-to-english' ? 'english' : 'lithuanian';
-    } else {
-      answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
-    }
-
-    const sameCorpusWords = allWords.filter(word => 
-      word.corpus === currentWord.corpus && 
-      word[answerField] !== correctAnswer
-    );
-    const wrongAnswersSet = new Set();
-    const wrongAnswers = [];
-    // Gather wrong answers from same corpus - shuffle first to get random decoys
-    const shuffledSameCorpusWords = [...sameCorpusWords].sort(() => Math.random() - 0.5);
-    for (const word of shuffledSameCorpusWords) {
-      const answer = word[answerField];
-      if (answer !== correctAnswer && !wrongAnswersSet.has(answer)) {
-        wrongAnswersSet.add(answer);
-        wrongAnswers.push(answer);
-        if (wrongAnswers.length >= numWrongAnswers) break;
-      }
-    }
-    // Pad with any other words if needed
-    if (wrongAnswers.length < numWrongAnswers) {
-      const fallbackWords = allWords
-        .map(w => w[answerField])
-        .filter(ans => ans !== correctAnswer && !wrongAnswersSet.has(ans))
-        .sort(() => Math.random() - 0.5); // Shuffle fallback words too
-      while (wrongAnswers.length < numWrongAnswers && fallbackWords.length > 0) {
-        const randIdx = Math.floor(Math.random() * fallbackWords.length);
-        const fallback = fallbackWords.splice(randIdx, 1)[0];
-        wrongAnswers.push(fallback);
-      }
-    }
-
-    let options = [correctAnswer, ...wrongAnswers];
-
-    // Sort alphabetically for medium and hard difficulty, otherwise shuffle
-    if (settings.difficulty === 'medium' || settings.difficulty === 'hard') {
-      options = options.sort();
-      // Rearrange to fill columns first (left column, then right column)
-      const rearranged = [];
-      const half = Math.ceil(options.length / 2);
-      for (let i = 0; i < half; i++) {
-        rearranged.push(options[i]);
-        if (i + half < options.length) {
-          rearranged.push(options[i + half]);
-        }
-      }
-      options = rearranged;
-    } else {
-      options = options.sort(() => Math.random() - 0.5);
-    }
-
-    setMultipleChoiceOptions(options);
-  };
-
   const preloadMultipleChoiceAudio = async () => {
     if (!selectedVoice) return;
-    await audioManager.preloadMultipleAudio(multipleChoiceOptions, selectedVoice);
+    await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, selectedVoice);
   };
 
 
 
   
 
-  const resetCards = () => {
-    setCurrentCard(0);
-    setShowAnswer(false);
-    setStats({ correct: 0, incorrect: 0, total: 0 });
-    setSelectedAnswer(null);
-    setTypedAnswer('');
-    setTypingFeedback('');
-  };
+  
 
   // Generate all available groups from all corpuses
   useEffect(() => {
@@ -416,96 +317,12 @@ const FlashCardApp = () => {
     setSelectedGroups(defaultSelectedGroups);
   };
 
-  const nextCard = () => {
-    // Cancel any existing auto-advance timer
-    if (autoAdvanceTimer) {
-      clearTimeout(autoAdvanceTimer);
-      setAutoAdvanceTimer(null);
-    }
-    setCurrentCard(prev => (prev + 1) % allWords.length);
-    setShowAnswer(false);
-    setSelectedAnswer(null);
-    setTypedAnswer('');
-    setTypingFeedback('');
-  };
-
-  const prevCard = () => {
-    // Cancel any existing auto-advance timer
-    if (autoAdvanceTimer) {
-      clearTimeout(autoAdvanceTimer);
-      setAutoAdvanceTimer(null);
-    }
-    setCurrentCard(prev => (prev - 1 + allWords.length) % allWords.length);
-    setShowAnswer(false);
-    setSelectedAnswer(null);
-    setTypedAnswer('');
-    setTypingFeedback('');
-  };
-
-  const markCorrect = () => {
-    setStats(prev => ({ ...prev, correct: prev.correct + 1, total: prev.total + 1 }));
-    if (autoAdvance) {
-      const timerId = setTimeout(() => {
-        setCurrentCard(prev => (prev + 1) % allWords.length);
-        setShowAnswer(false);
-        setSelectedAnswer(null);
-        setAutoAdvanceTimer(null);
-      }, defaultDelay * 1000);
-      setAutoAdvanceTimer(timerId);
-    } else {
-      setCurrentCard(prev => (prev + 1) % allWords.length);
-      setShowAnswer(false);
-      setSelectedAnswer(null);
-    }
-  };
-
-  const markIncorrect = () => {
-    setStats(prev => ({ ...prev, incorrect: prev.incorrect + 1, total: prev.total + 1 }));
-    if (autoAdvance) {
-      const timerId = setTimeout(() => {
-        setCurrentCard(prev => (prev + 1) % allWords.length);
-        setShowAnswer(false);
-        setSelectedAnswer(null);
-        setAutoAdvanceTimer(null);
-      }, defaultDelay * 1000);
-      setAutoAdvanceTimer(timerId);
-    } else {
-      setCurrentCard(prev => (prev + 1) % allWords.length);
-      setShowAnswer(false);
-      setSelectedAnswer(null);
-    }
-  };
-
-  const handleMultipleChoiceAnswer = (selectedOption) => {
-    const currentWord = allWords[currentCard];
-    let correctAnswer;
-    if (quizMode === 'listening') {
-      // In listening mode: LT->EN shows English options, LT->LT shows Lithuanian options
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
-    } else {
-      // Regular multiple choice mode
-      correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
-    }
-    setSelectedAnswer(selectedOption);
-    setShowAnswer(true);
-    const isCorrect = selectedOption === correctAnswer;
-
-    if (isCorrect) {
-      setStats(prev => ({ ...prev, correct: prev.correct + 1, total: prev.total + 1 }));
-    } else {
-      setStats(prev => ({ ...prev, incorrect: prev.incorrect + 1, total: prev.total + 1 }));
-    }
-
-    if (autoAdvance) {
-      const timerId = setTimeout(() => {
-        setCurrentCard(prev => (prev + 1) % allWords.length);
-        setShowAnswer(false);
-        setSelectedAnswer(null);
-        setAutoAdvanceTimer(null);
-      }, defaultDelay * 1000);
-      setAutoAdvanceTimer(timerId);
-    }
-  };
+  const nextCard = () => wordListManager.nextCard();
+  const prevCard = () => wordListManager.prevCard();
+  const resetCards = () => wordListManager.resetCards();
+  const markCorrect = () => wordListManager.markCorrect(autoAdvance, defaultDelay);
+  const markIncorrect = () => wordListManager.markIncorrect(autoAdvance, defaultDelay);
+  const handleMultipleChoiceAnswer = (selectedOption) => wordListManager.handleMultipleChoiceAnswer(selectedOption, studyMode, quizMode, autoAdvance, defaultDelay);
 
   const playAudio = async (word, onlyCached = false) => {
     audioManager.playAudio(word, selectedVoice, audioEnabled, onlyCached);
@@ -528,10 +345,10 @@ const FlashCardApp = () => {
 
   
 
-  const currentWord = allWords[currentCard];
+  const currentWord = wordListManager.getCurrentWord();
 
   // Count total selected words
-  const totalSelectedWords = allWords.length;
+  const totalSelectedWords = wordListManager.getTotalWords();
 
 
   // Loading state
@@ -667,7 +484,7 @@ const FlashCardApp = () => {
 
       {!showNoGroupsMessage && (
         <div className="w-progress">
-          Card {currentCard + 1} of {allWords.length}
+          Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
       )}
 
@@ -718,8 +535,8 @@ const FlashCardApp = () => {
       ) : quizMode === 'flashcard' ? (
         <FlashCardMode 
           currentWord={currentWord}
-          showAnswer={showAnswer}
-          setShowAnswer={setShowAnswer}
+          showAnswer={wordListState.showAnswer}
+          setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -728,47 +545,34 @@ const FlashCardApp = () => {
         />
       ) : quizMode === 'listening' && currentWord ? (
         <ListeningMode 
-          currentCard={currentCard}
-          allWords={allWords}
+          wordListManager={wordListManager}
+          wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          multipleChoiceOptions={multipleChoiceOptions}
-          selectedAnswer={selectedAnswer}
-          showAnswer={showAnswer}
           handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
-          currentCard={currentCard}
-          allWords={allWords}
+          wordListManager={wordListManager}
+          wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          multipleChoiceOptions={multipleChoiceOptions}
-          selectedAnswer={selectedAnswer}
-          showAnswer={showAnswer}
           handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         />
       ) : quizMode === 'typing' ? (
         <TypingMode 
-          currentWord={currentWord}
-          showAnswer={showAnswer}
-          typedAnswer={typedAnswer}
-          setTypedAnswer={setTypedAnswer}
-          typingFeedback={typingFeedback}
-          setTypingFeedback={setTypingFeedback}
-          setShowAnswer={setShowAnswer}
+          wordListManager={wordListManager}
+          wordListState={wordListState}
+          studyMode={studyMode}
           nextCard={nextCard}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           autoAdvance={autoAdvance}
-          autoAdvanceTimer={autoAdvanceTimer}
-          setAutoAdvanceTimer={setAutoAdvanceTimer}
           defaultDelay={defaultDelay}
-          setStats={setStats}
         />
       ) : (
         <div className="w-card">
@@ -789,7 +593,7 @@ const FlashCardApp = () => {
 
       {/* Stats with Reset button */}
       {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && (
-        <StatsDisplay stats={stats} onReset={resetCards} />
+        <StatsDisplay stats={wordListState.stats} onReset={resetCards} />
       )}
 
       <SettingsModal />

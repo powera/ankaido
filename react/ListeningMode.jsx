@@ -4,17 +4,14 @@ import MultipleChoiceOptions from './MultipleChoiceOptions';
 import AudioButton from './AudioButton';
 
 const ListeningMode = ({ 
-  currentCard,
-  allWords,
+  wordListManager,
+  wordListState,
   studyMode,
   audioEnabled,
   playAudio,
-  multipleChoiceOptions,
-  selectedAnswer,
-  showAnswer,
   handleMultipleChoiceAnswer
 }) => {
-  const currentWord = allWords[currentCard];
+  const currentWord = wordListManager.getCurrentWord();
   if (!currentWord) return null;
 
   return (
@@ -42,13 +39,10 @@ const ListeningMode = ({
         </div>
       </div>
       <MultipleChoiceOptions
-        currentCard={currentCard}
-        allWords={allWords}
+        wordListManager={wordListManager}
+        wordListState={wordListState}
         studyMode={studyMode}
         quizMode="listening"
-        multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswer}
-        showAnswer={showAnswer}
         handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         audioEnabled={audioEnabled}
         playAudio={playAudio}

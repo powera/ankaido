@@ -3,13 +3,10 @@ import React from 'react';
 import AudioButton from './AudioButton';
 
 const MultipleChoiceOptions = ({ 
-  currentCard,
-  allWords,
+  wordListManager,
+  wordListState,
   studyMode,
   quizMode,
-  multipleChoiceOptions,
-  selectedAnswer,
-  showAnswer,
   handleMultipleChoiceAnswer,
   audioEnabled,
   playAudio,
@@ -18,8 +15,8 @@ const MultipleChoiceOptions = ({
 }) => {
   return (
     <div className="w-multiple-choice">
-      {multipleChoiceOptions.map((option, index) => {
-        const currentWord = allWords[currentCard];
+      {wordListState.multipleChoiceOptions.map((option, index) => {
+        const currentWord = wordListManager.getCurrentWord();
         if (!currentWord) return null;
         
         // Determine correct answer based on mode
@@ -31,10 +28,10 @@ const MultipleChoiceOptions = ({
         }
         
         const isCorrect = option === correctAnswer;
-        const isSelected = option === selectedAnswer;
+        const isSelected = option === wordListState.selectedAnswer;
         let className = 'w-choice-option';
         
-        if (showAnswer) {
+        if (wordListState.showAnswer) {
           if (isCorrect) {
             className += ' w-correct';
           } else if (isSelected && !isCorrect) {

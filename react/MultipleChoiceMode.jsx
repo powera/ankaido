@@ -3,19 +3,16 @@ import React from 'react';
 import MultipleChoiceOptions from './MultipleChoiceOptions';
 
 const MultipleChoiceMode = ({ 
-  currentCard,
-  allWords,
+  wordListManager,
+  wordListState,
   studyMode,
   audioEnabled,
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  multipleChoiceOptions,
-  selectedAnswer,
-  showAnswer,
   handleMultipleChoiceAnswer
 }) => {
-  const currentWord = allWords[currentCard];
+  const currentWord = wordListManager.getCurrentWord();
   if (!currentWord) return null;
 
   const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
@@ -44,13 +41,10 @@ const MultipleChoiceMode = ({
         </div>
       </div>
       <MultipleChoiceOptions
-        currentCard={currentCard}
-        allWords={allWords}
+        wordListManager={wordListManager}
+        wordListState={wordListState}
         studyMode={studyMode}
         quizMode="multiple-choice"
-        multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswer}
-        showAnswer={showAnswer}
         handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
