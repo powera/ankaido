@@ -1,0 +1,64 @@
+
+import React from 'react';
+import MultipleChoiceOptions from './MultipleChoiceOptions';
+
+const MultipleChoiceMode = ({ 
+  currentCard,
+  allWords,
+  studyMode,
+  audioEnabled,
+  playAudio,
+  handleHoverStart,
+  handleHoverEnd,
+  multipleChoiceOptions,
+  selectedAnswer,
+  showAnswer,
+  handleMultipleChoiceAnswer
+}) => {
+  const currentWord = allWords[currentCard];
+  if (!currentWord) return null;
+
+  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
+
+  return (
+    <div>
+      <div className="w-card">
+        <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
+        <div 
+          className="w-question"
+          onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
+          onMouseLeave={handleHoverEnd}
+          style={{ cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default' }}
+        >
+          {question}
+        </div>
+        <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
+          Choose the correct answer:
+          {audioEnabled && (
+            <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
+              {studyMode === 'lithuanian-to-english' 
+                ? '(Hover over Lithuanian words for 0.9 seconds to hear pronunciation)'
+                : '(Hover over answer choices for 0.9 seconds to hear pronunciation)'}
+            </div>
+          )}
+        </div>
+      </div>
+      <MultipleChoiceOptions
+        currentCard={currentCard}
+        allWords={allWords}
+        studyMode={studyMode}
+        quizMode="multiple-choice"
+        multipleChoiceOptions={multipleChoiceOptions}
+        selectedAnswer={selectedAnswer}
+        showAnswer={showAnswer}
+        handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        handleHoverStart={handleHoverStart}
+        handleHoverEnd={handleHoverEnd}
+      />
+    </div>
+  );
+};
+
+export default MultipleChoiceMode;

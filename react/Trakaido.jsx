@@ -7,6 +7,9 @@ import ConjugationTable from './ConjugationTable';
 import VocabularyList from './VocabularyList';
 import TypingMode from './TypingMode';
 import StatsDisplay from './StatsDisplay';
+import FlashCardMode from './FlashCardMode';
+import ListeningMode from './ListeningMode';
+import MultipleChoiceMode from './MultipleChoiceMode';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: <script src="/js/lithuanianApi.js"></script>
@@ -635,9 +638,6 @@ const FlashCardApp = () => {
   // Don't show this message in conjugations mode since it doesn't need word lists
   const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations';
 
-  const question = currentWord ? (studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian) : '';
-  const answer = currentWord ? (studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english) : '';
-
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
       <style>{`
@@ -1003,211 +1003,42 @@ const FlashCardApp = () => {
           playAudio={playAudio}
         />
       ) : quizMode === 'flashcard' ? (
-        <div className="w-card w-card-interactive" onClick={() => setShowAnswer(!showAnswer)}>
-          <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
-          <div 
-            className="w-question"
-            onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
-            onMouseLeave={handleHoverEnd}
-            style={{ cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default' }}
-          >
-            {question}
-          </div>
-          {showAnswer && (
-            <div className="answer-text">
-              <span>{answer}</span>
-              <AudioButton 
-                word={currentWord.lithuanian}
-                audioEnabled={audioEnabled}
-                playAudio={playAudio}
-              />
-            </div>
-          )}
-          {!showAnswer && (
-            <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
-              Click to reveal answer
-              {audioEnabled && studyMode === 'lithuanian-to-english' && (
-                <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
-                  (Hover over Lithuanian word to hear pronunciation)
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <FlashCardMode 
+          currentWord={currentWord}
+          showAnswer={showAnswer}
+          setShowAnswer={setShowAnswer}
+          studyMode={studyMode}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+        />
       ) : quizMode === 'listening' && currentWord ? (
-        <div>
-          <div className="w-card">
-            <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
-            <div className="w-question w-text-center">
-              <div className="w-mb-large">
-                🎧 Listen and choose the correct answer:
-              </div>
-              <div style={{ marginBottom: 'var(--spacing-base)' }}>
-                <AudioButton 
-                  word={currentWord.lithuanian}
-                  size="large"
-                  audioEnabled={audioEnabled}
-                  playAudio={playAudio}
-                />
-                <span style={{ marginLeft: '0.5rem', fontSize: '1.2rem' }}>Play Audio</span>
-              </div>
-              <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                {studyMode === 'lithuanian-to-english' 
-                  ? 'Choose the English translation:'
-                  : 'Choose the matching Lithuanian word:'}
-              </div>
-            </div>
-          </div>
-          <div className="w-multiple-choice">
-            {multipleChoiceOptions.map((option, index) => {
-              const currentWord = allWords[currentCard];
-              if (!currentWord) return null;
-              const correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
-              const isCorrect = option === correctAnswer;
-              const isSelected = option === selectedAnswer;
-              let className = 'w-choice-option';
-              if (showAnswer) {
-                if (isCorrect) {
-                  className += ' w-correct';
-                } else if (isSelected && !isCorrect) {
-                  className += ' w-incorrect';
-                } else if (!isSelected) {
-                  className += ' w-unselected';
-                }
-              }
-
-              // Find the translation for any answer when showAnswer is true
-              let translation = null;
-              if (showAnswer) {
-                if (isCorrect) {
-                  // For correct answer, show the opposite translation
-                  translation = studyMode === 'lithuanian-to-english' ? currentWord.lithuanian : currentWord.english;
-                } else {
-                  // For incorrect answers, find the word that matches this option
-                  const wrongWord = allWords.find(w => 
-                    (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option
-                  );
-                  if (wrongWord) {
-                    translation = studyMode === 'lithuanian-to-english' ? wrongWord.lithuanian : wrongWord.english;
-                  }
-                }
-              }
-
-              return (
-                <button
-                  key={index}
-                  className={className}
-                  onClick={() => !showAnswer && handleMultipleChoiceAnswer(option)}
-                  disabled={showAnswer}
-                >
-                  <div className="choice-content">
-                    <div style={{ textAlign: 'center' }}>
-                      <span>{option}</span>
-                      {translation && showAnswer && (
-                        <div style={{ fontSize: '0.8rem', color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)', marginTop: '4px' }}>
-                          ({translation})
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <ListeningMode 
+          currentCard={currentCard}
+          allWords={allWords}
+          studyMode={studyMode}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          multipleChoiceOptions={multipleChoiceOptions}
+          selectedAnswer={selectedAnswer}
+          showAnswer={showAnswer}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        />
       ) : currentWord ? (
-        <div>
-          <div className="w-card">
-            <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
-            <div 
-              className="w-question"
-              onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
-              onMouseLeave={handleHoverEnd}
-              style={{ cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default' }}
-            >
-              {question}
-            </div>
-            <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
-              Choose the correct answer:
-              {audioEnabled && (
-                <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
-                  {studyMode === 'lithuanian-to-english' 
-                    ? '(Hover over Lithuanian words for 0.9 seconds to hear pronunciation)'
-                    : '(Hover over answer choices for 0.9 seconds to hear pronunciation)'}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="w-multiple-choice">
-            {multipleChoiceOptions.map((option, index) => {
-              const currentWord = allWords[currentCard];
-              if (!currentWord) return null;
-              // Use same logic as handleMultipleChoiceAnswer for consistency
-              let correctAnswer;
-              if (quizMode === 'listening') {
-                correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
-              } else {
-                correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
-              }
-              const isCorrect = option === correctAnswer;
-              const isSelected = option === selectedAnswer;
-              let className = 'w-choice-option';
-              if (showAnswer) {
-                if (isCorrect) {
-                  className += ' w-correct';
-                } else if (isSelected && !isCorrect) {
-                  className += ' w-incorrect';
-                } else if (!isSelected) {
-                  className += ' w-unselected';
-                }
-              }
-              const shouldShowAudioOnHover = audioEnabled && studyMode === 'english-to-lithuanian';
-              const audioWord = option; // In EN->LT mode, options are Lithuanian words
-
-              // Find the translation for incorrect selected answer
-              let incorrectTranslation = null;
-              if (showAnswer && isSelected && !isCorrect) {
-                const wrongWord = allWords.find(w => 
-                  (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
-                );
-                if (wrongWord) {
-                  incorrectTranslation = studyMode === 'english-to-lithuanian' ? wrongWord.english : wrongWord.lithuanian;
-                }
-              }
-
-              return (
-                <button
-                  key={index}
-                  className={className}
-                  onClick={() => !showAnswer && handleMultipleChoiceAnswer(option)}
-                  onMouseEnter={() => shouldShowAudioOnHover && handleHoverStart(audioWord)}
-                  onMouseLeave={handleHoverEnd}
-                  disabled={showAnswer}
-                >
-                  <div className="choice-content">
-                    <div style={{ textAlign: 'center' }}>
-                      <span>{option}</span>
-                      {incorrectTranslation && (
-                        <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
-                          ({incorrectTranslation})
-                        </div>
-                      )}
-                    </div>
-                    {showAnswer && isCorrect && (
-                      <div style={{ display: 'inline-block', marginLeft: '8px' }}>
-                        <AudioButton 
-                          word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
-                          audioEnabled={audioEnabled}
-                          playAudio={playAudio}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <MultipleChoiceMode 
+          currentCard={currentCard}
+          allWords={allWords}
+          studyMode={studyMode}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+          multipleChoiceOptions={multipleChoiceOptions}
+          selectedAnswer={selectedAnswer}
+          showAnswer={showAnswer}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        />
       ) : quizMode === 'typing' ? (
         <TypingMode 
           currentWord={currentWord}
