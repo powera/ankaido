@@ -494,14 +494,6 @@ const JourneyTypingMode = ({
 
     setShowAnswer(true);
     onComplete(isCorrect);
-
-    if (!autoAdvance) {
-      setTimeout(() => {
-        setTypedAnswer('');
-        setShowAnswer(false);
-        setFeedback('');
-      }, 2000);
-    }
   };
 
   const question = studyMode === 'english-to-lithuanian' ? journeyWord.english : journeyWord.lithuanian;
