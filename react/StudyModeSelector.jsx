@@ -53,6 +53,7 @@ const StudyModeSelector = ({
           <option value="typing">⌨️ Typing</option>
           <option value="listening">🎧 Listening</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
+          <option value="journey">🚀 Journey Mode</option>
           <option value="grammar">Grammar</option>
         </select>
       </div>

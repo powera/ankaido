@@ -119,6 +119,7 @@ def get_component_dependencies():
         "StudyModeSelector.jsx",
         "ConjugationsMode.jsx",
         "DeclensionsMode.jsx",
+        "JourneyMode.jsx",
         "Trakaido.jsx"  # Main component last
     ]
     

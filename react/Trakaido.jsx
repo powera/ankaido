@@ -14,6 +14,7 @@ import DeclensionsMode from './DeclensionsMode';
 import WordListManager from './WordListManager';
 import SplashScreen from './SplashScreen';
 import WelcomeScreen from './WelcomeScreen';
+import JourneyMode from './JourneyMode';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -457,8 +458,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations mode since it doesn't need word lists
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations';
+  // Don't show this message in conjugations/declensions/journey mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -541,6 +542,21 @@ const FlashCardApp = () => {
           audioEnabled={audioEnabled}
           playAudio={playAudio}
         />
+      ) : quizMode === 'journey' ? (
+        <JourneyMode 
+          wordListManager={wordListManager}
+          wordListState={wordListState}
+          studyMode={studyMode}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          nextCard={nextCard}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
+          safeStorage={safeStorage}
+        />
       ) : quizMode === 'flashcard' ? (
         <FlashCardMode 
           currentWord={currentWord}
@@ -592,7 +608,7 @@ const FlashCardApp = () => {
       )}
 
       {/* Navigation controls */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && (
         <div className="w-nav-controls">
           <button className="w-button" onClick={prevCard}>← Previous</button>
           <div className="w-nav-center"></div>
@@ -601,7 +617,7 @@ const FlashCardApp = () => {
       )}
 
       {/* Stats with Reset button */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && (
         <StatsDisplay stats={wordListState.stats} onReset={resetCards} />
       )}
 
