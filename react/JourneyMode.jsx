@@ -368,7 +368,7 @@ const JourneyMode = ({
 
   // Temporarily set the current word for existing components
   React.useEffect(() => {
-    if (journeyWord) {
+    if (journeyWord && wordListState.allWords.length > 0) {
       const wordIndex = wordListState.allWords.findIndex(w => 
         w.lithuanian === journeyWord.lithuanian && w.english === journeyWord.english
       );
