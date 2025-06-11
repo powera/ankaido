@@ -44,6 +44,9 @@ from audio_utils import (
     LITHUANIAN_TTS_INSTRUCTIONS
 )
 
+# Get the directory where this script is located
+SCRIPT_DIR = Path(__file__).parent
+
 # Audio format options
 AUDIO_FORMATS = {
     "wav": {"extension": ".wav", "description": "WAV (uncompressed, largest files)"},
@@ -468,7 +471,7 @@ def main():
                 sanitized = sanitize_lithuanian_word(args.lithuanian)
                 extension = AUDIO_FORMATS[args.format]["extension"]
                 # Use the new directory structure with speaker-specific subdirectory
-                output_dir = ensure_output_directory(f"lithuanian-audio-cache/{args.lithuanian_speaker}")
+                output_dir = ensure_output_directory(SCRIPT_DIR / f"lithuanian-audio-cache/{args.lithuanian_speaker}")
                 output_path = output_dir / f"{sanitized}{extension}"
             
             # Check if the target format file already exists
@@ -495,7 +498,7 @@ def main():
         elif args.lithuanian_batch:
             if not output_path:
                 # Use the new directory structure with speaker-specific subdirectory
-                output_path = f"lithuanian-audio-cache/{args.lithuanian_speaker}"
+                output_path = SCRIPT_DIR / f"lithuanian-audio-cache/{args.lithuanian_speaker}"
             
             # Process batch to generate WAV files, passing the target format
             success_count, total_count = process_lithuanian_batch(
