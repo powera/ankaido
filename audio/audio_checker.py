@@ -120,35 +120,24 @@ class AudioChecker:
         Returns:
             Formatted prompt for the AI
         """
-        return f"""
-You are an expert audio quality analyst specializing in {language} pronunciation and speech clarity.
+        return f"""Analyze this audio file. The audio should contain the {language} word: "{expected_word}"
 
-Analyze this audio file and provide a comprehensive assessment. The audio should contain the {language} word: "{expected_word}"
+Provide your analysis in this exact JSON format:
+{{
+  "is_word_correct": true/false,
+  "confidence_score": 0.85,
+  "transcript": "what was actually spoken",
+  "detected_issues": ["issue1", "issue2"],
+  "detailed_feedback": "detailed analysis text",
+  "suggestions": ["suggestion1", "suggestion2"]
+}}
 
-Please evaluate:
+Evaluate:
+1. Does the audio contain the expected word "{expected_word}"?
+2. Audio quality issues: audible_breath, background_noise, mouth_sounds, distortion, volume_inconsistency, pronunciation_error, word_mismatch, unclear_speech
+3. Pronunciation accuracy for {language}
 
-1. WORD ACCURACY:
-   - Does the audio contain the expected word "{expected_word}"?
-   - Is the pronunciation correct for {language}?
-   - Are there any mispronunciations or word substitutions?
-
-2. AUDIO QUALITY ISSUES:
-   - Audible breaths (inhaling/exhaling sounds)
-   - Mouth sounds (lip smacks, tongue clicks, saliva sounds)
-   - Background noise or interference
-   - Audio distortion or clipping
-   - Volume inconsistencies
-   - Unclear or mumbled speech
-
-3. OVERALL ASSESSMENT:
-   - Confidence level in your analysis (0-100%)
-   - Transcript of what was actually spoken
-   - Specific suggestions for improvement
-
-Respond immediately with a summary of these issues.
-
-Issue types should be from: audible_breath, background_noise, mouth_sounds, distortion, volume_inconsistency, pronunciation_error, word_mismatch, unclear_speech
-"""
+Respond ONLY with the JSON format above."""
     
     def check_audio_file(
         self, 
@@ -171,8 +160,14 @@ Issue types should be from: audible_breath, background_noise, mouth_sounds, dist
             FileNotFoundError: If audio file doesn't exist
             ValueError: If API response is invalid
         """
-        if not Path(audio_path).exists():
+        audio_file = Path(audio_path)
+        if not audio_file.exists():
             raise FileNotFoundError(f"Audio file not found: {audio_path}")
+        
+        # Check file size
+        file_size_mb = audio_file.stat().st_size / (1024 * 1024)
+        if file_size_mb > MAX_AUDIO_SIZE_MB:
+            raise ValueError(f"Audio file too large: {file_size_mb:.1f}MB (max: {MAX_AUDIO_SIZE_MB}MB)")
         
         # Get audio duration
         duration = self._get_audio_duration(audio_path)
@@ -182,6 +177,11 @@ Issue types should be from: audible_breath, background_noise, mouth_sounds, dist
         
         # Create analysis prompt
         prompt = self._create_analysis_prompt(expected_word, language)
+        
+        # Detect audio format from file extension
+        audio_format = Path(audio_path).suffix.lower().lstrip('.')
+        if audio_format not in ['mp3', 'wav', 'm4a', 'ogg']:
+            audio_format = 'mp3'  # Default fallback
         
         try:
             # Make API call
@@ -196,13 +196,13 @@ Issue types should be from: audible_breath, background_noise, mouth_sounds, dist
                                 "type": "input_audio",
                                 "input_audio": {
                                     "data": audio_data,
-                                    "format": "mp3"  # Adjust based on your audio format
+                                    "format": audio_format
                                 }
                             }
                         ]
                     }
                 ],
-                temperature=DEFAULT_TEMPERATURE  # Low temperature for consistent analysis
+                temperature=DEFAULT_TEMPERATURE
             )
             
             # Parse response
@@ -222,15 +222,35 @@ Issue types should be from: audible_breath, background_noise, mouth_sounds, dist
             
             # Try to extract JSON from response
             try:
+                # Clean the response text
+                response_text = response_text.strip()
+                
                 # Look for JSON in the response
                 json_start = response_text.find('{')
                 json_end = response_text.rfind('}') + 1
+                
                 if json_start >= 0 and json_end > json_start:
                     json_str = response_text[json_start:json_end]
                     result_data = json.loads(json_str)
+                    
+                    # Validate required fields
+                    if 'is_word_correct' not in result_data:
+                        result_data['is_word_correct'] = False
+                    if 'confidence_score' not in result_data:
+                        result_data['confidence_score'] = 0.5
+                    if 'transcript' not in result_data:
+                        result_data['transcript'] = ""
+                    if 'detected_issues' not in result_data:
+                        result_data['detected_issues'] = []
+                    if 'detailed_feedback' not in result_data:
+                        result_data['detailed_feedback'] = response_text
+                    if 'suggestions' not in result_data:
+                        result_data['suggestions'] = []
                 else:
                     raise ValueError("No JSON found in response")
-            except (json.JSONDecodeError, ValueError):
+            except (json.JSONDecodeError, ValueError) as e:
+                print(f"JSON parsing error: {e}")
+                print(f"Response text: {response_text}")
                 # Fallback: create result from text analysis
                 result_data = self._parse_text_response(response_text, expected_word)
             
