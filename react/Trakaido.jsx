@@ -13,6 +13,7 @@ import ConjugationsMode from './ConjugationsMode';
 import DeclensionsMode from './DeclensionsMode';
 import WordListManager from './WordListManager';
 import SplashScreen from './SplashScreen';
+import WelcomeScreen from './WelcomeScreen';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -111,6 +112,9 @@ const FlashCardApp = () => {
     return safeStorage?.getItem('flashcard-selected-voice') || null;
   });
   const [showSplash, setShowSplash] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    return !safeStorage?.getItem('trakaido-has-seen-intro');
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showStudyMaterialsModal, setShowStudyMaterialsModal] = useState(false);
@@ -175,8 +179,9 @@ const FlashCardApp = () => {
           setSelectedVoice('random');
         }
         const corporaStructures = {};
-        // Only set default groups if we don't have any saved in localStorage
-        const useDefaults = Object.keys(selectedGroups).length === 0;
+        // Only set default groups if we don't have any saved in localStorage AND user has seen intro
+        const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
+        const useDefaults = Object.keys(selectedGroups).length === 0 && hasSeenIntro;
         const defaultSelectedGroups = useDefaults ? {} : null;
 
         for (const corpus of corpora) {
@@ -317,17 +322,48 @@ const FlashCardApp = () => {
   }, [corporaData]);
 
   
+  const handleWelcomeComplete = (skillLevel) => {
+    // Mark that user has seen the intro
+    safeStorage.setItem('trakaido-has-seen-intro', 'true');
+    
+    // Set initial corpus selection based on skill level
+    const initialSelectedGroups = {};
+    if (skillLevel === 'beginner') {
+      // For beginners, only enable nouns_one corpus
+      if (corporaData['nouns_one']) {
+        initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
+      }
+    } else if (skillLevel === 'intermediate') {
+      // For intermediate, enable a moderate selection
+      ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
+        if (corporaData[corpus]) {
+          initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+        }
+      });
+    } else {
+      // For experts, enable all groups (same as current default)
+      Object.keys(corporaData).forEach(corpus => {
+        initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+      });
+    }
+    
+    setSelectedGroups(initialSelectedGroups);
+    setShowWelcome(false);
+  };
+
   const resetAllSettings = () => {
     // Clear localStorage items
     safeStorage.removeItem('flashcard-selected-groups');
     safeStorage.removeItem('flashcard-study-mode');
     safeStorage.removeItem('flashcard-quiz-mode');
     safeStorage.removeItem('flashcard-selected-voice');
+    safeStorage.removeItem('trakaido-has-seen-intro');
 
     // Reset state to defaults
     setStudyMode('english-to-lithuanian');
     setQuizMode('flashcard');
     setSelectedVoice('random');
+    setShowWelcome(true);
 
     // For corpus groups, we need to reset to all groups
     const defaultSelectedGroups = {};
@@ -383,6 +419,11 @@ const FlashCardApp = () => {
   // Splash screen
   if (showSplash) {
     return <SplashScreen />;
+  }
+
+  // Welcome screen for new users
+  if (showWelcome && !loading && !error) {
+    return <WelcomeScreen onComplete={handleWelcomeComplete} />;
   }
 
   // Loading state
