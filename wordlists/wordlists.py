@@ -4,6 +4,7 @@
 
 from .nouns import *
 from .verbs import *
+from .phrases import *
 
 all_words = {
   "nouns_one": nouns_one,
@@ -13,6 +14,7 @@ all_words = {
   "common_words": common_words,
   "verbs_present": verbs_present,
   "verbs_past": verbs_past,
+  "phrases_one": phrases_one,
 }
 
 def get_all_word_pairs_flat():
