@@ -253,12 +253,16 @@ const JourneyMode = ({
       setJourneyWord(activity.word);
       setShowNewWordIndicator(activity.mode === 'new-word');
       
+      // Reset answer state for new activity
+      wordListManager.selectedAnswer = null;
+      wordListManager.setShowAnswer(false);
+      
       // If it's a new word, mark it as exposed
       if (activity.mode === 'new-word' && activity.word) {
         markWordExposed(activity.word);
       }
     }
-  }, [wordListState.allWords, dbInitialized, chooseNextJourneyActivity, markWordExposed]);
+  }, [wordListState.allWords, dbInitialized, chooseNextJourneyActivity, markWordExposed, wordListManager]);
 
   // Handle journey-specific multiple choice answers
   const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
@@ -281,7 +285,7 @@ const JourneyMode = ({
     // Call the original handler for UI updates
     handleMultipleChoiceAnswer(selectedOption);
     
-    // Schedule next activity
+    // Schedule next activity with proper delay
     if (autoAdvance) {
       setTimeout(() => {
         const nextActivity = chooseNextJourneyActivity();
@@ -289,12 +293,16 @@ const JourneyMode = ({
         setJourneyWord(nextActivity.word);
         setShowNewWordIndicator(nextActivity.mode === 'new-word');
         
+        // Reset answer state for new activity
+        wordListManager.selectedAnswer = null;
+        wordListManager.setShowAnswer(false);
+        
         if (nextActivity.mode === 'new-word' && nextActivity.word) {
           markWordExposed(nextActivity.word);
         }
       }, defaultDelay * 1000);
     }
-  }, [journeyWord, currentJourneyMode, studyMode, updateWordStats, handleMultipleChoiceAnswer, autoAdvance, defaultDelay, chooseNextJourneyActivity, markWordExposed]);
+  }, [journeyWord, currentJourneyMode, studyMode, updateWordStats, handleMultipleChoiceAnswer, autoAdvance, defaultDelay, chooseNextJourneyActivity, markWordExposed, wordListManager]);
 
   // Handle next journey activity manually
   const handleNextJourneyActivity = React.useCallback(() => {
@@ -303,10 +311,14 @@ const JourneyMode = ({
     setJourneyWord(nextActivity.word);
     setShowNewWordIndicator(nextActivity.mode === 'new-word');
     
+    // Reset answer state for new activity
+    wordListManager.selectedAnswer = null;
+    wordListManager.setShowAnswer(false);
+    
     if (nextActivity.mode === 'new-word' && nextActivity.word) {
       markWordExposed(nextActivity.word);
     }
-  }, [chooseNextJourneyActivity, markWordExposed]);
+  }, [chooseNextJourneyActivity, markWordExposed, wordListManager]);
 
   // Handle typing submission for journey mode
   const handleJourneyTyping = React.useCallback((isCorrect) => {
@@ -321,6 +333,29 @@ const JourneyMode = ({
       }, defaultDelay * 1000);
     }
   }, [journeyWord, updateWordStats, autoAdvance, defaultDelay, handleNextJourneyActivity]);
+
+  // Temporarily set the current word for existing components
+  React.useEffect(() => {
+    if (journeyWord && wordListState.allWords.length > 0) {
+      const wordIndex = wordListState.allWords.findIndex(w => 
+        w.lithuanian === journeyWord.lithuanian && w.english === journeyWord.english
+      );
+      if (wordIndex >= 0) {
+        wordListManager.currentCard = wordIndex;
+        wordListManager.notifyStateChange();
+      }
+    }
+  }, [journeyWord, wordListManager, wordListState.allWords]);  // Generate multiple choice options for journey word
+
+  // Generate multiple choice options for journey word
+  React.useEffect(() => {
+    if ((currentJourneyMode === 'multiple-choice' || currentJourneyMode === 'listening') && journeyWord) {
+      // Reset answer state when generating new options
+      wordListManager.selectedAnswer = null;
+      wordListManager.setShowAnswer(false);
+      wordListManager.generateMultipleChoiceOptions(studyMode, currentJourneyMode);
+    }
+  }, [journeyWord, currentJourneyMode, studyMode, wordListManager]);
 
   if (!dbInitialized) {
     return (
@@ -365,26 +400,6 @@ const JourneyMode = ({
       </div>
     );
   }
-
-  // Temporarily set the current word for existing components
-  React.useEffect(() => {
-    if (journeyWord && wordListState.allWords.length > 0) {
-      const wordIndex = wordListState.allWords.findIndex(w => 
-        w.lithuanian === journeyWord.lithuanian && w.english === journeyWord.english
-      );
-      if (wordIndex >= 0) {
-        wordListManager.currentCard = wordIndex;
-        wordListManager.notifyStateChange();
-      }
-    }
-  }, [journeyWord, wordListManager, wordListState.allWords]);
-
-  // Generate multiple choice options for journey word
-  React.useEffect(() => {
-    if ((currentJourneyMode === 'multiple-choice' || currentJourneyMode === 'listening') && journeyWord) {
-      wordListManager.generateMultipleChoiceOptions(studyMode, currentJourneyMode);
-    }
-  }, [journeyWord, currentJourneyMode, studyMode, wordListManager]);
 
   if (currentJourneyMode === 'new-word') {
     return (
