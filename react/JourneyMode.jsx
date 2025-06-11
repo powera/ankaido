@@ -245,9 +245,9 @@ const JourneyMode = ({
     }
   }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager]);
 
-  // Initialize journey activity
+  // Initialize journey activity - only run once when data is ready
   React.useEffect(() => {
-    if (wordListState.allWords.length > 0 && dbInitialized) {
+    if (wordListState.allWords.length > 0 && dbInitialized && !journeyWord) {
       const activity = chooseNextJourneyActivity();
       setCurrentJourneyMode(activity.mode);
       setJourneyWord(activity.word);
@@ -262,7 +262,7 @@ const JourneyMode = ({
         markWordExposed(activity.word);
       }
     }
-  }, [wordListState.allWords, dbInitialized, chooseNextJourneyActivity, markWordExposed, wordListManager]);
+  }, [wordListState.allWords.length, dbInitialized]);
 
   // Handle journey-specific multiple choice answers
   const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
