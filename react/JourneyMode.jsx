@@ -1,4 +1,5 @@
 
+import React from 'react';
 import FlashCardMode from './FlashCardMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
@@ -18,125 +19,125 @@ const JourneyMode = ({
   defaultDelay,
   safeStorage
 }) => {
-  const [currentJourneyMode, setCurrentJourneyMode] = React.useState('new-word');
-  const [journeyWord, setJourneyWord] = React.useState(null);
-  const [showNewWordIndicator, setShowNewWordIndicator] = React.useState(false);
-  const [journeyStats, setJourneyStats] = React.useState({});
-  const [dbInitialized, setDbInitialized] = React.useState(false);
+  // Core state - single source of truth
+  const [journeyState, setJourneyState] = React.useState({
+    isInitialized: false,
+    currentActivity: null,
+    currentWord: null,
+    showNewWordIndicator: false
+  });
 
-  // IndexedDB setup
-  const initIndexedDB = React.useCallback(() => {
-    return new Promise((resolve, reject) => {
+  const [journeyStats, setJourneyStats] = React.useState({});
+
+  // Database connection
+  const [db, setDb] = React.useState(null);
+
+  // Initialize IndexedDB once
+  React.useEffect(() => {
+    const initDB = async () => {
       if (!window.indexedDB) {
         console.warn('IndexedDB not supported, falling back to localStorage');
-        resolve(null);
-        return;
+        return null;
       }
 
-      const request = indexedDB.open('JourneyModeDB', 1);
-      
-      request.onerror = () => {
-        console.error('IndexedDB error:', request.error);
-        resolve(null);
-      };
-      
-      request.onsuccess = () => {
-        resolve(request.result);
-      };
-      
-      request.onupgradeneeded = (event) => {
-        const db = event.target.result;
-        if (!db.objectStoreNames.contains('wordStats')) {
-          db.createObjectStore('wordStats', { keyPath: 'wordKey' });
-        }
-      };
-    });
-  }, []);
-
-  // Load journey data from IndexedDB or localStorage fallback
-  const loadJourneyStats = React.useCallback(async () => {
-    const db = await initIndexedDB();
-    
-    if (db) {
-      try {
-        const transaction = db.transaction(['wordStats'], 'readonly');
-        const store = transaction.objectStore('wordStats');
-        const request = store.getAll();
-        
-        request.onsuccess = () => {
-          const stats = {};
-          request.result.forEach(item => {
-            stats[item.wordKey] = item.stats;
-          });
-          setJourneyStats(stats);
-          setDbInitialized(true);
-        };
+      return new Promise((resolve) => {
+        const request = indexedDB.open('JourneyModeDB', 1);
         
         request.onerror = () => {
-          console.error('Error loading from IndexedDB, falling back to localStorage');
-          loadFromLocalStorage();
+          console.error('IndexedDB error:', request.error);
+          resolve(null);
         };
-      } catch (error) {
-        console.error('IndexedDB error:', error);
+        
+        request.onsuccess = () => resolve(request.result);
+        
+        request.onupgradeneeded = (event) => {
+          const database = event.target.result;
+          if (!database.objectStoreNames.contains('wordStats')) {
+            database.createObjectStore('wordStats', { keyPath: 'wordKey' });
+          }
+        };
+      });
+    };
+
+    initDB().then(setDb);
+  }, []);
+
+  // Load stats once when DB is ready
+  React.useEffect(() => {
+    if (db === null) return; // Still initializing
+    
+    const loadStats = async () => {
+      if (db) {
+        try {
+          const transaction = db.transaction(['wordStats'], 'readonly');
+          const store = transaction.objectStore('wordStats');
+          const request = store.getAll();
+          
+          request.onsuccess = () => {
+            const stats = {};
+            request.result.forEach(item => {
+              stats[item.wordKey] = item.stats;
+            });
+            setJourneyStats(stats);
+            setJourneyState(prev => ({ ...prev, isInitialized: true }));
+          };
+          
+          request.onerror = () => {
+            console.error('Error loading from IndexedDB, falling back to localStorage');
+            loadFromLocalStorage();
+          };
+        } catch (error) {
+          console.error('IndexedDB error:', error);
+          loadFromLocalStorage();
+        }
+      } else {
         loadFromLocalStorage();
       }
-    } else {
-      loadFromLocalStorage();
-    }
-  }, [safeStorage]);
+    };
 
-  const loadFromLocalStorage = React.useCallback(() => {
-    const savedStats = safeStorage?.getItem('journey-stats');
-    try {
-      setJourneyStats(savedStats ? JSON.parse(savedStats) : {});
-      setDbInitialized(true);
-    } catch (error) {
-      console.error('Error parsing journey stats:', error);
-      setJourneyStats({});
-      setDbInitialized(true);
-    }
-  }, [safeStorage]);
+    const loadFromLocalStorage = () => {
+      const savedStats = safeStorage?.getItem('journey-stats');
+      try {
+        setJourneyStats(savedStats ? JSON.parse(savedStats) : {});
+        setJourneyState(prev => ({ ...prev, isInitialized: true }));
+      } catch (error) {
+        console.error('Error parsing journey stats:', error);
+        setJourneyStats({});
+        setJourneyState(prev => ({ ...prev, isInitialized: true }));
+      }
+    };
 
-  // Save journey stats to IndexedDB or localStorage fallback
-  const saveJourneyStats = React.useCallback(async (stats) => {
-    setJourneyStats(stats);
-    
-    const db = await initIndexedDB();
+    loadStats();
+  }, [db, safeStorage]);
+
+  // Save stats function
+  const saveStats = React.useCallback(async (newStats) => {
+    setJourneyStats(newStats);
     
     if (db) {
       try {
         const transaction = db.transaction(['wordStats'], 'readwrite');
         const store = transaction.objectStore('wordStats');
         
-        // Clear existing data and save new stats
         store.clear();
-        Object.entries(stats).forEach(([wordKey, wordStats]) => {
+        Object.entries(newStats).forEach(([wordKey, wordStats]) => {
           store.add({ wordKey, stats: wordStats });
         });
         
-        transaction.oncomplete = () => {
-          console.log('Journey stats saved to IndexedDB');
-        };
-        
         transaction.onerror = () => {
           console.error('Error saving to IndexedDB, falling back to localStorage');
-          safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+          safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
         };
       } catch (error) {
         console.error('IndexedDB error:', error);
-        safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+        safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
       }
     } else {
-      safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+      safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
     }
-  }, [safeStorage, initIndexedDB]);
+  }, [db, safeStorage]);
 
-  // Initialize data loading
-  React.useEffect(() => {
-    loadJourneyStats();
-  }, [loadJourneyStats]);
-
-  // Get word stats for a specific word
+  // Helper functions for word categorization
   const getWordStats = React.useCallback((word) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     return journeyStats[wordKey] || {
@@ -148,8 +149,92 @@ const JourneyMode = ({
     };
   }, [journeyStats]);
 
-  // Mark word as exposed
-  const markWordExposed = React.useCallback((word) => {
+  const getExposedWords = React.useCallback(() => {
+    return wordListState.allWords.filter(word => getWordStats(word).exposed);
+  }, [wordListState.allWords, getWordStats]);
+
+  const getNewWords = React.useCallback(() => {
+    return wordListState.allWords.filter(word => !getWordStats(word).exposed);
+  }, [wordListState.allWords, getWordStats]);
+
+  // Activity selection algorithm
+  const selectNextActivity = React.useCallback(() => {
+    const exposedWords = getExposedWords();
+    const newWords = getNewWords();
+    
+    if (wordListState.allWords.length === 0) {
+      return { type: 'new-word', word: wordListManager.getCurrentWord() };
+    }
+
+    // If fewer than 10 known words, always show new word
+    if (exposedWords.length < 10 && newWords.length > 0) {
+      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+      return { type: 'new-word', word: randomNewWord };
+    }
+
+    const random = Math.random() * 100;
+    
+    if (random < 20 && newWords.length > 0) {
+      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+      return { type: 'new-word', word: randomNewWord };
+    } else if (random < 50 && exposedWords.length > 0) {
+      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+      return { type: 'multiple-choice', word: randomExposedWord };
+    } else if (random < 80 && exposedWords.length > 0) {
+      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+      return { type: 'listening', word: randomExposedWord };
+    } else if (random < 97 && exposedWords.length > 0) {
+      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+      return { type: 'typing', word: randomExposedWord };
+    } else {
+      return { type: 'grammar-break', word: null };
+    }
+  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager]);
+
+  // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
+  const advanceToNextActivity = React.useCallback(() => {
+    const nextActivity = selectNextActivity();
+    
+    // Reset answer state for all components
+    wordListManager.selectedAnswer = null;
+    wordListManager.setShowAnswer(false);
+    
+    // Update journey state in one place
+    setJourneyState({
+      isInitialized: true,
+      currentActivity: nextActivity.type,
+      currentWord: nextActivity.word,
+      showNewWordIndicator: nextActivity.type === 'new-word'
+    });
+
+    // If it's a new word, mark it as exposed
+    if (nextActivity.type === 'new-word' && nextActivity.word) {
+      markWordAsExposed(nextActivity.word);
+    }
+
+    // Generate multiple choice options if needed
+    if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening') && nextActivity.word) {
+      // Set current word for existing components
+      const wordIndex = wordListState.allWords.findIndex(w => 
+        w.lithuanian === nextActivity.word.lithuanian && w.english === nextActivity.word.english
+      );
+      if (wordIndex >= 0) {
+        wordListManager.currentCard = wordIndex;
+        wordListManager.notifyStateChange();
+        wordListManager.generateMultipleChoiceOptions(studyMode, nextActivity.type);
+      }
+    }
+  }, [selectNextActivity, wordListManager, wordListState.allWords, studyMode]);
+
+  // Initialize first activity when ready
+  React.useEffect(() => {
+    if (journeyState.isInitialized && wordListState.allWords.length > 0 && !journeyState.currentActivity) {
+      advanceToNextActivity();
+    }
+  }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
+
+  // Word stats update functions
+  const markWordAsExposed = React.useCallback((word) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     const newStats = { ...journeyStats };
     if (!newStats[wordKey]) {
@@ -163,10 +248,9 @@ const JourneyMode = ({
     }
     newStats[wordKey].exposed = true;
     newStats[wordKey].lastSeen = Date.now();
-    saveJourneyStats(newStats);
-  }, [journeyStats, saveJourneyStats]);
+    saveStats(newStats);
+  }, [journeyStats, saveStats]);
 
-  // Update stats for a specific mode and result
   const updateWordStats = React.useCallback((word, mode, isCorrect) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     const newStats = { ...journeyStats };
@@ -186,178 +270,49 @@ const JourneyMode = ({
       newStats[wordKey][mode].incorrect++;
     }
     newStats[wordKey].lastSeen = Date.now();
-    saveJourneyStats(newStats);
-  }, [journeyStats, saveJourneyStats]);
+    saveStats(newStats);
+  }, [journeyStats, saveStats]);
 
-  // Get exposed words from all available words
-  const getExposedWords = React.useCallback(() => {
-    return wordListState.allWords.filter(word => {
-      const stats = getWordStats(word);
-      return stats.exposed;
-    });
-  }, [wordListState.allWords, getWordStats]);
-
-  // Get new (unexposed) words
-  const getNewWords = React.useCallback(() => {
-    return wordListState.allWords.filter(word => {
-      const stats = getWordStats(word);
-      return !stats.exposed;
-    });
-  }, [wordListState.allWords, getWordStats]);
-
-  // Algorithm to choose next journey mode and word
-  const chooseNextJourneyActivity = React.useCallback(() => {
-    const exposedWords = getExposedWords();
-    const newWords = getNewWords();
+  // Event handlers that use the single advance function
+  const handleActivityComplete = React.useCallback((word, mode, isCorrect, shouldAutoAdvance = true) => {
+    if (word && mode) {
+      updateWordStats(word, mode, isCorrect);
+    }
     
-    // If no words available, use current word
-    if (wordListState.allWords.length === 0) {
-      return { mode: 'new-word', word: wordListManager.getCurrentWord() };
+    if (shouldAutoAdvance && autoAdvance) {
+      setTimeout(() => {
+        advanceToNextActivity();
+      }, defaultDelay * 1000);
     }
+  }, [updateWordStats, autoAdvance, defaultDelay, advanceToNextActivity]);
 
-    // If fewer than 10 known words, always show new word
-    if (exposedWords.length < 10 && newWords.length > 0) {
-      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-      return { mode: 'new-word', word: randomNewWord };
-    }
-
-    const random = Math.random() * 100;
-    
-    if (random < 20 && newWords.length > 0) {
-      // 20% chance - new word (flash card style)
-      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-      return { mode: 'new-word', word: randomNewWord };
-    } else if (random < 50 && exposedWords.length > 0) {
-      // 30% chance - multiple choice for exposed word
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { mode: 'multiple-choice', word: randomExposedWord };
-    } else if (random < 80 && exposedWords.length > 0) {
-      // 30% chance - listening for exposed word
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { mode: 'listening', word: randomExposedWord };
-    } else if (random < 97 && exposedWords.length > 0) {
-      // 17% chance - typing for exposed word
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { mode: 'typing', word: randomExposedWord };
-    } else {
-      // 3% chance - review grammar break
-      return { mode: 'grammar-break', word: null };
-    }
-  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager]);
-
-  // Initialize journey activity - only run once when data is ready
-  React.useEffect(() => {
-    if (wordListState.allWords.length > 0 && dbInitialized && !journeyWord) {
-      const activity = chooseNextJourneyActivity();
-      setCurrentJourneyMode(activity.mode);
-      setJourneyWord(activity.word);
-      setShowNewWordIndicator(activity.mode === 'new-word');
-      
-      // Reset answer state for new activity
-      wordListManager.selectedAnswer = null;
-      wordListManager.setShowAnswer(false);
-      
-      // If it's a new word, mark it as exposed
-      if (activity.mode === 'new-word' && activity.word) {
-        markWordExposed(activity.word);
-      }
-    }
-  }, [wordListState.allWords.length, dbInitialized]);
-
-  // Handle journey-specific multiple choice answers
   const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
-    if (!journeyWord) return;
+    if (!journeyState.currentWord) return;
     
-    const currentWord = journeyWord;
+    const currentWord = journeyState.currentWord;
     let correctAnswer;
-    if (currentJourneyMode === 'listening') {
+    if (journeyState.currentActivity === 'listening') {
       correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
     } else {
       correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
     }
     
     const isCorrect = selectedOption === correctAnswer;
-    
-    // Update journey stats
-    const modeKey = currentJourneyMode === 'listening' ? 'listening' : 'multipleChoice';
-    updateWordStats(currentWord, modeKey, isCorrect);
+    const modeKey = journeyState.currentActivity === 'listening' ? 'listening' : 'multipleChoice';
     
     // Call the original handler for UI updates
     handleMultipleChoiceAnswer(selectedOption);
     
-    // Schedule next activity with proper delay
-    if (autoAdvance) {
-      setTimeout(() => {
-        const nextActivity = chooseNextJourneyActivity();
-        setCurrentJourneyMode(nextActivity.mode);
-        setJourneyWord(nextActivity.word);
-        setShowNewWordIndicator(nextActivity.mode === 'new-word');
-        
-        // Reset answer state for new activity
-        wordListManager.selectedAnswer = null;
-        wordListManager.setShowAnswer(false);
-        
-        if (nextActivity.mode === 'new-word' && nextActivity.word) {
-          markWordExposed(nextActivity.word);
-        }
-      }, defaultDelay * 1000);
-    }
-  }, [journeyWord, currentJourneyMode, studyMode, updateWordStats, handleMultipleChoiceAnswer, autoAdvance, defaultDelay, chooseNextJourneyActivity, markWordExposed, wordListManager]);
+    // Handle completion through single function
+    handleActivityComplete(currentWord, modeKey, isCorrect);
+  }, [journeyState.currentWord, journeyState.currentActivity, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
 
-  // Handle next journey activity manually
-  const handleNextJourneyActivity = React.useCallback(() => {
-    const nextActivity = chooseNextJourneyActivity();
-    setCurrentJourneyMode(nextActivity.mode);
-    setJourneyWord(nextActivity.word);
-    setShowNewWordIndicator(nextActivity.mode === 'new-word');
-    
-    // Reset answer state for new activity
-    wordListManager.selectedAnswer = null;
-    wordListManager.setShowAnswer(false);
-    
-    if (nextActivity.mode === 'new-word' && nextActivity.word) {
-      markWordExposed(nextActivity.word);
-    }
-  }, [chooseNextJourneyActivity, markWordExposed, wordListManager]);
+  const handleTypingComplete = React.useCallback((isCorrect) => {
+    handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
+  }, [journeyState.currentWord, handleActivityComplete]);
 
-  // Handle typing submission for journey mode
-  const handleJourneyTyping = React.useCallback((isCorrect) => {
-    if (journeyWord) {
-      updateWordStats(journeyWord, 'typing', isCorrect);
-    }
-    
-    // Schedule next activity
-    if (autoAdvance) {
-      setTimeout(() => {
-        handleNextJourneyActivity();
-      }, defaultDelay * 1000);
-    }
-  }, [journeyWord, updateWordStats, autoAdvance, defaultDelay, handleNextJourneyActivity]);
-
-  // Temporarily set the current word for existing components
-  React.useEffect(() => {
-    if (journeyWord && wordListState.allWords.length > 0) {
-      const wordIndex = wordListState.allWords.findIndex(w => 
-        w.lithuanian === journeyWord.lithuanian && w.english === journeyWord.english
-      );
-      if (wordIndex >= 0) {
-        wordListManager.currentCard = wordIndex;
-        wordListManager.notifyStateChange();
-      }
-    }
-  }, [journeyWord, wordListManager, wordListState.allWords]);  // Generate multiple choice options for journey word
-
-  // Generate multiple choice options for journey word
-  React.useEffect(() => {
-    if ((currentJourneyMode === 'multiple-choice' || currentJourneyMode === 'listening') && journeyWord) {
-      // Reset answer state when generating new options
-      wordListManager.selectedAnswer = null;
-      wordListManager.setShowAnswer(false);
-      wordListManager.generateMultipleChoiceOptions(studyMode, currentJourneyMode);
-    }
-  }, [journeyWord, currentJourneyMode, studyMode, wordListManager]);
-
-  if (!dbInitialized) {
+  // Loading states
+  if (!journeyState.isInitialized) {
     return (
       <div className="w-card">
         <div className="w-text-center w-mb-large">
@@ -368,7 +323,7 @@ const JourneyMode = ({
     );
   }
 
-  if (!journeyWord && currentJourneyMode !== 'grammar-break') {
+  if (!journeyState.currentActivity) {
     return (
       <div className="w-card">
         <div className="w-text-center w-mb-large">
@@ -379,7 +334,8 @@ const JourneyMode = ({
     );
   }
 
-  if (currentJourneyMode === 'grammar-break') {
+  // Activity renderers
+  if (journeyState.currentActivity === 'grammar-break') {
     return (
       <div className="w-card">
         <div className="w-text-center w-mb-large">
@@ -393,7 +349,7 @@ const JourneyMode = ({
               <li>Sentence structure</li>
             </ul>
           </div>
-          <button className="w-button" onClick={handleNextJourneyActivity}>
+          <button className="w-button" onClick={advanceToNextActivity}>
             Continue Journey
           </button>
         </div>
@@ -401,10 +357,10 @@ const JourneyMode = ({
     );
   }
 
-  if (currentJourneyMode === 'new-word') {
+  if (journeyState.currentActivity === 'new-word') {
     return (
       <div>
-        {showNewWordIndicator && (
+        {journeyState.showNewWordIndicator && (
           <div className="w-card" style={{ background: 'linear-gradient(135deg, #4CAF50, #45a049)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
             <div className="w-text-center">
               <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>✨ New Word!</div>
@@ -413,7 +369,7 @@ const JourneyMode = ({
           </div>
         )}
         <FlashCardMode 
-          currentWord={journeyWord}
+          currentWord={journeyState.currentWord}
           showAnswer={wordListState.showAnswer}
           setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
           studyMode={studyMode}
@@ -423,13 +379,13 @@ const JourneyMode = ({
           handleHoverEnd={handleHoverEnd}
         />
         <div className="w-nav-controls">
-          <button className="w-button" onClick={handleNextJourneyActivity}>Next Activity →</button>
+          <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
         </div>
       </div>
     );
   }
 
-  if (currentJourneyMode === 'multiple-choice') {
+  if (journeyState.currentActivity === 'multiple-choice') {
     return (
       <div>
         <div className="w-card" style={{ background: 'linear-gradient(135deg, #2196F3, #1976D2)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
@@ -449,14 +405,14 @@ const JourneyMode = ({
         />
         {!autoAdvance && (
           <div className="w-nav-controls">
-            <button className="w-button" onClick={handleNextJourneyActivity}>Next Activity →</button>
+            <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
           </div>
         )}
       </div>
     );
   }
 
-  if (currentJourneyMode === 'listening') {
+  if (journeyState.currentActivity === 'listening') {
     return (
       <div>
         <div className="w-card" style={{ background: 'linear-gradient(135deg, #9C27B0, #7B1FA2)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
@@ -474,14 +430,14 @@ const JourneyMode = ({
         />
         {!autoAdvance && (
           <div className="w-nav-controls">
-            <button className="w-button" onClick={handleNextJourneyActivity}>Next Activity →</button>
+            <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
           </div>
         )}
       </div>
     );
   }
 
-  if (currentJourneyMode === 'typing') {
+  if (journeyState.currentActivity === 'typing') {
     return (
       <div>
         <div className="w-card" style={{ background: 'linear-gradient(135deg, #FF9800, #F57C00)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
@@ -490,14 +446,14 @@ const JourneyMode = ({
           </div>
         </div>
         <JourneyTypingMode 
-          journeyWord={journeyWord}
+          journeyWord={journeyState.currentWord}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onComplete={handleJourneyTyping}
+          onComplete={handleTypingComplete}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
-          onNext={handleNextJourneyActivity}
+          onNext={advanceToNextActivity}
         />
       </div>
     );
@@ -540,7 +496,6 @@ const JourneyTypingMode = ({
     onComplete(isCorrect);
 
     if (!autoAdvance) {
-      // Reset for next question if not auto-advancing
       setTimeout(() => {
         setTypedAnswer('');
         setShowAnswer(false);
