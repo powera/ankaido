@@ -109,6 +109,7 @@ def get_component_dependencies():
         "ConjugationTable.jsx",
         "DeclensionTable.jsx",
         "SplashScreen.jsx",
+        "WelcomeScreen.jsx",
         "VocabularyList.jsx",
         "TypingMode.jsx",
         "FlashCardMode.jsx",
