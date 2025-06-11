@@ -1,0 +1,3 @@
+[submodule "wordlists"]
+	path = wordlists
+	url = git@github.com:powera/trakaido-wordlists.git
