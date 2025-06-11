@@ -22,26 +22,122 @@ const JourneyMode = ({
   const [journeyWord, setJourneyWord] = React.useState(null);
   const [showNewWordIndicator, setShowNewWordIndicator] = React.useState(false);
   const [journeyStats, setJourneyStats] = React.useState({});
+  const [dbInitialized, setDbInitialized] = React.useState(false);
 
-  // Load journey data from localStorage
-  React.useEffect(() => {
-    const savedStats = safeStorage?.getItem('journey-stats');
-    try {
-      setJourneyStats(savedStats ? JSON.parse(savedStats) : {});
-    } catch (error) {
-      console.error('Error parsing journey stats:', error);
-      setJourneyStats({});
+  // IndexedDB setup
+  const initIndexedDB = React.useCallback(() => {
+    return new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        console.warn('IndexedDB not supported, falling back to localStorage');
+        resolve(null);
+        return;
+      }
+
+      const request = indexedDB.open('JourneyModeDB', 1);
+      
+      request.onerror = () => {
+        console.error('IndexedDB error:', request.error);
+        resolve(null);
+      };
+      
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+      
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains('wordStats')) {
+          db.createObjectStore('wordStats', { keyPath: 'wordKey' });
+        }
+      };
+    });
+  }, []);
+
+  // Load journey data from IndexedDB or localStorage fallback
+  const loadJourneyStats = React.useCallback(async () => {
+    const db = await initIndexedDB();
+    
+    if (db) {
+      try {
+        const transaction = db.transaction(['wordStats'], 'readonly');
+        const store = transaction.objectStore('wordStats');
+        const request = store.getAll();
+        
+        request.onsuccess = () => {
+          const stats = {};
+          request.result.forEach(item => {
+            stats[item.wordKey] = item.stats;
+          });
+          setJourneyStats(stats);
+          setDbInitialized(true);
+        };
+        
+        request.onerror = () => {
+          console.error('Error loading from IndexedDB, falling back to localStorage');
+          loadFromLocalStorage();
+        };
+      } catch (error) {
+        console.error('IndexedDB error:', error);
+        loadFromLocalStorage();
+      }
+    } else {
+      loadFromLocalStorage();
     }
   }, [safeStorage]);
 
-  // Save journey stats to localStorage
-  const saveJourneyStats = (stats) => {
+  const loadFromLocalStorage = React.useCallback(() => {
+    const savedStats = safeStorage?.getItem('journey-stats');
+    try {
+      setJourneyStats(savedStats ? JSON.parse(savedStats) : {});
+      setDbInitialized(true);
+    } catch (error) {
+      console.error('Error parsing journey stats:', error);
+      setJourneyStats({});
+      setDbInitialized(true);
+    }
+  }, [safeStorage]);
+
+  // Save journey stats to IndexedDB or localStorage fallback
+  const saveJourneyStats = React.useCallback(async (stats) => {
     setJourneyStats(stats);
-    safeStorage?.setItem('journey-stats', JSON.stringify(stats));
-  };
+    
+    const db = await initIndexedDB();
+    
+    if (db) {
+      try {
+        const transaction = db.transaction(['wordStats'], 'readwrite');
+        const store = transaction.objectStore('wordStats');
+        
+        // Clear existing data and save new stats
+        store.clear();
+        Object.entries(stats).forEach(([wordKey, wordStats]) => {
+          store.add({ wordKey, stats: wordStats });
+        });
+        
+        transaction.oncomplete = () => {
+          console.log('Journey stats saved to IndexedDB');
+        };
+        
+        transaction.onerror = () => {
+          console.error('Error saving to IndexedDB, falling back to localStorage');
+          safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+        };
+      } catch (error) {
+        console.error('IndexedDB error:', error);
+        safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+      }
+    } else {
+      safeStorage?.setItem('journey-stats', JSON.stringify(stats));
+    }
+  }, [safeStorage, initIndexedDB]);
+
+  // Initialize data loading
+  React.useEffect(() => {
+    loadJourneyStats();
+  }, [loadJourneyStats]);
 
   // Get word stats for a specific word
-  const getWordStats = (word) => {
+  const getWordStats = React.useCallback((word) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     return journeyStats[wordKey] || {
       exposed: false,
@@ -50,10 +146,10 @@ const JourneyMode = ({
       typing: { correct: 0, incorrect: 0 },
       lastSeen: null
     };
-  };
+  }, [journeyStats]);
 
   // Mark word as exposed
-  const markWordExposed = (word) => {
+  const markWordExposed = React.useCallback((word) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     const newStats = { ...journeyStats };
     if (!newStats[wordKey]) {
@@ -68,10 +164,10 @@ const JourneyMode = ({
     newStats[wordKey].exposed = true;
     newStats[wordKey].lastSeen = Date.now();
     saveJourneyStats(newStats);
-  };
+  }, [journeyStats, saveJourneyStats]);
 
   // Update stats for a specific mode and result
-  const updateWordStats = (word, mode, isCorrect) => {
+  const updateWordStats = React.useCallback((word, mode, isCorrect) => {
     const wordKey = `${word.lithuanian}-${word.english}`;
     const newStats = { ...journeyStats };
     if (!newStats[wordKey]) {
@@ -91,32 +187,38 @@ const JourneyMode = ({
     }
     newStats[wordKey].lastSeen = Date.now();
     saveJourneyStats(newStats);
-  };
+  }, [journeyStats, saveJourneyStats]);
 
   // Get exposed words from all available words
-  const getExposedWords = () => {
+  const getExposedWords = React.useCallback(() => {
     return wordListState.allWords.filter(word => {
       const stats = getWordStats(word);
       return stats.exposed;
     });
-  };
+  }, [wordListState.allWords, getWordStats]);
 
   // Get new (unexposed) words
-  const getNewWords = () => {
+  const getNewWords = React.useCallback(() => {
     return wordListState.allWords.filter(word => {
       const stats = getWordStats(word);
       return !stats.exposed;
     });
-  };
+  }, [wordListState.allWords, getWordStats]);
 
   // Algorithm to choose next journey mode and word
-  const chooseNextJourneyActivity = () => {
+  const chooseNextJourneyActivity = React.useCallback(() => {
     const exposedWords = getExposedWords();
     const newWords = getNewWords();
     
     // If no words available, use current word
     if (wordListState.allWords.length === 0) {
       return { mode: 'new-word', word: wordListManager.getCurrentWord() };
+    }
+
+    // If fewer than 10 known words, always show new word
+    if (exposedWords.length < 10 && newWords.length > 0) {
+      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+      return { mode: 'new-word', word: randomNewWord };
     }
 
     const random = Math.random() * 100;
@@ -141,11 +243,11 @@ const JourneyMode = ({
       // 3% chance - review grammar break
       return { mode: 'grammar-break', word: null };
     }
-  };
+  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager]);
 
   // Initialize journey activity
   React.useEffect(() => {
-    if (wordListState.allWords.length > 0) {
+    if (wordListState.allWords.length > 0 && dbInitialized) {
       const activity = chooseNextJourneyActivity();
       setCurrentJourneyMode(activity.mode);
       setJourneyWord(activity.word);
@@ -156,10 +258,10 @@ const JourneyMode = ({
         markWordExposed(activity.word);
       }
     }
-  }, [wordListState.allWords]);
+  }, [wordListState.allWords, dbInitialized, chooseNextJourneyActivity, markWordExposed]);
 
   // Handle journey-specific multiple choice answers
-  const handleJourneyMultipleChoice = (selectedOption) => {
+  const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
     if (!journeyWord) return;
     
     const currentWord = journeyWord;
@@ -192,10 +294,10 @@ const JourneyMode = ({
         }
       }, defaultDelay * 1000);
     }
-  };
+  }, [journeyWord, currentJourneyMode, studyMode, updateWordStats, handleMultipleChoiceAnswer, autoAdvance, defaultDelay, chooseNextJourneyActivity, markWordExposed]);
 
   // Handle next journey activity manually
-  const handleNextJourneyActivity = () => {
+  const handleNextJourneyActivity = React.useCallback(() => {
     const nextActivity = chooseNextJourneyActivity();
     setCurrentJourneyMode(nextActivity.mode);
     setJourneyWord(nextActivity.word);
@@ -204,10 +306,10 @@ const JourneyMode = ({
     if (nextActivity.mode === 'new-word' && nextActivity.word) {
       markWordExposed(nextActivity.word);
     }
-  };
+  }, [chooseNextJourneyActivity, markWordExposed]);
 
   // Handle typing submission for journey mode
-  const handleJourneyTyping = (isCorrect) => {
+  const handleJourneyTyping = React.useCallback((isCorrect) => {
     if (journeyWord) {
       updateWordStats(journeyWord, 'typing', isCorrect);
     }
@@ -218,7 +320,18 @@ const JourneyMode = ({
         handleNextJourneyActivity();
       }, defaultDelay * 1000);
     }
-  };
+  }, [journeyWord, updateWordStats, autoAdvance, defaultDelay, handleNextJourneyActivity]);
+
+  if (!dbInitialized) {
+    return (
+      <div className="w-card">
+        <div className="w-text-center w-mb-large">
+          <div className="w-question w-mb-large">🚀 Journey Mode</div>
+          <div>Initializing your learning journey...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (!journeyWord && currentJourneyMode !== 'grammar-break') {
     return (
@@ -264,7 +377,7 @@ const JourneyMode = ({
         wordListManager.notifyStateChange();
       }
     }
-  }, [journeyWord, wordListManager]);
+  }, [journeyWord, wordListManager, wordListState.allWords]);
 
   // Generate multiple choice options for journey word
   React.useEffect(() => {
