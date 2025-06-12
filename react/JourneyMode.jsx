@@ -477,6 +477,13 @@ const JourneyTypingMode = ({
   const [showAnswer, setShowAnswer] = React.useState(false);
   const [feedback, setFeedback] = React.useState('');
 
+  // Reset state when journeyWord changes
+  React.useEffect(() => {
+    setTypedAnswer('');
+    setShowAnswer(false);
+    setFeedback('');
+  }, [journeyWord]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!journeyWord || showAnswer) return;
