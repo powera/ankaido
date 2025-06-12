@@ -528,3 +528,24 @@
         display: none;
     }
 }
+
+/* Show/hide based on screen size */
+.w-show-mobile {
+    display: inline;
+}
+
+.w-hide-mobile {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    .w-show-mobile {
+        display: none;
+    }
+    
+    .w-hide-mobile {
+        display: inline;
+    }
+}
+    }
+}

@@ -1,4 +1,3 @@
-
 const StudyModeSelector = ({
   quizMode,
   setQuizMode,
@@ -65,7 +64,17 @@ const StudyModeSelector = ({
         margin: '0 0.5rem'
       }}>
         <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
-          {(quizMode === 'conjugations' || quizMode === 'declensions') ? 'Grammar Type:' : 'Direction:'}
+          {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
+            <>
+              <span className="w-hide-mobile">Grammar Type:</span>
+              <span className="w-show-mobile">Grammar:</span>
+            </>
+          ) : (
+            <>
+              <span className="w-hide-mobile">Direction:</span>
+              <span className="w-show-mobile">🇺🇸🇱🇹</span>
+            </>
+          )}
         </label>
         {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
           <select 
@@ -106,8 +115,12 @@ const StudyModeSelector = ({
               safeStorage.setItem('flashcard-study-mode', e.target.value);
             }}
           >
-            <option value="english-to-lithuanian">English → Lithuanian</option>
-            <option value="lithuanian-to-english">Lithuanian → English</option>
+            <option value="english-to-lithuanian">
+              🇺🇸 → 🇱🇹 English → Lithuanian
+            </option>
+            <option value="lithuanian-to-english">
+              🇱🇹 → 🇺🇸 Lithuanian → English
+            </option>
           </select>
         )}
       </div>
@@ -126,8 +139,9 @@ const StudyModeSelector = ({
       >
         🔄 Reset Local Settings
       </button>
-      <SettingsToggle className="w-mode-option">
-        ⚙️ Settings
+      <SettingsToggle className="w-mode-option" title="Settings">
+        <span className="w-hide-mobile">⚙️ Settings</span>
+        <span className="w-show-mobile">⚙️</span>
       </SettingsToggle>
       {audioEnabled && availableVoices.length > 0 && (
         <select 
@@ -148,3 +162,24 @@ const StudyModeSelector = ({
 };
 
 export default StudyModeSelector;
+
+```
+
+```css
+.w-hide-mobile {
+  display: none;
+}
+
+.w-show-mobile {
+  display: inline;
+}
+
+@media (min-width: 768px) {
+  .w-hide-mobile {
+    display: inline;
+  }
+
+  .w-show-mobile {
+    display: none;
+  }
+}
