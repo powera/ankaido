@@ -162,24 +162,3 @@ const StudyModeSelector = ({
 };
 
 export default StudyModeSelector;
-
-```
-
-```css
-.w-hide-mobile {
-  display: none;
-}
-
-.w-show-mobile {
-  display: inline;
-}
-
-@media (min-width: 768px) {
-  .w-hide-mobile {
-    display: inline;
-  }
-
-  .w-show-mobile {
-    display: none;
-  }
-}
