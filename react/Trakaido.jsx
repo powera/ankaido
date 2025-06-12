@@ -275,8 +275,10 @@ const FlashCardApp = () => {
           const conjugationData = await fetchConjugations(selectedVerbCorpus);
           setConjugations(conjugationData.conjugations);
           setAvailableVerbs(conjugationData.verbs);
-          // Reset selected verb when corpus changes
-          setSelectedVerb(null);
+          // Only reset selected verb if it doesn't exist in the new corpus
+          if (selectedVerb && !conjugationData.verbs.includes(selectedVerb)) {
+            setSelectedVerb(null);
+          }
         } catch (error) {
           console.error('Failed to load conjugations for corpus:', selectedVerbCorpus, error);
         } finally {
