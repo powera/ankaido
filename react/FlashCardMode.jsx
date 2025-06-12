@@ -26,16 +26,27 @@ const FlashCardMode = ({
         onMouseLeave={handleHoverEnd}
         style={{ cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default' }}
       >
-        {question}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+          <span>{question}</span>
+          {studyMode === 'lithuanian-to-english' && (
+            <AudioButton 
+              word={currentWord.lithuanian}
+              audioEnabled={audioEnabled}
+              playAudio={playAudio}
+            />
+          )}
+        </div>
       </div>
       {showAnswer && (
         <div className="trakaido-answer-text">
           <span>{answer}</span>
-          <AudioButton 
-            word={currentWord.lithuanian}
-            audioEnabled={audioEnabled}
-            playAudio={playAudio}
-          />
+          {studyMode === 'english-to-lithuanian' && (
+            <AudioButton 
+              word={currentWord.lithuanian}
+              audioEnabled={audioEnabled}
+              playAudio={playAudio}
+            />
+          )}
         </div>
       )}
       {!showAnswer && (
