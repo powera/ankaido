@@ -471,7 +471,7 @@ const FlashCardApp = () => {
         {isFullscreen ? '🗗' : '⛶'}
       </button>
 
-      {!isFullscreen && <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>}
+      {!isFullscreen && <h1>🇱🇹 Trakaido!</h1>}
 
 
 

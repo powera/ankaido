@@ -20,7 +20,7 @@ const MultipleChoiceMode = ({
   return (
     <div>
       <div className="w-card">
-        <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
+        <div className="w-badge w-hide-mobile">{currentWord.corpus} → {currentWord.group}</div>
         <div 
           className="w-question"
           onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
@@ -29,7 +29,7 @@ const MultipleChoiceMode = ({
         >
           {question}
         </div>
-        <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
+        <div className="w-hide-mobile" style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
           Choose the correct answer:
           {audioEnabled && (
             <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>

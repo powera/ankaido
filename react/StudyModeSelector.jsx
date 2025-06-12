@@ -18,14 +18,13 @@ const StudyModeSelector = ({
 }) => {
   return (
     <div className="w-mode-selector">
-      {!isFullscreen && <h3>Study Mode:</h3>}
       <div className="w-dropdown-container" style={{ 
         display: 'flex', 
         flexDirection: 'column', 
         gap: '0.5rem',
         margin: '0 0.5rem'
       }}>
-        <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Mode:</label>
+        <label className="w-hide-mobile" style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Mode:</label>
         <select 
           style={{
             padding: '0.5rem',
@@ -116,10 +115,10 @@ const StudyModeSelector = ({
             }}
           >
             <option value="english-to-lithuanian">
-              🇺🇸 → 🇱🇹 English → Lithuanian
+              🇺🇸 → 🇱🇹
             </option>
             <option value="lithuanian-to-english">
-              🇱🇹 → 🇺🇸 Lithuanian → English
+              🇱🇹 → 🇺🇸
             </option>
           </select>
         )}
