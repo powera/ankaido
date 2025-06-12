@@ -72,7 +72,7 @@ const StudyModeSelector = ({
           ) : (
             <>
               <span className="w-hide-mobile">Direction:</span>
-              <span className="w-show-mobile">🇺🇸🇱🇹</span>
+              <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
             </>
           )}
         </label>
@@ -125,24 +125,28 @@ const StudyModeSelector = ({
         )}
       </div>
 
-      <button
-        className="w-mode-option"
-        onClick={onOpenStudyMaterials}
-        title="Select study materials and vocabulary groups"
-      >
-        📚 Study Materials ({totalSelectedWords} words)
-      </button>
-      <button
-        className="w-mode-option"
-        onClick={resetAllSettings}
-        title="Reset all local settings including selected corpuses"
-      >
-        🔄 Reset Local Settings
-      </button>
-      <SettingsToggle className="w-mode-option" title="Settings">
-        <span className="w-hide-mobile">⚙️ Settings</span>
-        <span className="w-show-mobile">⚙️</span>
-      </SettingsToggle>
+      <div className="w-button-group-mobile">
+        <button
+          className="w-mode-option w-compact-button"
+          onClick={onOpenStudyMaterials}
+          title="Select study materials and vocabulary groups"
+        >
+          <span className="w-hide-mobile">📚 Study Materials ({totalSelectedWords})</span>
+          <span className="w-show-mobile">📚 Materials</span>
+        </button>
+        <button
+          className="w-mode-option w-compact-button"
+          onClick={resetAllSettings}
+          title="Reset all local settings including selected corpuses"
+        >
+          <span className="w-hide-mobile">🔄 Reset Local Settings</span>
+          <span className="w-show-mobile">🔄 Reset</span>
+        </button>
+        <SettingsToggle className="w-mode-option w-compact-button" title="Settings">
+          <span className="w-hide-mobile">⚙️ Settings</span>
+          <span className="w-show-mobile">⚙️</span>
+        </SettingsToggle>
+      </div>
       {audioEnabled && availableVoices.length > 0 && (
         <select 
           value={selectedVoice || ''} 

@@ -538,6 +538,17 @@
     display: none;
 }
 
+/* Hide app title on very small screens */
+.w-hide-mobile-title {
+    display: block;
+}
+
+@media screen and (max-width: 480px) {
+    .w-hide-mobile-title {
+        display: none;
+    }
+}
+
 @media screen and (min-width: 768px) {
     .w-show-mobile {
         display: none;
@@ -545,5 +556,40 @@
     
     .w-hide-mobile {
         display: inline;
+    }
+}
+
+/* Mobile button group - fit 3 buttons on one line */
+.w-button-group-mobile {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: var(--spacing-base) 0;
+}
+
+/* Compact buttons for mobile */
+.w-compact-button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+    min-height: 36px;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 767px) {
+    .w-button-group-mobile {
+        max-width: 375px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .w-compact-button {
+        max-width: calc(33.333% - 0.17rem);
+        font-size: 0.75rem;
+        padding: 0.3rem 0.4rem;
     }
 }
