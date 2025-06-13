@@ -137,12 +137,23 @@ def compile_jsx_components():
     compiled_components = []
     
     for component_file in component_order:
+        # Check in root directory
         component_path = REACT_DIR / component_file
+        
+        # If not in root, check in Components directory
+        if not component_path.exists():
+            component_path = REACT_DIR / "Components" / component_file
+        
+        # If not in Components, check in Modes directory
+        if not component_path.exists():
+            component_path = REACT_DIR / "Modes" / component_file
+        
+        # If still not found, skip
         if not component_path.exists():
             print(f"Warning: Component {component_file} not found, skipping...")
             continue
             
-        print(f"Compiling {component_file}...")
+        print(f"Compiling {component_path.relative_to(REACT_DIR.parent)}...")
         
         # Read the component file
         with open(component_path, 'r', encoding='utf-8') as f:
