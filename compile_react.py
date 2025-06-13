@@ -102,6 +102,7 @@ def get_component_dependencies():
     component_order = [
         "useGlobalSettings.jsx",
         "useFullscreen.js", 
+        "safeStorage.js",
         "WordListManager.js",
         "AudioButton.jsx",
         "StatsDisplay.jsx",

@@ -15,6 +15,7 @@ import WordListManager from './WordListManager';
 import SplashScreen from './SplashScreen';
 import WelcomeScreen from './WelcomeScreen';
 import JourneyMode from './JourneyMode';
+import safeStorage from './safeStorage';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -29,32 +30,6 @@ const {
 } = window.lithuanianApi;
 
 // The CSS classes available are primarily in widget_tools.css .
-
-// Helper function to safely access localStorage
-const safeStorage = {
-  getItem: (key, defaultValue = null) => {
-    try {
-      return localStorage.getItem(key) || defaultValue;
-    } catch (error) {
-      console.error(`Error reading ${key} from localStorage:`, error);
-      return defaultValue;
-    }
-  },
-  setItem: (key, value) => {
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {
-      console.error(`Error saving ${key} to localStorage:`, error);
-    }
-  },
-  removeItem: (key) => {
-    try {
-      localStorage.removeItem(key);
-    } catch (error) {
-      console.error(`Error removing ${key} from localStorage:`, error);
-    }
-  }
-};
 
 const FlashCardApp = () => {
   // Global settings integration
@@ -466,14 +441,7 @@ const FlashCardApp = () => {
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
 
-
-      <button className="w-fullscreen-toggle" onClick={toggleFullscreen}>
-        {isFullscreen ? '🗗' : '⛶'}
-      </button>
-
       {!isFullscreen && <h1>🇱🇹 Trakaido!</h1>}
-
-
 
       <StudyModeSelector
         quizMode={quizMode}
@@ -483,13 +451,13 @@ const FlashCardApp = () => {
         studyMode={studyMode}
         setStudyMode={setStudyMode}
         safeStorage={safeStorage}
-        resetAllSettings={resetAllSettings}
         SettingsToggle={SettingsToggle}
         audioEnabled={audioEnabled}
         availableVoices={availableVoices}
         selectedVoice={selectedVoice}
         setSelectedVoice={setSelectedVoice}
         isFullscreen={isFullscreen}
+        toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
       />
@@ -632,6 +600,7 @@ const FlashCardApp = () => {
         corporaData={corporaData}
         selectedGroups={selectedGroups}
         setSelectedGroups={setSelectedGroups}
+        resetAllSettings={resetAllSettings}
         safeStorage={safeStorage}
       />
     </div>

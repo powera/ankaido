@@ -8,6 +8,7 @@ const StudyMaterialsModal = ({
   corporaData,
   selectedGroups,
   setSelectedGroups,
+  resetAllSettings,
   safeStorage
 }) => {
   const modalRef = useRef(null);
@@ -120,6 +121,14 @@ const StudyMaterialsModal = ({
               </div>
             );
           })}
+
+        <button
+          className="w-mode-option w-compact-button"
+          onClick={resetAllSettings}
+          title="Reset all local settings including selected corpuses"
+        >
+          <span>🔄 Reset Local Settings</span>
+        </button>
         </div>
 
         <div className="w-settings-actions">
