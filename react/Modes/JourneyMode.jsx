@@ -154,9 +154,15 @@ const JourneyMode = ({
     }
 
     // Advanced system based on exposures
-    // First, decide if we should introduce a new word (25% chance)
+    // First, decide if we should show a motivational interstitial (3% chance)
     let random = Math.random() * 100;
-    if (random < 25 && newWords.length > 0) {
+    if (random < 3) {
+      return { type: 'motivational-break', word: null };
+    }
+
+    // Then, decide if we should introduce a new word (25% chance of remaining 97%)
+    random = Math.random() * 100;
+    if (random < 25.77 && newWords.length > 0) { // 25/97 ≈ 25.77% to maintain original 25% overall
       const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
       return { type: 'new-word', word: randomNewWord };
     }
@@ -415,6 +421,39 @@ const JourneyMode = ({
           </div>
           <button className="w-button" onClick={advanceToNextActivity}>
             Continue Journey
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (journeyState.currentActivity === 'motivational-break') {
+    const motivationalMessages = [
+      "Keep going, you're doing great! 🌟",
+      "Your progress is impressive! 💪",
+      "You're building amazing language skills! 🚀",
+      "Every word you learn is a step forward! ✨",
+      "Your dedication is paying off! 🎯",
+      "You're becoming more fluent every day! 🌱",
+      "Great job staying consistent! 👏",
+      "Your Lithuanian journey is inspiring! 🏆",
+      "Keep up the excellent work! 💫",
+      "You're mastering this language! 🎉"
+    ];
+
+    const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+
+    return (
+      <div className="w-card">
+        <div className="w-text-center w-mb-large">
+          <div className="w-question w-mb-large" style={{ fontSize: '2rem', margin: 'var(--spacing-large) 0' }}>
+            {randomMessage}
+          </div>
+          <div style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', margin: 'var(--spacing-base) 0' }}>
+            Take a moment to appreciate your progress!
+          </div>
+          <button className="w-button" onClick={advanceToNextActivity} style={{ marginTop: 'var(--spacing-large)' }}>
+            Continue Journey →
           </button>
         </div>
       </div>
