@@ -197,6 +197,44 @@ const FlashCardApp = () => {
     loadInitialData();
   }, [showSplash]);
 
+  // Initialize word list manager with settings
+  useEffect(() => {
+    wordListManager.settings = settings; // Update settings reference
+  }, [wordListManager, settings]);
+
+  // Load journey stats from IndexedDB
+  useEffect(() => {
+    const loadJourneyStats = async () => {
+      try {
+        const stats = await indexedDBManager.loadJourneyStats();
+        setJourneyStats(stats);
+
+        // Update wordListManager with journey stats
+        if (wordListManager) {
+          wordListManager.journeyStats = stats;
+          wordListManager.notifyStateChange();
+        }
+      } catch (error) {
+        console.error('Error loading journey stats:', error);
+        // Fallback to localStorage
+        const savedStats = safeStorage.getItem('journey-stats');
+        try {
+          const stats = savedStats ? JSON.parse(savedStats) : {};
+          setJourneyStats(stats);
+          if (wordListManager) {
+            wordListManager.journeyStats = stats;
+            wordListManager.notifyStateChange();
+          }
+        } catch (parseError) {
+          console.error('Error parsing journey stats from localStorage:', parseError);
+          setJourneyStats({});
+        }
+      }
+    };
+
+    loadJourneyStats();
+  }, [wordListManager]);
+
   // Save settings to localStorage whenever they change
   useEffect(() => {
     safeStorage.setItem('flashcard-selected-groups', JSON.stringify(selectedGroups));
@@ -444,44 +482,6 @@ const FlashCardApp = () => {
   // Show "no groups selected" message but keep the Study Materials section visible
   // Don't show this message in conjugations/declensions/journey mode since they don't need word lists or handle them differently
   const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey';
-
-  // Initialize word list manager with settings
-  useEffect(() => {
-    wordListManager.settings = settings; // Update settings reference
-  }, [wordListManager, settings]);
-
-  // Load journey stats from IndexedDB
-  useEffect(() => {
-    const loadJourneyStats = async () => {
-      try {
-        const stats = await indexedDBManager.loadJourneyStats();
-        setJourneyStats(stats);
-
-        // Update wordListManager with journey stats
-        if (wordListManager) {
-          wordListManager.journeyStats = stats;
-          wordListManager.notifyStateChange();
-        }
-      } catch (error) {
-        console.error('Error loading journey stats:', error);
-        // Fallback to localStorage
-        const savedStats = safeStorage.getItem('journey-stats');
-        try {
-          const stats = savedStats ? JSON.parse(savedStats) : {};
-          setJourneyStats(stats);
-          if (wordListManager) {
-            wordListManager.journeyStats = stats;
-            wordListManager.notifyStateChange();
-          }
-        } catch (parseError) {
-          console.error('Error parsing journey stats from localStorage:', parseError);
-          setJourneyStats({});
-        }
-      }
-    };
-
-    loadJourneyStats();
-  }, [wordListManager]);
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
