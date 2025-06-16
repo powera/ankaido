@@ -14,7 +14,9 @@ const StudyModeSelector = ({
   isFullscreen,
   toggleFullscreen,
   totalSelectedWords,
-  onOpenStudyMaterials
+  onOpenStudyMaterials,
+  onOpenExposureStats,
+  journeyStats
 }) => {
   return (
     <div className="w-mode-selector">
@@ -133,6 +135,16 @@ const StudyModeSelector = ({
           <span className="w-hide-mobile">📚 Study Materials</span>
           <span className="w-show-mobile">📚 Materials</span>
         </button>
+        {quizMode === 'journey' && (
+          <button
+            className="w-mode-option w-compact-button"
+            onClick={onOpenExposureStats}
+            title="View exposure statistics for journey mode"
+          >
+            <span className="w-hide-mobile">📊 Exposure Stats</span>
+            <span className="w-show-mobile">📊 Stats</span>
+          </button>
+        )}
         <SettingsToggle className="w-mode-option w-compact-button" title="Settings">
           <span className="w-hide-mobile">Settings</span>
         </SettingsToggle>

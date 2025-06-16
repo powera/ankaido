@@ -4,6 +4,7 @@ import FlashCardMode from './FlashCardMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
+import ExposureStatsModal from '../Components/ExposureStatsModal';
 
 // Global variable for activity selection system
 // "advanced" = new system with exposure-based selection
@@ -34,6 +35,7 @@ const JourneyMode = ({
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
+  const [showExposureStats, setShowExposureStats] = React.useState(false);
 
   // Database connection
   const [db, setDb] = React.useState(null);
@@ -250,6 +252,11 @@ const JourneyMode = ({
     // Determine activity type based on exposure count
     if (exposures < 3) {
       // Fewer than 3 exposures: use multiple-choice or easy listening
+      // If audio is disabled, always use multiple-choice
+      if (!audioEnabled) {
+        return { type: 'multiple-choice', word: selectedWord };
+      }
+      
       random = Math.random();
       if (random < 0.5) {
         return { type: 'multiple-choice', word: selectedWord };
@@ -263,6 +270,16 @@ const JourneyMode = ({
       }
     } else {
       // 3+ exposures: include typing and hard listening
+      // If audio is disabled, only choose between multiple-choice and typing
+      if (!audioEnabled) {
+        random = Math.random();
+        if (random < 0.5) {
+          return { type: 'multiple-choice', word: selectedWord };
+        } else {
+          return { type: 'typing', word: selectedWord };
+        }
+      }
+      
       random = Math.random() * 100;
       if (random < 33) {
         return { type: 'multiple-choice', word: selectedWord };
@@ -277,7 +294,7 @@ const JourneyMode = ({
         return { type: 'typing', word: selectedWord };
       }
     }
-  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager, getTotalCorrectExposures]);
+  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager, getTotalCorrectExposures, audioEnabled]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
@@ -422,6 +439,11 @@ const JourneyMode = ({
   const handleTypingComplete = React.useCallback((isCorrect) => {
     handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
   }, [journeyState.currentWord, handleActivityComplete]);
+  
+  // Handler for exposure stats modal
+  const handleToggleExposureStats = React.useCallback(() => {
+    setShowExposureStats(prev => !prev);
+  }, []);
 
   // Loading states
   if (!journeyState.isInitialized) {

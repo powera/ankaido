@@ -9,6 +9,7 @@ import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import StudyModeSelector from './Components/StudyModeSelector.jsx';
+import ExposureStatsModal from './Components/ExposureStatsModal.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
 import DeclensionsMode from './Modes/DeclensionsMode.jsx';
 import WordListManager from './WordListManager.js';
