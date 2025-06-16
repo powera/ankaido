@@ -5,6 +5,11 @@ import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 
+// Global variable for activity selection system
+// "advanced" = new system with exposure-based selection
+// "legacy" = original system with fixed percentages
+const ACTIVITY_SELECTION_SYSTEM = "advanced";
+
 const JourneyMode = ({ 
   wordListManager,
   wordListState,
@@ -24,7 +29,8 @@ const JourneyMode = ({
     isInitialized: false,
     currentActivity: null,
     currentWord: null,
-    showNewWordIndicator: false
+    showNewWordIndicator: false,
+    listeningMode: null
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
@@ -148,6 +154,12 @@ const JourneyMode = ({
       lastSeen: null
     };
   }, [journeyStats]);
+  
+  // Helper to count total correct exposures for a word
+  const getTotalCorrectExposures = React.useCallback((word) => {
+    const stats = getWordStats(word);
+    return stats.multipleChoice.correct + stats.listening.correct + stats.typing.correct;
+  }, [getWordStats]);
 
   const getExposedWords = React.useCallback(() => {
     return wordListState.allWords.filter(word => getWordStats(word).exposed);
@@ -172,24 +184,100 @@ const JourneyMode = ({
       return { type: 'new-word', word: randomNewWord };
     }
 
-    const random = Math.random() * 100;
+    // Legacy system with fixed percentages
+    if (ACTIVITY_SELECTION_SYSTEM === "legacy") {
+      const random = Math.random() * 100;
+      
+      if (random < 20 && newWords.length > 0) {
+        const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+        return { type: 'new-word', word: randomNewWord };
+      } else if (random < 50 && exposedWords.length > 0) {
+        const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+        return { type: 'multiple-choice', word: randomExposedWord };
+      } else if (random < 80 && exposedWords.length > 0) {
+        const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+        return { type: 'listening', word: randomExposedWord };
+      } else if (random < 97 && exposedWords.length > 0) {
+        const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+        return { type: 'typing', word: randomExposedWord };
+      } else {
+        return { type: 'grammar-break', word: null };
+      }
+    }
     
-    if (random < 20 && newWords.length > 0) {
+    // Advanced system based on exposures
+    // First, decide if we should introduce a new word (25% chance)
+    let random = Math.random() * 100;
+    if (random < 25 && newWords.length > 0) {
       const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
       return { type: 'new-word', word: randomNewWord };
-    } else if (random < 50 && exposedWords.length > 0) {
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { type: 'multiple-choice', word: randomExposedWord };
-    } else if (random < 80 && exposedWords.length > 0) {
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { type: 'listening', word: randomExposedWord };
-    } else if (random < 97 && exposedWords.length > 0) {
-      const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-      return { type: 'typing', word: randomExposedWord };
-    } else {
+    }
+    
+    // Otherwise, choose an exposed word
+    if (exposedWords.length === 0) {
+      // If no exposed words, fall back to new word
+      if (newWords.length > 0) {
+        const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+        return { type: 'new-word', word: randomNewWord };
+      }
       return { type: 'grammar-break', word: null };
     }
-  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager]);
+    
+    // Filter words by exposure count
+    let filteredWords = [...exposedWords];
+    
+    // For words with 10+ exposures, 75% chance to redraw
+    if (filteredWords.some(word => getTotalCorrectExposures(word) >= 10)) {
+      filteredWords = filteredWords.filter(word => {
+        const exposures = getTotalCorrectExposures(word);
+        if (exposures >= 10) {
+          // 75% chance to exclude this word
+          return Math.random() > 0.75;
+        }
+        return true;
+      });
+      
+      // If we filtered out all words, use the original list
+      if (filteredWords.length === 0) {
+        filteredWords = [...exposedWords];
+      }
+    }
+    
+    // Choose a random word from the filtered list
+    const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+    const exposures = getTotalCorrectExposures(selectedWord);
+    
+    // Determine activity type based on exposure count
+    if (exposures < 3) {
+      // Fewer than 3 exposures: use multiple-choice or easy listening
+      random = Math.random();
+      if (random < 0.5) {
+        return { type: 'multiple-choice', word: selectedWord };
+      } else {
+        // Easy listening: given LT audio, choose LT word
+        return { 
+          type: 'listening', 
+          word: selectedWord,
+          mode: 'easy'  // This will be used to determine the listening mode
+        };
+      }
+    } else {
+      // 3+ exposures: include typing and hard listening
+      random = Math.random() * 100;
+      if (random < 33) {
+        return { type: 'multiple-choice', word: selectedWord };
+      } else if (random < 66) {
+        // Hard listening: given LT audio, choose EN word (requires knowing meaning)
+        return { 
+          type: 'listening', 
+          word: selectedWord,
+          mode: 'hard'  // This will be used to determine the listening mode
+        };
+      } else {
+        return { type: 'typing', word: selectedWord };
+      }
+    }
+  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager, getTotalCorrectExposures]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
@@ -204,7 +292,8 @@ const JourneyMode = ({
       isInitialized: true,
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
-      showNewWordIndicator: nextActivity.type === 'new-word'
+      showNewWordIndicator: nextActivity.type === 'new-word',
+      listeningMode: nextActivity.mode // Store the listening mode (easy/hard)
     });
 
     // If it's a new word, mark it as exposed
@@ -221,7 +310,18 @@ const JourneyMode = ({
       if (wordIndex >= 0) {
         wordListManager.currentCard = wordIndex;
         wordListManager.notifyStateChange();
-        wordListManager.generateMultipleChoiceOptions(studyMode, nextActivity.type);
+        
+        // For listening mode, determine if we're using easy or hard mode
+        let effectiveStudyMode = studyMode;
+        if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
+          // Easy listening: always use lithuanian-to-lithuanian regardless of global study mode
+          effectiveStudyMode = 'lithuanian-to-lithuanian';
+        } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
+          // Hard listening: always use lithuanian-to-english regardless of global study mode
+          effectiveStudyMode = 'lithuanian-to-english';
+        }
+        
+        wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
       }
     }
   }, [selectNextActivity, wordListManager, wordListState.allWords, studyMode]);
@@ -291,9 +391,21 @@ const JourneyMode = ({
     
     const currentWord = journeyState.currentWord;
     let correctAnswer;
+    
     if (journeyState.currentActivity === 'listening') {
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      // Determine correct answer based on listening mode
+      if (journeyState.listeningMode === 'easy') {
+        // Easy listening: always Lithuanian word
+        correctAnswer = currentWord.lithuanian;
+      } else if (journeyState.listeningMode === 'hard') {
+        // Hard listening: always English word
+        correctAnswer = currentWord.english;
+      } else {
+        // Fallback to original behavior if mode not specified
+        correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      }
     } else {
+      // Multiple choice follows the global study mode
       correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
     }
     
@@ -305,7 +417,7 @@ const JourneyMode = ({
     
     // Handle completion through single function
     handleActivityComplete(currentWord, modeKey, isCorrect);
-  }, [journeyState.currentWord, journeyState.currentActivity, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
+  }, [journeyState.currentWord, journeyState.currentActivity, journeyState.listeningMode, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
 
   const handleTypingComplete = React.useCallback((isCorrect) => {
     handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
@@ -377,6 +489,7 @@ const JourneyMode = ({
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
+          isNewWord={true}
         />
         <div className="w-nav-controls">
           <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
@@ -413,17 +526,29 @@ const JourneyMode = ({
   }
 
   if (journeyState.currentActivity === 'listening') {
+    // Determine the effective study mode based on listening mode
+    let effectiveStudyMode = studyMode;
+    let challengeTitle = '🎧 Listening Challenge';
+    
+    if (journeyState.listeningMode === 'easy') {
+      effectiveStudyMode = 'lithuanian-to-lithuanian';
+      challengeTitle = '🎧 Listening Challenge (Easy)';
+    } else if (journeyState.listeningMode === 'hard') {
+      effectiveStudyMode = 'lithuanian-to-english';
+      challengeTitle = '🎧 Listening Challenge (Hard)';
+    }
+    
     return (
       <div>
         <div className="w-card" style={{ background: 'linear-gradient(135deg, #9C27B0, #7B1FA2)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
           <div className="w-text-center">
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>🎧 Listening Challenge</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{challengeTitle}</div>
           </div>
         </div>
         <ListeningMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
-          studyMode={studyMode}
+          studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}

@@ -78,7 +78,11 @@ class WordListManager {
     let correctAnswer;
     if (quizMode === 'listening') {
       // In listening mode: LT->LT shows Lithuanian options, LT->EN shows English options
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      if (studyMode === 'lithuanian-to-lithuanian') {
+        correctAnswer = currentWord.lithuanian;
+      } else {
+        correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      }
     } else {
       // Regular multiple choice mode
       correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
@@ -91,7 +95,11 @@ class WordListManager {
     // Determine which field to use for filtering and generating wrong answers
     let answerField;
     if (quizMode === 'listening') {
-      answerField = studyMode === 'lithuanian-to-english' ? 'english' : 'lithuanian';
+      if (studyMode === 'lithuanian-to-lithuanian') {
+        answerField = 'lithuanian';
+      } else {
+        answerField = studyMode === 'lithuanian-to-english' ? 'english' : 'lithuanian';
+      }
     } else {
       answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
     }
@@ -246,7 +254,11 @@ class WordListManager {
     let correctAnswer;
     if (quizMode === 'listening') {
       // In listening mode: LT->EN shows English options, LT->LT shows Lithuanian options
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      if (studyMode === 'lithuanian-to-lithuanian') {
+        correctAnswer = currentWord.lithuanian;
+      } else {
+        correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      }
     } else {
       // Regular multiple choice mode
       correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;

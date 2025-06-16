@@ -10,12 +10,16 @@ const FlashCardMode = ({
   audioEnabled, 
   playAudio, 
   handleHoverStart, 
-  handleHoverEnd 
+  handleHoverEnd,
+  isNewWord = false // Prop to indicate if this is a new word being introduced
 }) => {
   if (!currentWord) return null;
 
   const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
   const answer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+  
+  // Determine whether to show the answer based on showAnswer state or isNewWord prop
+  const shouldShowAnswer = showAnswer || isNewWord;
 
   return (
     <div className="w-card w-card-interactive" onClick={() => setShowAnswer(!showAnswer)}>
@@ -37,7 +41,7 @@ const FlashCardMode = ({
           )}
         </div>
       </div>
-      {showAnswer && (
+      {shouldShowAnswer ? (
         <div className="trakaido-answer-text">
           <span>{answer}</span>
           {studyMode === 'english-to-lithuanian' && (
@@ -48,8 +52,7 @@ const FlashCardMode = ({
             />
           )}
         </div>
-      )}
-      {!showAnswer && (
+      ) : (
         <div style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: 'var(--spacing-base)' }}>
           Click to reveal answer
           {audioEnabled && studyMode === 'lithuanian-to-english' && (

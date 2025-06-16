@@ -22,7 +22,11 @@ const MultipleChoiceOptions = ({
         // Determine correct answer based on mode
         let correctAnswer;
         if (quizMode === 'listening') {
-          correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+          if (studyMode === 'lithuanian-to-lithuanian') {
+            correctAnswer = currentWord.lithuanian;
+          } else {
+            correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+          }
         } else {
           correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
         }
@@ -44,7 +48,18 @@ const MultipleChoiceOptions = ({
         // Find the translation for all options when showAnswer is true
         let translation = null;
         if (wordListState.showAnswer) {
-          if (isCorrect) {
+          if (studyMode === 'lithuanian-to-lithuanian') {
+            // For LT-to-LT mode, show English translation
+            if (isCorrect) {
+              translation = currentWord.english;
+            } else {
+              // Find the word that matches this Lithuanian option
+              const matchingWord = wordListState.allWords.find(w => w.lithuanian === option);
+              if (matchingWord) {
+                translation = matchingWord.english;
+              }
+            }
+          } else if (isCorrect) {
             // For correct answer, show the opposite translation
             translation = studyMode === 'lithuanian-to-english' ? currentWord.lithuanian : currentWord.english;
           } else {

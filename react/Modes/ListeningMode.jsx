@@ -34,7 +34,9 @@ const ListeningMode = ({
           <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
             {studyMode === 'lithuanian-to-english' 
               ? 'Choose the English translation:'
-              : 'Choose the matching Lithuanian word:'}
+              : studyMode === 'lithuanian-to-lithuanian'
+                ? 'Choose the matching Lithuanian word:'
+                : 'Choose the matching Lithuanian word:'}
           </div>
         </div>
       </div>
