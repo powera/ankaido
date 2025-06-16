@@ -19,7 +19,7 @@ const ExposureStatsModal = ({
       const loadStats = async () => {
         setLoading(true);
         try {
-          const stats = await indexedDBManager.loadJourneyStats(safeStorage);
+          const stats = await indexedDBManager.loadJourneyStats();
           console.log('ExposureStatsModal loaded journeyStats:', stats);
           setJourneyStats(stats);
           

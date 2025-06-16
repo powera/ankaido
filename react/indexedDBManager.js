@@ -52,18 +52,17 @@ const indexedDBManager = {
   },
 
   /**
-   * Load all journey stats from IndexedDB with localStorage fallback
-   * @param {Object} safeStorage - Safe storage utility for localStorage fallback
+   * Load all journey stats from IndexedDB
    * @returns {Promise<Object>} The journey stats object
    */
-  async loadJourneyStats(safeStorage = null) {
+  async loadJourneyStats() {
     if (!this.db) {
       await this.init();
     }
 
     if (!this.db) {
-      console.warn('IndexedDB not available, falling back to localStorage');
-      return this.loadFromLocalStorage(safeStorage);
+      console.warn('IndexedDB not available');
+      return {};
     }
 
     return new Promise((resolve) => {
@@ -83,37 +82,13 @@ const indexedDBManager = {
         
         request.onerror = () => {
           console.error('Error loading from IndexedDB:', request.error);
-          // Fallback to localStorage on error
-          resolve(this.loadFromLocalStorage(safeStorage));
+          resolve({});
         };
       } catch (error) {
         console.error('IndexedDB load error:', error);
-        // Fallback to localStorage on error
-        resolve(this.loadFromLocalStorage(safeStorage));
+        resolve({});
       }
     });
-  },
-
-  /**
-   * Load journey stats from localStorage as fallback
-   * @param {Object} safeStorage - Safe storage utility
-   * @returns {Object} The journey stats object
-   */
-  loadFromLocalStorage(safeStorage) {
-    if (!safeStorage) {
-      console.warn('No safeStorage provided for localStorage fallback');
-      return {};
-    }
-
-    try {
-      const savedStats = safeStorage.getItem('journey-stats');
-      const stats = savedStats ? JSON.parse(savedStats) : {};
-      console.log('Loaded journey stats from localStorage:', stats);
-      return stats;
-    } catch (parseError) {
-      console.error('Error parsing journey stats from localStorage:', parseError);
-      return {};
-    }
   },
 
   /**

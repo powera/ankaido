@@ -64,7 +64,7 @@ const JourneyMode = ({
   // Unified stats loading function
   const loadStatsFromStorage = React.useCallback(async () => {
     try {
-      const stats = await indexedDBManager.loadJourneyStats(safeStorage);
+      const stats = await indexedDBManager.loadJourneyStats();
       console.log('Loaded journey stats:', stats);
       setJourneyStats(stats);
       updateWordListManagerStats(wordListManager, stats);
@@ -74,7 +74,7 @@ const JourneyMode = ({
       setJourneyStats({});
       setJourneyState(prev => ({ ...prev, isInitialized: true }));
     }
-  }, [safeStorage, wordListManager]);
+  }, [wordListManager]);
 
   // Load stats once when initialized
   React.useEffect(() => {
@@ -96,7 +96,7 @@ const JourneyMode = ({
       console.error('Error saving journey stats:', error);
       safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
     }
-  }, [safeStorage, wordListManager]);
+  }, [wordListManager]);
 
   // Helper functions for word categorization
   const getWordStats = React.useCallback((word) => {

@@ -206,7 +206,7 @@ const FlashCardApp = () => {
   useEffect(() => {
     const loadJourneyStats = async () => {
       try {
-        const stats = await indexedDBManager.loadJourneyStats(safeStorage);
+        const stats = await indexedDBManager.loadJourneyStats();
         setJourneyStats(stats);
 
         // Update wordListManager with journey stats
