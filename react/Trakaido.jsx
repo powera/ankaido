@@ -17,6 +17,7 @@ import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import safeStorage from './safeStorage.js';
+import indexedDBManager from './indexedDBManager';
 
 // Import CSS modules for better organization
 import './styles/mobile.css';
@@ -112,6 +113,7 @@ const FlashCardApp = () => {
   const [selectedVocabGroup, setSelectedVocabGroup] = useState(null);
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
+  const [journeyStats, setJourneyStats] = useState({});
 
   // Use global settings for audio and auto-advance
   const audioEnabled = settings.audioEnabled;
@@ -138,7 +140,7 @@ const FlashCardApp = () => {
     const loadInitialData = async () => {
       // Don't start loading until splash is done
       if (showSplash) return;
-      
+
       setLoading(true);
       setError(null);
       try {
@@ -271,7 +273,7 @@ const FlashCardApp = () => {
 
   const preloadMultipleChoiceAudio = async () => {
     if (!selectedVoice) return;
-    
+
     if (selectedVoice === 'random') {
       // When random is selected, preload for all available voices
       for (const voice of availableVoices) {
@@ -285,7 +287,7 @@ const FlashCardApp = () => {
   // Generate all available groups from all corpuses
   useEffect(() => {
     if (Object.keys(corporaData).length === 0) return;
-    
+
     const options = [];
     // Iterate through all corpuses and their groups
     Object.entries(corporaData).forEach(([corpus, data]) => {
@@ -298,17 +300,17 @@ const FlashCardApp = () => {
         });
       });
     });
-    
+
     // Sort alphabetically by display name
     options.sort((a, b) => a.displayName.localeCompare(b.displayName));
     setVocabGroupOptions(options);
   }, [corporaData]);
 
-  
+
   const handleWelcomeComplete = (skillLevel) => {
     // Mark that user has seen the intro
     safeStorage.setItem('trakaido-has-seen-intro', 'true');
-    
+
     // Set initial corpus selection based on skill level
     const initialSelectedGroups = {};
     if (skillLevel === 'beginner') {
@@ -329,7 +331,7 @@ const FlashCardApp = () => {
         initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
       });
     }
-    
+
     setSelectedGroups(initialSelectedGroups);
     setShowWelcome(false);
   };
@@ -443,6 +445,44 @@ const FlashCardApp = () => {
   // Don't show this message in conjugations/declensions/journey mode since they don't need word lists or handle them differently
   const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey';
 
+  // Initialize word list manager with settings
+  useEffect(() => {
+    wordListManager.settings = settings; // Update settings reference
+  }, [wordListManager, settings]);
+
+  // Load journey stats from IndexedDB
+  useEffect(() => {
+    const loadJourneyStats = async () => {
+      try {
+        const stats = await indexedDBManager.loadJourneyStats();
+        setJourneyStats(stats);
+
+        // Update wordListManager with journey stats
+        if (wordListManager) {
+          wordListManager.journeyStats = stats;
+          wordListManager.notifyStateChange();
+        }
+      } catch (error) {
+        console.error('Error loading journey stats:', error);
+        // Fallback to localStorage
+        const savedStats = safeStorage.getItem('journey-stats');
+        try {
+          const stats = savedStats ? JSON.parse(savedStats) : {};
+          setJourneyStats(stats);
+          if (wordListManager) {
+            wordListManager.journeyStats = stats;
+            wordListManager.notifyStateChange();
+          }
+        } catch (parseError) {
+          console.error('Error parsing journey stats from localStorage:', parseError);
+          setJourneyStats({});
+        }
+      }
+    };
+
+    loadJourneyStats();
+  }, [wordListManager]);
+
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
 
@@ -466,7 +506,7 @@ const FlashCardApp = () => {
         totalSelectedWords={totalSelectedWords}
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
         onOpenExposureStats={() => setShowExposureStatsModal(true)}
-        journeyStats={wordListState.journeyStats}
+        journeyStats={journeyStats}
       />
 
       {!showNoGroupsMessage && (
@@ -613,7 +653,7 @@ const FlashCardApp = () => {
       <ExposureStatsModal
         isOpen={showExposureStatsModal}
         onClose={() => setShowExposureStatsModal(false)}
-        journeyStats={wordListState.journeyStats || {}}
+        journeyStats={journeyStats}
       />
     </div>
   );

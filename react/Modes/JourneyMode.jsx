@@ -5,6 +5,7 @@ import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
+import indexedDBManager from '../indexedDBManager';
 
 // Global variable for activity selection system
 // "advanced" = new system with exposure-based selection
@@ -74,43 +75,21 @@ const JourneyMode = ({
     }
   }, [wordListManager]);
 
-  // Load stats once when DB is ready
+  // Load stats once when initialized
   React.useEffect(() => {
-    if (db === null) return; // Still initializing
-    
     const loadStats = async () => {
-      if (db) {
-        try {
-          const transaction = db.transaction(['wordStats'], 'readonly');
-          const store = transaction.objectStore('wordStats');
-          const request = store.getAll();
-          
-          request.onsuccess = () => {
-            const stats = {};
-            request.result.forEach(item => {
-              stats[item.wordKey] = item.stats;
-            });
-            
-            console.log('Loaded journey stats from IndexedDB:', stats);
-            setJourneyStats(stats);
-            
-            // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
-            wordListManager.journeyStats = stats;
-            console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
-            wordListManager.notifyStateChange();
-            
-            setJourneyState(prev => ({ ...prev, isInitialized: true }));
-          };
-          
-          request.onerror = () => {
-            console.error('Error loading from IndexedDB, falling back to localStorage');
-            loadFromLocalStorage();
-          };
-        } catch (error) {
-          console.error('IndexedDB error:', error);
-          loadFromLocalStorage();
-        }
-      } else {
+      try {
+        const stats = await indexedDBManager.loadJourneyStats();
+        setJourneyStats(stats);
+        
+        // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
+        wordListManager.journeyStats = stats;
+        console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
+        wordListManager.notifyStateChange();
+        
+        setJourneyState(prev => ({ ...prev, isInitialized: true }));
+      } catch (error) {
+        console.error('Error loading journey stats, falling back to localStorage:', error);
         loadFromLocalStorage();
       }
     };
@@ -136,7 +115,7 @@ const JourneyMode = ({
     };
 
     loadStats();
-  }, [db, safeStorage, wordListManager]);
+  }, [safeStorage, wordListManager]);
 
   // Save stats function
   const saveStats = React.useCallback(async (newStats) => {
@@ -148,28 +127,17 @@ const JourneyMode = ({
     console.log('Updated wordListManager.journeyStats in saveStats:', wordListManager.journeyStats);
     wordListManager.notifyStateChange();
     
-    if (db) {
-      try {
-        const transaction = db.transaction(['wordStats'], 'readwrite');
-        const store = transaction.objectStore('wordStats');
-        
-        store.clear();
-        Object.entries(newStats).forEach(([wordKey, wordStats]) => {
-          store.add({ wordKey, stats: wordStats });
-        });
-        
-        transaction.onerror = () => {
-          console.error('Error saving to IndexedDB, falling back to localStorage');
-          safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
-        };
-      } catch (error) {
-        console.error('IndexedDB error:', error);
+    try {
+      const success = await indexedDBManager.saveJourneyStats(newStats);
+      if (!success) {
+        // Fallback to localStorage
         safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
       }
-    } else {
+    } catch (error) {
+      console.error('Error saving journey stats:', error);
       safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
     }
-  }, [db, safeStorage, wordListManager]);
+  }, [safeStorage, wordListManager]);
 
   // Helper functions for word categorization
   const getWordStats = React.useCallback((word) => {
