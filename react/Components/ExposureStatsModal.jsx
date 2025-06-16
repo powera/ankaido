@@ -1,42 +1,59 @@
 import React, { useState, useRef, useEffect } from 'react';
+import indexedDBManager from '../indexedDBManager';
+import safeStorage from '../safeStorage';
 
 const ExposureStatsModal = ({
   isOpen,
-  onClose,
-  journeyStats
+  onClose
 }) => {
   const modalRef = useRef(null);
   const [sortField, setSortField] = useState('lastSeen');
   const [sortDirection, setSortDirection] = useState('desc');
   const [exposedWords, setExposedWords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [journeyStats, setJourneyStats] = useState({});
 
-  // Process journey stats into a sortable array when stats change or modal opens
+  // Load journey stats when modal opens
   useEffect(() => {
     if (isOpen) {
-      console.log('ExposureStatsModal opened with journeyStats:', journeyStats);
-      
-      if (journeyStats && Object.keys(journeyStats).length > 0) {
-        const wordsArray = Object.entries(journeyStats).map(([key, stats]) => {
-          const [lithuanian, english] = key.split('-');
-          return {
-            lithuanian,
-            english,
-            ...stats,
-            totalCorrect: (stats.multipleChoice?.correct || 0) + 
-                          (stats.listening?.correct || 0) + 
-                          (stats.typing?.correct || 0),
-            totalIncorrect: (stats.multipleChoice?.incorrect || 0) + 
-                            (stats.listening?.incorrect || 0) + 
-                            (stats.typing?.incorrect || 0)
-          };
-        });
-        setExposedWords(wordsArray);
-      } else {
-        console.warn('No journey stats available or empty object');
-        setExposedWords([]);
-      }
+      const loadStats = async () => {
+        setLoading(true);
+        try {
+          const stats = await indexedDBManager.loadJourneyStats(safeStorage);
+          console.log('ExposureStatsModal loaded journeyStats:', stats);
+          setJourneyStats(stats);
+          
+          if (stats && Object.keys(stats).length > 0) {
+            const wordsArray = Object.entries(stats).map(([key, wordStats]) => {
+              const [lithuanian, english] = key.split('-');
+              return {
+                lithuanian,
+                english,
+                ...wordStats,
+                totalCorrect: (wordStats.multipleChoice?.correct || 0) + 
+                              (wordStats.listening?.correct || 0) + 
+                              (wordStats.typing?.correct || 0),
+                totalIncorrect: (wordStats.multipleChoice?.incorrect || 0) + 
+                                (wordStats.listening?.incorrect || 0) + 
+                                (wordStats.typing?.incorrect || 0)
+              };
+            });
+            setExposedWords(wordsArray);
+          } else {
+            console.warn('No journey stats available or empty object');
+            setExposedWords([]);
+          }
+        } catch (error) {
+          console.error('Error loading journey stats in ExposureStatsModal:', error);
+          setExposedWords([]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadStats();
     }
-  }, [isOpen, journeyStats]);
+  }, [isOpen]);
 
   // Sort the exposed words based on current sort settings
   const sortedWords = [...exposedWords].sort((a, b) => {
@@ -136,7 +153,19 @@ const ExposureStatsModal = ({
         </div>
 
         <div className="w-settings-form" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <div>Loading journey statistics...</div>
+            </div>
+          ) : exposedWords.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              <div>No journey statistics available yet.</div>
+              <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                Start practicing in Journey Mode to see your progress here!
+              </div>
+            </div>
+          ) : (
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ 
                 position: 'sticky', 
@@ -232,6 +261,7 @@ const ExposureStatsModal = ({
               ))}
             </tbody>
           </table>
+          )}
         </div>
 
         <div className="w-settings-actions">

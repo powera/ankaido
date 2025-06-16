@@ -206,7 +206,7 @@ const FlashCardApp = () => {
   useEffect(() => {
     const loadJourneyStats = async () => {
       try {
-        const stats = await indexedDBManager.loadJourneyStats();
+        const stats = await indexedDBManager.loadJourneyStats(safeStorage);
         setJourneyStats(stats);
 
         // Update wordListManager with journey stats
@@ -216,19 +216,7 @@ const FlashCardApp = () => {
         }
       } catch (error) {
         console.error('Error loading journey stats:', error);
-        // Fallback to localStorage
-        const savedStats = safeStorage.getItem('journey-stats');
-        try {
-          const stats = savedStats ? JSON.parse(savedStats) : {};
-          setJourneyStats(stats);
-          if (wordListManager) {
-            wordListManager.journeyStats = stats;
-            wordListManager.notifyStateChange();
-          }
-        } catch (parseError) {
-          console.error('Error parsing journey stats from localStorage:', parseError);
-          setJourneyStats({});
-        }
+        setJourneyStats({});
       }
     };
 
@@ -654,7 +642,6 @@ const FlashCardApp = () => {
       <ExposureStatsModal
         isOpen={showExposureStatsModal}
         onClose={() => setShowExposureStatsModal(false)}
-        journeyStats={journeyStats}
       />
     </div>
   );

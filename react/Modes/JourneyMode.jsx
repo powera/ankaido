@@ -64,24 +64,15 @@ const JourneyMode = ({
   // Unified stats loading function
   const loadStatsFromStorage = React.useCallback(async () => {
     try {
-      const stats = await indexedDBManager.loadJourneyStats();
+      const stats = await indexedDBManager.loadJourneyStats(safeStorage);
+      console.log('Loaded journey stats:', stats);
       setJourneyStats(stats);
       updateWordListManagerStats(wordListManager, stats);
       setJourneyState(prev => ({ ...prev, isInitialized: true }));
     } catch (error) {
-      console.error('Error loading journey stats, falling back to localStorage:', error);
-      const savedStats = safeStorage?.getItem('journey-stats');
-      try {
-        const stats = savedStats ? JSON.parse(savedStats) : {};
-        console.log('Loaded journey stats from localStorage:', stats);
-        setJourneyStats(stats);
-        updateWordListManagerStats(wordListManager, stats);
-        setJourneyState(prev => ({ ...prev, isInitialized: true }));
-      } catch (parseError) {
-        console.error('Error parsing journey stats:', parseError);
-        setJourneyStats({});
-        setJourneyState(prev => ({ ...prev, isInitialized: true }));
-      }
+      console.error('Error loading journey stats:', error);
+      setJourneyStats({});
+      setJourneyState(prev => ({ ...prev, isInitialized: true }));
     }
   }, [safeStorage, wordListManager]);
 
