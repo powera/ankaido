@@ -12,6 +12,23 @@ import indexedDBManager from '../indexedDBManager';
 // "legacy" = original system with fixed percentages
 const ACTIVITY_SELECTION_SYSTEM = "advanced";
 
+// Constants and helper functions
+const DEFAULT_WORD_STATS = {
+  exposed: false,
+  multipleChoice: { correct: 0, incorrect: 0 },
+  listening: { correct: 0, incorrect: 0 },
+  typing: { correct: 0, incorrect: 0 },
+  lastSeen: null
+};
+
+const createWordKey = (word) => `${word.lithuanian}-${word.english}`;
+
+const updateWordListManagerStats = (wordListManager, stats) => {
+  wordListManager.journeyStats = stats;
+  console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
+  wordListManager.notifyStateChange();
+};
+
 const JourneyMode = ({ 
   wordListManager,
   wordListState,
@@ -37,100 +54,51 @@ const JourneyMode = ({
 
   const [journeyStats, setJourneyStats] = React.useState({});
 
-  // Database connection
-  const [db, setDb] = React.useState(null);
-
-  // Initialize IndexedDB once
+  // Initialize wordListManager journeyStats property
   React.useEffect(() => {
-    const initDB = async () => {
-      if (!window.indexedDB) {
-        console.warn('IndexedDB not supported, falling back to localStorage');
-        return null;
-      }
-
-      return new Promise((resolve) => {
-        const request = indexedDB.open('JourneyModeDB', 1);
-        
-        request.onerror = () => {
-          console.error('IndexedDB error:', request.error);
-          resolve(null);
-        };
-        
-        request.onsuccess = () => resolve(request.result);
-        
-        request.onupgradeneeded = (event) => {
-          const database = event.target.result;
-          if (!database.objectStoreNames.contains('wordStats')) {
-            database.createObjectStore('wordStats', { keyPath: 'wordKey' });
-          }
-        };
-      });
-    };
-
-    initDB().then(setDb);
-    
-    // Make sure wordListManager has journeyStats property initialized
     if (!wordListManager.journeyStats) {
       wordListManager.journeyStats = {};
     }
   }, [wordListManager]);
 
-  // Load stats once when initialized
-  React.useEffect(() => {
-    const loadStats = async () => {
-      try {
-        const stats = await indexedDBManager.loadJourneyStats();
-        setJourneyStats(stats);
-        
-        // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
-        wordListManager.journeyStats = stats;
-        console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
-        wordListManager.notifyStateChange();
-        
-        setJourneyState(prev => ({ ...prev, isInitialized: true }));
-      } catch (error) {
-        console.error('Error loading journey stats, falling back to localStorage:', error);
-        loadFromLocalStorage();
-      }
-    };
-
-    const loadFromLocalStorage = () => {
+  // Unified stats loading function
+  const loadStatsFromStorage = React.useCallback(async () => {
+    try {
+      const stats = await indexedDBManager.loadJourneyStats();
+      setJourneyStats(stats);
+      updateWordListManagerStats(wordListManager, stats);
+      setJourneyState(prev => ({ ...prev, isInitialized: true }));
+    } catch (error) {
+      console.error('Error loading journey stats, falling back to localStorage:', error);
       const savedStats = safeStorage?.getItem('journey-stats');
       try {
         const stats = savedStats ? JSON.parse(savedStats) : {};
         console.log('Loaded journey stats from localStorage:', stats);
         setJourneyStats(stats);
-        
-        // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
-        wordListManager.journeyStats = stats;
-        console.log('Updated wordListManager.journeyStats from localStorage:', wordListManager.journeyStats);
-        wordListManager.notifyStateChange();
-        
+        updateWordListManagerStats(wordListManager, stats);
         setJourneyState(prev => ({ ...prev, isInitialized: true }));
-      } catch (error) {
-        console.error('Error parsing journey stats:', error);
+      } catch (parseError) {
+        console.error('Error parsing journey stats:', parseError);
         setJourneyStats({});
         setJourneyState(prev => ({ ...prev, isInitialized: true }));
       }
-    };
-
-    loadStats();
+    }
   }, [safeStorage, wordListManager]);
+
+  // Load stats once when initialized
+  React.useEffect(() => {
+    loadStatsFromStorage();
+  }, [loadStatsFromStorage]);
 
   // Save stats function
   const saveStats = React.useCallback(async (newStats) => {
     console.log('Saving new journey stats:', newStats);
     setJourneyStats(newStats);
-    
-    // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
-    wordListManager.journeyStats = newStats;
-    console.log('Updated wordListManager.journeyStats in saveStats:', wordListManager.journeyStats);
-    wordListManager.notifyStateChange();
+    updateWordListManagerStats(wordListManager, newStats);
     
     try {
       const success = await indexedDBManager.saveJourneyStats(newStats);
       if (!success) {
-        // Fallback to localStorage
         safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
       }
     } catch (error) {
@@ -141,14 +109,8 @@ const JourneyMode = ({
 
   // Helper functions for word categorization
   const getWordStats = React.useCallback((word) => {
-    const wordKey = `${word.lithuanian}-${word.english}`;
-    return journeyStats[wordKey] || {
-      exposed: false,
-      multipleChoice: { correct: 0, incorrect: 0 },
-      listening: { correct: 0, incorrect: 0 },
-      typing: { correct: 0, incorrect: 0 },
-      lastSeen: null
-    };
+    const wordKey = createWordKey(word);
+    return journeyStats[wordKey] || { ...DEFAULT_WORD_STATS };
   }, [journeyStats]);
   
   // Helper to count total correct exposures for a word
@@ -345,44 +307,33 @@ const JourneyMode = ({
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
   // Word stats update functions
-  const markWordAsExposed = React.useCallback((word) => {
-    const wordKey = `${word.lithuanian}-${word.english}`;
+  const updateWordInStats = React.useCallback((word, updates) => {
+    const wordKey = createWordKey(word);
     const newStats = { ...journeyStats };
     if (!newStats[wordKey]) {
-      newStats[wordKey] = {
-        exposed: false,
-        multipleChoice: { correct: 0, incorrect: 0 },
-        listening: { correct: 0, incorrect: 0 },
-        typing: { correct: 0, incorrect: 0 },
-        lastSeen: null
-      };
+      newStats[wordKey] = { ...DEFAULT_WORD_STATS };
     }
-    newStats[wordKey].exposed = true;
-    newStats[wordKey].lastSeen = Date.now();
+    
+    // Apply updates
+    Object.assign(newStats[wordKey], updates, { lastSeen: Date.now() });
     saveStats(newStats);
   }, [journeyStats, saveStats]);
 
+  const markWordAsExposed = React.useCallback((word) => {
+    updateWordInStats(word, { exposed: true });
+  }, [updateWordInStats]);
+
   const updateWordStats = React.useCallback((word, mode, isCorrect) => {
-    const wordKey = `${word.lithuanian}-${word.english}`;
-    const newStats = { ...journeyStats };
-    if (!newStats[wordKey]) {
-      newStats[wordKey] = {
-        exposed: true,
-        multipleChoice: { correct: 0, incorrect: 0 },
-        listening: { correct: 0, incorrect: 0 },
-        typing: { correct: 0, incorrect: 0 },
-        lastSeen: null
-      };
-    }
-    
-    if (isCorrect) {
-      newStats[wordKey][mode].correct++;
-    } else {
-      newStats[wordKey][mode].incorrect++;
-    }
-    newStats[wordKey].lastSeen = Date.now();
-    saveStats(newStats);
-  }, [journeyStats, saveStats]);
+    const currentStats = getWordStats(word);
+    const updates = {
+      exposed: true,
+      [mode]: {
+        ...currentStats[mode],
+        [isCorrect ? 'correct' : 'incorrect']: currentStats[mode][isCorrect ? 'correct' : 'incorrect'] + 1
+      }
+    };
+    updateWordInStats(word, updates);
+  }, [getWordStats, updateWordInStats]);
 
   // Event handlers that use the single advance function
   const handleActivityComplete = React.useCallback((word, mode, isCorrect, shouldAutoAdvance = true) => {
@@ -480,16 +431,34 @@ const JourneyMode = ({
     );
   }
 
+  // Reusable activity header component
+  const ActivityHeader = ({ title, subtitle, background }) => (
+    <div className="w-card" style={{ background, color: 'white', marginBottom: 'var(--spacing-base)' }}>
+      <div className="w-text-center">
+        <div style={{ fontSize: subtitle ? '1.5rem' : '1.2rem', fontWeight: 'bold' }}>{title}</div>
+        {subtitle && <div>{subtitle}</div>}
+      </div>
+    </div>
+  );
+
+  // Reusable navigation controls
+  const NavigationControls = () => (
+    !autoAdvance && (
+      <div className="w-nav-controls">
+        <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
+      </div>
+    )
+  );
+
   if (journeyState.currentActivity === 'new-word') {
     return (
       <div>
         {journeyState.showNewWordIndicator && (
-          <div className="w-card" style={{ background: 'linear-gradient(135deg, #4CAF50, #45a049)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
-            <div className="w-text-center">
-              <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>✨ New Word!</div>
-              <div>Learning something new on your journey</div>
-            </div>
-          </div>
+          <ActivityHeader 
+            title="✨ New Word!" 
+            subtitle="Learning something new on your journey"
+            background="linear-gradient(135deg, #4CAF50, #45a049)"
+          />
         )}
         <FlashCardMode 
           currentWord={journeyState.currentWord}
@@ -512,11 +481,10 @@ const JourneyMode = ({
   if (journeyState.currentActivity === 'multiple-choice') {
     return (
       <div>
-        <div className="w-card" style={{ background: 'linear-gradient(135deg, #2196F3, #1976D2)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
-          <div className="w-text-center">
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>🎯 Multiple Choice Challenge</div>
-          </div>
-        </div>
+        <ActivityHeader 
+          title="🎯 Multiple Choice Challenge"
+          background="linear-gradient(135deg, #2196F3, #1976D2)"
+        />
         <MultipleChoiceMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
@@ -527,11 +495,7 @@ const JourneyMode = ({
           handleHoverEnd={handleHoverEnd}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
-        {!autoAdvance && (
-          <div className="w-nav-controls">
-            <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
-          </div>
-        )}
+        <NavigationControls />
       </div>
     );
   }
@@ -551,11 +515,10 @@ const JourneyMode = ({
     
     return (
       <div>
-        <div className="w-card" style={{ background: 'linear-gradient(135deg, #9C27B0, #7B1FA2)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
-          <div className="w-text-center">
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{challengeTitle}</div>
-          </div>
-        </div>
+        <ActivityHeader 
+          title={challengeTitle}
+          background="linear-gradient(135deg, #9C27B0, #7B1FA2)"
+        />
         <ListeningMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
@@ -564,11 +527,7 @@ const JourneyMode = ({
           playAudio={playAudio}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
-        {!autoAdvance && (
-          <div className="w-nav-controls">
-            <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
-          </div>
-        )}
+        <NavigationControls />
       </div>
     );
   }
@@ -576,11 +535,10 @@ const JourneyMode = ({
   if (journeyState.currentActivity === 'typing') {
     return (
       <div>
-        <div className="w-card" style={{ background: 'linear-gradient(135deg, #FF9800, #F57C00)', color: 'white', marginBottom: 'var(--spacing-base)' }}>
-          <div className="w-text-center">
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>⌨️ Typing Challenge</div>
-          </div>
-        </div>
+        <ActivityHeader 
+          title="⌨️ Typing Challenge"
+          background="linear-gradient(135deg, #FF9800, #F57C00)"
+        />
         <JourneyTypingMode 
           journeyWord={journeyState.currentWord}
           studyMode={studyMode}
