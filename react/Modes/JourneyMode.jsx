@@ -40,8 +40,7 @@ const JourneyMode = ({
   nextCard,
   autoAdvance,
   defaultDelay,
-  safeStorage,
-  setJourneyStats
+  safeStorage
 }) => {
   // Core state - single source of truth
   const [journeyState, setJourneyState] = React.useState({
