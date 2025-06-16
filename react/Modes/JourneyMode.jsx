@@ -35,7 +35,6 @@ const JourneyMode = ({
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
-  const [showExposureStats, setShowExposureStats] = React.useState(false);
 
   // Database connection
   const [db, setDb] = React.useState(null);
@@ -68,7 +67,12 @@ const JourneyMode = ({
     };
 
     initDB().then(setDb);
-  }, []);
+    
+    // Make sure wordListManager has journeyStats property initialized
+    if (!wordListManager.journeyStats) {
+      wordListManager.journeyStats = {};
+    }
+  }, [wordListManager]);
 
   // Load stats once when DB is ready
   React.useEffect(() => {
@@ -86,7 +90,15 @@ const JourneyMode = ({
             request.result.forEach(item => {
               stats[item.wordKey] = item.stats;
             });
+            
+            console.log('Loaded journey stats from IndexedDB:', stats);
             setJourneyStats(stats);
+            
+            // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
+            wordListManager.journeyStats = stats;
+            console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
+            wordListManager.notifyStateChange();
+            
             setJourneyState(prev => ({ ...prev, isInitialized: true }));
           };
           
@@ -106,7 +118,15 @@ const JourneyMode = ({
     const loadFromLocalStorage = () => {
       const savedStats = safeStorage?.getItem('journey-stats');
       try {
-        setJourneyStats(savedStats ? JSON.parse(savedStats) : {});
+        const stats = savedStats ? JSON.parse(savedStats) : {};
+        console.log('Loaded journey stats from localStorage:', stats);
+        setJourneyStats(stats);
+        
+        // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
+        wordListManager.journeyStats = stats;
+        console.log('Updated wordListManager.journeyStats from localStorage:', wordListManager.journeyStats);
+        wordListManager.notifyStateChange();
+        
         setJourneyState(prev => ({ ...prev, isInitialized: true }));
       } catch (error) {
         console.error('Error parsing journey stats:', error);
@@ -116,11 +136,17 @@ const JourneyMode = ({
     };
 
     loadStats();
-  }, [db, safeStorage]);
+  }, [db, safeStorage, wordListManager]);
 
   // Save stats function
   const saveStats = React.useCallback(async (newStats) => {
+    console.log('Saving new journey stats:', newStats);
     setJourneyStats(newStats);
+    
+    // Update wordListManager with journey stats for the ExposureStatsModal in Trakaido
+    wordListManager.journeyStats = newStats;
+    console.log('Updated wordListManager.journeyStats in saveStats:', wordListManager.journeyStats);
+    wordListManager.notifyStateChange();
     
     if (db) {
       try {
@@ -143,7 +169,7 @@ const JourneyMode = ({
     } else {
       safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
     }
-  }, [db, safeStorage]);
+  }, [db, safeStorage, wordListManager]);
 
   // Helper functions for word categorization
   const getWordStats = React.useCallback((word) => {
@@ -440,11 +466,6 @@ const JourneyMode = ({
     handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
   }, [journeyState.currentWord, handleActivityComplete]);
   
-  // Handler for exposure stats modal
-  const handleToggleExposureStats = React.useCallback(() => {
-    setShowExposureStats(prev => !prev);
-  }, []);
-
   // Loading states
   if (!journeyState.isInitialized) {
     return (
@@ -712,6 +733,7 @@ const JourneyTypingMode = ({
           <button className="w-button" onClick={onNext}>Next Activity →</button>
         </div>
       )}
+
     </div>
   );
 };

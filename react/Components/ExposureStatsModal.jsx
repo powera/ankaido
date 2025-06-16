@@ -12,22 +12,29 @@ const ExposureStatsModal = ({
 
   // Process journey stats into a sortable array when stats change or modal opens
   useEffect(() => {
-    if (isOpen && journeyStats) {
-      const wordsArray = Object.entries(journeyStats).map(([key, stats]) => {
-        const [lithuanian, english] = key.split('-');
-        return {
-          lithuanian,
-          english,
-          ...stats,
-          totalCorrect: (stats.multipleChoice?.correct || 0) + 
-                        (stats.listening?.correct || 0) + 
-                        (stats.typing?.correct || 0),
-          totalIncorrect: (stats.multipleChoice?.incorrect || 0) + 
-                          (stats.listening?.incorrect || 0) + 
-                          (stats.typing?.incorrect || 0)
-        };
-      });
-      setExposedWords(wordsArray);
+    if (isOpen) {
+      console.log('ExposureStatsModal opened with journeyStats:', journeyStats);
+      
+      if (journeyStats && Object.keys(journeyStats).length > 0) {
+        const wordsArray = Object.entries(journeyStats).map(([key, stats]) => {
+          const [lithuanian, english] = key.split('-');
+          return {
+            lithuanian,
+            english,
+            ...stats,
+            totalCorrect: (stats.multipleChoice?.correct || 0) + 
+                          (stats.listening?.correct || 0) + 
+                          (stats.typing?.correct || 0),
+            totalIncorrect: (stats.multipleChoice?.incorrect || 0) + 
+                            (stats.listening?.incorrect || 0) + 
+                            (stats.typing?.incorrect || 0)
+          };
+        });
+        setExposedWords(wordsArray);
+      } else {
+        console.warn('No journey stats available or empty object');
+        setExposedWords([]);
+      }
     }
   }, [isOpen, journeyStats]);
 

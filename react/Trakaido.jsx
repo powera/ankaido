@@ -98,6 +98,7 @@ const FlashCardApp = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showStudyMaterialsModal, setShowStudyMaterialsModal] = useState(false);
+  const [showExposureStatsModal, setShowExposureStatsModal] = useState(false);
   const [loadingWords, setLoadingWords] = useState(false);
   const [conjugations, setConjugations] = useState({});
   const [availableVerbs, setAvailableVerbs] = useState([]);
@@ -464,6 +465,8 @@ const FlashCardApp = () => {
         toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
+        onOpenExposureStats={() => setShowExposureStatsModal(true)}
+        journeyStats={wordListState.journeyStats}
       />
 
       {!showNoGroupsMessage && (
@@ -606,6 +609,11 @@ const FlashCardApp = () => {
         setSelectedGroups={setSelectedGroups}
         resetAllSettings={resetAllSettings}
         safeStorage={safeStorage}
+      />
+      <ExposureStatsModal
+        isOpen={showExposureStatsModal}
+        onClose={() => setShowExposureStatsModal(false)}
+        journeyStats={wordListState.journeyStats || {}}
       />
     </div>
   );

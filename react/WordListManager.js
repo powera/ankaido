@@ -11,6 +11,7 @@ class WordListManager {
     this.typingFeedback = '';
     this.multipleChoiceOptions = [];
     this.stats = { correct: 0, incorrect: 0, total: 0 };
+    this.journeyStats = {}; // Add journeyStats property
     this.autoAdvanceTimer = null;
     this.onStateChange = null; // Callback for state updates
   }
@@ -30,6 +31,7 @@ class WordListManager {
         typingFeedback: this.typingFeedback,
         multipleChoiceOptions: this.multipleChoiceOptions,
         stats: this.stats,
+        journeyStats: this.journeyStats, // Include journeyStats in the state update
         autoAdvanceTimer: this.autoAdvanceTimer
       });
     }
