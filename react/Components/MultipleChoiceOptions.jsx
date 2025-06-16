@@ -87,25 +87,34 @@ const MultipleChoiceOptions = ({
             disabled={wordListState.showAnswer}
           >
             <div className="trakaido-choice-content">
-              <div style={{ textAlign: 'center' }}>
-                <span>{option}</span>
-                <div style={{ fontSize: '0.8rem', marginTop: '4px', minHeight: '1.2em' }}>
-                  {wordListState.showAnswer && translation && (
+              <div style={{ textAlign: 'center', width: '100%' }}>
+                <div style={{ fontWeight: '500' }}>{option}</div>
+                {wordListState.showAnswer && translation && (
+                  <div style={{ 
+                    fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
+                    marginTop: '2px', 
+                    minHeight: '1em',
+                    opacity: 0.8
+                  }}>
                     <span style={{ color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)' }}>
                       ({translation})
                     </span>
-                  )}
-                </div>
+                  </div>
+                )}
+                {wordListState.showAnswer && isCorrect && (
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    marginTop: '4px' 
+                  }}>
+                    <AudioButton 
+                      word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
+                      audioEnabled={audioEnabled}
+                      playAudio={playAudio}
+                    />
+                  </div>
+                )}
               </div>
-              {wordListState.showAnswer && isCorrect && (
-                <div style={{ display: 'inline-block', marginLeft: '8px' }}>
-                  <AudioButton 
-                    word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
-                    audioEnabled={audioEnabled}
-                    playAudio={playAudio}
-                  />
-                </div>
-              )}
             </div>
           </button>
         );

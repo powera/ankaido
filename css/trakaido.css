@@ -229,11 +229,34 @@
     opacity: 0.5;
 }
 
-/* Mobile: stack vertically */
+/* Mobile: compact 8-button layout */
 @media screen and (max-width: 767px) {
     .w-multiple-choice {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
         max-width: none;
+        margin: 1rem 0;
+    }
+    
+    .w-choice-option {
+        padding: 0.75rem 0.5rem;
+        min-height: 50px;
+        font-size: 0.9rem;
+        line-height: 1.2;
+    }
+}
+
+/* Extra compact for very small screens */
+@media screen and (max-width: 480px) {
+    .w-multiple-choice {
+        gap: 0.4rem;
+        margin: 0.75rem 0;
+    }
+    
+    .w-choice-option {
+        padding: 0.6rem 0.4rem;
+        min-height: 45px;
+        font-size: 0.85rem;
     }
 }
 

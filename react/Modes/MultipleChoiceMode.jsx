@@ -19,13 +19,17 @@ const MultipleChoiceMode = ({
 
   return (
     <div>
-      <div className="w-card">
+      <div className="w-card" style={{ padding: 'min(var(--spacing-large), 1rem)' }}>
         <div className="w-badge w-hide-mobile">{currentWord.corpus} → {currentWord.group}</div>
         <div 
           className="w-question"
           onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
           onMouseLeave={handleHoverEnd}
-          style={{ cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default' }}
+          style={{ 
+            cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default',
+            fontSize: 'clamp(1.2rem, 4vw, 1.5rem)',
+            marginBottom: 'clamp(1rem, 3vw, var(--spacing-large))'
+          }}
         >
           {question}
         </div>
