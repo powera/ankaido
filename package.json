@@ -5,8 +5,10 @@
   "devDependencies": {
     "@babel/cli": "^7.23.0",
     "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
     "@babel/preset-react": "^7.22.0",
-    "@babel/preset-env": "^7.23.0"
+    "@vitejs/plugin-react": "^4.5.2",
+    "vite": "^6.3.5"
   },
   "scripts": {
     "dev": "vite",

@@ -1,3 +1,16 @@
+modules = ["nodejs-20"]
 [deployment]
 run = ["sh", "-c", ""]
 build = ["sh", "-c", "npm run build"]
+
+[workflows]
+runButton = "Development Server"
+
+[[workflows.workflow]]
+name = "Development Server"
+author = 8258015
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
