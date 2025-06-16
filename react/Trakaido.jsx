@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useGlobalSettings } from './useGlobalSettings';  // This is the correct syntax for now; it is awkward and possibly should be updated.
-import { useFullscreen } from './useFullscreen';
-import VocabularyList from './VocabularyList';
-import TypingMode from './TypingMode';
-import StatsDisplay from './StatsDisplay';
-import FlashCardMode from './FlashCardMode';
-import ListeningMode from './ListeningMode';
-import MultipleChoiceMode from './MultipleChoiceMode';
-import StudyMaterialsModal from './StudyMaterialsModal';
-import StudyModeSelector from './StudyModeSelector';
-import ConjugationsMode from './ConjugationsMode';
-import DeclensionsMode from './DeclensionsMode';
-import WordListManager from './WordListManager';
-import SplashScreen from './SplashScreen';
-import WelcomeScreen from './WelcomeScreen';
-import JourneyMode from './JourneyMode';
-import safeStorage from './safeStorage';
+import { useGlobalSettings } from './useGlobalSettings.jsx';
+import { useFullscreen } from './useFullscreen.js';
+import VocabularyList from './Components/VocabularyList.jsx';
+import TypingMode from './Modes/TypingMode.jsx';
+import StatsDisplay from './Components/StatsDisplay.jsx';
+import FlashCardMode from './Modes/FlashCardMode.jsx';
+import ListeningMode from './Modes/ListeningMode.jsx';
+import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
+import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
+import StudyModeSelector from './Components/StudyModeSelector.jsx';
+import ConjugationsMode from './Modes/ConjugationsMode.jsx';
+import DeclensionsMode from './Modes/DeclensionsMode.jsx';
+import WordListManager from './WordListManager.js';
+import SplashScreen from './Components/SplashScreen.jsx';
+import WelcomeScreen from './Components/WelcomeScreen.jsx';
+import JourneyMode from './Modes/JourneyMode.jsx';
+import safeStorage from './safeStorage.js';
+
+// Import CSS modules for better organization
+import './styles/mobile.css';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
