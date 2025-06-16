@@ -1,7 +1,7 @@
 
 import React from 'react';
-import MultipleChoiceOptions from './MultipleChoiceOptions';
-import AudioButton from './AudioButton';
+import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
+import AudioButton from '../Components/AudioButton';
 
 const ListeningMode = ({ 
   wordListManager,

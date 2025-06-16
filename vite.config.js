@@ -4,9 +4,18 @@ import react from '@vitejs/plugin-react'
 import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      // Configure JSX runtime to use automatic runtime
+      jsxRuntime: 'automatic',
+      // Ensure we don't need explicit imports for JSX
+      jsxImportSource: 'react',
+      // Disable fast refresh during development if causing issues
+      fastRefresh: true,
+    })
+  ],
   root: 'react',
-  publicDir: '../css',
+  publicDir: 'public',
   build: {
     outDir: '../build',
     emptyOutDir: true,
@@ -34,8 +43,20 @@ export default defineConfig({
     },
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "./css/common.css";`
+        // Remove the incorrect CSS import
       }
     }
+  },
+  resolve: {
+    alias: {
+      // Add an alias for the Components directory to make imports cleaner
+      '@components': resolve(__dirname, 'react/Components'),
+      '@modes': resolve(__dirname, 'react/Modes')
+    }
+  },
+  esbuild: {
+    // Ensure JSX is properly handled
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment'
   }
 })

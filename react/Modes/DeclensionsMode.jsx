@@ -1,6 +1,6 @@
 
 import React from 'react';
-import DeclensionTable from './DeclensionTable';
+import DeclensionTable from '../Components/DeclensionTable';
 
 const DeclensionsMode = ({
   selectedNoun,

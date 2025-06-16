@@ -1,6 +1,6 @@
 
 import React from 'react';
-import AudioButton from './AudioButton';
+import AudioButton from '../Components/AudioButton';
 
 const FlashCardMode = ({ 
   currentWord, 

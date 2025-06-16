@@ -1,4 +1,4 @@
-// Access React hooks from the global React object
+import React from 'react';
 const { useState, useEffect, useRef, useCallback } = React;
 
 /**

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import MultipleChoiceOptions from './MultipleChoiceOptions';
+import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 
 const MultipleChoiceMode = ({ 
   wordListManager,

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import ConjugationTable from './ConjugationTable';
+import ConjugationTable from '../Components/ConjugationTable';
 
 const ConjugationsMode = ({
   selectedVerbCorpus,

@@ -3,7 +3,7 @@ import React from 'react';
 import FlashCardMode from './FlashCardMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
-import AudioButton from './AudioButton';
+import AudioButton from '../Components/AudioButton';
 
 const JourneyMode = ({ 
   wordListManager,
