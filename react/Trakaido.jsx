@@ -573,6 +573,7 @@ const FlashCardApp = () => {
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           safeStorage={safeStorage}
+          setJourneyStats={setJourneyStats}
         />
       ) : quizMode === 'flashcard' ? (
         <FlashCardMode 

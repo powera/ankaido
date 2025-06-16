@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FlashCardMode from './FlashCardMode';
 import MultipleChoiceMode from './MultipleChoiceMode';
@@ -29,7 +28,7 @@ const updateWordListManagerStats = (wordListManager, stats) => {
   wordListManager.notifyStateChange();
 };
 
-const JourneyMode = ({ 
+const JourneyMode = ({
   wordListManager,
   wordListState,
   studyMode,
@@ -41,7 +40,8 @@ const JourneyMode = ({
   nextCard,
   autoAdvance,
   defaultDelay,
-  safeStorage
+  safeStorage,
+  setJourneyStats
 }) => {
   // Core state - single source of truth
   const [journeyState, setJourneyState] = React.useState({
@@ -95,7 +95,7 @@ const JourneyMode = ({
     console.log('Saving new journey stats:', newStats);
     setJourneyStats(newStats);
     updateWordListManagerStats(wordListManager, newStats);
-    
+
     try {
       const success = await indexedDBManager.saveJourneyStats(newStats);
       if (!success) {
@@ -112,7 +112,7 @@ const JourneyMode = ({
     const wordKey = createWordKey(word);
     return journeyStats[wordKey] || { ...DEFAULT_WORD_STATS };
   }, [journeyStats]);
-  
+
   // Helper to count total correct exposures for a word
   const getTotalCorrectExposures = React.useCallback((word) => {
     const stats = getWordStats(word);
@@ -131,7 +131,7 @@ const JourneyMode = ({
   const selectNextActivity = React.useCallback(() => {
     const exposedWords = getExposedWords();
     const newWords = getNewWords();
-    
+
     if (wordListState.allWords.length === 0) {
       return { type: 'new-word', word: wordListManager.getCurrentWord() };
     }
@@ -145,7 +145,7 @@ const JourneyMode = ({
     // Legacy system with fixed percentages
     if (ACTIVITY_SELECTION_SYSTEM === "legacy") {
       const random = Math.random() * 100;
-      
+
       if (random < 20 && newWords.length > 0) {
         const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
         return { type: 'new-word', word: randomNewWord };
@@ -162,7 +162,7 @@ const JourneyMode = ({
         return { type: 'grammar-break', word: null };
       }
     }
-    
+
     // Advanced system based on exposures
     // First, decide if we should introduce a new word (25% chance)
     let random = Math.random() * 100;
@@ -170,7 +170,7 @@ const JourneyMode = ({
       const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
       return { type: 'new-word', word: randomNewWord };
     }
-    
+
     // Otherwise, choose an exposed word
     if (exposedWords.length === 0) {
       // If no exposed words, fall back to new word
@@ -180,10 +180,10 @@ const JourneyMode = ({
       }
       return { type: 'grammar-break', word: null };
     }
-    
+
     // Filter words by exposure count
     let filteredWords = [...exposedWords];
-    
+
     // For words with 10+ exposures, 75% chance to redraw
     if (filteredWords.some(word => getTotalCorrectExposures(word) >= 10)) {
       filteredWords = filteredWords.filter(word => {
@@ -194,17 +194,17 @@ const JourneyMode = ({
         }
         return true;
       });
-      
+
       // If we filtered out all words, use the original list
       if (filteredWords.length === 0) {
         filteredWords = [...exposedWords];
       }
     }
-    
+
     // Choose a random word from the filtered list
     const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
     const exposures = getTotalCorrectExposures(selectedWord);
-    
+
     // Determine activity type based on exposure count
     if (exposures < 3) {
       // Fewer than 3 exposures: use multiple-choice or easy listening
@@ -212,7 +212,7 @@ const JourneyMode = ({
       if (!audioEnabled) {
         return { type: 'multiple-choice', word: selectedWord };
       }
-      
+
       random = Math.random();
       if (random < 0.5) {
         return { type: 'multiple-choice', word: selectedWord };
@@ -235,7 +235,7 @@ const JourneyMode = ({
           return { type: 'typing', word: selectedWord };
         }
       }
-      
+
       random = Math.random() * 100;
       if (random < 33) {
         return { type: 'multiple-choice', word: selectedWord };
@@ -255,11 +255,11 @@ const JourneyMode = ({
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
     const nextActivity = selectNextActivity();
-    
+
     // Reset answer state for all components
     wordListManager.selectedAnswer = null;
     wordListManager.setShowAnswer(false);
-    
+
     // Update journey state in one place
     setJourneyState({
       isInitialized: true,
@@ -283,7 +283,7 @@ const JourneyMode = ({
       if (wordIndex >= 0) {
         wordListManager.currentCard = wordIndex;
         wordListManager.notifyStateChange();
-        
+
         // For listening mode, determine if we're using easy or hard mode
         let effectiveStudyMode = studyMode;
         if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
@@ -293,7 +293,7 @@ const JourneyMode = ({
           // Hard listening: always use lithuanian-to-english regardless of global study mode
           effectiveStudyMode = 'lithuanian-to-english';
         }
-        
+
         wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
       }
     }
@@ -313,7 +313,7 @@ const JourneyMode = ({
     if (!newStats[wordKey]) {
       newStats[wordKey] = { ...DEFAULT_WORD_STATS };
     }
-    
+
     // Apply updates
     Object.assign(newStats[wordKey], updates, { lastSeen: Date.now() });
     saveStats(newStats);
@@ -340,7 +340,7 @@ const JourneyMode = ({
     if (word && mode) {
       updateWordStats(word, mode, isCorrect);
     }
-    
+
     if (shouldAutoAdvance && autoAdvance) {
       setTimeout(() => {
         advanceToNextActivity();
@@ -350,10 +350,10 @@ const JourneyMode = ({
 
   const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
     if (!journeyState.currentWord) return;
-    
+
     const currentWord = journeyState.currentWord;
     let correctAnswer;
-    
+
     if (journeyState.currentActivity === 'listening') {
       // Determine correct answer based on listening mode
       if (journeyState.listeningMode === 'easy') {
@@ -370,13 +370,13 @@ const JourneyMode = ({
       // Multiple choice follows the global study mode
       correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
     }
-    
+
     const isCorrect = selectedOption === correctAnswer;
     const modeKey = journeyState.currentActivity === 'listening' ? 'listening' : 'multipleChoice';
-    
+
     // Call the original handler for UI updates
     handleMultipleChoiceAnswer(selectedOption);
-    
+
     // Handle completion through single function
     handleActivityComplete(currentWord, modeKey, isCorrect);
   }, [journeyState.currentWord, journeyState.currentActivity, journeyState.listeningMode, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
@@ -384,7 +384,7 @@ const JourneyMode = ({
   const handleTypingComplete = React.useCallback((isCorrect) => {
     handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
   }, [journeyState.currentWord, handleActivityComplete]);
-  
+
   // Loading states
   if (!journeyState.isInitialized) {
     return (
@@ -504,7 +504,7 @@ const JourneyMode = ({
     // Determine the effective study mode based on listening mode
     let effectiveStudyMode = studyMode;
     let challengeTitle = '🎧 Listening Challenge';
-    
+
     if (journeyState.listeningMode === 'easy') {
       effectiveStudyMode = 'lithuanian-to-lithuanian';
       challengeTitle = '🎧 Listening Challenge (Easy)';
@@ -512,7 +512,7 @@ const JourneyMode = ({
       effectiveStudyMode = 'lithuanian-to-english';
       challengeTitle = '🎧 Listening Challenge (Hard)';
     }
-    
+
     return (
       <div>
         <ActivityHeader 
@@ -602,7 +602,7 @@ const JourneyTypingMode = ({
   return (
     <div className="w-card">
       <div className="w-badge">{journeyWord.corpus} → {journeyWord.group}</div>
-      
+
       <div className="w-question w-mb-large">
         <div>{question}</div>
         {audioEnabled && studyMode === 'lithuanian-to-english' && (
