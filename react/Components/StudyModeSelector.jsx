@@ -147,24 +147,28 @@ const StudyModeSelector = ({
         )}
         <SettingsToggle className="w-mode-option w-compact-button" title="Settings">
           <span className="w-hide-mobile">Settings</span>
+          <span className="w-show-mobile">⚙️</span>
         </SettingsToggle>
         <button className="w-hide-mobile w-mode-option w-compact-button" onClick={toggleFullscreen}>
           {isFullscreen ? '🗗 Close Fullscreen' : '⛶ Fullscreen'}
         </button>
       </div>
       {audioEnabled && availableVoices.length > 0 && (
-        <select 
-          value={selectedVoice || ''} 
-          onChange={(e) => setSelectedVoice(e.target.value)}
-          className="w-mode-option"
-        >
-          <option value="random">🎲 Random Voice</option>
-          {availableVoices.map(voice => (
-            <option key={voice} value={voice}>
-              🎤 {voice}
-            </option>
-          ))}
-        </select>
+        <div className="w-hide-mobile" style={{ marginTop: '0.5rem' }}>
+          <select 
+            value={selectedVoice || ''} 
+            onChange={(e) => setSelectedVoice(e.target.value)}
+            className="w-mode-option"
+            style={{ width: '100%', maxWidth: '200px' }}
+          >
+            <option value="random">🎲 Random Voice</option>
+            {availableVoices.map(voice => (
+              <option key={voice} value={voice}>
+                🎤 {voice}
+              </option>
+            ))}
+          </select>
+        </div>
       )}
     </div>
   );

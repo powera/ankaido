@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AudioButton from './AudioButton';
 
@@ -101,20 +100,21 @@ const MultipleChoiceOptions = ({
                     </span>
                   </div>
                 )}
-                {wordListState.showAnswer && isCorrect && (
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'center', 
-                    marginTop: '4px' 
-                  }}>
-                    <AudioButton 
-                      word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
-                      audioEnabled={audioEnabled}
-                      playAudio={playAudio}
-                    />
-                  </div>
-                )}
               </div>
+              {wordListState.showAnswer && isCorrect && (
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  alignItems: 'center'
+                }}>
+                  <AudioButton 
+                    word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
+                    audioEnabled={audioEnabled}
+                    playAudio={playAudio}
+                    size="small"
+                  />
+                </div>
+              )}
             </div>
           </button>
         );
