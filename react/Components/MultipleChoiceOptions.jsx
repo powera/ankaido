@@ -96,7 +96,6 @@ const MultipleChoiceOptions = ({
                   <div style={{ 
                     fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
                     marginTop: '2px', 
-                    minHeight: '1em',
                     opacity: 0.8
                   }}>
                     <span style={{ color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)' }}>

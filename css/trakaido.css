@@ -196,6 +196,7 @@
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 60px;
+    max-height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -243,8 +244,6 @@
     
     .w-choice-option {
         padding: 0.75rem 0.5rem;
-        min-height: 70px; /* Fixed height to prevent layout shifts */
-        max-height: 70px; /* Prevent expansion */
         font-size: 0.9rem;
         line-height: 1.2;
         display: flex;
@@ -334,8 +333,6 @@
     
     .w-choice-option {
         padding: 0.6rem 0.4rem;
-        min-height: 65px;
-        max-height: 65px;
         font-size: 0.85rem;
     }
     

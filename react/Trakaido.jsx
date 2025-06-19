@@ -19,9 +19,6 @@ import JourneyMode from './Modes/JourneyMode.jsx';
 import safeStorage from './safeStorage.js';
 import journeyStatsManager, { updateWordListManagerStats } from './journeyStatsManager';
 
-// Import CSS modules for better organization
-import './styles/mobile.css';
-
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
 const { 

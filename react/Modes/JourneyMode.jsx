@@ -41,7 +41,8 @@ const JourneyMode = ({
     currentActivity: null,
     currentWord: null,
     showNewWordIndicator: false,
-    listeningMode: null
+    listeningMode: null,
+    multipleChoiceMode: null
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
@@ -126,7 +127,8 @@ const JourneyMode = ({
         return { type: 'new-word', word: randomNewWord };
       } else if (random < 50 && exposedWords.length > 0) {
         const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
-        return { type: 'multiple-choice', word: randomExposedWord };
+        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+        return { type: 'multiple-choice', word: randomExposedWord, mode: mcMode };
       } else if (random < 80 && exposedWords.length > 0) {
         const randomExposedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
         return { type: 'listening', word: randomExposedWord };
@@ -191,12 +193,14 @@ const JourneyMode = ({
       // Fewer than 3 exposures: use multiple-choice or easy listening
       // If audio is disabled, always use multiple-choice
       if (!audioEnabled) {
-        return { type: 'multiple-choice', word: selectedWord };
+        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
       }
 
       random = Math.random();
       if (random < 0.5) {
-        return { type: 'multiple-choice', word: selectedWord };
+        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
       } else {
         // Easy listening: given LT audio, choose LT word
         return { 
@@ -211,7 +215,8 @@ const JourneyMode = ({
       if (!audioEnabled) {
         random = Math.random();
         if (random < 0.5) {
-          return { type: 'multiple-choice', word: selectedWord };
+          const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+          return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
         } else {
           return { type: 'typing', word: selectedWord };
         }
@@ -219,7 +224,8 @@ const JourneyMode = ({
 
       random = Math.random() * 100;
       if (random < 33) {
-        return { type: 'multiple-choice', word: selectedWord };
+        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
       } else if (random < 66) {
         // Hard listening: given LT audio, choose EN word (requires knowing meaning)
         return { 
@@ -247,7 +253,8 @@ const JourneyMode = ({
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
       showNewWordIndicator: nextActivity.type === 'new-word',
-      listeningMode: nextActivity.mode // Store the listening mode (easy/hard)
+      listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null, // Store the listening mode (easy/hard)
+      multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null // Store the multiple-choice mode (en-to-lt/lt-to-en)
     });
 
     // If it's a new word, mark it as exposed
@@ -265,13 +272,19 @@ const JourneyMode = ({
         wordListManager.currentCard = wordIndex;
         wordListManager.notifyStateChange();
 
-        // For listening mode, determine if we're using easy or hard mode
+        // Determine effective study mode based on activity type and mode
         let effectiveStudyMode = studyMode;
         if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
           // Easy listening: always use lithuanian-to-lithuanian regardless of global study mode
           effectiveStudyMode = 'lithuanian-to-lithuanian';
         } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
           // Hard listening: always use lithuanian-to-english regardless of global study mode
+          effectiveStudyMode = 'lithuanian-to-english';
+        } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'en-to-lt') {
+          // English-to-Lithuanian multiple choice: English prompt, Lithuanian answers
+          effectiveStudyMode = 'english-to-lithuanian';
+        } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'lt-to-en') {
+          // Lithuanian-to-English multiple choice: Lithuanian prompt, English answers
           effectiveStudyMode = 'lithuanian-to-english';
         }
 
@@ -334,8 +347,15 @@ const JourneyMode = ({
         correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
       }
     } else {
-      // Multiple choice follows the global study mode
-      correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+      // Multiple choice uses its specific mode
+      if (journeyState.multipleChoiceMode === 'en-to-lt') {
+        correctAnswer = currentWord.lithuanian;
+      } else if (journeyState.multipleChoiceMode === 'lt-to-en') {
+        correctAnswer = currentWord.english;
+      } else {
+        // Fallback to global study mode if no specific mode is set
+        correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+      }
     }
 
     const isCorrect = selectedOption === correctAnswer;
@@ -346,7 +366,7 @@ const JourneyMode = ({
 
     // Handle completion through single function
     await handleActivityComplete(currentWord, modeKey, isCorrect);
-  }, [journeyState.currentWord, journeyState.currentActivity, journeyState.listeningMode, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
+  }, [journeyState.currentWord, journeyState.currentActivity, journeyState.listeningMode, journeyState.multipleChoiceMode, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
 
   const handleTypingComplete = React.useCallback(async (isCorrect) => {
     await handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
@@ -479,6 +499,16 @@ const JourneyMode = ({
   }
 
   if (journeyState.currentActivity === 'multiple-choice') {
+    // Calculate effective study mode for multiple choice
+    let effectiveStudyMode = studyMode;
+    if (journeyState.multipleChoiceMode === 'en-to-lt') {
+      // English-to-Lithuanian multiple choice: English prompt, Lithuanian answers
+      effectiveStudyMode = 'english-to-lithuanian';
+    } else if (journeyState.multipleChoiceMode === 'lt-to-en') {
+      // Lithuanian-to-English multiple choice: Lithuanian prompt, English answers
+      effectiveStudyMode = 'lithuanian-to-english';
+    }
+    
     return (
       <div>
         <ActivityHeader 
@@ -488,7 +518,7 @@ const JourneyMode = ({
         <MultipleChoiceMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
-          studyMode={studyMode}
+          studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
