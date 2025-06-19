@@ -5,22 +5,14 @@ import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
 import indexedDBManager from '../indexedDBManager';
+import journeyStatsManager, { DEFAULT_WORD_STATS, createWordKey } from '../journeyStatsManager';
 
 // Global variable for activity selection system
 // "advanced" = new system with exposure-based selection
 // "legacy" = original system with fixed percentages
 const ACTIVITY_SELECTION_SYSTEM = "advanced";
 
-// Constants and helper functions
-const DEFAULT_WORD_STATS = {
-  exposed: false,
-  multipleChoice: { correct: 0, incorrect: 0 },
-  listening: { correct: 0, incorrect: 0 },
-  typing: { correct: 0, incorrect: 0 },
-  lastSeen: null
-};
-
-const createWordKey = (word) => `${word.lithuanian}-${word.english}`;
+// Constants and helper functions moved to journeyStatsManager
 
 const updateWordListManagerStats = (wordListManager, stats) => {
   wordListManager.journeyStats = stats;
@@ -60,10 +52,10 @@ const JourneyMode = ({
     }
   }, [wordListManager]);
 
-  // Unified stats loading function
+  // Unified stats loading function using shared manager
   const loadStatsFromStorage = React.useCallback(async () => {
     try {
-      const stats = await indexedDBManager.loadJourneyStats();
+      const stats = await journeyStatsManager.initialize();
       console.log('Loaded journey stats:', stats);
       setJourneyStats(stats);
       updateWordListManagerStats(wordListManager, stats);
@@ -75,10 +67,23 @@ const JourneyMode = ({
     }
   }, [wordListManager]);
 
-  // Load stats once when initialized
+  // Load stats once when initialized and set up listener for external stats updates
   React.useEffect(() => {
     loadStatsFromStorage();
-  }, [loadStatsFromStorage]);
+
+    // Listen for stats updates from other modes
+    const handleStatsUpdate = (updatedStats) => {
+      setJourneyStats(updatedStats);
+      updateWordListManagerStats(wordListManager, updatedStats);
+    };
+
+    journeyStatsManager.addListener(handleStatsUpdate);
+
+    // Cleanup listener on unmount
+    return () => {
+      journeyStatsManager.removeListener(handleStatsUpdate);
+    };
+  }, [loadStatsFromStorage, wordListManager]);
 
   // Save stats function
   const saveStats = React.useCallback(async (newStats) => {
@@ -319,22 +324,20 @@ const JourneyMode = ({
     updateWordInStats(word, { exposed: true });
   }, [updateWordInStats]);
 
-  const updateWordStats = React.useCallback((word, mode, isCorrect) => {
-    const currentStats = getWordStats(word);
-    const updates = {
-      exposed: true,
-      [mode]: {
-        ...currentStats[mode],
-        [isCorrect ? 'correct' : 'incorrect']: currentStats[mode][isCorrect ? 'correct' : 'incorrect'] + 1
-      }
-    };
-    updateWordInStats(word, updates);
-  }, [getWordStats, updateWordInStats]);
+  const updateWordStats = React.useCallback(async (word, mode, isCorrect) => {
+    // Use the shared stats manager for consistency
+    await journeyStatsManager.updateWordStats(word, mode, isCorrect);
+    
+    // Also update local state to stay in sync (will be redundant once listener is called)
+    const updatedStats = journeyStatsManager.getAllStats();
+    setJourneyStats(updatedStats);
+    updateWordListManagerStats(wordListManager, updatedStats);
+  }, [wordListManager]);
 
   // Event handlers that use the single advance function
-  const handleActivityComplete = React.useCallback((word, mode, isCorrect, shouldAutoAdvance = true) => {
+  const handleActivityComplete = React.useCallback(async (word, mode, isCorrect, shouldAutoAdvance = true) => {
     if (word && mode) {
-      updateWordStats(word, mode, isCorrect);
+      await updateWordStats(word, mode, isCorrect);
     }
 
     if (shouldAutoAdvance && autoAdvance) {
@@ -344,7 +347,7 @@ const JourneyMode = ({
     }
   }, [updateWordStats, autoAdvance, defaultDelay, advanceToNextActivity]);
 
-  const handleJourneyMultipleChoice = React.useCallback((selectedOption) => {
+  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption) => {
     if (!journeyState.currentWord) return;
 
     const currentWord = journeyState.currentWord;
@@ -374,11 +377,11 @@ const JourneyMode = ({
     handleMultipleChoiceAnswer(selectedOption);
 
     // Handle completion through single function
-    handleActivityComplete(currentWord, modeKey, isCorrect);
+    await handleActivityComplete(currentWord, modeKey, isCorrect);
   }, [journeyState.currentWord, journeyState.currentActivity, journeyState.listeningMode, studyMode, handleMultipleChoiceAnswer, handleActivityComplete]);
 
-  const handleTypingComplete = React.useCallback((isCorrect) => {
-    handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
+  const handleTypingComplete = React.useCallback(async (isCorrect) => {
+    await handleActivityComplete(journeyState.currentWord, 'typing', isCorrect);
   }, [journeyState.currentWord, handleActivityComplete]);
 
   // Loading states

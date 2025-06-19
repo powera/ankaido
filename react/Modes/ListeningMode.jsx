@@ -2,6 +2,7 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import AudioButton from '../Components/AudioButton';
+import journeyStatsManager from '../journeyStatsManager';
 
 const ListeningMode = ({ 
   wordListManager,
@@ -13,6 +14,34 @@ const ListeningMode = ({
 }) => {
   const currentWord = wordListManager.getCurrentWord();
   if (!currentWord) return null;
+
+  // Initialize journey stats manager on first render
+  React.useEffect(() => {
+    journeyStatsManager.initialize();
+  }, []);
+
+  // Enhanced listening handler that updates Journey stats
+  const handleListeningWithStats = React.useCallback(async (selectedOption) => {
+    // Determine correct answer based on study mode for listening
+    let correctAnswer;
+    if (studyMode === 'lithuanian-to-lithuanian') {
+      correctAnswer = currentWord.lithuanian;
+    } else {
+      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+    }
+
+    const isCorrect = selectedOption === correctAnswer;
+
+    // Update Journey stats
+    try {
+      await journeyStatsManager.updateWordStats(currentWord, 'listening', isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats in ListeningMode:', error);
+    }
+
+    // Call the original handler for UI updates and flow control
+    handleMultipleChoiceAnswer(selectedOption);
+  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
 
   return (
     <div>
@@ -45,7 +74,7 @@ const ListeningMode = ({
         wordListState={wordListState}
         studyMode={studyMode}
         quizMode="listening"
-        handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        handleMultipleChoiceAnswer={handleListeningWithStats}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
       />
