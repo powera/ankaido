@@ -63,8 +63,11 @@ class WordListManager {
       }
     });
 
-    // Always shuffle the cards
-    words = words.sort(() => Math.random() - 0.5);
+    // Always shuffle the cards using Fisher-Yates algorithm for better randomness
+    for (let i = words.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [words[i], words[j]] = [words[j], words[i]];
+    }
     this.allWords = words;
     this.currentCard = 0;
     this.showAnswer = false;
