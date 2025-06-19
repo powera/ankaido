@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio }) => {
+const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = false }) => {
   // Define styles based on size
   const buttonStyle = {
     fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '1.5rem' : '1rem',
@@ -23,6 +23,23 @@ const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio }) => {
         }}
       >
         🔇
+      </span>
+    );
+  }
+  
+  // If asSpan is true, render as span (for use inside buttons)
+  if (asSpan) {
+    return (
+      <span 
+        className="w-audio-button"
+        onClick={(e) => {
+          e.stopPropagation();
+          playAudio(word);
+        }}
+        title="Play pronunciation"
+        style={buttonStyle}
+      >
+        🔊
       </span>
     );
   }

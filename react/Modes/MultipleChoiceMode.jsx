@@ -71,8 +71,6 @@ const MultipleChoiceMode = ({
         handleMultipleChoiceAnswer={handleMultipleChoiceWithStats}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
-        handleHoverStart={handleHoverStart}
-        handleHoverEnd={handleHoverEnd}
       />
     </div>
   );

@@ -244,6 +244,16 @@ describe('indexedDBManager', () => {
       indexedDBManager.db = null;
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
       
+      // Mock indexedDB.open to simulate failed initialization
+      global.indexedDB.open.mockImplementation(() => {
+        const request = { ...mockRequest };
+        setTimeout(() => {
+          request.error = new Error('Failed to open');
+          request.onerror();
+        }, 0);
+        return request;
+      });
+      
       const result = await indexedDBManager.saveJourneyStats({});
       
       expect(result).toBe(false);

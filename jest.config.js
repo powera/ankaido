@@ -2,7 +2,7 @@
 module.exports = {
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@components/(.*)$': '<rootDir>/react/Components/$1',
     '^@modes/(.*)$': '<rootDir>/react/Modes/$1'

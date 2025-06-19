@@ -8,9 +8,7 @@ const MultipleChoiceOptions = ({
   quizMode,
   handleMultipleChoiceAnswer,
   audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd
+  playAudio
 }) => {
   return (
     <div className="w-multiple-choice">
@@ -73,16 +71,22 @@ const MultipleChoiceOptions = ({
           }
         }
 
-        const shouldShowAudioOnHover = audioEnabled && studyMode === 'english-to-lithuanian' && quizMode !== 'listening';
-        const audioWord = option; // In EN->LT mode, options are Lithuanian words
+        const handleOptionClick = () => {
+          if (wordListState.showAnswer) return;
+          
+          // Play audio immediately for correct answers in EN->LT mode
+          if (audioEnabled && studyMode === 'english-to-lithuanian' && quizMode !== 'listening' && isCorrect) {
+            playAudio(option); // option is the Lithuanian word in EN->LT mode
+          }
+          
+          handleMultipleChoiceAnswer(option);
+        };
 
         return (
           <button
             key={index}
             className={className}
-            onClick={() => !wordListState.showAnswer && handleMultipleChoiceAnswer(option)}
-            onMouseEnter={() => shouldShowAudioOnHover && handleHoverStart && handleHoverStart(audioWord)}
-            onMouseLeave={() => shouldShowAudioOnHover && handleHoverEnd && handleHoverEnd()}
+            onClick={handleOptionClick}
             disabled={wordListState.showAnswer}
           >
             <div className="trakaido-choice-content">
@@ -112,6 +116,7 @@ const MultipleChoiceOptions = ({
                     audioEnabled={audioEnabled}
                     playAudio={playAudio}
                     size="small"
+                    asSpan={true}
                   />
                 </div>
               )}

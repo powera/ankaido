@@ -8,9 +8,14 @@ import journeyStatsManager, {
 } from '../journeyStatsManager';
 
 // Mock indexedDBManager
-jest.mock('../indexedDBManager', () => ({
+const mockIndexedDBManager = {
   loadJourneyStats: jest.fn(() => Promise.resolve({})),
   saveJourneyStats: jest.fn(() => Promise.resolve(true))
+};
+jest.mock('../indexedDBManager', () => ({
+  __esModule: true,
+  default: mockIndexedDBManager,
+  ...mockIndexedDBManager
 }));
 
 describe('journeyStatsManager utility functions', () => {
