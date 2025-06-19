@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import indexedDBManager from '../indexedDBManager';
+import journeyStatsManager, { convertStatsToDisplayArray, formatDate } from '../journeyStatsManager';
 import safeStorage from '../safeStorage';
 
 const ExposureStatsModal = ({
@@ -19,29 +19,16 @@ const ExposureStatsModal = ({
       const loadStats = async () => {
         setLoading(true);
         try {
-          const stats = await indexedDBManager.loadJourneyStats();
+          await journeyStatsManager.initialize();
+          const stats = journeyStatsManager.getAllStats();
           console.log('ExposureStatsModal loaded journeyStats:', stats);
           setJourneyStats(stats);
           
-          if (stats && Object.keys(stats).length > 0) {
-            const wordsArray = Object.entries(stats).map(([key, wordStats]) => {
-              const [lithuanian, english] = key.split('-');
-              return {
-                lithuanian,
-                english,
-                ...wordStats,
-                totalCorrect: (wordStats.multipleChoice?.correct || 0) + 
-                              (wordStats.listening?.correct || 0) + 
-                              (wordStats.typing?.correct || 0),
-                totalIncorrect: (wordStats.multipleChoice?.incorrect || 0) + 
-                                (wordStats.listening?.incorrect || 0) + 
-                                (wordStats.typing?.incorrect || 0)
-              };
-            });
-            setExposedWords(wordsArray);
-          } else {
+          const wordsArray = convertStatsToDisplayArray(stats);
+          setExposedWords(wordsArray);
+          
+          if (wordsArray.length === 0) {
             console.warn('No journey stats available or empty object');
-            setExposedWords([]);
           }
         } catch (error) {
           console.error('Error loading journey stats in ExposureStatsModal:', error);
@@ -104,12 +91,7 @@ const ExposureStatsModal = ({
     }
   };
 
-  // Format date for display
-  const formatDate = (timestamp) => {
-    if (!timestamp) return 'Never';
-    const date = new Date(timestamp);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-  };
+
 
   // Handle escape key and outside clicks
   useEffect(() => {
@@ -242,7 +224,8 @@ const ExposureStatsModal = ({
                     <div>Total: {word.totalCorrect}</div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                       MC: {word.multipleChoice?.correct || 0} | 
-                      Listen: {word.listening?.correct || 0} | 
+                      Listen Easy: {word.listeningEasy?.correct || 0} | 
+                      Listen Hard: {word.listeningHard?.correct || 0} | 
                       Type: {word.typing?.correct || 0}
                     </div>
                   </td>
@@ -250,7 +233,8 @@ const ExposureStatsModal = ({
                     <div>Total: {word.totalIncorrect}</div>
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                       MC: {word.multipleChoice?.incorrect || 0} | 
-                      Listen: {word.listening?.incorrect || 0} | 
+                      Listen Easy: {word.listeningEasy?.incorrect || 0} | 
+                      Listen Hard: {word.listeningHard?.incorrect || 0} | 
                       Type: {word.typing?.incorrect || 0}
                     </div>
                   </td>

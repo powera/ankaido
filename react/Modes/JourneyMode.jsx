@@ -4,8 +4,15 @@ import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
-import indexedDBManager from '../indexedDBManager';
-import journeyStatsManager, { DEFAULT_WORD_STATS, createWordKey } from '../journeyStatsManager';
+
+import journeyStatsManager, { 
+  DEFAULT_WORD_STATS, 
+  createWordKey, 
+  updateWordListManagerStats,
+  getTotalCorrectExposures,
+  getExposedWords,
+  getNewWords
+} from '../journeyStatsManager';
 
 // Global variable for activity selection system
 // "advanced" = new system with exposure-based selection
@@ -13,12 +20,6 @@ import journeyStatsManager, { DEFAULT_WORD_STATS, createWordKey } from '../journ
 const ACTIVITY_SELECTION_SYSTEM = "advanced";
 
 // Constants and helper functions moved to journeyStatsManager
-
-const updateWordListManagerStats = (wordListManager, stats) => {
-  wordListManager.journeyStats = stats;
-  console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
-  wordListManager.notifyStateChange();
-};
 
 const JourneyMode = ({
   wordListManager,
@@ -85,47 +86,26 @@ const JourneyMode = ({
     };
   }, [loadStatsFromStorage, wordListManager]);
 
-  // Save stats function
-  const saveStats = React.useCallback(async (newStats) => {
-    console.log('Saving new journey stats:', newStats);
-    setJourneyStats(newStats);
-    updateWordListManagerStats(wordListManager, newStats);
 
-    try {
-      const success = await indexedDBManager.saveJourneyStats(newStats);
-      if (!success) {
-        safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
-      }
-    } catch (error) {
-      console.error('Error saving journey stats:', error);
-      safeStorage?.setItem('journey-stats', JSON.stringify(newStats));
-    }
-  }, [wordListManager]);
 
-  // Helper functions for word categorization
-  const getWordStats = React.useCallback((word) => {
-    const wordKey = createWordKey(word);
-    return journeyStats[wordKey] || { ...DEFAULT_WORD_STATS };
-  }, [journeyStats]);
+  // Helper functions for word categorization (using journeyStatsManager)
+  const getExposedWordsList = React.useCallback(() => {
+    return getExposedWords(wordListState.allWords, journeyStatsManager);
+  }, [wordListState.allWords]);
 
-  // Helper to count total correct exposures for a word
-  const getTotalCorrectExposures = React.useCallback((word) => {
-    const stats = getWordStats(word);
-    return stats.multipleChoice.correct + stats.listening.correct + stats.typing.correct;
-  }, [getWordStats]);
+  const getNewWordsList = React.useCallback(() => {
+    return getNewWords(wordListState.allWords, journeyStatsManager);
+  }, [wordListState.allWords]);
 
-  const getExposedWords = React.useCallback(() => {
-    return wordListState.allWords.filter(word => getWordStats(word).exposed);
-  }, [wordListState.allWords, getWordStats]);
-
-  const getNewWords = React.useCallback(() => {
-    return wordListState.allWords.filter(word => !getWordStats(word).exposed);
-  }, [wordListState.allWords, getWordStats]);
+  const getTotalCorrectForWord = React.useCallback((word) => {
+    const stats = journeyStatsManager.getWordStats(word);
+    return getTotalCorrectExposures(stats);
+  }, []);
 
   // Activity selection algorithm
   const selectNextActivity = React.useCallback(() => {
-    const exposedWords = getExposedWords();
-    const newWords = getNewWords();
+    const exposedWords = getExposedWordsList();
+    const newWords = getNewWordsList();
 
     if (wordListState.allWords.length === 0) {
       return { type: 'new-word', word: wordListManager.getCurrentWord() };
@@ -186,9 +166,9 @@ const JourneyMode = ({
     let filteredWords = [...exposedWords];
 
     // For words with 10+ exposures, 75% chance to redraw
-    if (filteredWords.some(word => getTotalCorrectExposures(word) >= 10)) {
+    if (filteredWords.some(word => getTotalCorrectForWord(word) >= 10)) {
       filteredWords = filteredWords.filter(word => {
-        const exposures = getTotalCorrectExposures(word);
+        const exposures = getTotalCorrectForWord(word);
         if (exposures >= 10) {
           // 75% chance to exclude this word
           return Math.random() > 0.75;
@@ -204,7 +184,7 @@ const JourneyMode = ({
 
     // Choose a random word from the filtered list
     const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
-    const exposures = getTotalCorrectExposures(selectedWord);
+    const exposures = getTotalCorrectForWord(selectedWord);
 
     // Determine activity type based on exposure count
     if (exposures < 3) {
@@ -251,7 +231,7 @@ const JourneyMode = ({
         return { type: 'typing', word: selectedWord };
       }
     }
-  }, [getExposedWords, getNewWords, wordListState.allWords, wordListManager, getTotalCorrectExposures, audioEnabled]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
@@ -308,31 +288,19 @@ const JourneyMode = ({
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
   // Word stats update functions
-  const updateWordInStats = React.useCallback((word, updates) => {
-    const wordKey = createWordKey(word);
-    const newStats = { ...journeyStats };
-    if (!newStats[wordKey]) {
-      newStats[wordKey] = { ...DEFAULT_WORD_STATS };
-    }
+  const updateWordInStats = React.useCallback(async (word, updates) => {
+    await journeyStatsManager.updateWordStatsDirectly(word, updates);
+  }, []);
 
-    // Apply updates
-    Object.assign(newStats[wordKey], updates, { lastSeen: Date.now() });
-    saveStats(newStats);
-  }, [journeyStats, saveStats]);
-
-  const markWordAsExposed = React.useCallback((word) => {
-    updateWordInStats(word, { exposed: true });
+  const markWordAsExposed = React.useCallback(async (word) => {
+    await updateWordInStats(word, { exposed: true });
   }, [updateWordInStats]);
 
   const updateWordStats = React.useCallback(async (word, mode, isCorrect) => {
     // Use the shared stats manager for consistency
+    // The listener system will handle updating local state and wordListManager
     await journeyStatsManager.updateWordStats(word, mode, isCorrect);
-    
-    // Also update local state to stay in sync (will be redundant once listener is called)
-    const updatedStats = journeyStatsManager.getAllStats();
-    setJourneyStats(updatedStats);
-    updateWordListManagerStats(wordListManager, updatedStats);
-  }, [wordListManager]);
+  }, []);
 
   // Event handlers that use the single advance function
   const handleActivityComplete = React.useCallback(async (word, mode, isCorrect, shouldAutoAdvance = true) => {

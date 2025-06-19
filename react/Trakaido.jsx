@@ -17,7 +17,7 @@ import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import safeStorage from './safeStorage.js';
-import indexedDBManager from './indexedDBManager';
+import journeyStatsManager, { updateWordListManagerStats } from './journeyStatsManager';
 
 // Import CSS modules for better organization
 import './styles/mobile.css';
@@ -202,18 +202,26 @@ const FlashCardApp = () => {
     wordListManager.settings = settings; // Update settings reference
   }, [wordListManager, settings]);
 
-  // Load journey stats from IndexedDB
+  // Load journey stats using journeyStatsManager
   useEffect(() => {
     const loadJourneyStats = async () => {
       try {
-        const stats = await indexedDBManager.loadJourneyStats();
+        const stats = await journeyStatsManager.initialize();
         setJourneyStats(stats);
 
         // Update wordListManager with journey stats
-        if (wordListManager) {
-          wordListManager.journeyStats = stats;
-          wordListManager.notifyStateChange();
-        }
+        updateWordListManagerStats(wordListManager, stats);
+
+        // Listen for stats changes
+        const handleStatsChange = (updatedStats) => {
+          setJourneyStats(updatedStats);
+          updateWordListManagerStats(wordListManager, updatedStats);
+        };
+
+        journeyStatsManager.addListener(handleStatsChange);
+
+        // Cleanup listener on unmount
+        return () => journeyStatsManager.removeListener(handleStatsChange);
       } catch (error) {
         console.error('Error loading journey stats:', error);
         setJourneyStats({});
