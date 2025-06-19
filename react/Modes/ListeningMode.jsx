@@ -32,9 +32,14 @@ const ListeningMode = ({
 
     const isCorrect = selectedOption === correctAnswer;
 
-    // Update Journey stats
+    // Determine stats mode based on difficulty
+    // listeningEasy: listen to LT, choose LT word (lithuanian-to-lithuanian)
+    // listeningHard: listen to LT, choose EN word (lithuanian-to-english)
+    const statsMode = studyMode === 'lithuanian-to-lithuanian' ? 'listeningEasy' : 'listeningHard';
+
+    // Update Journey stats with appropriate mode
     try {
-      await journeyStatsManager.updateWordStats(currentWord, 'listening', isCorrect);
+      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
     } catch (error) {
       console.error('Error updating journey stats in ListeningMode:', error);
     }

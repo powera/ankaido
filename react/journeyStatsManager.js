@@ -11,7 +11,8 @@ import indexedDBManager from './indexedDBManager';
 export const DEFAULT_WORD_STATS = {
   exposed: false,
   multipleChoice: { correct: 0, incorrect: 0 },
-  listening: { correct: 0, incorrect: 0 },
+  listeningEasy: { correct: 0, incorrect: 0 },
+  listeningHard: { correct: 0, incorrect: 0 },
   typing: { correct: 0, incorrect: 0 },
   lastSeen: null
 };
