@@ -6,6 +6,119 @@
  */
 
 import indexedDBManager from './indexedDBManager';
+import storageConfigManager from './storageConfigManager';
+
+// API Configuration
+const API_BASE_URL = '/api/trakaido/journeystats';
+
+/**
+ * API Client for server-based journey stats storage
+ */
+class JourneyStatsAPIClient {
+  /**
+   * Get all journey stats from server
+   */
+  async getAllStats() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.stats || {};
+    } catch (error) {
+      console.error('Error fetching journey stats from server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Save all journey stats to server
+   */
+  async saveAllStats(stats) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ stats }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.success === true;
+    } catch (error) {
+      console.error('Error saving journey stats to server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update stats for a specific word
+   */
+  async updateWordStats(wordKey, wordStats) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/word`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          wordKey,
+          wordStats 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.success === true;
+    } catch (error) {
+      console.error('Error updating word stats on server:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get stats for a specific word
+   */
+  async getWordStats(wordKey) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/word/${encodeURIComponent(wordKey)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.wordStats || { ...DEFAULT_WORD_STATS };
+    } catch (error) {
+      console.error('Error fetching word stats from server:', error);
+      throw error;
+    }
+  }
+}
+
+// Create API client instance
+const apiClient = new JourneyStatsAPIClient();
 
 // Default stats structure for a word
 export const DEFAULT_WORD_STATS = {
@@ -122,15 +235,20 @@ class JourneyStatsManager {
   }
 
   /**
-   * Initialize and load stats from storage
+   * Initialize and load stats from storage (server or indexedDB)
    */
   async initialize() {
     if (this.isInitialized) return this.stats;
 
     try {
-      this.stats = await indexedDBManager.loadJourneyStats();
+      if (storageConfigManager.isRemoteStorage()) {
+        this.stats = await apiClient.getAllStats();
+        console.log('Journey stats manager initialized from server:', this.stats);
+      } else {
+        this.stats = await indexedDBManager.loadJourneyStats();
+        console.log('Journey stats manager initialized from indexedDB:', this.stats);
+      }
       this.isInitialized = true;
-      console.log('Journey stats manager initialized:', this.stats);
     } catch (error) {
       console.error('Error initializing journey stats:', error);
       this.stats = {};
@@ -173,14 +291,27 @@ class JourneyStatsManager {
     // Update in memory
     this.stats[wordKey] = updatedStats;
 
-    // Save to storage
+    // Save to storage (server or indexedDB)
     try {
-      const success = await indexedDBManager.saveJourneyStats(this.stats);
-      if (success) {
-        console.log(`Updated journey stats for ${wordKey}:`, updatedStats);
-        this.notifyListeners();
+      let success = false;
+      if (storageConfigManager.isRemoteStorage()) {
+        success = await apiClient.updateWordStats(wordKey, updatedStats);
+        if (success) {
+          console.log(`Updated journey stats on server for ${wordKey}:`, updatedStats);
+        } else {
+          console.warn('Failed to save journey stats to server');
+        }
       } else {
-        console.warn('Failed to save journey stats to IndexedDB');
+        success = await indexedDBManager.saveJourneyStats(this.stats);
+        if (success) {
+          console.log(`Updated journey stats in indexedDB for ${wordKey}:`, updatedStats);
+        } else {
+          console.warn('Failed to save journey stats to IndexedDB');
+        }
+      }
+      
+      if (success) {
+        this.notifyListeners();
       }
     } catch (error) {
       console.error('Error saving journey stats:', error);
@@ -245,20 +376,50 @@ class JourneyStatsManager {
     // Update in memory
     this.stats[wordKey] = updatedStats;
 
-    // Save to storage
+    // Save to storage (server or indexedDB)
     try {
-      const success = await indexedDBManager.saveJourneyStats(this.stats);
-      if (success) {
-        console.log(`Updated journey stats directly for ${wordKey}:`, updatedStats);
-        this.notifyListeners();
+      let success = false;
+      if (storageConfigManager.isRemoteStorage()) {
+        success = await apiClient.updateWordStats(wordKey, updatedStats);
+        if (success) {
+          console.log(`Updated journey stats directly on server for ${wordKey}:`, updatedStats);
+        } else {
+          console.warn('Failed to save journey stats to server');
+        }
       } else {
-        console.warn('Failed to save journey stats to IndexedDB');
+        success = await indexedDBManager.saveJourneyStats(this.stats);
+        if (success) {
+          console.log(`Updated journey stats directly in indexedDB for ${wordKey}:`, updatedStats);
+        } else {
+          console.warn('Failed to save journey stats to IndexedDB');
+        }
+      }
+      
+      if (success) {
+        this.notifyListeners();
       }
     } catch (error) {
       console.error('Error saving journey stats:', error);
     }
 
     return updatedStats;
+  }
+
+  /**
+   * Force reinitialization of the stats manager
+   * Useful when switching between storage modes
+   */
+  async forceReinitialize() {
+    this.isInitialized = false;
+    this.stats = {};
+    return await this.initialize();
+  }
+
+  /**
+   * Get current storage mode
+   */
+  getCurrentStorageMode() {
+    return storageConfigManager.isRemoteStorage() ? 'server' : 'indexedDB';
   }
 }
 

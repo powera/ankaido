@@ -18,6 +18,8 @@ import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import safeStorage from './safeStorage.js';
 import journeyStatsManager, { updateWordListManagerStats } from './journeyStatsManager';
+import storageConfigManager from './storageConfigManager';
+import corpusChoicesManager from './corpusChoicesManager';
 
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -48,16 +50,8 @@ const FlashCardApp = () => {
 
   const [corporaData, setCorporaData] = useState({}); // Cache for corpus structures
   const [availableCorpora, setAvailableCorpora] = useState([]);
-  // Initialize selectedGroups from localStorage if available
-  const [selectedGroups, setSelectedGroups] = useState(() => {
-    const savedGroups = safeStorage?.getItem('flashcard-selected-groups');
-    try {
-      return savedGroups ? JSON.parse(savedGroups) : {};
-    } catch (error) {
-      console.error('Error parsing saved corpus groups:', error);
-      return {};
-    }
-  }); // {corpus: [group1, group2]}
+  // Initialize selectedGroups - will be loaded from corpus choices manager
+  const [selectedGroups, setSelectedGroups] = useState({}); // {corpus: [group1, group2]}
 
   // Initialize local settings from localStorage where available
   const [studyMode, setStudyMode] = useState(() => {
@@ -91,7 +85,10 @@ const FlashCardApp = () => {
   });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
-    return !safeStorage?.getItem('trakaido-has-seen-intro');
+    // Check both intro and storage configuration
+    const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
+    const storageConfigured = storageConfigManager.isConfigured();
+    return !hasSeenIntro || !storageConfigured;
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -159,30 +156,36 @@ const FlashCardApp = () => {
           setSelectedVoice('random');
         }
         const corporaStructures = {};
-        // Only set default groups if we don't have any saved in localStorage AND user has seen intro
-        const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
-        const useDefaults = Object.keys(selectedGroups).length === 0 && hasSeenIntro;
-        const defaultSelectedGroups = useDefaults ? {} : null;
-
+        // Load corpus structures
         for (const corpus of corpora) {
           try {
             const structure = await fetchCorpusStructure(corpus);
             corporaStructures[corpus] = structure;
-
-            // If we're using defaults, set all groups as selected
-            if (useDefaults) {
-              const groups = Object.keys(structure.groups);
-              defaultSelectedGroups[corpus] = groups;
-            }
           } catch (err) {
             console.warn(`Failed to load structure for corpus: ${corpus}`, err);
           }
         }
         setCorporaData(corporaStructures);
 
-        // Only update selectedGroups if we're using defaults
-        if (useDefaults) {
-          setSelectedGroups(defaultSelectedGroups);
+        // Initialize corpus choices manager - this will handle defaults
+        try {
+          await corpusChoicesManager.initialize();
+          const currentChoices = corpusChoicesManager.getAllChoices();
+          
+          // Only set defaults if user has seen intro but has no choices
+          const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
+          const shouldSetDefaults = Object.keys(currentChoices).length === 0 && hasSeenIntro;
+          
+          if (shouldSetDefaults) {
+            const defaultSelectedGroups = {};
+            Object.keys(corporaStructures).forEach(corpus => {
+              const groups = Object.keys(corporaStructures[corpus]?.groups || {});
+              defaultSelectedGroups[corpus] = groups;
+            });
+            await corpusChoicesManager.setAllChoices(defaultSelectedGroups);
+          }
+        } catch (error) {
+          console.error('Error initializing corpus choices during startup:', error);
         }
       } catch (err) {
         console.error('Failed to load initial data:', err);
@@ -228,10 +231,30 @@ const FlashCardApp = () => {
     loadJourneyStats();
   }, [wordListManager]);
 
-  // Save settings to localStorage whenever they change
+  // Load corpus choices using corpusChoicesManager
   useEffect(() => {
-    safeStorage.setItem('flashcard-selected-groups', JSON.stringify(selectedGroups));
-  }, [selectedGroups]);
+    const loadCorpusChoices = async () => {
+      try {
+        const choices = await corpusChoicesManager.initialize();
+        setSelectedGroups(choices);
+
+        // Listen for choices changes
+        const handleChoicesChange = (updatedChoices) => {
+          setSelectedGroups(updatedChoices);
+        };
+
+        corpusChoicesManager.addListener(handleChoicesChange);
+
+        // Cleanup listener on unmount
+        return () => corpusChoicesManager.removeListener(handleChoicesChange);
+      } catch (error) {
+        console.error('Error loading corpus choices:', error);
+        setSelectedGroups({});
+      }
+    };
+
+    loadCorpusChoices();
+  }, []);
 
   useEffect(() => {
     safeStorage.setItem('flashcard-study-mode', studyMode);
@@ -338,55 +361,75 @@ const FlashCardApp = () => {
   }, [corporaData]);
 
 
-  const handleWelcomeComplete = (skillLevel) => {
-    // Mark that user has seen the intro
-    safeStorage.setItem('trakaido-has-seen-intro', 'true');
+  const handleWelcomeComplete = async (skillLevel, storageMode) => {
+    try {
+      // Mark that user has seen the intro
+      safeStorage.setItem('trakaido-has-seen-intro', 'true');
 
-    // Set initial corpus selection based on skill level
-    const initialSelectedGroups = {};
-    if (skillLevel === 'beginner') {
-      // For beginners, only enable nouns_one corpus
-      if (corporaData['nouns_one']) {
-        initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
-      }
-    } else if (skillLevel === 'intermediate') {
-      // For intermediate, enable a moderate selection
-      ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
-        if (corporaData[corpus]) {
-          initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+      // Set storage configuration
+      storageConfigManager.setStorageMode(storageMode);
+
+      // Initialize storage managers with the new configuration
+      await corpusChoicesManager.forceReinitialize();
+      await journeyStatsManager.forceReinitialize();
+
+      // Set initial corpus selection based on skill level
+      const initialSelectedGroups = {};
+      if (skillLevel === 'beginner') {
+        // For beginners, only enable nouns_one corpus
+        if (corporaData['nouns_one']) {
+          initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
         }
-      });
-    } else {
-      // For experts, enable all groups (same as current default)
-      Object.keys(corporaData).forEach(corpus => {
-        initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
-      });
-    }
+      } else if (skillLevel === 'intermediate') {
+        // For intermediate, enable a moderate selection
+        ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
+          if (corporaData[corpus]) {
+            initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+          }
+        });
+      } else {
+        // For experts, enable all groups (same as current default)
+        Object.keys(corporaData).forEach(corpus => {
+          initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+        });
+      }
 
-    setSelectedGroups(initialSelectedGroups);
-    setShowWelcome(false);
+      // Update corpus choices using the manager - this will notify listeners and update state
+      await corpusChoicesManager.setAllChoices(initialSelectedGroups);
+      setShowWelcome(false);
+    } catch (error) {
+      console.error('Error completing welcome setup:', error);
+      // Still close welcome screen even if there's an error
+      setShowWelcome(false);
+    }
   };
 
-  const resetAllSettings = () => {
-    // Clear localStorage items
-    safeStorage.removeItem('flashcard-selected-groups');
-    safeStorage.removeItem('flashcard-study-mode');
-    safeStorage.removeItem('flashcard-quiz-mode');
-    safeStorage.removeItem('flashcard-selected-voice');
-    safeStorage.removeItem('trakaido-has-seen-intro');
+  const resetAllSettings = async () => {
+    try {
+      // Clear localStorage items
+      safeStorage.removeItem('flashcard-study-mode');
+      safeStorage.removeItem('flashcard-quiz-mode');
+      safeStorage.removeItem('flashcard-selected-voice');
+      safeStorage.removeItem('trakaido-has-seen-intro');
 
-    // Reset state to defaults
-    setStudyMode('english-to-lithuanian');
-    setQuizMode('flashcard');
-    setSelectedVoice('random');
-    setShowWelcome(true);
+      // Reset storage configuration
+      storageConfigManager.reset();
 
-    // For corpus groups, we need to reset to all groups
-    const defaultSelectedGroups = {};
-    Object.keys(corporaData).forEach(corpus => {
-      defaultSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
-    });
-    setSelectedGroups(defaultSelectedGroups);
+      // Clear data from storage managers
+      await corpusChoicesManager.clearAllChoices();
+      await journeyStatsManager.forceReinitialize();
+
+      // Reset state to defaults
+      setStudyMode('english-to-lithuanian');
+      setQuizMode('flashcard');
+      setSelectedVoice('random');
+      // selectedGroups will be updated by the corpus choices manager listener
+      setShowWelcome(true);
+    } catch (error) {
+      console.error('Error resetting settings:', error);
+      // Still show welcome screen even if there's an error
+      setShowWelcome(true);
+    }
   };
 
   const nextCard = () => wordListManager.nextCard();
@@ -640,7 +683,6 @@ const FlashCardApp = () => {
         availableCorpora={availableCorpora}
         corporaData={corporaData}
         selectedGroups={selectedGroups}
-        setSelectedGroups={setSelectedGroups}
         resetAllSettings={resetAllSettings}
         safeStorage={safeStorage}
       />

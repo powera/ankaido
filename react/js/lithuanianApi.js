@@ -1,7 +1,7 @@
 // lithuanianApi.js - Plain JavaScript API for Lithuanian language features
 (function() {
   // API configuration
-  const API_BASE = 'http://localhost:9123/api/lithuanian';
+  const API_BASE = '/api/lithuanian';
 
   // API helper functions
   const fetchCorpora = async () => {

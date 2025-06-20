@@ -1,12 +1,14 @@
 
 import React, { useState } from 'react';
+import { STORAGE_MODES } from '../storageConfigManager';
 
 const WelcomeScreen = ({ onComplete }) => {
   const [selectedLevel, setSelectedLevel] = useState('');
+  const [selectedStorage, setSelectedStorage] = useState('');
 
   const handleContinue = () => {
-    if (selectedLevel) {
-      onComplete(selectedLevel);
+    if (selectedLevel && selectedStorage) {
+      onComplete(selectedLevel, selectedStorage);
     }
   };
 
@@ -137,19 +139,87 @@ const WelcomeScreen = ({ onComplete }) => {
           </div>
         </div>
 
+        <div style={{ marginBottom: 'var(--spacing-large, 2rem)' }}>
+          <h3 style={{ color: '#2c3e50', marginBottom: '1rem' }}>Where would you like to store your progress?</h3>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '0.75rem',
+            alignItems: 'center'
+          }}>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              cursor: 'pointer',
+              padding: '0.75rem 1rem',
+              border: `2px solid ${selectedStorage === STORAGE_MODES.LOCAL ? '#007bff' : '#dee2e6'}`,
+              borderRadius: 'var(--border-radius)',
+              background: selectedStorage === STORAGE_MODES.LOCAL ? '#f8f9ff' : 'white',
+              width: '350px',
+              fontSize: '1rem'
+            }}>
+              <input
+                type="radio"
+                name="storage"
+                value={STORAGE_MODES.LOCAL}
+                checked={selectedStorage === STORAGE_MODES.LOCAL}
+                onChange={(e) => setSelectedStorage(e.target.value)}
+                style={{ marginRight: '0.75rem', marginTop: '0.2rem' }}
+              />
+              <div>
+                <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                  💾 <strong>Local Storage</strong>
+                </div>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                  Data stored on this device only. Private but doesn't sync between devices.
+                </div>
+              </div>
+            </label>
+            
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              cursor: 'pointer',
+              padding: '0.75rem 1rem',
+              border: `2px solid ${selectedStorage === STORAGE_MODES.REMOTE ? '#007bff' : '#dee2e6'}`,
+              borderRadius: 'var(--border-radius)',
+              background: selectedStorage === STORAGE_MODES.REMOTE ? '#f8f9ff' : 'white',
+              width: '350px',
+              fontSize: '1rem'
+            }}>
+              <input
+                type="radio"
+                name="storage"
+                value={STORAGE_MODES.REMOTE}
+                checked={selectedStorage === STORAGE_MODES.REMOTE}
+                onChange={(e) => setSelectedStorage(e.target.value)}
+                style={{ marginRight: '0.75rem', marginTop: '0.2rem' }}
+              />
+              <div>
+                <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                  ☁️ <strong>Remote Storage</strong>
+                </div>
+                <div style={{ fontSize: '0.9rem', color: '#6c757d' }}>
+                  Data stored on server. Syncs between devices but requires server connection.
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
         <button
           onClick={handleContinue}
-          disabled={!selectedLevel}
+          disabled={!selectedLevel || !selectedStorage}
           className="w-button"
           style={{
             padding: '1rem 2rem',
             fontSize: '1.2rem',
             fontWeight: 'bold',
-            background: selectedLevel ? '#007bff' : '#6c757d',
+            background: (selectedLevel && selectedStorage) ? '#007bff' : '#6c757d',
             color: 'white',
             border: 'none',
             borderRadius: 'var(--border-radius)',
-            cursor: selectedLevel ? 'pointer' : 'not-allowed',
+            cursor: (selectedLevel && selectedStorage) ? 'pointer' : 'not-allowed',
             minWidth: '200px'
           }}
         >

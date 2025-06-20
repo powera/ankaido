@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import corpusChoicesManager from '../corpusChoicesManager';
 
 const StudyMaterialsModal = ({
   isOpen,
@@ -7,35 +8,59 @@ const StudyMaterialsModal = ({
   availableCorpora,
   corporaData,
   selectedGroups,
-  setSelectedGroups,
   resetAllSettings,
   safeStorage
 }) => {
   const modalRef = useRef(null);
+  
+  // Local state for immediate UI updates
+  const [localSelectedGroups, setLocalSelectedGroups] = useState({});
+  
+  // Sync local state with props when they change
+  useEffect(() => {
+    setLocalSelectedGroups(selectedGroups);
+  }, [selectedGroups]);
 
-  const toggleGroup = (corpus, group) => {
-    setSelectedGroups(prev => {
-      const currentGroups = prev[corpus] || [];
-      const newGroups = currentGroups.includes(group)
-        ? currentGroups.filter(g => g !== group)
-        : [...currentGroups, group];
-      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
-      return { ...prev, [corpus]: newGroups };
-    });
+  // Calculate total selected words based on local state for immediate updates
+  const localTotalSelectedWords = Object.entries(localSelectedGroups).reduce((total, [corpus, groups]) => {
+    const corporaStructure = corporaData[corpus];
+    if (!corporaStructure) return total;
+    
+    return total + groups.reduce((corpusTotal, group) => {
+      return corpusTotal + (corporaStructure.groups[group]?.length || 0);
+    }, 0);
+  }, 0);
+
+  const toggleGroup = async (corpus, group) => {
+    const currentGroups = localSelectedGroups[corpus] || [];
+    const newGroups = currentGroups.includes(group)
+      ? currentGroups.filter(g => g !== group)
+      : [...currentGroups, group];
+    
+    // Update local state immediately for responsive UI
+    setLocalSelectedGroups(prev => ({
+      ...prev,
+      [corpus]: newGroups
+    }));
+    
+    // Update using corpus choices manager - this will notify listeners and update state
+    await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
   };
 
-  const toggleCorpus = (corpus) => {
-    setSelectedGroups(prev => {
-      const allGroups = Object.keys(corporaData[corpus]?.groups || {});
-      const currentGroups = prev[corpus] || [];
-      const allSelected = allGroups.length > 0 && allGroups.every(g => currentGroups.includes(g));
-      const newGroups = allSelected ? [] : allGroups;
-      safeStorage.setItem('flashcard-selected-groups', JSON.stringify({...prev, [corpus]: newGroups}));
-      return {
-        ...prev,
-        [corpus]: newGroups
-      };
-    });
+  const toggleCorpus = async (corpus) => {
+    const allGroups = Object.keys(corporaData[corpus]?.groups || {});
+    const currentGroups = localSelectedGroups[corpus] || [];
+    const allSelected = allGroups.length > 0 && allGroups.every(g => currentGroups.includes(g));
+    const newGroups = allSelected ? [] : allGroups;
+    
+    // Update local state immediately for responsive UI
+    setLocalSelectedGroups(prev => ({
+      ...prev,
+      [corpus]: newGroups
+    }));
+    
+    // Update using corpus choices manager - this will notify listeners and update state
+    await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
   };
 
   // Handle escape key and outside clicks
@@ -69,7 +94,7 @@ const StudyMaterialsModal = ({
     <div className="w-settings-overlay">
       <div ref={modalRef} className="w-settings-modal">
         <div className="w-settings-header">
-          <h2 className="w-settings-title">Study Materials ({totalSelectedWords} words selected)</h2>
+          <h2 className="w-settings-title">Study Materials ({localTotalSelectedWords} words selected)</h2>
           <button
             onClick={onClose}
             className="w-settings-close"
@@ -84,7 +109,7 @@ const StudyMaterialsModal = ({
             const corporaStructure = corporaData[corpus];
             if (!corporaStructure) return null;
             const groups = Object.keys(corporaStructure.groups);
-            const selectedCorpusGroups = selectedGroups[corpus] || [];
+            const selectedCorpusGroups = localSelectedGroups[corpus] || [];
             const allSelected = groups.length > 0 && groups.every(g => selectedCorpusGroups.includes(g));
             const wordCount = selectedCorpusGroups.reduce((total, g) => {
               return total + (corporaStructure.groups[g]?.length || 0);
@@ -124,10 +149,10 @@ const StudyMaterialsModal = ({
 
         <button
           className="w-mode-option w-compact-button"
-          onClick={resetAllSettings}
-          title="Reset all local settings including selected corpuses"
+          onClick={() => resetAllSettings().catch(console.error)}
+          title="Reset all settings and storage configuration"
         >
-          <span>🔄 Reset Local Settings</span>
+          <span>🔄 Reset All Settings</span>
         </button>
         </div>
 
