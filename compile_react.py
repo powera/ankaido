@@ -252,8 +252,15 @@ def transform_imports(jsx_content, filename):
     
     # Transform require() calls to window object references
     transformed_content = re.sub(
-        r'require\([\'"]\.\/([^\'\"]+)[\'"]\)',
+        r'require\([\'"]\.\.?\/([^\'\"]+)[\'"]\)',
         r'window.\1',
+        transformed_content
+    )
+    
+    # Transform _interopRequireWildcard calls
+    transformed_content = re.sub(
+        r'var\s+(\w+)\s*=\s*_interopRequireWildcard\(require\([\'"]\.\.?\/([^\'\"]+)[\'"]\)\)',
+        r'var \1 = window.\2',
         transformed_content
     )
     
@@ -261,6 +268,13 @@ def transform_imports(jsx_content, filename):
     transformed_content = re.sub(
         r'const\s+(\w+)\s+=\s+require\([\'"]([^\'\"]+)[\'"]\);?',
         r'// const \1 = require("\2"); // Handled by browser globals',
+        transformed_content
+    )
+    
+    # Transform any remaining _interopRequireWildcard references
+    transformed_content = re.sub(
+        r'_interopRequireWildcard\(([^)]+)\)',
+        r'\1',
         transformed_content
     )
     
