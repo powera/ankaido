@@ -100,7 +100,7 @@ def get_component_dependencies():
         # Utilities and hooks first
         "safeStorage.js",
         "indexedDBManager.js", 
-        "journeyStatsManager.js",
+        "journeyStatsManager.jsx",
         "corpusChoicesManager.js",
         "storageConfigManager.js",
         "WordListManager.js",
