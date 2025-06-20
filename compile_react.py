@@ -101,6 +101,8 @@ def get_component_dependencies():
         "safeStorage.js",
         "indexedDBManager.js", 
         "journeyStatsManager.js",
+        "corpusChoicesManager.js",
+        "storageConfigManager.js",
         "WordListManager.js",
         "useGlobalSettings.jsx",
         "useFullscreen.js",
@@ -145,7 +147,7 @@ def compile_jsx_components():
     compiled_components = []
     
     for component_file in component_order:
-        # Check in root directory first
+        # Check in root react directory first
         component_path = REACT_DIR / component_file
         
         # If not in root, check in Components directory
