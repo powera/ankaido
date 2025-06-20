@@ -26,12 +26,15 @@ export default defineConfig({
       output: {
         // Generate a single HTML file with inlined assets
         inlineDynamicImports: true,
-        manualChunks: undefined
+        manualChunks: undefined,
+        assetFileNames: '[name].[ext]',
+        entryFileNames: '[name].js'
       }
     },
     // Inline all CSS and JS into the HTML file
     assetsInlineLimit: 100000000, // Very large limit to inline everything
-    cssCodeSplit: false
+    cssCodeSplit: false,
+    minify: 'esbuild'
   },
   server: {
     host: '0.0.0.0',
