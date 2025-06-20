@@ -204,14 +204,6 @@ def transform_imports(jsx_content, filename):
     lines = jsx_content.split('\n')
     transformed_lines = []
     
-    # Add React imports for JSX if not present
-    has_react_import = any('import React' in line for line in lines)
-    if not has_react_import and (filename.endswith('.jsx') or 'jsx' in jsx_content.lower()):
-        transformed_lines.append('// React provided by CDN')
-        transformed_lines.append('const React = window.React;')
-        transformed_lines.append('const { useState, useEffect, useCallback, useMemo, useRef } = React;')
-        transformed_lines.append('')
-    
     for line in lines:
         # Remove import statements and replace with comments
         if line.strip().startswith('import ') and ('from' in line or line.strip().endswith("';") or line.strip().endswith('";')):
@@ -254,27 +246,6 @@ def transform_imports(jsx_content, filename):
     transformed_content = re.sub(
         r'require\([\'"]\.\.?\/([^\'\"]+)[\'"]\)',
         r'window.\1',
-        transformed_content
-    )
-    
-    # Transform _interopRequireWildcard calls
-    transformed_content = re.sub(
-        r'var\s+(\w+)\s*=\s*_interopRequireWildcard\(require\([\'"]\.\.?\/([^\'\"]+)[\'"]\)\)',
-        r'var \1 = window.\2',
-        transformed_content
-    )
-    
-    # Transform other require() calls to comments
-    transformed_content = re.sub(
-        r'const\s+(\w+)\s+=\s+require\([\'"]([^\'\"]+)[\'"]\);?',
-        r'// const \1 = require("\2"); // Handled by browser globals',
-        transformed_content
-    )
-    
-    # Transform any remaining _interopRequireWildcard references
-    transformed_content = re.sub(
-        r'_interopRequireWildcard\(([^)]+)\)',
-        r'\1',
         transformed_content
     )
     
