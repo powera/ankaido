@@ -27,9 +27,9 @@ JS_OUTPUT_FILE = BUILD_DIR / "app.js"
 STATIC_DIR = BUILD_DIR / "static"
 CSS_BUILD_DIR = BUILD_DIR / "css"
 
-# React CDN URLs (using React 19 to match package.json)
-REACT_CDN = "https://unpkg.com/react@19/umd/react.production.min.js"
-REACT_DOM_CDN = "https://unpkg.com/react-dom@19/umd/react-dom.production.min.js"
+# React CDN URLs
+REACT_CDN = "https://unpkg.com/react@18/umd/react.production.min.js"
+REACT_DOM_CDN = "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
 
 def check_node_installed():
     """Check if Node.js and npm are installed"""
