@@ -27,9 +27,9 @@ JS_OUTPUT_FILE = BUILD_DIR / "app.js"
 STATIC_DIR = BUILD_DIR / "static"
 CSS_BUILD_DIR = BUILD_DIR / "css"
 
-# React CDN URLs
-REACT_CDN = "https://unpkg.com/react@18/umd/react.production.min.js"
-REACT_DOM_CDN = "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+# React CDN URLs (using React 19 to match package.json)
+REACT_CDN = "https://unpkg.com/react@19/umd/react.production.min.js"
+REACT_DOM_CDN = "https://unpkg.com/react-dom@19/umd/react-dom.production.min.js"
 
 def check_node_installed():
     """Check if Node.js and npm are installed"""
@@ -40,38 +40,26 @@ def check_node_installed():
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
 
-def install_babel_dependencies():
-    """Install Babel and required presets"""
-    print("Installing Babel dependencies...")
+def ensure_babel_dependencies():
+    """Ensure Babel dependencies are available"""
+    print("Checking Babel dependencies...")
     
-    # Create package.json if it doesn't exist
-    package_json = {
-        "name": "trakaido-react-compiler",
-        "version": "1.0.0",
-        "description": "Compilation tools for Trakaido React app",
-        "devDependencies": {
-            "@babel/cli": "^7.23.0",
-            "@babel/core": "^7.23.0",
-            "@babel/preset-react": "^7.22.0",
-            "@babel/preset-env": "^7.23.0"
-        },
-        "babel": {
-            "presets": [
-                ["@babel/preset-env", {"targets": {"browsers": ["last 2 versions"]}}],
-                ["@babel/preset-react", {"runtime": "classic"}]
-            ]
-        }
-    }
+    # Check if node_modules exists and has required packages
+    node_modules = Path("node_modules")
+    babel_cli = node_modules / "@babel" / "cli"
+    babel_core = node_modules / "@babel" / "core"
     
-    with open("package.json", "w") as f:
-        json.dump(package_json, f, indent=2)
+    if not (babel_cli.exists() and babel_core.exists()):
+        print("Installing missing Babel dependencies...")
+        try:
+            subprocess.run(["npm", "install"], check=True)
+            return True
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to install dependencies: {e}")
+            return False
     
-    try:
-        subprocess.run(["npm", "install"], check=True)
-        return True
-    except subprocess.CalledProcessError as e:
-        print(f"Failed to install dependencies: {e}")
-        return False
+    print("✅ Babel dependencies found")
+    return True
 
 def copy_css_files():
     """Copy CSS files to the build directory"""
@@ -94,16 +82,30 @@ def copy_css_files():
         copied_files.append(css_file.name)
         print(f"Copied {css_file.name}")
     
+    # Also copy CSS from react/styles if it exists
+    react_styles = REACT_DIR / "styles"
+    if react_styles.exists():
+        for css_file in react_styles.glob("*.css"):
+            dest_file = CSS_BUILD_DIR / css_file.name
+            shutil.copy2(css_file, dest_file)
+            copied_files.append(css_file.name)
+            print(f"Copied {css_file.name} from react/styles")
+    
     return copied_files
 
 def get_component_dependencies():
     """Get the correct order of components based on their dependencies"""
     # Define the dependency order (components that don't depend on others first)
     component_order = [
-        "useGlobalSettings.jsx",
-        "useFullscreen.js", 
+        # Utilities and hooks first
         "safeStorage.js",
+        "indexedDBManager.js", 
+        "journeyStatsManager.js",
         "WordListManager.js",
+        "useGlobalSettings.jsx",
+        "useFullscreen.js",
+        
+        # Basic components
         "AudioButton.jsx",
         "StatsDisplay.jsx",
         "MultipleChoiceOptions.jsx",
@@ -112,16 +114,21 @@ def get_component_dependencies():
         "SplashScreen.jsx",
         "WelcomeScreen.jsx",
         "VocabularyList.jsx",
+        "StudyMaterialsModal.jsx",
+        "StudyModeSelector.jsx",
+        "ExposureStatsModal.jsx",
+        
+        # Study modes
         "TypingMode.jsx",
         "FlashCardMode.jsx",
         "ListeningMode.jsx",
         "MultipleChoiceMode.jsx",
-        "StudyMaterialsModal.jsx",
-        "StudyModeSelector.jsx",
         "ConjugationsMode.jsx",
         "DeclensionsMode.jsx",
         "JourneyMode.jsx",
-        "Trakaido.jsx"  # Main component last
+        
+        # Main component last
+        "Trakaido.jsx"
     ]
     
     return component_order
@@ -138,7 +145,7 @@ def compile_jsx_components():
     compiled_components = []
     
     for component_file in component_order:
-        # Check in root directory
+        # Check in root directory first
         component_path = REACT_DIR / component_file
         
         # If not in root, check in Components directory
@@ -190,47 +197,34 @@ def compile_jsx_components():
 
 def transform_imports(jsx_content, filename):
     """Transform ES6 imports to work in browser environment"""
+    import re
+    
     lines = jsx_content.split('\n')
     transformed_lines = []
     
-    # Component name mapping for global access
-    component_map = {
-        'AudioButton': 'window.AudioButton',
-        'StatsDisplay': 'window.StatsDisplay',
-        'MultipleChoiceOptions': 'window.MultipleChoiceOptions',
-        'ConjugationTable': 'window.ConjugationTable',
-        'DeclensionTable': 'window.DeclensionTable',
-        'SplashScreen': 'window.SplashScreen',
-        'VocabularyList': 'window.VocabularyList',
-        'TypingMode': 'window.TypingMode',
-        'FlashCardMode': 'window.FlashCardMode',
-        'ListeningMode': 'window.ListeningMode',
-        'MultipleChoiceMode': 'window.MultipleChoiceMode',
-        'StudyMaterialsSelector': 'window.StudyMaterialsSelector',
-        'StudyModeSelector': 'window.StudyModeSelector',
-        'ConjugationsMode': 'window.ConjugationsMode',
-        'DeclensionsMode': 'window.DeclensionsMode',
-        'useGlobalSettings': 'window.useGlobalSettings',
-        'useFullscreen': 'window.useFullscreen',
-        'WordListManager': 'window.WordListManager'
-    }
+    # Add React imports for JSX if not present
+    has_react_import = any('import React' in line for line in lines)
+    if not has_react_import and (filename.endswith('.jsx') or 'jsx' in jsx_content.lower()):
+        transformed_lines.append('// React provided by CDN')
+        transformed_lines.append('const React = window.React;')
+        transformed_lines.append('const { useState, useEffect, useCallback, useMemo, useRef } = React;')
+        transformed_lines.append('')
     
     for line in lines:
         # Remove import statements and replace with comments
-        if line.strip().startswith('import ') and 'from' in line:
+        if line.strip().startswith('import ') and ('from' in line or line.strip().endswith("';") or line.strip().endswith('";')):
             transformed_lines.append(f"// {line}")
         else:
             transformed_lines.append(line)
     
     transformed_content = '\n'.join(transformed_lines)
     
-    # Add component to global scope
+    # Handle exports and make components globally available
     component_name = filename.replace('.jsx', '').replace('.js', '')
     
-    # Handle exports and make components globally available
+    # Handle default exports
     if 'export default' in transformed_content:
         # Extract the exported component name
-        import re
         export_match = re.search(r'export default (\w+)', transformed_content)
         if export_match:
             exported_name = export_match.group(1)
@@ -238,29 +232,31 @@ def transform_imports(jsx_content, filename):
                 f'export default {exported_name}',
                 f'window.{component_name} = {exported_name};'
             )
-    
-    # Handle named exports for hooks and utilities
-    if 'export ' in transformed_content and 'export default' not in transformed_content:
-        # For files like useGlobalSettings.jsx that export named functions
-        export_pattern = r'export\s+(const|function)\s+(\w+)'
-        matches = re.findall(export_pattern, transformed_content)
-        for match in matches:
-            func_name = match[1]
+        else:
+            # Handle anonymous default exports
             transformed_content = re.sub(
-                rf'export\s+(const|function)\s+{func_name}',
-                rf'\1 {func_name}',
+                r'export default\s+',
+                f'window.{component_name} = ',
                 transformed_content
             )
-            transformed_content += f'\nwindow.{func_name} = {func_name};'
     
-    # Special handling for the main Trakaido component
-    if filename == "Trakaido.jsx":
-        # Look for the main component export
-        if 'FlashCardApp' in transformed_content:
-            transformed_content = transformed_content.replace(
-                'window.Trakaido = FlashCardApp;',
-                'window.FlashCardApp = FlashCardApp; window.Trakaido = FlashCardApp;'
-            )
+    # Handle named exports for hooks and utilities
+    named_exports = re.findall(r'export\s+(?:const|function|class)\s+(\w+)', transformed_content)
+    for export_name in named_exports:
+        transformed_content = re.sub(
+            rf'export\s+(const|function|class)\s+{export_name}',
+            rf'\1 {export_name}',
+            transformed_content
+        )
+        transformed_content += f'\nwindow.{export_name} = {export_name};'
+    
+    # Handle export { ... } syntax
+    export_block_match = re.search(r'export\s+{([^}]+)}', transformed_content)
+    if export_block_match:
+        exports = [name.strip() for name in export_block_match.group(1).split(',')]
+        for export_name in exports:
+            transformed_content += f'\nwindow.{export_name} = {export_name};'
+        transformed_content = re.sub(r'export\s+{[^}]+}', '', transformed_content)
     
     return transformed_content
 
@@ -277,20 +273,20 @@ def create_html_template(compiled_js_components, css_files):
     # Combine all compiled components
     all_js = '\n\n'.join(compiled_js_components)
     
-    # Add initialization code with React 17/18 compatibility
+    # Add initialization code with React 19 compatibility
     init_js = """
-// Initialize the React app with React 17/18 compatibility
+// Initialize the React app with React 19 compatibility
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('react-root');
     
-    // Check if we have React 18 createRoot or fall back to React 17 render
+    // Check if we have React 18+ createRoot or fall back to React 17 render
     if (ReactDOM.createRoot) {
-        // React 18
+        // React 18+
         const root = ReactDOM.createRoot(container);
-        root.render(React.createElement(window.FlashCardApp || window.Trakaido));
+        root.render(React.createElement(window.Trakaido || window.FlashCardApp));
     } else {
         // React 17 fallback
-        ReactDOM.render(React.createElement(window.FlashCardApp || window.Trakaido), container);
+        ReactDOM.render(React.createElement(window.Trakaido || window.FlashCardApp), container);
     }
 });
 """
@@ -358,12 +354,12 @@ def main():
     
     print("✅ Node.js and npm found")
     
-    # Install Babel dependencies
-    if not install_babel_dependencies():
+    # Ensure Babel dependencies
+    if not ensure_babel_dependencies():
         print("❌ Failed to install Babel dependencies")
         sys.exit(1)
     
-    print("✅ Babel dependencies installed")
+    print("✅ Babel dependencies ready")
     
     # Copy CSS files
     css_files = copy_css_files()
