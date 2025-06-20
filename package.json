@@ -44,6 +44,7 @@
     "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^30.0.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "vite-plugin-singlefile": "^2.2.0"
   }
 }

@@ -1,6 +1,7 @@
 
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { viteSingleFile } from 'vite-plugin-singlefile'
 import { resolve } from 'path'
 
 export default defineConfig({
@@ -12,7 +13,8 @@ export default defineConfig({
       jsxImportSource: 'react',
       // Disable fast refresh during development if causing issues
       fastRefresh: true,
-    })
+    }),
+    viteSingleFile()
   ],
   root: 'react',
   publicDir: 'public',
