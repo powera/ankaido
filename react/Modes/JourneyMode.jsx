@@ -270,7 +270,6 @@ const JourneyMode = ({
       );
       if (wordIndex >= 0) {
         wordListManager.currentCard = wordIndex;
-        wordListManager.notifyStateChange();
 
         // Determine effective study mode based on activity type and mode
         let effectiveStudyMode = studyMode;
@@ -288,7 +287,12 @@ const JourneyMode = ({
           effectiveStudyMode = 'lithuanian-to-english';
         }
 
+        // Force regeneration of multiple choice options by clearing them first
+        wordListManager.multipleChoiceOptions = [];
         wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
+        
+        // Notify state change after everything is updated
+        wordListManager.notifyStateChange();
       }
     }
   }, [selectNextActivity, wordListManager, wordListState.allWords, studyMode]);

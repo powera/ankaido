@@ -277,13 +277,16 @@ class JourneyStatsManager {
     const wordKey = createWordKey(word);
     const currentStats = this.getWordStats(word);
     
+    // Ensure the mode exists with default values
+    const currentModeStats = currentStats[mode] || { correct: 0, incorrect: 0 };
+    
     // Create updated stats
     const updatedStats = {
       ...currentStats,
       exposed: currentStats.exposed || isCorrect, // Only mark as exposed if correct
       [mode]: {
-        ...currentStats[mode],
-        [isCorrect ? 'correct' : 'incorrect']: currentStats[mode][isCorrect ? 'correct' : 'incorrect'] + 1
+        ...currentModeStats,
+        [isCorrect ? 'correct' : 'incorrect']: currentModeStats[isCorrect ? 'correct' : 'incorrect'] + 1
       },
       lastSeen: Date.now()
     };
