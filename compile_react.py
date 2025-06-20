@@ -196,7 +196,7 @@ def compile_jsx_components():
     return compiled_components
 
 def transform_imports(jsx_content, filename):
-    """Transform ES6 imports to work in browser environment"""
+    """Transform ES6 imports and require() calls to work in browser environment"""
     import re
     
     lines = jsx_content.split('\n')
@@ -213,11 +213,44 @@ def transform_imports(jsx_content, filename):
     for line in lines:
         # Remove import statements and replace with comments
         if line.strip().startswith('import ') and ('from' in line or line.strip().endswith("';") or line.strip().endswith('";')):
-            transformed_lines.append(f"// {line}")
+            # Transform relative imports to window object references
+            if 'from \'./\'' in line or 'from "./\'' in line:
+                # Extract imported names and source
+                import_match = re.search(r'import\s+{([^}]+)}\s+from\s+[\'"]\.\/(\w+)[\'"]', line)
+                if import_match:
+                    imported_names = [name.strip() for name in import_match.group(1).split(',')]
+                    source_file = import_match.group(2)
+                    for name in imported_names:
+                        transformed_lines.append(f'const {name} = window.{name} || window.{source_file};')
+                else:
+                    # Default import
+                    default_match = re.search(r'import\s+(\w+)\s+from\s+[\'"]\.\/(\w+)[\'"]', line)
+                    if default_match:
+                        imported_name = default_match.group(1)
+                        source_file = default_match.group(2)
+                        transformed_lines.append(f'const {imported_name} = window.{source_file};')
+                    else:
+                        transformed_lines.append(f"// {line}")
+            else:
+                transformed_lines.append(f"// {line}")
         else:
             transformed_lines.append(line)
     
     transformed_content = '\n'.join(transformed_lines)
+    
+    # Transform require() calls to window object references
+    transformed_content = re.sub(
+        r'require\([\'"]\.\/([^\'\"]+)[\'"]\)',
+        r'window.\1',
+        transformed_content
+    )
+    
+    # Transform other require() calls to comments
+    transformed_content = re.sub(
+        r'const\s+(\w+)\s+=\s+require\([\'"]([^\'\"]+)[\'"]\);?',
+        r'// const \1 = require("\2"); // Handled by browser globals',
+        transformed_content
+    )
     
     # Handle exports and make components globally available
     component_name = filename.replace('.jsx', '').replace('.js', '')
@@ -264,11 +297,29 @@ def create_html_template(compiled_js_components, css_files):
     """Create the final HTML file with all components"""
     print("Creating HTML template...")
     
-    # Copy lithuanianApi.js to build directory
+    # Process and copy lithuanianApi.js to build directory
     api_js_source = REACT_DIR / "js" / "lithuanianApi.js"
     api_js_dest = BUILD_DIR / "lithuanianApi.js"
     if api_js_source.exists():
-        shutil.copy2(api_js_source, api_js_dest)
+        # Read and transform the API file to remove require() calls
+        with open(api_js_source, 'r', encoding='utf-8') as f:
+            api_content = f.read()
+        
+        # Transform require() calls and module.exports
+        import re
+        api_content = re.sub(
+            r'const\s+(\w+)\s+=\s+require\([\'"]([^\'\"]+)[\'"]\);?',
+            r'// const \1 = require("\2"); // Browser global used instead',
+            api_content
+        )
+        api_content = re.sub(
+            r'module\.exports\s*=\s*{([^}]+)}',
+            r'// Make API functions globally available\nwindow.lithuanianApi = {\1};',
+            api_content
+        )
+        
+        with open(api_js_dest, 'w', encoding='utf-8') as f:
+            f.write(api_content)
     
     # Combine all compiled components
     all_js = '\n\n'.join(compiled_js_components)
