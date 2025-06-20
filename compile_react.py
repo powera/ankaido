@@ -216,23 +216,33 @@ def transform_imports(jsx_content, filename):
         # Remove import statements and replace with comments
         if line.strip().startswith('import ') and ('from' in line or line.strip().endswith("';") or line.strip().endswith('";')):
             # Transform relative imports to window object references
-            if 'from \'./\'' in line or 'from "./\'' in line:
-                # Extract imported names and source
-                import_match = re.search(r'import\s+{([^}]+)}\s+from\s+[\'"]\.\/(\w+)[\'"]', line)
-                if import_match:
-                    imported_names = [name.strip() for name in import_match.group(1).split(',')]
-                    source_file = import_match.group(2)
+            if 'from \'./\'' in line or 'from "./\'' in line or 'from \'../\'' in line or 'from "../\'' in line:
+                # Handle named imports like: import { name1, name2 } from './module'
+                named_import_match = re.search(r'import\s+{([^}]+)}\s+from\s+[\'"]\.\.?\/(\w+)[\'"]', line)
+                if named_import_match:
+                    imported_names = [name.strip() for name in named_import_match.group(1).split(',')]
+                    source_file = named_import_match.group(2)
                     for name in imported_names:
                         transformed_lines.append(f'const {name} = window.{name} || window.{source_file};')
                 else:
-                    # Default import
-                    default_match = re.search(r'import\s+(\w+)\s+from\s+[\'"]\.\/(\w+)[\'"]', line)
+                    # Handle default imports like: import moduleName from './module' or import moduleName from '../module'
+                    default_match = re.search(r'import\s+(\w+)\s+from\s+[\'"]\.\.?\/(\w+)[\'"]', line)
                     if default_match:
                         imported_name = default_match.group(1)
                         source_file = default_match.group(2)
                         transformed_lines.append(f'const {imported_name} = window.{source_file};')
                     else:
-                        transformed_lines.append(f"// {line}")
+                        # Handle mixed imports like: import defaultName, { namedExport } from './module'
+                        mixed_match = re.search(r'import\s+(\w+),\s*{([^}]+)}\s+from\s+[\'"]\.\.?\/(\w+)[\'"]', line)
+                        if mixed_match:
+                            default_name = mixed_match.group(1)
+                            named_exports = [name.strip() for name in mixed_match.group(2).split(',')]
+                            source_file = mixed_match.group(3)
+                            transformed_lines.append(f'const {default_name} = window.{source_file};')
+                            for name in named_exports:
+                                transformed_lines.append(f'const {name} = window.{name} || window.{source_file};')
+                        else:
+                            transformed_lines.append(f"// {line}")
             else:
                 transformed_lines.append(f"// {line}")
         else:
