@@ -8,14 +8,15 @@ const MultipleChoiceOptions = ({
   quizMode,
   handleMultipleChoiceAnswer,
   audioEnabled,
-  playAudio
+  playAudio,
+  preventAutoPlay
 }) => {
   return (
     <div className="w-multiple-choice">
       {wordListState.multipleChoiceOptions.map((option, index) => {
         const currentWord = wordListManager.getCurrentWord();
         if (!currentWord) return null;
-        
+
         // Determine correct answer based on mode
         let correctAnswer;
         if (quizMode === 'listening') {
@@ -27,11 +28,11 @@ const MultipleChoiceOptions = ({
         } else {
           correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
         }
-        
+
         const isCorrect = option === correctAnswer;
         const isSelected = option === wordListState.selectedAnswer;
         let className = 'w-choice-option';
-        
+
         if (wordListState.showAnswer) {
           if (isCorrect) {
             className += ' w-correct';
@@ -73,12 +74,12 @@ const MultipleChoiceOptions = ({
 
         const handleOptionClick = () => {
           if (wordListState.showAnswer) return;
-          
+
           // Play audio immediately for correct answers in EN->LT mode
           if (audioEnabled && studyMode === 'english-to-lithuanian' && quizMode !== 'listening' && isCorrect) {
             playAudio(option); // option is the Lithuanian word in EN->LT mode
           }
-          
+
           handleMultipleChoiceAnswer(option);
         };
 

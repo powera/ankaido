@@ -12,6 +12,7 @@ const ListeningMode = ({
   playAudio,
   handleMultipleChoiceAnswer
 }) => {
+  const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
   const currentWord = wordListManager.getCurrentWord();
   if (!currentWord) return null;
 
@@ -20,8 +21,16 @@ const ListeningMode = ({
     journeyStatsManager.initialize();
   }, []);
 
+  // Reset prevent auto-play flag when word changes
+  React.useEffect(() => {
+    setPreventAutoPlay(false);
+  }, [currentWord]);
+
   // Enhanced listening handler that updates Journey stats
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {
+    // Prevent auto-play when an answer is selected
+    setPreventAutoPlay(true);
+    
     // Determine correct answer based on study mode for listening
     let correctAnswer;
     if (studyMode === 'lithuanian-to-lithuanian') {

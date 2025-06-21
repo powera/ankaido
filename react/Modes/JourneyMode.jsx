@@ -304,16 +304,30 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
-  // Auto-play audio for listening activities in Journey Mode
+  // Auto-play audio for listening activities and LT->EN multiple choice in Journey Mode
   React.useEffect(() => {
-    if (journeyState.currentActivity === 'listening' && audioEnabled && journeyState.currentWord) {
-      // Small delay to ensure the UI has updated
-      const timer = setTimeout(() => {
-        playAudio(journeyState.currentWord.lithuanian);
-      }, 300);
-      return () => clearTimeout(timer);
+    if (audioEnabled && journeyState.currentWord) {
+      let shouldPlayAudio = false;
+      
+      // Play audio for listening activities
+      if (journeyState.currentActivity === 'listening') {
+        shouldPlayAudio = true;
+      }
+      
+      // Play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
+      if (journeyState.currentActivity === 'multiple-choice' && journeyState.multipleChoiceMode === 'lt-to-en') {
+        shouldPlayAudio = true;
+      }
+      
+      if (shouldPlayAudio) {
+        // Small delay to ensure the UI has updated
+        const timer = setTimeout(() => {
+          playAudio(journeyState.currentWord.lithuanian);
+        }, 300);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [journeyState.currentActivity, journeyState.currentWord, audioEnabled, playAudio]);
+  }, [journeyState.currentActivity, journeyState.multipleChoiceMode, journeyState.currentWord, audioEnabled, playAudio]);
 
   // Word stats update functions
   const updateWordInStats = React.useCallback(async (word, updates) => {
