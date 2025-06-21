@@ -45,10 +45,10 @@ const BaseModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="w-settings-overlay">
+    <div className="modal-overlay">
       <div 
         ref={modalRef} 
-        className={`w-settings-modal ${className}`}
+        className={`modal-container ${className}`}
         style={{ 
           width,
           maxWidth,
@@ -59,12 +59,12 @@ const BaseModal = ({
         aria-label={ariaLabel || title}
       >
         {(title || showCloseButton) && (
-          <div className="w-settings-header">
-            {title && <h2 className="w-settings-title">{title}</h2>}
+          <div className="modal-header">
+            {title && <h2 className="modal-title">{title}</h2>}
             {showCloseButton && (
               <button
                 onClick={onClose}
-                className="w-settings-close"
+                className="modal-close"
                 aria-label="Close modal"
               >
                 ×
