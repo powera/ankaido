@@ -1,7 +1,7 @@
 
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
-import AudioButton from '../Components/AudioButton';
+import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../journeyStatsManager';
 
 const ListeningMode = ({ 
@@ -48,32 +48,24 @@ const ListeningMode = ({
     handleMultipleChoiceAnswer(selectedOption);
   }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
 
+  const instructionText = studyMode === 'lithuanian-to-english' 
+    ? 'Choose the English translation:'
+    : studyMode === 'lithuanian-to-lithuanian'
+      ? 'Choose the matching Lithuanian word:'
+      : 'Choose the matching Lithuanian word:';
+
   return (
     <div>
-      <div className="w-card">
-        <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
-        <div className="w-question w-text-center">
-          <div className="w-mb-large">
-            🎧 Listen and choose the correct answer:
-          </div>
-          <div style={{ marginBottom: 'var(--spacing-base)' }}>
-            <AudioButton 
-              word={currentWord.lithuanian}
-              size="large"
-              audioEnabled={audioEnabled}
-              playAudio={playAudio}
-            />
-            <span style={{ marginLeft: '0.5rem', fontSize: '1.2rem' }}>Play Audio</span>
-          </div>
-          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-            {studyMode === 'lithuanian-to-english' 
-              ? 'Choose the English translation:'
-              : studyMode === 'lithuanian-to-lithuanian'
-                ? 'Choose the matching Lithuanian word:'
-                : 'Choose the matching Lithuanian word:'}
-          </div>
-        </div>
-      </div>
+      <WordDisplayCard
+        currentWord={currentWord}
+        studyMode="listening"
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        questionText="🎧 Listen and choose the correct answer:"
+        showAudioButton={true}
+        promptText={instructionText}
+        isClickable={false}
+      />
       <MultipleChoiceOptions
         wordListManager={wordListManager}
         wordListState={wordListState}

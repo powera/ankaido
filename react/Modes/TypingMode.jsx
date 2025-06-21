@@ -1,5 +1,6 @@
+
 import React from 'react';
-import AudioButton from '../Components/AudioButton';
+import WordDisplayCard from '../Components/WordDisplayCard';
 
 const TypingMode = ({ 
   wordListManager,
@@ -33,6 +34,7 @@ const TypingMode = ({
 
     wordListManager.setShowAnswer(true);
   };
+
   if (!currentWord) {
     return (
       <div className="w-card">
@@ -43,37 +45,25 @@ const TypingMode = ({
     );
   }
 
+  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
+  const answer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+  const promptText = studyMode === 'english-to-lithuanian' ? 
+    'Type the Lithuanian word (with proper accents)' : 
+    'Type the English word';
+
   return (
-    <div className="w-card">
-      <div className="w-badge">{currentWord.corpus} → {currentWord.group}</div>
-
-      {/* Always display both English and Lithuanian */}
-      <div className="w-word-display" style={{ marginBottom: 'var(--spacing-base)' }}>
-        <div className="w-question" style={{ marginBottom: 'var(--spacing-small)' }}>
-          <span style={{ fontWeight: 'bold' }}>English:</span> {currentWord.english}
-        </div>
-
-        {wordListState.showAnswer ? (
-          <div className="w-answer" style={{ marginBottom: 'var(--spacing-base)' }}>
-            <span style={{ fontWeight: 'bold' }}>Lithuanian:</span> {currentWord.lithuanian}
-            <span style={{ marginLeft: '0.5rem' }}>
-              <AudioButton 
-                word={currentWord.lithuanian} 
-                audioEnabled={audioEnabled}
-                playAudio={playAudio}
-              />
-            </span>
-          </div>
-        ) : (
-          <div className="w-prompt" style={{ 
-            marginBottom: 'var(--spacing-base)', 
-            color: 'var(--color-text-muted)',
-            fontStyle: 'italic'
-          }}>
-            Type the Lithuanian word (with proper accents)
-          </div>
-        )}
-      </div>
+    <div>
+      <WordDisplayCard
+        currentWord={currentWord}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        questionText={question}
+        answerText={answer}
+        showAnswer={wordListState.showAnswer}
+        promptText={promptText}
+        isClickable={false}
+      />
 
       {/* Display feedback when answer is shown */}
       {wordListState.showAnswer && (
@@ -104,7 +94,7 @@ const TypingMode = ({
           </div>
           {wordListState.typingFeedback !== '✅ Correct!' && (
             <div>
-              <strong>Correct answer:</strong> {currentWord.lithuanian}
+              <strong>Correct answer:</strong> {answer}
             </div>
           )}
         </div>
@@ -115,53 +105,55 @@ const TypingMode = ({
         {!wordListState.showAnswer ? (
           <div>
             <div style={{ display: 'flex', gap: 'var(--spacing-small)' }}>
-            <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={wordListState.typedAnswer}
-            onChange={(e) => wordListManager.setTypedAnswer(e.target.value)}
-            placeholder="Type your answer..."
-            className="w-typing-input"
-            disabled={wordListState.showAnswer}
-            autoFocus
-          />
-          <button 
-            type="submit" 
-            className="w-button w-button-primary"
-            disabled={wordListState.showAnswer || !wordListState.typedAnswer.trim()}
-          >
-            Submit
-          </button>
-        </form>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  value={wordListState.typedAnswer}
+                  onChange={(e) => wordListManager.setTypedAnswer(e.target.value)}
+                  placeholder="Type your answer..."
+                  className="w-typing-input"
+                  disabled={wordListState.showAnswer}
+                  autoFocus
+                />
+                <button 
+                  type="submit" 
+                  className="w-button w-button-primary"
+                  disabled={wordListState.showAnswer || !wordListState.typedAnswer.trim()}
+                >
+                  Submit
+                </button>
+              </form>
             </div>
 
             {/* Special character buttons to help with typing Lithuanian characters */}
-            <div className="w-character-helpers" style={{ marginTop: 'var(--spacing-small)' }}>
-              <div style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-small)', fontSize: '0.9rem' }}>
-                Special characters:
+            {studyMode === 'english-to-lithuanian' && (
+              <div className="w-character-helpers" style={{ marginTop: 'var(--spacing-small)' }}>
+                <div style={{ color: 'var(--color-text-muted)', marginBottom: 'var(--spacing-small)', fontSize: '0.9rem' }}>
+                  Special characters:
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map(char => (
+                    <button
+                      key={char}
+                      className="w-special-char"
+                      onClick={() => wordListManager.setTypedAnswer(wordListState.typedAnswer + char)}
+                      style={{
+                        padding: '0.5rem 0.7rem',
+                        borderRadius: 'var(--border-radius)',
+                        border: '1px solid var(--color-border)',
+                        background: 'var(--color-card-bg)',
+                        color: 'var(--color-text)',
+                        cursor: 'pointer',
+                        fontSize: '1.1rem',
+                        minWidth: '2.5rem'
+                      }}
+                    >
+                      {char}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map(char => (
-                  <button
-                    key={char}
-                    className="w-special-char"
-                    onClick={() => wordListManager.setTypedAnswer(wordListState.typedAnswer + char)}
-                    style={{
-                      padding: '0.5rem 0.7rem',
-                      borderRadius: 'var(--border-radius)',
-                      border: '1px solid var(--color-border)',
-                      background: 'var(--color-card-bg)',
-                      color: 'var(--color-text)',
-                      cursor: 'pointer',
-                      fontSize: '1.1rem',
-                      minWidth: '2.5rem'
-                    }}
-                  >
-                    {char}
-                  </button>
-                ))}
-              </div>
-            </div>
+            )}
           </div>
         ) : (
           <button 
