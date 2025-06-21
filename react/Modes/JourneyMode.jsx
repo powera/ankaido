@@ -304,6 +304,17 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
+  // Auto-play audio for listening activities in Journey Mode
+  React.useEffect(() => {
+    if (journeyState.currentActivity === 'listening' && audioEnabled && journeyState.currentWord) {
+      // Small delay to ensure the UI has updated
+      const timer = setTimeout(() => {
+        playAudio(journeyState.currentWord.lithuanian);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [journeyState.currentActivity, journeyState.currentWord, audioEnabled, playAudio]);
+
   // Word stats update functions
   const updateWordInStats = React.useCallback(async (word, updates) => {
     await journeyStatsManager.updateWordStatsDirectly(word, updates);
