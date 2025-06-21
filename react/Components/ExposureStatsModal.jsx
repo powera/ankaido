@@ -160,7 +160,11 @@ const ExposureStatsModal = ({
                 header: 'Last Seen',
                 accessor: 'lastSeen',
                 align: 'center',
-                render: (word) => formatDate(word.lastSeen)
+                render: (word) => {
+                  if (!word.lastSeen) return 'Never';
+                  const date = new Date(word.lastSeen);
+                  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                }
               }
             ]}
             data={sortedWords}

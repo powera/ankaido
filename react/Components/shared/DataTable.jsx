@@ -109,10 +109,16 @@ const DataTable = ({
                 onClick={sortable && column.sortable !== false && onSort ? 
                   () => onSort(column.sortKey || column.accessor) : undefined}
               >
-                {column.header}
-                {sortable && column.sortable !== false && sortField === (column.sortKey || column.accessor) && 
-                  (sortDirection === 'asc' ? ' ↑' : ' ↓')
-                }
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span>{column.header}</span>
+                  {sortable && column.sortable !== false && (
+                    <span style={{ marginLeft: '0.5rem', minWidth: '12px', textAlign: 'center' }}>
+                      {sortField === (column.sortKey || column.accessor) && 
+                        (sortDirection === 'asc' ? '↑' : '↓')
+                      }
+                    </span>
+                  )}
+                </div>
               </th>
             ))}
           </tr>
