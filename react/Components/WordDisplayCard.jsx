@@ -34,7 +34,8 @@ const WordDisplayCard = ({
   // Determine if we should show the audio button based on study mode and showAudioButton prop
   const shouldShowAudioButton = showAudioButton && audioEnabled && (
     (studyMode === 'lithuanian-to-english') ||
-    (studyMode === 'english-to-lithuanian' && showAnswer)
+    (studyMode === 'english-to-lithuanian' && showAnswer) ||
+    (studyMode === 'listening')
   );
 
   const cardClasses = `w-card ${isClickable ? 'w-card-interactive' : ''} ${className}`;
@@ -63,7 +64,7 @@ const WordDisplayCard = ({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
           <span>{question}</span>
-          {shouldShowAudioButton && studyMode === 'lithuanian-to-english' && (
+          {shouldShowAudioButton && (studyMode === 'lithuanian-to-english' || studyMode === 'listening') && (
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
