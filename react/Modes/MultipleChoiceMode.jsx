@@ -1,5 +1,6 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
+import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../journeyStatsManager';
 
 const MultipleChoiceMode = ({ 
@@ -40,29 +41,18 @@ const MultipleChoiceMode = ({
 
   return (
     <div>
-      <div className="w-card" style={{ padding: 'min(var(--spacing-large), 1rem)' }}>
-        <div className="w-badge w-hide-mobile">{currentWord.corpus} → {currentWord.group}</div>
-        <div 
-          className="w-question"
-          onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart(question)}
-          onMouseLeave={handleHoverEnd}
-          style={{ 
-            cursor: audioEnabled && studyMode === 'lithuanian-to-english' ? 'pointer' : 'default',
-            fontSize: 'clamp(1.2rem, 4vw, 1.5rem)',
-            marginBottom: 'clamp(1rem, 3vw, var(--spacing-large))'
-          }}
-        >
-          {question}
-        </div>
-        <div className="w-hide-mobile" style={{ 
-          color: 'var(--color-text-muted)', 
-          fontSize: '0.9rem', 
-          marginTop: 'var(--spacing-base)',
-          textAlign: 'center'
-        }}>
-          Choose the correct answer
-        </div>
-      </div>
+      <WordDisplayCard
+        currentWord={currentWord}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        handleHoverStart={handleHoverStart}
+        handleHoverEnd={handleHoverEnd}
+        questionText={question}
+        showHints={true}
+        hintText="Choose the correct answer"
+        style={{ padding: 'min(var(--spacing-large), 1rem)' }}
+      />
       <MultipleChoiceOptions
         wordListManager={wordListManager}
         wordListState={wordListState}
