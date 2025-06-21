@@ -1,6 +1,6 @@
 
 import React from 'react';
-import AudioButton from './AudioButton';
+import DataTable from './shared/DataTable';
 
 const ConjugationTable = ({ verb, conjugations, audioEnabled, playAudio, handleHoverStart, handleHoverEnd }) => {
   const conjugationList = conjugations[verb];
@@ -18,57 +18,55 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled, playAudio, handleH
     conjugationGrid[pronoun] = conj;
   });
 
+  // Convert to data array, filtering out null entries
+  const tableData = Object.entries(conjugationGrid)
+    .filter(([_, conj]) => conj !== null)
+    .map(([pronoun, conj]) => ({
+      pronoun,
+      english: conj.english,
+      lithuanian: conj.lithuanian
+    }));
+
+  const columns = [
+    {
+      header: 'Person',
+      accessor: 'pronoun',
+      bold: true
+    },
+    {
+      header: 'English',
+      accessor: 'english'
+    },
+    {
+      header: 'Lithuanian',
+      accessor: 'lithuanian',
+      hoverable: true,
+      hoverValue: 'lithuanian'
+    },
+    {
+      header: 'Audio',
+      type: 'audio',
+      audioWord: 'lithuanian',
+      audioSize: 'small',
+      align: 'center'
+    }
+  ];
+
   return (
     <div style={{ marginTop: 'var(--spacing-base)' }}>
       <h4>Conjugation Table for "{verb}"</h4>
-      <table style={{
-        width: '100%',
-        borderCollapse: 'collapse',
-        border: '1px solid var(--color-border)',
-        marginTop: 'var(--spacing-small)'
-      }}>
-        <thead>
-          <tr style={{ background: 'var(--color-annotation-bg)' }}>
-            <th style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)' }}>Person</th>
-            <th style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)' }}>English</th>
-            <th style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)' }}>Lithuanian</th>
-            <th style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)' }}>Audio</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(conjugationGrid).map(([pronoun, conj]) => {
-            if (!conj) return null;
-            return (
-              <tr key={pronoun}>
-                <td style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)', fontWeight: 'bold' }}>
-                  {pronoun}
-                </td>
-                <td style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)' }}>
-                  {conj.english}
-                </td>
-                <td style={{ 
-                  padding: 'var(--spacing-small)', 
-                  border: '1px solid var(--color-border)',
-                  cursor: audioEnabled ? 'pointer' : 'default'
-                }}
-                onMouseEnter={() => audioEnabled && handleHoverStart(conj.lithuanian)}
-                onMouseLeave={handleHoverEnd}
-                >
-                  {conj.lithuanian}
-                </td>
-                <td style={{ padding: 'var(--spacing-small)', border: '1px solid var(--color-border)', textAlign: 'center' }}>
-                  <AudioButton 
-                    word={conj.lithuanian}
-                    size="small"
-                    audioEnabled={audioEnabled}
-                    playAudio={playAudio}
-                  />
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div style={{ marginTop: 'var(--spacing-small)' }}>
+        <DataTable
+          columns={columns}
+          data={tableData}
+          audioEnabled={audioEnabled}
+          playAudio={playAudio}
+          handleHoverStart={handleHoverStart}
+          handleHoverEnd={handleHoverEnd}
+          maxHeight="none"
+          stickyHeader={false}
+        />
+      </div>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BaseModal from './shared/BaseModal';
+import DataTable from './shared/DataTable';
 import journeyStatsManager, { convertStatsToDisplayArray, formatDate } from '../journeyStatsManager';
 import safeStorage from '../safeStorage';
 
@@ -113,104 +114,64 @@ const ExposureStatsModal = ({
             </div>
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ 
-              position: 'sticky', 
-              top: 0, 
-              background: 'var(--color-card-bg)', 
-              zIndex: 1,
-              borderBottom: '1px solid var(--color-border)'
-            }}>
-              <th 
-                onClick={() => handleSort('lithuanian')}
-                style={{ 
-                  padding: '0.5rem', 
-                  textAlign: 'left', 
-                  cursor: 'pointer',
-                  position: 'relative'
-                }}
-              >
-                Lithuanian {sortField === 'lithuanian' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th 
-                onClick={() => handleSort('english')}
-                style={{ 
-                  padding: '0.5rem', 
-                  textAlign: 'left', 
-                  cursor: 'pointer' 
-                }}
-              >
-                English {sortField === 'english' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th 
-                onClick={() => handleSort('totalCorrect')}
-                style={{ 
-                  padding: '0.5rem', 
-                  textAlign: 'center', 
-                  cursor: 'pointer' 
-                }}
-              >
-                Correct {sortField === 'totalCorrect' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th 
-                onClick={() => handleSort('totalIncorrect')}
-                style={{ 
-                  padding: '0.5rem', 
-                  textAlign: 'center', 
-                  cursor: 'pointer' 
-                }}
-              >
-                Incorrect {sortField === 'totalIncorrect' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-              <th 
-                onClick={() => handleSort('lastSeen')}
-                style={{ 
-                  padding: '0.5rem', 
-                  textAlign: 'center', 
-                  cursor: 'pointer' 
-                }}
-              >
-                Last Seen {sortField === 'lastSeen' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedWords.map((word, index) => (
-              <tr 
-                key={`${word.lithuanian}-${word.english}`}
-                style={{ 
-                  background: index % 2 === 0 ? 'var(--color-card-bg)' : 'var(--color-bg)',
-                  borderBottom: '1px solid var(--color-border)'
-                }}
-              >
-                <td style={{ padding: '0.5rem' }}>{word.lithuanian}</td>
-                <td style={{ padding: '0.5rem' }}>{word.english}</td>
-                <td style={{ padding: '0.5rem', textAlign: 'center' }}>
-                  <div>Total: {word.totalCorrect}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                    MC: {word.multipleChoice?.correct || 0} | 
-                    Listen Easy: {word.listeningEasy?.correct || 0} | 
-                    Listen Hard: {word.listeningHard?.correct || 0} | 
-                    Type: {word.typing?.correct || 0}
+          <DataTable
+            columns={[
+              {
+                header: 'Lithuanian',
+                accessor: 'lithuanian'
+              },
+              {
+                header: 'English',
+                accessor: 'english'
+              },
+              {
+                header: 'Correct',
+                accessor: 'totalCorrect',
+                align: 'center',
+                render: (word) => (
+                  <div>
+                    <div>Total: {word.totalCorrect}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                      MC: {word.multipleChoice?.correct || 0} | 
+                      Listen Easy: {word.listeningEasy?.correct || 0} | 
+                      Listen Hard: {word.listeningHard?.correct || 0} | 
+                      Type: {word.typing?.correct || 0}
+                    </div>
                   </div>
-                </td>
-                <td style={{ padding: '0.5rem', textAlign: 'center' }}>
-                  <div>Total: {word.totalIncorrect}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                    MC: {word.multipleChoice?.incorrect || 0} | 
-                    Listen Easy: {word.listeningEasy?.incorrect || 0} | 
-                    Listen Hard: {word.listeningHard?.incorrect || 0} | 
-                    Type: {word.typing?.incorrect || 0}
+                )
+              },
+              {
+                header: 'Incorrect',
+                accessor: 'totalIncorrect',
+                align: 'center',
+                render: (word) => (
+                  <div>
+                    <div>Total: {word.totalIncorrect}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+                      MC: {word.multipleChoice?.incorrect || 0} | 
+                      Listen Easy: {word.listeningEasy?.incorrect || 0} | 
+                      Listen Hard: {word.listeningHard?.incorrect || 0} | 
+                      Type: {word.typing?.incorrect || 0}
+                    </div>
                   </div>
-                </td>
-                <td style={{ padding: '0.5rem', textAlign: 'center' }}>
-                  {formatDate(word.lastSeen)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                )
+              },
+              {
+                header: 'Last Seen',
+                accessor: 'lastSeen',
+                align: 'center',
+                render: (word) => formatDate(word.lastSeen)
+              }
+            ]}
+            data={sortedWords}
+            sortable={true}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
+            maxHeight="70vh"
+            stickyHeader={true}
+            striped={true}
+          />
         )}
       </div>
 

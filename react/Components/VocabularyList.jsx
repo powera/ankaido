@@ -1,6 +1,6 @@
 
 import React from 'react';
-import AudioButton from './AudioButton';
+import DataTable from './shared/DataTable';
 
 const VocabularyList = ({ 
   selectedVocabGroup,
@@ -62,70 +62,31 @@ const VocabularyList = ({
       {selectedVocabGroup && (
         <div>
           <h4>{vocabListWords.length} Words</h4>
-          <div style={{ 
-            maxHeight: '60vh', 
-            overflowY: 'auto',
-            border: '1px solid var(--color-border)',
-            borderRadius: 'var(--border-radius)',
-            padding: 'var(--spacing-small)'
-          }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr>
-                  <th style={{ 
-                    padding: 'var(--spacing-small)', 
-                    borderBottom: '2px solid var(--color-border)',
-                    textAlign: 'left',
-                    position: 'sticky',
-                    top: 0,
-                    background: 'var(--color-card-bg)'
-                  }}>Lithuanian</th>
-                  <th style={{ 
-                    padding: 'var(--spacing-small)', 
-                    borderBottom: '2px solid var(--color-border)',
-                    textAlign: 'left',
-                    position: 'sticky',
-                    top: 0,
-                    background: 'var(--color-card-bg)'
-                  }}>English</th>
-                  <th style={{ 
-                    padding: 'var(--spacing-small)', 
-                    borderBottom: '2px solid var(--color-border)',
-                    textAlign: 'center',
-                    width: '60px',
-                    position: 'sticky',
-                    top: 0,
-                    background: 'var(--color-card-bg)'
-                  }}>Audio</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vocabListWords.map((word, index) => (
-                  <tr key={index} style={{ 
-                    backgroundColor: index % 2 === 0 ? 'var(--color-card-bg)' : 'var(--color-card-bg-alt)' 
-                  }}>
-                    <td style={{ padding: 'var(--spacing-small)', borderBottom: '1px solid var(--color-border)' }}>
-                      {word.lithuanian}
-                    </td>
-                    <td style={{ padding: 'var(--spacing-small)', borderBottom: '1px solid var(--color-border)' }}>
-                      {word.english}
-                    </td>
-                    <td style={{ 
-                      padding: 'var(--spacing-small)', 
-                      borderBottom: '1px solid var(--color-border)',
-                      textAlign: 'center'
-                    }}>
-                      <AudioButton 
-                        word={word.lithuanian}
-                        audioEnabled={audioEnabled}
-                        playAudio={playAudio}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            columns={[
+              {
+                header: 'Lithuanian',
+                accessor: 'lithuanian'
+              },
+              {
+                header: 'English', 
+                accessor: 'english'
+              },
+              {
+                header: 'Audio',
+                type: 'audio',
+                audioWord: 'lithuanian',
+                align: 'center',
+                width: '60px'
+              }
+            ]}
+            data={vocabListWords}
+            audioEnabled={audioEnabled}
+            playAudio={playAudio}
+            maxHeight="60vh"
+            stickyHeader={true}
+            striped={true}
+          />
         </div>
       )}
     </div>
