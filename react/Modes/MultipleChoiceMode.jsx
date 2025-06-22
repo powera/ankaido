@@ -9,8 +9,7 @@ const MultipleChoiceMode = ({
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  handleMultipleChoiceAnswer,
-  quizMode = "multiple-choice"
+  handleMultipleChoiceAnswer
 }) => {
   return (
     <MultipleChoiceActivity
@@ -22,7 +21,6 @@ const MultipleChoiceMode = ({
       handleHoverStart={handleHoverStart}
       handleHoverEnd={handleHoverEnd}
       onAnswer={handleMultipleChoiceAnswer}
-      quizMode={quizMode}
     />
   );
 };
