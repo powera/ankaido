@@ -85,7 +85,8 @@ const DrillMode = ({
   }, [loadStatsFromStorage]);
 
   // Helper function to generate multiple choice options locally
-  const generateMultipleChoiceOptions = React.useCallback((currentWord, mode) => {
+  // Note: Not using useCallback to ensure fresh randomization each time
+  const generateMultipleChoiceOptions = (currentWord, mode) => {
     if (!currentWord || !drillState.drillWords.length) return [];
 
     const options = [];
@@ -118,7 +119,7 @@ const DrillMode = ({
     
     // Shuffle the options
     return options.sort(() => Math.random() - 0.5);
-  }, [drillState.drillWords]);
+  };
 
   // Generate drill word list from selected group
   React.useEffect(() => {
@@ -233,7 +234,9 @@ const DrillMode = ({
       multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, nextActivity.mode);
     } else if (nextActivity.type === 'listening') {
       // For listening activities, generate options based on the mode
-      const mode = nextActivity.mode === 'easy' ? 'lt-to-lt' : 'lt-to-en';
+      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
+      // Hard mode: Lithuanian audio -> English options (lt-to-en)
+      const mode = nextActivity.mode === 'easy' ? 'en-to-lt' : 'lt-to-en';
       multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, mode);
     }
     
@@ -263,7 +266,7 @@ const DrillMode = ({
         }
       } : {})
     }));
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptions]);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
@@ -297,6 +300,31 @@ const DrillMode = ({
       }
     }
   }, [drillState.currentActivity, drillState.multipleChoiceMode, drillState.typingMode, drillState.currentWord, audioEnabled, playAudio]);
+
+  // Sync drillActivityState with drillState changes
+  React.useEffect(() => {
+    if (drillState.currentWord && drillState.currentActivity) {
+      let multipleChoiceOptions = [];
+      
+      if (drillState.currentActivity === 'multiple-choice') {
+        multipleChoiceOptions = generateMultipleChoiceOptions(drillState.currentWord, drillState.multipleChoiceMode);
+      } else if (drillState.currentActivity === 'listening') {
+        // Generate options for listening activities
+        const mode = drillState.listeningMode === 'easy' ? 'en-to-lt' : 'lt-to-en';
+        multipleChoiceOptions = generateMultipleChoiceOptions(drillState.currentWord, mode);
+      }
+      
+      // Update drillActivityState to sync with current drill state
+      setDrillActivityState(prev => ({
+        ...prev,
+        showAnswer: false,
+        selectedAnswer: null,
+        typedAnswer: '',
+        typingFeedback: '',
+        multipleChoiceOptions: multipleChoiceOptions
+      }));
+    }
+  }, [drillState.currentWord, drillState.currentActivity, drillState.multipleChoiceMode, drillState.listeningMode]);
 
   // Enhanced handlers that update drill stats
   const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {

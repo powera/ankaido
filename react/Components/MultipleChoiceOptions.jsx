@@ -10,14 +10,25 @@ const MultipleChoiceOptions = ({
   handleMultipleChoiceAnswer,
   audioEnabled,
   playAudio,
-  preventAutoPlay
+  preventAutoPlay,
+  // Direct state props (alternative to wordListState)
+  multipleChoiceOptions,
+  selectedAnswer,
+  showAnswer,
+  allWords
 }) => {
   // Use currentWord from props, fallback to wordListManager if available
   const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
   
+  // Use direct props if available, otherwise fall back to wordListState
+  const options = multipleChoiceOptions || wordListState?.multipleChoiceOptions || [];
+  const isAnswerSelected = selectedAnswer !== undefined ? selectedAnswer : wordListState?.selectedAnswer;
+  const shouldShowAnswer = showAnswer !== undefined ? showAnswer : wordListState?.showAnswer;
+  const wordsForTranslation = allWords || wordListState?.allWords || [];
+  
   return (
     <div className="w-multiple-choice">
-      {wordListState.multipleChoiceOptions.map((option, index) => {
+      {options.map((option, index) => {
         if (!word) return null;
 
         // Determine correct answer based on mode
@@ -33,10 +44,10 @@ const MultipleChoiceOptions = ({
         }
 
         const isCorrect = option === correctAnswer;
-        const isSelected = option === wordListState.selectedAnswer;
+        const isSelected = option === isAnswerSelected;
         let className = 'w-choice-option';
 
-        if (wordListState.showAnswer) {
+        if (shouldShowAnswer) {
           if (isCorrect) {
             className += ' w-correct';
           } else if (isSelected && !isCorrect) {
@@ -48,14 +59,14 @@ const MultipleChoiceOptions = ({
 
         // Find the translation for all options when showAnswer is true
         let translation = null;
-        if (wordListState.showAnswer) {
+        if (shouldShowAnswer) {
           if (studyMode === 'lithuanian-to-lithuanian') {
             // For LT-to-LT mode, show English translation
             if (isCorrect) {
               translation = word.english;
             } else {
               // Find the word that matches this Lithuanian option
-              const matchingWord = wordListState.allWords?.find(w => w.lithuanian === option);
+              const matchingWord = wordsForTranslation?.find(w => w.lithuanian === option);
               if (matchingWord) {
                 translation = matchingWord.english;
               }
@@ -65,7 +76,7 @@ const MultipleChoiceOptions = ({
             translation = studyMode === 'lithuanian-to-english' ? word.lithuanian : word.english;
           } else {
             // For all other options, find the word that matches this option
-            const matchingWord = wordListState.allWords.find(w => 
+            const matchingWord = wordsForTranslation?.find(w => 
               (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option ||
               (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
             );
@@ -76,7 +87,7 @@ const MultipleChoiceOptions = ({
         }
 
         const handleOptionClick = () => {
-          if (wordListState.showAnswer) return;
+          if (shouldShowAnswer) return;
 
           // Play audio immediately for correct answers in EN->LT mode
           if (audioEnabled && studyMode === 'english-to-lithuanian' && quizMode !== 'listening' && isCorrect) {
@@ -91,12 +102,12 @@ const MultipleChoiceOptions = ({
             key={index}
             className={className}
             onClick={handleOptionClick}
-            disabled={wordListState.showAnswer}
+            disabled={shouldShowAnswer}
           >
             <div className="trakaido-choice-content">
               <div style={{ textAlign: 'center', width: '100%' }}>
                 <div style={{ fontWeight: '500' }}>{option}</div>
-                {wordListState.showAnswer && translation && (
+                {shouldShowAnswer && translation && (
                   <div style={{ 
                     fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
                     marginTop: '2px', 
@@ -108,7 +119,7 @@ const MultipleChoiceOptions = ({
                   </div>
                 )}
               </div>
-              {wordListState.showAnswer && isCorrect && (
+              {shouldShowAnswer && isCorrect && (
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'center', 

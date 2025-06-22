@@ -172,7 +172,11 @@ const MultipleChoiceActivity = ({
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleMultipleChoiceWithStats}
         audioEnabled={audioEnabled}
-        playAudio={playAudio}
+        playAudio={playAudio}        // Pass props directly for DrillMode compatibility
+        multipleChoiceOptions={multipleChoiceOptions}
+        selectedAnswer={selectedAnswer}
+        showAnswer={showAnswer}
+        allWords={wordListState?.allWords}
       />
     </div>
   );
