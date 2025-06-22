@@ -1,3 +1,4 @@
+
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
@@ -13,12 +14,31 @@ const TypingActivity = ({
   autoAdvance,
   defaultDelay
 }) => {
+  const [activityState, setActivityState] = React.useState({
+    showAnswer: false,
+    typedAnswer: '',
+    typingFeedback: '',
+    autoAdvanceTimer: null,
+    stats: { correct: 0, incorrect: 0, total: 0 }
+  });
+
   const currentWord = wordListManager.getCurrentWord();
 
   // Initialize journey stats manager on first render
   React.useEffect(() => {
     journeyStatsManager.initialize();
   }, []);
+
+  // Reset state when word changes
+  React.useEffect(() => {
+    setActivityState(prev => ({
+      ...prev,
+      showAnswer: false,
+      typedAnswer: '',
+      typingFeedback: '',
+      autoAdvanceTimer: null
+    }));
+  }, [currentWord]);
 
   // Handle checking typed answer with journey stats
   const handleSubmit = React.useCallback(async (typedAnswer) => {
@@ -34,16 +54,44 @@ const TypingActivity = ({
       console.error('Error updating journey stats in TypingActivity:', error);
     }
 
+    // Update local stats and feedback
     if (isCorrect) {
-      wordListManager.setTypingFeedback('✅ Correct!');
-      wordListManager.updateStatsCorrect();
+      setActivityState(prev => ({
+        ...prev,
+        typingFeedback: '✅ Correct!',
+        showAnswer: true,
+        stats: {
+          ...prev.stats,
+          correct: prev.stats.correct + 1,
+          total: prev.stats.total + 1
+        }
+      }));
     } else {
-      wordListManager.setTypingFeedback(`❌ Incorrect. The answer is: ${correctAnswer}`);
-      wordListManager.updateStatsIncorrect();
+      setActivityState(prev => ({
+        ...prev,
+        typingFeedback: `❌ Incorrect. The answer is: ${correctAnswer}`,
+        showAnswer: true,
+        stats: {
+          ...prev.stats,
+          incorrect: prev.stats.incorrect + 1,
+          total: prev.stats.total + 1
+        }
+      }));
     }
+  }, [currentWord, studyMode]);
 
-    wordListManager.setShowAnswer(true);
-  }, [currentWord, studyMode, wordListManager]);
+  const handleTypedAnswerChange = React.useCallback((value) => {
+    setActivityState(prev => ({ ...prev, typedAnswer: value }));
+  }, []);
+
+  const handleNextCard = React.useCallback(() => {
+    // Clear any auto-advance timer
+    if (activityState.autoAdvanceTimer) {
+      clearTimeout(activityState.autoAdvanceTimer);
+      setActivityState(prev => ({ ...prev, autoAdvanceTimer: null }));
+    }
+    nextCard();
+  }, [nextCard, activityState.autoAdvanceTimer]);
 
   if (!currentWord) {
     return (
@@ -70,7 +118,7 @@ const TypingActivity = ({
         playAudio={playAudio}
         questionText={question}
         answerText={answer}
-        showAnswer={wordListState.showAnswer}
+        showAnswer={activityState.showAnswer}
         promptText={promptText}
         isClickable={false}
       />
@@ -81,14 +129,14 @@ const TypingActivity = ({
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         onSubmit={handleSubmit}
-        showAnswer={wordListState.showAnswer}
-        feedback={wordListState.typingFeedback}
-        typedAnswer={wordListState.typedAnswer}
-        onTypedAnswerChange={(value) => wordListManager.setTypedAnswer(value)}
+        showAnswer={activityState.showAnswer}
+        feedback={activityState.typingFeedback}
+        typedAnswer={activityState.typedAnswer}
+        onTypedAnswerChange={handleTypedAnswerChange}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
-        onNext={nextCard}
-        autoAdvanceTimer={wordListState.autoAdvanceTimer}
+        onNext={handleNextCard}
+        autoAdvanceTimer={activityState.autoAdvanceTimer}
       />
     </div>
   );
