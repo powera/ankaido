@@ -31,19 +31,19 @@ const DataTable = ({
   };
 
   const renderCell = (column, rowData, rowIndex) => {
-    const value = column.accessor ? rowData[column.accessor] : column.render(rowData, rowIndex);
-    
-    // Handle audio column type
+    // Handle audio column type first
     if (column.type === 'audio') {
       return (
         <AudioButton 
-          word={column.audioWord ? rowData[column.audioWord] : value}
+          word={column.audioWord ? rowData[column.audioWord] : ''}
           size={column.audioSize || 'small'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
         />
       );
     }
+    
+    const value = column.accessor ? rowData[column.accessor] : column.render(rowData, rowIndex);
     
     // Handle hoverable text columns
     if (column.hoverable && audioEnabled) {

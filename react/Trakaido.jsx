@@ -636,14 +636,14 @@ const FlashCardApp = () => {
           setJourneyStats={setJourneyStats}
         />
       ) : quizMode === 'drill' ? (
-        showDrillModeSelector ? (
+        showDrillModeSelector || !drillConfig ? (
           <DrillModeSelector
             availableCorpora={availableCorpora}
             corporaData={corporaData}
             onStartDrill={handleStartDrill}
             onCancel={handleCancelDrill}
           />
-        ) : drillConfig ? (
+        ) : (
           <DrillMode
             wordListManager={wordListManager}
             wordListState={wordListState}
@@ -661,12 +661,6 @@ const FlashCardApp = () => {
             corporaData={corporaData}
             onExitDrill={handleExitDrill}
           />
-        ) : (
-          <div className="w-card">
-            <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
-              <div>Loading drill mode...</div>
-            </div>
-          </div>
         )
       ) : quizMode === 'flashcard' ? (
         <FlashCardMode 

@@ -50,24 +50,16 @@ const DrillMode = ({
 
   const [journeyStats, setJourneyStats] = React.useState({});
   
-  // Store original wordListManager state to restore when leaving drill mode
-  const originalWordListState = React.useRef(null);
+  // Local state for drill activities - no need to modify global WordListManager
+  const [drillActivityState, setDrillActivityState] = React.useState({
+    showAnswer: false,
+    selectedAnswer: null,
+    typedAnswer: '',
+    typingFeedback: '',
+    multipleChoiceOptions: []
+  });
 
-  // Store original wordListManager state when entering drill mode
-  React.useEffect(() => {
-    // Store the original state only once when component mounts
-    if (originalWordListState.current === null) {
-      originalWordListState.current = {
-        allWords: wordListManager.allWords,
-        currentCard: wordListManager.currentCard,
-        multipleChoiceOptions: wordListManager.multipleChoiceOptions
-      };
-      console.log('DrillMode: Stored original wordListManager state', {
-        wordCount: originalWordListState.current.allWords?.length || 0,
-        currentCard: originalWordListState.current.currentCard
-      });
-    }
-  }, [wordListManager]);
+
 
   // Initialize wordListManager journeyStats property
   React.useEffect(() => {
@@ -108,28 +100,41 @@ const DrillMode = ({
     };
   }, [loadStatsFromStorage, wordListManager]);
 
-  // Helper function to restore original wordListManager state
-  const restoreOriginalWordListState = React.useCallback(() => {
-    if (originalWordListState.current) {
-      console.log('DrillMode: Restoring original wordListManager state', {
-        wordCount: originalWordListState.current.allWords?.length || 0,
-        currentCard: originalWordListState.current.currentCard
-      });
-      
-      wordListManager.allWords = originalWordListState.current.allWords;
-      wordListManager.currentCard = originalWordListState.current.currentCard;
-      wordListManager.multipleChoiceOptions = originalWordListState.current.multipleChoiceOptions;
-      wordListManager.notifyStateChange();
-    }
-  }, [wordListManager]);
+  // Helper function to generate multiple choice options locally
+  const generateMultipleChoiceOptions = React.useCallback((currentWord, mode) => {
+    if (!currentWord || !drillState.drillWords.length) return [];
 
-  // Cleanup effect to restore original wordListManager state when leaving drill mode
-  React.useEffect(() => {
-    return () => {
-      console.log('DrillMode: Component unmounting, restoring original word list state');
-      restoreOriginalWordListState();
-    };
-  }, [restoreOriginalWordListState]);
+    const options = [];
+    const isEnToLt = mode === 'en-to-lt';
+    const correctAnswer = isEnToLt ? currentWord.lithuanian : currentWord.english;
+    
+    // Add the correct answer
+    options.push(correctAnswer);
+    
+    // Add 3 random incorrect options from other drill words
+    const otherWords = drillState.drillWords.filter(w => 
+      w.lithuanian !== currentWord.lithuanian || w.english !== currentWord.english
+    );
+    
+    const shuffledOthers = [...otherWords].sort(() => Math.random() - 0.5);
+    for (let i = 0; i < Math.min(3, shuffledOthers.length); i++) {
+      const incorrectAnswer = isEnToLt ? shuffledOthers[i].lithuanian : shuffledOthers[i].english;
+      if (!options.includes(incorrectAnswer)) {
+        options.push(incorrectAnswer);
+      }
+    }
+    
+    // If we don't have enough options, pad with some defaults
+    while (options.length < 4) {
+      const placeholder = isEnToLt ? `Option ${options.length}` : `Option ${options.length}`;
+      if (!options.includes(placeholder)) {
+        options.push(placeholder);
+      }
+    }
+    
+    // Shuffle the options
+    return options.sort(() => Math.random() - 0.5);
+  }, [drillState.drillWords]);
 
   // Generate drill word list from selected group
   React.useEffect(() => {
@@ -238,11 +243,23 @@ const DrillMode = ({
       return;
     }
 
-    // Reset answer state for all components
-    wordListManager.selectedAnswer = null;
-    wordListManager.setShowAnswer(false);
-    wordListManager.setTypedAnswer('');
-    wordListManager.setTypingFeedback('');
+    // Reset local drill activity state
+    let multipleChoiceOptions = [];
+    if (nextActivity.type === 'multiple-choice') {
+      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, nextActivity.mode);
+    } else if (nextActivity.type === 'listening') {
+      // For listening activities, generate options based on the mode
+      const mode = nextActivity.mode === 'easy' ? 'lt-to-lt' : 'lt-to-en';
+      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, mode);
+    }
+    
+    setDrillActivityState({
+      showAnswer: false,
+      selectedAnswer: null,
+      typedAnswer: '',
+      typingFeedback: '',
+      multipleChoiceOptions: multipleChoiceOptions
+    });
 
     // Update drill state
     setDrillState(prev => ({
@@ -262,47 +279,34 @@ const DrillMode = ({
         }
       } : {})
     }));
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptions]);
 
-    // Set up the word for activities in drill mode
-    if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening' || nextActivity.type === 'typing') && nextActivity.word) {
-      // For drill mode, we need to temporarily set up the word in wordListManager
-      // NOTE: This modifies wordListManager temporarily - original state is restored when leaving drill mode
-      if (drillState.drillWords.length > 0) {
-        // Temporarily replace the wordListManager's word list with drill words
-        wordListManager.allWords = drillState.drillWords;
-        
-        // Find the current word in the drill list
-        const wordIndex = drillState.drillWords.findIndex(w => 
-          w.lithuanian === nextActivity.word.lithuanian && w.english === nextActivity.word.english
-        );
-        
-        if (wordIndex >= 0) {
-          wordListManager.currentCard = wordIndex;
+  // Create a mock WordListManager interface for activities
+  const drillWordListManager = React.useMemo(() => ({
+    getCurrentWord: () => drillState.currentWord,
+    getAllWords: () => drillState.drillWords,
+    getTotalWords: () => drillState.drillWords.length,
+    multipleChoiceOptions: drillActivityState.multipleChoiceOptions,
+    selectedAnswer: drillActivityState.selectedAnswer,
+    setShowAnswer: (value) => setDrillActivityState(prev => ({ ...prev, showAnswer: value })),
+    setTypedAnswer: (value) => setDrillActivityState(prev => ({ ...prev, typedAnswer: value })),
+    setTypingFeedback: (value) => setDrillActivityState(prev => ({ ...prev, typingFeedback: value })),
+    notifyStateChange: () => {}, // No-op for drill mode
+    journeyStats: journeyStats
+  }), [drillState.currentWord, drillState.drillWords, drillActivityState, journeyStats]);
 
-          // Determine effective study mode based on activity
-          let effectiveStudyMode = studyMode;
-          if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
-            effectiveStudyMode = 'lithuanian-to-lithuanian';
-          } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
-            effectiveStudyMode = 'lithuanian-to-english';
-          } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'en-to-lt') {
-            effectiveStudyMode = 'english-to-lithuanian';
-          } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'lt-to-en') {
-            effectiveStudyMode = 'lithuanian-to-english';
-          } else if (nextActivity.type === 'typing' && nextActivity.mode === 'en-to-lt') {
-            effectiveStudyMode = 'english-to-lithuanian';
-          } else if (nextActivity.type === 'typing' && nextActivity.mode === 'lt-to-en') {
-            effectiveStudyMode = 'lithuanian-to-english';
-          }
-
-          // Generate multiple choice options
-          wordListManager.multipleChoiceOptions = [];
-          wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
-          wordListManager.notifyStateChange();
-        }
-      }
-    }
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, wordListManager, studyMode]);
+  // Create a mock WordListState interface for activities  
+  const drillWordListState = React.useMemo(() => ({
+    allWords: drillState.drillWords,
+    currentCard: drillState.currentDrillIndex,
+    showAnswer: drillActivityState.showAnswer,
+    selectedAnswer: drillActivityState.selectedAnswer,
+    typedAnswer: drillActivityState.typedAnswer,
+    typingFeedback: drillActivityState.typingFeedback,
+    multipleChoiceOptions: drillActivityState.multipleChoiceOptions,
+    stats: drillState.drillStats,
+    autoAdvanceTimer: null
+  }), [drillActivityState, drillState.drillWords, drillState.currentDrillIndex, drillState.drillStats]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
@@ -349,6 +353,13 @@ const DrillMode = ({
     
     const isCorrect = selectedOption === correctAnswer;
     
+    // Update local drill activity state
+    setDrillActivityState(prev => ({
+      ...prev,
+      selectedAnswer: selectedOption,
+      showAnswer: true
+    }));
+    
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -359,20 +370,28 @@ const DrillMode = ({
       }
     }));
 
-    // Handle the actual multiple choice logic
-    await handleMultipleChoiceAnswer(selectedOption);
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(drillState.currentWord, {
+        exposures: 1,
+        correct: isCorrect ? 1 : 0,
+        incorrect: isCorrect ? 0 : 1
+      });
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
+    }
     
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
       advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.multipleChoiceMode, drillState.currentWord, handleMultipleChoiceAnswer, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.multipleChoiceMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   // Custom nextCard handler for drill mode that tracks stats
   const handleDrillNextCard = React.useCallback(() => {
     // For typing activities, we need to track the result based on the feedback
-    const feedback = wordListState.typingFeedback;
+    const feedback = drillActivityState.typingFeedback;
     const isCorrect = feedback && feedback.includes('✅');
     
     // Update drill stats
@@ -387,7 +406,7 @@ const DrillMode = ({
 
     // Move to next word
     advanceToNextDrillActivity(true);
-  }, [wordListState.typingFeedback, advanceToNextDrillActivity]);
+  }, [drillActivityState.typingFeedback, advanceToNextDrillActivity]);
 
   const handleDrillListening = React.useCallback(async (selectedOption) => {
     // Determine correct answer based on listening mode
@@ -402,6 +421,13 @@ const DrillMode = ({
     
     const isCorrect = selectedOption === correctAnswer;
     
+    // Update local drill activity state
+    setDrillActivityState(prev => ({
+      ...prev,
+      selectedAnswer: selectedOption,
+      showAnswer: true
+    }));
+    
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -412,15 +438,23 @@ const DrillMode = ({
       }
     }));
 
-    // Handle the actual listening logic
-    await handleMultipleChoiceAnswer(selectedOption);
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(drillState.currentWord, {
+        exposures: 1,
+        correct: isCorrect ? 1 : 0,
+        incorrect: isCorrect ? 0 : 1
+      });
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
+    }
     
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
       advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.listeningMode, drillState.currentWord, handleMultipleChoiceAnswer, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.listeningMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   if (!drillState.isInitialized) {
     return (
@@ -499,16 +533,21 @@ const DrillMode = ({
                   currentActivity: null,
                   drillStats: { attempted: 0, correct: 0, incorrect: 0 }
                 }));
+                // Reset local activity state
+                setDrillActivityState({
+                  showAnswer: false,
+                  selectedAnswer: null,
+                  typedAnswer: '',
+                  typingFeedback: '',
+                  multipleChoiceOptions: []
+                });
               }}
             >
               🔄 Drill Again
             </button>
             <button 
               className="w-button"
-              onClick={() => {
-                restoreOriginalWordListState();
-                onExitDrill();
-              }}
+              onClick={onExitDrill}
             >
               📚 Back to Modes
             </button>
@@ -547,8 +586,8 @@ const DrillMode = ({
       
       {drillState.currentActivity === 'multiple-choice' ? (
         <MultipleChoiceActivity
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          wordListManager={drillWordListManager}
+          wordListState={drillWordListState}
           studyMode={drillState.multipleChoiceMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -558,8 +597,8 @@ const DrillMode = ({
         />
       ) : drillState.currentActivity === 'listening' ? (
         <ListeningActivity
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          wordListManager={drillWordListManager}
+          wordListState={drillWordListState}
           studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -567,8 +606,8 @@ const DrillMode = ({
         />
       ) : drillState.currentActivity === 'typing' ? (
         <TypingActivity
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          wordListManager={drillWordListManager}
+          wordListState={drillWordListState}
           studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           nextCard={handleDrillNextCard}
           audioEnabled={audioEnabled}
