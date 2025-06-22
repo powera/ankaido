@@ -5,12 +5,12 @@ import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
 
 const ListeningActivity = ({ 
-  wordListManager,
-  wordListState,
+  wordListManager, // Optional - for ListeningMode compatibility
+  wordListState, // Optional - for ListeningMode compatibility
   currentWord, // Accept currentWord as prop
   showAnswer, // Accept showAnswer as prop
   selectedAnswer, // Accept selectedAnswer as prop
-  multipleChoiceOptions, // Accept multipleChoiceOptions as prop
+  multipleChoiceOptions, // Accept multipleChoiceOptions as prop (from DrillMode)
   studyMode,
   audioEnabled,
   playAudio,
@@ -25,7 +25,7 @@ const ListeningActivity = ({
     autoAdvanceTimer: null
   });
 
-  // Use currentWord from props, fallback to wordListManager if available
+  // Use currentWord from props, fallback to wordListManager if available (for ListeningMode)
   const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
   
   if (!word) return null;
@@ -40,12 +40,12 @@ const ListeningActivity = ({
     setPreventAutoPlay(false);
   }, [word]);
 
-  // Generate multiple choice options when word changes
+  // Generate multiple choice options when word changes (only if not provided as prop)
   React.useEffect(() => {
-    if (word && !multipleChoiceOptions?.length) {
+    if (word && !multipleChoiceOptions && !activityState.multipleChoiceOptions.length) {
       generateMultipleChoiceOptions();
     }
-  }, [word, studyMode, settings?.difficulty, multipleChoiceOptions?.length]);
+  }, [word, studyMode, settings?.difficulty, multipleChoiceOptions]);
 
   const generateMultipleChoiceOptions = React.useCallback(() => {
     if (!word) return;
@@ -174,11 +174,10 @@ const ListeningActivity = ({
       ? 'Choose the matching Lithuanian word:'
       : 'Choose the matching Lithuanian word:';
 
-  // Create enhanced state object for MultipleChoiceOptions
-  const enhancedWordListState = React.useMemo(() => ({
-    ...wordListState,
-    ...activityState
-  }), [wordListState, activityState]);
+  // Determine which options to use: prop-provided or self-generated
+  const optionsToUse = multipleChoiceOptions || activityState.multipleChoiceOptions;
+  const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
+  const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
@@ -193,14 +192,16 @@ const ListeningActivity = ({
         isClickable={false}
       />
       <MultipleChoiceOptions
-        wordListManager={wordListManager}
-        wordListState={enhancedWordListState}
         currentWord={word}
         studyMode={studyMode}
         quizMode="listening"
         handleMultipleChoiceAnswer={handleListeningWithStats}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
+        multipleChoiceOptions={optionsToUse}
+        selectedAnswer={selectedAnswerToUse}
+        showAnswer={showAnswerToUse}
+        allWords={wordListState?.allWords}
       />
     </div>
   );

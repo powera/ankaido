@@ -2,8 +2,6 @@ import React from 'react';
 import AudioButton from './AudioButton';
 
 const MultipleChoiceOptions = ({ 
-  wordListManager,
-  wordListState,
   currentWord, // Accept currentWord as prop
   studyMode,
   quizMode,
@@ -11,20 +9,20 @@ const MultipleChoiceOptions = ({
   audioEnabled,
   playAudio,
   preventAutoPlay,
-  // Direct state props (alternative to wordListState)
+  // Direct state props
   multipleChoiceOptions,
   selectedAnswer,
   showAnswer,
   allWords
 }) => {
-  // Use currentWord from props, fallback to wordListManager if available
-  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
+  // Use currentWord from props
+  const word = currentWord;
   
-  // Use direct props if available, otherwise fall back to wordListState
-  const options = multipleChoiceOptions || wordListState?.multipleChoiceOptions || [];
-  const isAnswerSelected = selectedAnswer !== undefined ? selectedAnswer : wordListState?.selectedAnswer;
-  const shouldShowAnswer = showAnswer !== undefined ? showAnswer : wordListState?.showAnswer;
-  const wordsForTranslation = allWords || wordListState?.allWords || [];
+  // Use direct props
+  const options = multipleChoiceOptions || [];
+  const isAnswerSelected = selectedAnswer;
+  const shouldShowAnswer = showAnswer;
+  const wordsForTranslation = allWords || [];
   
   return (
     <div className="w-multiple-choice">

@@ -30,6 +30,7 @@ const DrillMode = ({
     isInitialized: false,
     currentActivity: null,
     currentWord: null,
+    currentMultipleChoiceOptions: [],
     showNewWordIndicator: false,
     listeningMode: null,
     multipleChoiceMode: null,
@@ -45,8 +46,8 @@ const DrillMode = ({
 
   const [journeyStats, setJourneyStats] = React.useState({});
   
-  // Local state for drill activities - simplified to only what's needed
-  const [drillActivityState, setDrillActivityState] = React.useState({
+  // State for user interactions with the current question
+  const [questionInteractionState, setQuestionInteractionState] = React.useState({
     showAnswer: false,
     selectedAnswer: null,
     typedAnswer: '',
@@ -214,6 +215,7 @@ const DrillMode = ({
         listeningMode: null,
         multipleChoiceMode: null,
         typingMode: null,
+        currentMultipleChoiceOptions: [],
         // Update index and stats if we advanced
         ...(shouldAdvanceIndex ? {
           currentDrillIndex: effectiveIndex,
@@ -225,13 +227,25 @@ const DrillMode = ({
       }));
       
       // Reset local drill activity state
-      setDrillActivityState({
+      setQuestionInteractionState({
         showAnswer: false,
         selectedAnswer: null,
         typedAnswer: '',
         typingFeedback: ''
       });
       return;
+    }
+
+    // Generate multiple choice options if needed
+    let multipleChoiceOptions = [];
+    if (nextActivity.type === 'multiple-choice') {
+      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, nextActivity.mode);
+    } else if (nextActivity.type === 'listening') {
+      // For listening activities, generate options based on the mode
+      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
+      // Hard mode: Lithuanian audio -> English options (lt-to-en)
+      const mode = nextActivity.mode === 'easy' ? 'en-to-lt' : 'lt-to-en';
+      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, mode);
     }
 
     // Update drill state with new activity
@@ -243,6 +257,7 @@ const DrillMode = ({
       listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null,
       multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null,
       typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null,
+      currentMultipleChoiceOptions: multipleChoiceOptions,
       // Update index and stats if we advanced
       ...(shouldAdvanceIndex ? {
         currentDrillIndex: effectiveIndex,
@@ -254,13 +269,13 @@ const DrillMode = ({
     }));
 
     // Reset local drill activity state for new activity
-    setDrillActivityState({
+    setQuestionInteractionState({
       showAnswer: false,
       selectedAnswer: null,
       typedAnswer: '',
       typingFeedback: ''
     });
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord]);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptions]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
@@ -300,23 +315,6 @@ const DrillMode = ({
     }
   }, [drillState.currentActivity, drillState.multipleChoiceMode, drillState.typingMode, drillState.currentWord, audioEnabled, playAudio]);
 
-  // Generate multiple choice options when needed
-  const currentMultipleChoiceOptions = React.useMemo(() => {
-    if (!drillState.currentWord) return [];
-    
-    if (drillState.currentActivity === 'multiple-choice') {
-      return generateMultipleChoiceOptions(drillState.currentWord, drillState.multipleChoiceMode);
-    } else if (drillState.currentActivity === 'listening') {
-      // For listening activities, generate options based on the mode
-      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
-      // Hard mode: Lithuanian audio -> English options (lt-to-en)
-      const mode = drillState.listeningMode === 'easy' ? 'en-to-lt' : 'lt-to-en';
-      return generateMultipleChoiceOptions(drillState.currentWord, mode);
-    }
-    
-    return [];
-  }, [drillState.currentWord, generateMultipleChoiceOptions]);
-
   // Enhanced handlers that update drill stats
   const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {
     // Determine correct answer based on current activity mode
@@ -330,7 +328,7 @@ const DrillMode = ({
     const isCorrect = selectedOption === correctAnswer;
     
     // Update local drill activity state
-    setDrillActivityState(prev => ({
+    setQuestionInteractionState(prev => ({
       ...prev,
       selectedAnswer: selectedOption,
       showAnswer: true
@@ -367,7 +365,7 @@ const DrillMode = ({
   // Custom nextCard handler for drill mode that tracks stats
   const handleDrillNextCard = React.useCallback(() => {
     // For typing activities, we need to track the result based on the feedback
-    const feedback = drillActivityState.typingFeedback;
+    const feedback = questionInteractionState.typingFeedback;
     const isCorrect = feedback && feedback.includes('✅');
     
     // Update drill stats
@@ -382,7 +380,7 @@ const DrillMode = ({
 
     // Move to next word
     advanceToNextDrillActivity(true);
-  }, [drillActivityState.typingFeedback, advanceToNextDrillActivity]);
+  }, [questionInteractionState.typingFeedback, advanceToNextDrillActivity]);
 
   const handleDrillListening = React.useCallback(async (selectedOption) => {
     // Determine correct answer based on listening mode
@@ -398,7 +396,7 @@ const DrillMode = ({
     const isCorrect = selectedOption === correctAnswer;
     
     // Update local drill activity state
-    setDrillActivityState(prev => ({
+    setQuestionInteractionState(prev => ({
       ...prev,
       selectedAnswer: selectedOption,
       showAnswer: true
@@ -489,7 +487,7 @@ const DrillMode = ({
                   drillStats: { attempted: 0, correct: 0, incorrect: 0 }
                 }));
                 // Reset local activity state
-                setDrillActivityState({
+                setQuestionInteractionState({
                   showAnswer: false,
                   selectedAnswer: null,
                   typedAnswer: '',
@@ -510,7 +508,7 @@ const DrillMode = ({
                   currentActivity: null,
                   drillStats: { attempted: 0, correct: 0, incorrect: 0 }
                 }));
-                setDrillActivityState({
+                setQuestionInteractionState({
                   showAnswer: false,
                   selectedAnswer: null,
                   typedAnswer: '',
@@ -562,9 +560,9 @@ const DrillMode = ({
       {drillState.currentActivity === 'multiple-choice' ? (
         <MultipleChoiceActivity
           currentWord={drillState.currentWord}
-          showAnswer={drillActivityState.showAnswer}
-          selectedAnswer={drillActivityState.selectedAnswer}
-          multipleChoiceOptions={currentMultipleChoiceOptions}
+          showAnswer={questionInteractionState.showAnswer}
+          selectedAnswer={questionInteractionState.selectedAnswer}
+          multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
           studyMode={drillState.multipleChoiceMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -575,9 +573,9 @@ const DrillMode = ({
       ) : drillState.currentActivity === 'listening' ? (
         <ListeningActivity
           currentWord={drillState.currentWord}
-          showAnswer={drillActivityState.showAnswer}
-          selectedAnswer={drillActivityState.selectedAnswer}
-          multipleChoiceOptions={currentMultipleChoiceOptions}
+          showAnswer={questionInteractionState.showAnswer}
+          selectedAnswer={questionInteractionState.selectedAnswer}
+          multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
           studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -586,10 +584,10 @@ const DrillMode = ({
       ) : drillState.currentActivity === 'typing' ? (
         <TypingActivity
           currentWord={drillState.currentWord}
-          typedAnswer={drillActivityState.typedAnswer}
-          typingFeedback={drillActivityState.typingFeedback}
-          setTypedAnswer={(value) => setDrillActivityState(prev => ({ ...prev, typedAnswer: value }))}
-          setTypingFeedback={(value) => setDrillActivityState(prev => ({ ...prev, typingFeedback: value }))}
+          typedAnswer={questionInteractionState.typedAnswer}
+          typingFeedback={questionInteractionState.typingFeedback}
+          setTypedAnswer={(value) => setQuestionInteractionState(prev => ({ ...prev, typedAnswer: value }))}
+          setTypingFeedback={(value) => setQuestionInteractionState(prev => ({ ...prev, typingFeedback: value }))}
           studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           nextCard={handleDrillNextCard}
           audioEnabled={audioEnabled}

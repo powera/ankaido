@@ -165,17 +165,15 @@ const MultipleChoiceActivity = ({
         style={{ padding: 'min(var(--spacing-large), 1rem)' }}
       />
       <MultipleChoiceOptions
-        wordListManager={wordListManager}
-        wordListState={enhancedWordListState}
         currentWord={word}
         studyMode={studyMode}
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleMultipleChoiceWithStats}
         audioEnabled={audioEnabled}
-        playAudio={playAudio}        // Pass props directly for DrillMode compatibility
-        multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswer}
-        showAnswer={showAnswer}
+        playAudio={playAudio}
+        multipleChoiceOptions={multipleChoiceOptions || activityState.multipleChoiceOptions}
+        selectedAnswer={selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer}
+        showAnswer={showAnswer !== undefined ? showAnswer : activityState.showAnswer}
         allWords={wordListState?.allWords}
       />
     </div>
