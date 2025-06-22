@@ -1,7 +1,7 @@
 import React from 'react';
-import FlashCardMode from './FlashCardMode';
-import MultipleChoiceMode from './MultipleChoiceMode';
-import ListeningMode from './ListeningMode';
+import FlashCardActivity from '../Activities/FlashCardActivity';
+import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
+import ListeningActivity from '../Activities/ListeningActivity';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
 import TypingResponse from '../Components/TypingResponse';
@@ -509,7 +509,7 @@ const JourneyMode = ({
             background="linear-gradient(135deg, #4CAF50, #45a049)"
           />
         )}
-        <FlashCardMode 
+        <FlashCardActivity 
           currentWord={journeyState.currentWord}
           showAnswer={wordListState.showAnswer}
           setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
@@ -544,7 +544,7 @@ const JourneyMode = ({
           title="🎯 Multiple Choice Challenge"
           background="linear-gradient(135deg, #2196F3, #1976D2)"
         />
-        <MultipleChoiceMode 
+        <MultipleChoiceActivity 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={effectiveStudyMode}
@@ -578,7 +578,7 @@ const JourneyMode = ({
           title={challengeTitle}
           background="linear-gradient(135deg, #9C27B0, #7B1FA2)"
         />
-        <ListeningMode 
+        <ListeningActivity 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={effectiveStudyMode}
