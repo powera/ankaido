@@ -6,7 +6,7 @@ import {
   convertStatsToDisplayArray, 
   formatDate 
 } from '../Managers/journeyStatsManager';
-import safeStorage from '../safeStorage';
+import safeStorage from '../DataStorage/safeStorage';
 
 const ExposureStatsModal = ({
   isOpen,

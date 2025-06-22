@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BaseModal from './shared/BaseModal';
-import corpusChoicesManager from '../corpusChoicesManager';
+import corpusChoicesManager from '../Managers/corpusChoicesManager';
 
 const StudyMaterialsModal = ({
   isOpen,

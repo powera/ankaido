@@ -1,7 +1,7 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import journeyStatsManager from '../journeyStatsManager';
+import journeyStatsManager from '../Managers/journeyStatsManager';
 
 const MultipleChoiceMode = ({ 
   wordListManager,
