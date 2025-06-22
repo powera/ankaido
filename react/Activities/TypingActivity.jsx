@@ -1,6 +1,7 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
+import journeyStatsManager from '../Managers/journeyStatsManager';
 
 const TypingActivity = ({ 
   wordListManager,
@@ -14,12 +15,24 @@ const TypingActivity = ({
 }) => {
   const currentWord = wordListManager.getCurrentWord();
 
-  // Handle checking typed answer
-  const handleSubmit = (typedAnswer) => {
+  // Initialize journey stats manager on first render
+  React.useEffect(() => {
+    journeyStatsManager.initialize();
+  }, []);
+
+  // Handle checking typed answer with journey stats
+  const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = studyMode === 'english-to-lithuanian' ? 
       currentWord.lithuanian : currentWord.english;
 
     const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
+
+    // Update Journey stats
+    try {
+      await journeyStatsManager.updateWordStats(currentWord, 'typing', isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats in TypingActivity:', error);
+    }
 
     if (isCorrect) {
       wordListManager.setTypingFeedback('✅ Correct!');
@@ -30,7 +43,7 @@ const TypingActivity = ({
     }
 
     wordListManager.setShowAnswer(true);
-  };
+  }, [currentWord, studyMode, wordListManager]);
 
   if (!currentWord) {
     return (

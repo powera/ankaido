@@ -9,8 +9,7 @@ const FlashCardMode = ({
   audioEnabled, 
   playAudio, 
   handleHoverStart, 
-  handleHoverEnd,
-  isNewWord = false // Prop to indicate if this is a new word being introduced
+  handleHoverEnd
 }) => {
   return (
     <FlashCardActivity
@@ -22,7 +21,7 @@ const FlashCardMode = ({
       playAudio={playAudio}
       handleHoverStart={handleHoverStart}
       handleHoverEnd={handleHoverEnd}
-      isNewWord={isNewWord} // Pass the new word prop
+      isNewWord={false} // Never mark as new in FlashCardMode
     />
   );
 };
