@@ -45,13 +45,12 @@ const DrillMode = ({
 
   const [journeyStats, setJourneyStats] = React.useState({});
   
-  // Local state for drill activities
+  // Local state for drill activities - simplified to only what's needed
   const [drillActivityState, setDrillActivityState] = React.useState({
     showAnswer: false,
     selectedAnswer: null,
     typedAnswer: '',
-    typingFeedback: '',
-    multipleChoiceOptions: []
+    typingFeedback: ''
   });
 
   // Load stats from storage
@@ -84,9 +83,8 @@ const DrillMode = ({
     };
   }, [loadStatsFromStorage]);
 
-  // Helper function to generate multiple choice options locally
-  // Note: Not using useCallback to ensure fresh randomization each time
-  const generateMultipleChoiceOptions = (currentWord, mode) => {
+  // Helper function to generate multiple choice options
+  const generateMultipleChoiceOptions = React.useCallback((currentWord, mode) => {
     if (!currentWord || !drillState.drillWords.length) return [];
 
     const options = [];
@@ -119,7 +117,7 @@ const DrillMode = ({
     
     // Shuffle the options
     return options.sort(() => Math.random() - 0.5);
-  };
+  }, [drillState.drillWords]);
 
   // Generate drill word list from selected group
   React.useEffect(() => {
@@ -225,30 +223,18 @@ const DrillMode = ({
           }
         } : {})
       }));
+      
+      // Reset local drill activity state
+      setDrillActivityState({
+        showAnswer: false,
+        selectedAnswer: null,
+        typedAnswer: '',
+        typingFeedback: ''
+      });
       return;
     }
 
-    // Reset local drill activity state
-    let multipleChoiceOptions = [];
-    if (nextActivity.type === 'multiple-choice') {
-      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, nextActivity.mode);
-    } else if (nextActivity.type === 'listening') {
-      // For listening activities, generate options based on the mode
-      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
-      // Hard mode: Lithuanian audio -> English options (lt-to-en)
-      const mode = nextActivity.mode === 'easy' ? 'en-to-lt' : 'lt-to-en';
-      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, mode);
-    }
-    
-    setDrillActivityState({
-      showAnswer: false,
-      selectedAnswer: null,
-      typedAnswer: '',
-      typingFeedback: '',
-      multipleChoiceOptions: multipleChoiceOptions
-    });
-
-    // Update drill state
+    // Update drill state with new activity
     setDrillState(prev => ({
       ...prev,
       currentActivity: nextActivity.type,
@@ -266,6 +252,14 @@ const DrillMode = ({
         }
       } : {})
     }));
+
+    // Reset local drill activity state for new activity
+    setDrillActivityState({
+      showAnswer: false,
+      selectedAnswer: null,
+      typedAnswer: '',
+      typingFeedback: ''
+    });
   }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord]);
 
   // Initialize first activity when ready
@@ -301,30 +295,22 @@ const DrillMode = ({
     }
   }, [drillState.currentActivity, drillState.multipleChoiceMode, drillState.typingMode, drillState.currentWord, audioEnabled, playAudio]);
 
-  // Sync drillActivityState with drillState changes
-  React.useEffect(() => {
-    if (drillState.currentWord && drillState.currentActivity) {
-      let multipleChoiceOptions = [];
-      
-      if (drillState.currentActivity === 'multiple-choice') {
-        multipleChoiceOptions = generateMultipleChoiceOptions(drillState.currentWord, drillState.multipleChoiceMode);
-      } else if (drillState.currentActivity === 'listening') {
-        // Generate options for listening activities
-        const mode = drillState.listeningMode === 'easy' ? 'en-to-lt' : 'lt-to-en';
-        multipleChoiceOptions = generateMultipleChoiceOptions(drillState.currentWord, mode);
-      }
-      
-      // Update drillActivityState to sync with current drill state
-      setDrillActivityState(prev => ({
-        ...prev,
-        showAnswer: false,
-        selectedAnswer: null,
-        typedAnswer: '',
-        typingFeedback: '',
-        multipleChoiceOptions: multipleChoiceOptions
-      }));
+  // Generate multiple choice options when needed - this is the key fix
+  const currentMultipleChoiceOptions = React.useMemo(() => {
+    if (!drillState.currentWord) return [];
+    
+    if (drillState.currentActivity === 'multiple-choice') {
+      return generateMultipleChoiceOptions(drillState.currentWord, drillState.multipleChoiceMode);
+    } else if (drillState.currentActivity === 'listening') {
+      // For listening activities, generate options based on the mode
+      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
+      // Hard mode: Lithuanian audio -> English options (lt-to-en)
+      const mode = drillState.listeningMode === 'easy' ? 'en-to-lt' : 'lt-to-en';
+      return generateMultipleChoiceOptions(drillState.currentWord, mode);
     }
-  }, [drillState.currentWord, drillState.currentActivity, drillState.multipleChoiceMode, drillState.listeningMode]);
+    
+    return [];
+  }, [drillState.currentWord, drillState.currentActivity, drillState.multipleChoiceMode, drillState.listeningMode, generateMultipleChoiceOptions]);
 
   // Enhanced handlers that update drill stats
   const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {
@@ -502,8 +488,7 @@ const DrillMode = ({
                   showAnswer: false,
                   selectedAnswer: null,
                   typedAnswer: '',
-                  typingFeedback: '',
-                  multipleChoiceOptions: []
+                  typingFeedback: ''
                 });
               }}
             />
@@ -524,8 +509,7 @@ const DrillMode = ({
                   showAnswer: false,
                   selectedAnswer: null,
                   typedAnswer: '',
-                  typingFeedback: '',
-                  multipleChoiceOptions: []
+                  typingFeedback: ''
                 });
               }}
             >
@@ -575,7 +559,7 @@ const DrillMode = ({
           currentWord={drillState.currentWord}
           showAnswer={drillActivityState.showAnswer}
           selectedAnswer={drillActivityState.selectedAnswer}
-          multipleChoiceOptions={drillActivityState.multipleChoiceOptions}
+          multipleChoiceOptions={currentMultipleChoiceOptions}
           studyMode={drillState.multipleChoiceMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -588,7 +572,7 @@ const DrillMode = ({
           currentWord={drillState.currentWord}
           showAnswer={drillActivityState.showAnswer}
           selectedAnswer={drillActivityState.selectedAnswer}
-          multipleChoiceOptions={drillActivityState.multipleChoiceOptions}
+          multipleChoiceOptions={currentMultipleChoiceOptions}
           studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
