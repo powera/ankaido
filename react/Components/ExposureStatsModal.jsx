@@ -130,7 +130,7 @@ const ExposureStatsModal = ({
               },
               {
                 header: 'Correct',
-                accessor: 'totalCorrect',
+                sortKey: 'totalCorrect',
                 align: 'center',
                 render: (word) => (
                   <div>
@@ -146,7 +146,7 @@ const ExposureStatsModal = ({
               },
               {
                 header: 'Incorrect',
-                accessor: 'totalIncorrect',
+                sortKey: 'totalIncorrect',
                 align: 'center',
                 render: (word) => (
                   <div>
@@ -154,20 +154,19 @@ const ExposureStatsModal = ({
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                       MC: {word.multipleChoice?.incorrect || 0} | 
                       Listen Easy: {word.listeningEasy?.incorrect || 0} | 
-                      Listen Hard: {word.listeningHard?.correct || 0} | 
-                      Type: {word.typing?.correct || 0}
+                      Listen Hard: {word.listeningHard?.incorrect || 0} | 
+                      Type: {word.typing?.incorrect || 0}
                     </div>
                   </div>
                 )
               },
               {
                 header: 'Last Seen',
-                accessor: 'lastSeen',
+                sortKey: 'lastSeen',
                 align: 'center',
                 render: (word) => {
                   if (!word.lastSeen) return 'Never';
-                  const date = new Date(word.lastSeen);
-                  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                  return formatDate(word.lastSeen);
                 }
               }
             ]}
