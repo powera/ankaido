@@ -428,14 +428,15 @@ const JourneyMode = ({
           background="linear-gradient(135deg, #2196F3, #1976D2)"
         />
         <MultipleChoiceActivity 
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          currentWord={journeyState.currentWord}
+          multipleChoiceOptions={journeyState.multipleChoiceOptions}
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
+          settings={settings}
         />
         <NavigationControls />
       </div>
@@ -462,12 +463,13 @@ const JourneyMode = ({
           background="linear-gradient(135deg, #9C27B0, #7B1FA2)"
         />
         <ListeningActivity 
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          currentWord={journeyState.currentWord}
+          multipleChoiceOptions={journeyState.multipleChoiceOptions}
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
+          settings={settings}
         />
         <NavigationControls />
       </div>

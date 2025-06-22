@@ -1,4 +1,3 @@
-
 import React from 'react';
 import FlashCardActivity from '../Activities/FlashCardActivity';
 import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
@@ -14,6 +13,7 @@ import {
 } from '../Managers/journeyStatsManager';
 
 import { selectDrillActivity } from '../Utilities/activitySelection';
+import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const DrillMode = ({
   audioEnabled,
@@ -45,7 +45,7 @@ const DrillMode = ({
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
-  
+
   // State for user interactions with the current question
   const [questionInteractionState, setQuestionInteractionState] = React.useState({
     showAnswer: false,
@@ -85,21 +85,21 @@ const DrillMode = ({
   }, [loadStatsFromStorage]);
 
   // Helper function to generate multiple choice options
-  const generateMultipleChoiceOptions = React.useCallback((currentWord, mode) => {
+  const generateMultipleChoiceOptionsForDrill = React.useCallback((currentWord, mode) => {
     if (!currentWord || !drillState.drillWords.length) return [];
 
     const options = [];
     const isEnToLt = mode === 'en-to-lt';
     const correctAnswer = isEnToLt ? currentWord.lithuanian : currentWord.english;
-    
+
     // Add the correct answer
     options.push(correctAnswer);
-    
+
     // Add 3 random incorrect options from other drill words
     const otherWords = drillState.drillWords.filter(w => 
       w.lithuanian !== currentWord.lithuanian || w.english !== currentWord.english
     );
-    
+
     const shuffledOthers = [...otherWords].sort(() => Math.random() - 0.5);
     for (let i = 0; i < Math.min(3, shuffledOthers.length); i++) {
       const incorrectAnswer = isEnToLt ? shuffledOthers[i].lithuanian : shuffledOthers[i].english;
@@ -107,7 +107,7 @@ const DrillMode = ({
         options.push(incorrectAnswer);
       }
     }
-    
+
     // If we don't have enough options, pad with some defaults
     while (options.length < 4) {
       const placeholder = isEnToLt ? `Option ${options.length}` : `Option ${options.length}`;
@@ -115,7 +115,7 @@ const DrillMode = ({
         options.push(placeholder);
       }
     }
-    
+
     // Shuffle the options
     return options.sort(() => Math.random() - 0.5);
   }, [drillState.drillWords]);
@@ -124,10 +124,10 @@ const DrillMode = ({
   React.useEffect(() => {
     if (drillState.isInitialized && drillConfig && corporaData) {
       console.log(`Drill mode: Initializing drill for ${drillConfig.corpus}/${drillConfig.group} (${drillConfig.difficulty})`);
-      
+
       // Generate words directly from corporaData for the selected group
       let drillWords = [];
-      
+
       if (corporaData[drillConfig.corpus] && corporaData[drillConfig.corpus].groups[drillConfig.group]) {
         const groupWords = corporaData[drillConfig.corpus].groups[drillConfig.group];
         drillWords = groupWords.map(word => ({
@@ -136,9 +136,9 @@ const DrillMode = ({
           group: drillConfig.group
         }));
       }
-      
+
       console.log(`Drill mode: Found ${drillWords.length} words for ${drillConfig.corpus}/${drillConfig.group}`);
-      
+
       if (drillWords.length === 0) {
         console.warn('No words found for selected drill configuration');
         setDrillState(prev => ({
@@ -151,7 +151,7 @@ const DrillMode = ({
 
       // Shuffle the words for random order
       const shuffledWords = [...drillWords].sort(() => Math.random() - 0.5);
-      
+
       setDrillState(prev => ({
         ...prev,
         drillWords: shuffledWords,
@@ -180,7 +180,7 @@ const DrillMode = ({
     }
 
     const currentWord = drillState.drillWords[effectiveIndex];
-    
+
     let nextActivity;
     if (!currentWord) {
       // We've reached the end of the drill
@@ -225,7 +225,7 @@ const DrillMode = ({
           }
         } : {})
       }));
-      
+
       // Reset local drill activity state
       setQuestionInteractionState({
         showAnswer: false,
@@ -239,13 +239,13 @@ const DrillMode = ({
     // Generate multiple choice options if needed
     let multipleChoiceOptions = [];
     if (nextActivity.type === 'multiple-choice') {
-      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, nextActivity.mode);
+      multipleChoiceOptions = generateMultipleChoiceOptionsForDrill(nextActivity.word, nextActivity.mode);
     } else if (nextActivity.type === 'listening') {
       // For listening activities, generate options based on the mode
       // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
       // Hard mode: Lithuanian audio -> English options (lt-to-en)
       const mode = nextActivity.mode === 'easy' ? 'en-to-lt' : 'lt-to-en';
-      multipleChoiceOptions = generateMultipleChoiceOptions(nextActivity.word, mode);
+      multipleChoiceOptions = generateMultipleChoiceOptionsForDrill(nextActivity.word, mode);
     }
 
     // Update drill state with new activity
@@ -275,7 +275,7 @@ const DrillMode = ({
       typedAnswer: '',
       typingFeedback: ''
     });
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptions]);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptionsForDrill]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
@@ -324,16 +324,16 @@ const DrillMode = ({
     } else {
       correctAnswer = drillState.currentWord.english;
     }
-    
+
     const isCorrect = selectedOption === correctAnswer;
-    
+
     // Update local drill activity state
     setQuestionInteractionState(prev => ({
       ...prev,
       selectedAnswer: selectedOption,
       showAnswer: true
     }));
-    
+
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -354,7 +354,7 @@ const DrillMode = ({
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
-    
+
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
@@ -367,7 +367,7 @@ const DrillMode = ({
     // For typing activities, we need to track the result based on the feedback
     const feedback = questionInteractionState.typingFeedback;
     const isCorrect = feedback && feedback.includes('✅');
-    
+
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -392,16 +392,16 @@ const DrillMode = ({
       // Lithuanian audio -> English options
       correctAnswer = drillState.currentWord.english;
     }
-    
+
     const isCorrect = selectedOption === correctAnswer;
-    
+
     // Update local drill activity state
     setQuestionInteractionState(prev => ({
       ...prev,
       selectedAnswer: selectedOption,
       showAnswer: true
     }));
-    
+
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -422,7 +422,7 @@ const DrillMode = ({
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
-    
+
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
@@ -556,7 +556,7 @@ const DrillMode = ({
   return (
     <div>
       {progressInfo}
-      
+
       {drillState.currentActivity === 'multiple-choice' ? (
         <MultipleChoiceActivity
           currentWord={drillState.currentWord}
