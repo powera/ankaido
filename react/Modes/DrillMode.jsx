@@ -295,7 +295,7 @@ const DrillMode = ({
     }
   }, [drillState.currentActivity, drillState.multipleChoiceMode, drillState.typingMode, drillState.currentWord, audioEnabled, playAudio]);
 
-  // Generate multiple choice options when needed - this is the key fix
+  // Generate multiple choice options when needed
   const currentMultipleChoiceOptions = React.useMemo(() => {
     if (!drillState.currentWord) return [];
     
@@ -310,7 +310,7 @@ const DrillMode = ({
     }
     
     return [];
-  }, [drillState.currentWord, drillState.currentActivity, drillState.multipleChoiceMode, drillState.listeningMode, generateMultipleChoiceOptions]);
+  }, [drillState.currentWord, generateMultipleChoiceOptions]);
 
   // Enhanced handlers that update drill stats
   const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {
