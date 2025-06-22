@@ -11,7 +11,8 @@ const MultipleChoiceActivity = ({
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  onAnswer
+  onAnswer,
+  quizMode = "multiple-choice"
 }) => {
   const currentWord = wordListState.currentWord;
   
@@ -40,9 +41,11 @@ const MultipleChoiceActivity = ({
         wordListManager={wordListManager}
         wordListState={wordListState}
         studyMode={studyMode}
-        handleHoverStart={handleHoverStart}
-        handleHoverEnd={handleHoverEnd}
-        onAnswer={onAnswer}
+        quizMode={quizMode}
+        handleMultipleChoiceAnswer={onAnswer}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        preventAutoPlay={false}
       />
     </div>
   );
