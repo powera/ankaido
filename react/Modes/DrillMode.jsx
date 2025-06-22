@@ -4,6 +4,7 @@ import FlashCardActivity from '../Activities/FlashCardActivity';
 import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
 import TypingActivity from '../Activities/TypingActivity';
+import StatsDisplay from '../Components/StatsDisplay';
 
 import { 
   journeyStatsManager, 
@@ -455,31 +456,13 @@ const DrillMode = ({
             <div style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
               <strong>{drillConfig.corpus}/{drillConfig.group}</strong> - {drillConfig.difficulty} difficulty
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', color: 'var(--color-success)' }}>
-                  {drillState.drillStats.correct}
-                </div>
-                <div>Correct</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', color: 'var(--color-error)' }}>
-                  {drillState.drillStats.incorrect}
-                </div>
-                <div>Incorrect</div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '2rem', color: 'var(--color-primary)' }}>
-                  {accuracy}%
-                </div>
-                <div>Accuracy</div>
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button 
-              className="w-button"
-              onClick={() => {
+            <StatsDisplay 
+              stats={{
+                correct: drillState.drillStats.correct,
+                incorrect: drillState.drillStats.incorrect,
+                total: drillState.drillStats.correct + drillState.drillStats.incorrect
+              }}
+              onReset={() => {
                 // Reset drill state for another round
                 setDrillState(prev => ({
                   ...prev,
@@ -488,6 +471,28 @@ const DrillMode = ({
                   drillStats: { attempted: 0, correct: 0, incorrect: 0 }
                 }));
                 // Reset local activity state
+                setDrillActivityState({
+                  showAnswer: false,
+                  selectedAnswer: null,
+                  typedAnswer: '',
+                  typingFeedback: '',
+                  multipleChoiceOptions: []
+                });
+              }}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <button 
+              className="w-button"
+              onClick={() => {
+                // The reset functionality is now handled by StatsDisplay's onReset
+                // This button just triggers the same reset logic
+                setDrillState(prev => ({
+                  ...prev,
+                  currentDrillIndex: 0,
+                  currentActivity: null,
+                  drillStats: { attempted: 0, correct: 0, incorrect: 0 }
+                }));
                 setDrillActivityState({
                   showAnswer: false,
                   selectedAnswer: null,
