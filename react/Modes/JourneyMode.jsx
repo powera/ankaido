@@ -4,6 +4,7 @@ import MultipleChoiceMode from './MultipleChoiceMode';
 import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
+import TypingResponse from '../Components/TypingResponse';
 
 import { 
   journeyStatsManager, 
@@ -636,14 +637,11 @@ const JourneyTypingMode = ({
     setFeedback('');
   }, [journeyWord]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!journeyWord || showAnswer) return;
-
+  const handleSubmit = (answer) => {
     const correctAnswer = studyMode === 'english-to-lithuanian' ? 
       journeyWord.lithuanian : journeyWord.english;
 
-    const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
+    const isCorrect = answer.trim().toLowerCase() === correctAnswer.toLowerCase();
 
     if (isCorrect) {
       setFeedback('✅ Correct!');
@@ -674,50 +672,21 @@ const JourneyTypingMode = ({
         )}
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={typedAnswer}
-          onChange={(e) => setTypedAnswer(e.target.value)}
-          placeholder={`Type the ${studyMode === 'english-to-lithuanian' ? 'Lithuanian' : 'English'} translation`}
-          className="w-text-input"
-          disabled={showAnswer}
-          autoFocus
-        />
-        <button 
-          type="submit" 
-          className="w-button w-button-primary w-mt-base"
-          disabled={showAnswer || !typedAnswer.trim()}
-        >
-          Check Answer
-        </button>
-      </form>
-
-      {feedback && (
-        <div className={`w-feedback ${feedback.includes('✅') ? 'w-success' : 'w-error'}`}>
-          {feedback}
-        </div>
-      )}
-
-      {showAnswer && (
-        <div className="trakaido-answer-text">
-          <span>{studyMode === 'english-to-lithuanian' ? journeyWord.lithuanian : journeyWord.english}</span>
-          {audioEnabled && (
-            <AudioButton 
-              word={studyMode === 'english-to-lithuanian' ? journeyWord.lithuanian : journeyWord.english}
-              audioEnabled={audioEnabled}
-              playAudio={playAudio}
-            />
-          )}
-        </div>
-      )}
-
-      {showAnswer && !autoAdvance && (
-        <div className="w-nav-controls">
-          <button className="w-button" onClick={onNext}>Next Activity →</button>
-        </div>
-      )}
-
+      <TypingResponse
+        currentWord={journeyWord}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        onSubmit={handleSubmit}
+        showAnswer={showAnswer}
+        feedback={feedback}
+        typedAnswer={typedAnswer}
+        onTypedAnswerChange={setTypedAnswer}
+        autoAdvance={autoAdvance}
+        defaultDelay={defaultDelay}
+        onNext={onNext}
+        autoAdvanceTimer={false}
+      />
     </div>
   );
 };
