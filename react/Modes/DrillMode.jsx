@@ -287,8 +287,13 @@ const DrillMode = ({
       }
 
       if (shouldPlayAudio) {
-        const timer = setTimeout(() => {
-          playAudio(drillState.currentWord.lithuanian);
+        const timer = setTimeout(async () => {
+          try {
+            await playAudio(drillState.currentWord.lithuanian);
+          } catch (error) {
+            console.warn('Auto-play audio failed:', error);
+            // Continue with the activity even if audio fails
+          }
         }, 300);
         return () => clearTimeout(timer);
       }
