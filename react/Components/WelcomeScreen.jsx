@@ -1,16 +1,41 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { STORAGE_MODES } from '../Managers/storageConfigManager';
 
 const WelcomeScreen = ({ onComplete }) => {
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedStorage, setSelectedStorage] = useState('');
+  const [userInfo, setUserInfo] = useState(null);
+  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('/api/trakaido/userinfo/');
+        if (response.ok) {
+          const data = await response.json();
+          setUserInfo(data);
+        } else {
+          setUserInfo({ authenticated: false, can_save_journey_stats: false });
+        }
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+        setUserInfo({ authenticated: false, can_save_journey_stats: false });
+      } finally {
+        setLoadingUserInfo(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
 
   const handleContinue = () => {
     if (selectedLevel && selectedStorage) {
       onComplete(selectedLevel, selectedStorage);
     }
   };
+
+  const canUseRemoteStorage = userInfo && userInfo.authenticated && userInfo.can_save_journey_stats;
 
   return (
     <div className="w-container">
@@ -79,6 +104,11 @@ const WelcomeScreen = ({ onComplete }) => {
 
         <div className="w-welcome-section">
           <h3 className="w-welcome-section-title">Where would you like to store your progress?</h3>
+          {loadingUserInfo && (
+            <div className="w-welcome-loading">
+              Checking authentication status...
+            </div>
+          )}
           <div className="w-welcome-options w-welcome-storage-options">
             <label className={`w-welcome-option w-welcome-storage-option ${selectedStorage === STORAGE_MODES.LOCAL ? 'w-welcome-option-selected' : ''}`}>
               <input
@@ -99,21 +129,26 @@ const WelcomeScreen = ({ onComplete }) => {
               </div>
             </label>
             
-            <label className={`w-welcome-option w-welcome-storage-option ${selectedStorage === STORAGE_MODES.REMOTE ? 'w-welcome-option-selected' : ''}`}>
+            <label className={`w-welcome-option w-welcome-storage-option ${selectedStorage === STORAGE_MODES.REMOTE ? 'w-welcome-option-selected' : ''} ${!canUseRemoteStorage ? 'w-welcome-option-disabled' : ''}`}>
               <input
                 type="radio"
                 name="storage"
                 value={STORAGE_MODES.REMOTE}
                 checked={selectedStorage === STORAGE_MODES.REMOTE}
-                onChange={(e) => setSelectedStorage(e.target.value)}
+                onChange={(e) => canUseRemoteStorage && setSelectedStorage(e.target.value)}
                 className="w-welcome-radio"
+                disabled={!canUseRemoteStorage}
               />
               <div className="w-welcome-storage-content">
                 <div className="w-welcome-storage-title">
                   ☁️ <strong>Remote Storage</strong>
                 </div>
                 <div className="w-welcome-storage-description">
-                  Data stored on server. Syncs between devices but requires server connection.
+                  {canUseRemoteStorage ? (
+                    "Data stored on server. Syncs between devices but requires server connection."
+                  ) : (
+                    "You must log in to store data remotely."
+                  )}
                 </div>
               </div>
             </label>
