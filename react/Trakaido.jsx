@@ -214,8 +214,7 @@ const FlashCardApp = () => {
         const stats = await journeyStatsManager.initialize();
         setJourneyStats(stats);
 
-        // Update wordListManager with journey stats
-        updateWordListManagerStats(wordListManager, stats);
+        // Journey stats are now managed separately by journeyStatsManager
 
         // Listen for stats changes
         const handleStatsChange = (updatedStats) => {

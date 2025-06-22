@@ -27,17 +27,13 @@ describe('WordListManager', () => {
   });
 
   afterEach(() => {
-    if (manager.autoAdvanceTimer) {
-      clearTimeout(manager.autoAdvanceTimer);
-    }
+    // Cleanup if needed
   });
 
   describe('initialization', () => {
     it('should initialize with default values', () => {
       expect(manager.allWords).toEqual([]);
       expect(manager.currentCard).toBe(0);
-      expect(manager.showAnswer).toBe(false);
-      expect(manager.stats).toEqual({ correct: 0, incorrect: 0, total: 0 });
     });
 
     it('should set state change callback', () => {

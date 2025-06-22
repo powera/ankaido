@@ -133,17 +133,7 @@ export const DEFAULT_WORD_STATS = {
 // Create a unique key for a word
 export const createWordKey = (word) => `${word.lithuanian}-${word.english}`;
 
-/**
- * Helper function to update WordListManager with journey stats
- * This keeps WordListManager in sync with the latest stats
- */
-export const updateWordListManagerStats = (wordListManager, stats) => {
-  if (wordListManager) {
-    wordListManager.journeyStats = stats;
-    console.log('Updated wordListManager.journeyStats:', wordListManager.journeyStats);
-    wordListManager.notifyStateChange();
-  }
-};
+// WordListManager no longer stores journey stats - they are managed separately by journeyStatsManager
 
 /**
  * Calculate total correct answers for a word across all modes

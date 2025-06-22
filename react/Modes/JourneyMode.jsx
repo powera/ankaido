@@ -53,7 +53,6 @@ const JourneyMode = ({
       const stats = await journeyStatsManager.initialize();
       console.log('Loaded journey stats:', stats);
       setJourneyStats(stats);
-      updateWordListManagerStats(wordListManager, stats);
       setJourneyState(prev => ({ ...prev, isInitialized: true }));
     } catch (error) {
       console.error('Error loading journey stats:', error);
@@ -69,7 +68,6 @@ const JourneyMode = ({
     // Listen for stats updates from other modes
     const handleStatsUpdate = (updatedStats) => {
       setJourneyStats(updatedStats);
-      updateWordListManagerStats(wordListManager, updatedStats);
     };
 
     journeyStatsManager.addListener(handleStatsUpdate);
@@ -230,10 +228,6 @@ const JourneyMode = ({
           // Lithuanian-to-English typing: Lithuanian prompt, type English answer
           effectiveStudyMode = 'lithuanian-to-english';
         }
-
-        // Force regeneration of multiple choice options by clearing them first
-        wordListManager.multipleChoiceOptions = [];
-        wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
 
         // Notify state change after everything is updated
         wordListManager.notifyStateChange();
