@@ -20,7 +20,7 @@ import WordListManager from './Managers/WordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import storageConfigManager from './Managers/storageConfigManager';
-import journeyStatsManager, { updateWordListManagerStats } from './Managers/journeyStatsManager';
+import journeyStatsManager from './Managers/journeyStatsManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
@@ -72,7 +72,6 @@ const FlashCardApp = () => {
     selectedAnswer: null,
     typedAnswer: '',
     typingFeedback: '',
-    multipleChoiceOptions: [],
     stats: { correct: 0, incorrect: 0, total: 0 },
     autoAdvanceTimer: null
   });
@@ -219,7 +218,6 @@ const FlashCardApp = () => {
         // Listen for stats changes
         const handleStatsChange = (updatedStats) => {
           setJourneyStats(updatedStats);
-          updateWordListManagerStats(wordListManager, updatedStats);
         };
 
         journeyStatsManager.addListener(handleStatsChange);
@@ -281,20 +279,6 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
-  // Generate multiple choice options when card changes or mode changes
-  useEffect(() => {
-    if ((quizMode === 'multiple-choice' || quizMode === 'listening') && wordListState.allWords.length > 0) {
-      wordListManager.generateMultipleChoiceOptions(studyMode, quizMode);
-    }
-  }, [wordListState.currentCard, quizMode, wordListState.allWords, studyMode, settings.difficulty, wordListManager]);
-
-  // Pre-load audio for multiple choice options when audio is enabled
-  useEffect(() => {
-    if (audioEnabled && (quizMode === 'multiple-choice' || quizMode === 'listening') && wordListState.multipleChoiceOptions.length > 0) {
-      preloadMultipleChoiceAudio();
-    }
-  }, [audioEnabled, quizMode, studyMode, wordListState.multipleChoiceOptions, selectedVoice]);
-
   // Auto-play audio in listening mode when card changes
   useEffect(() => {
     if (quizMode === 'listening' && audioEnabled && wordListState.allWords.length > 0 && wordListState.allWords[wordListState.currentCard]) {
@@ -328,19 +312,6 @@ const FlashCardApp = () => {
     };
     loadConjugationsForCorpus();
   }, [selectedVerbCorpus, loading]);
-
-  const preloadMultipleChoiceAudio = async () => {
-    if (!selectedVoice) return;
-
-    if (selectedVoice === 'random') {
-      // When random is selected, preload for all available voices
-      for (const voice of availableVoices) {
-        await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, voice);
-      }
-    } else {
-      await audioManager.preloadMultipleAudio(wordListState.multipleChoiceOptions, selectedVoice);
-    }
-  };
 
   // Generate all available groups from all corpuses
   useEffect(() => {

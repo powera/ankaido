@@ -8,7 +8,6 @@ import StatsDisplay from '../Components/StatsDisplay';
 
 import { 
   journeyStatsManager, 
-  updateWordListManagerStats, 
   getExposedWords, 
   getNewWords, 
   getTotalCorrectExposures 

@@ -7,6 +7,11 @@ import journeyStatsManager from '../Managers/journeyStatsManager';
 const TypingActivity = ({ 
   wordListManager,
   wordListState,
+  currentWord, // Accept currentWord as prop
+  typedAnswer, // Accept typedAnswer as prop
+  typingFeedback, // Accept typingFeedback as prop
+  setTypedAnswer, // Accept setTypedAnswer as prop
+  setTypingFeedback, // Accept setTypingFeedback as prop
   studyMode,
   nextCard,
   audioEnabled,
@@ -16,13 +21,14 @@ const TypingActivity = ({
 }) => {
   const [activityState, setActivityState] = React.useState({
     showAnswer: false,
-    typedAnswer: '',
-    typingFeedback: '',
+    typedAnswer: typedAnswer || '',
+    typingFeedback: typingFeedback || '',
     autoAdvanceTimer: null,
     stats: { correct: 0, incorrect: 0, total: 0 }
   });
 
-  const currentWord = wordListManager.getCurrentWord();
+  // Use currentWord from props, fallback to wordListManager if available
+  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
 
   // Initialize journey stats manager on first render
   React.useEffect(() => {
@@ -34,55 +40,55 @@ const TypingActivity = ({
     setActivityState(prev => ({
       ...prev,
       showAnswer: false,
-      typedAnswer: '',
-      typingFeedback: '',
+      typedAnswer: typedAnswer || '',
+      typingFeedback: typingFeedback || '',
       autoAdvanceTimer: null
     }));
-  }, [currentWord]);
+  }, [word, typedAnswer, typingFeedback]);
 
   // Handle checking typed answer with journey stats
   const handleSubmit = React.useCallback(async (typedAnswer) => {
+    if (!word) return;
+    
     const correctAnswer = studyMode === 'english-to-lithuanian' ? 
-      currentWord.lithuanian : currentWord.english;
+      word.lithuanian : word.english;
 
     const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
 
     // Update Journey stats
     try {
-      await journeyStatsManager.updateWordStats(currentWord, 'typing', isCorrect);
+      await journeyStatsManager.updateWordStats(word, 'typing', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats in TypingActivity:', error);
     }
 
-    // Update local stats and feedback
-    if (isCorrect) {
-      setActivityState(prev => ({
-        ...prev,
-        typingFeedback: '✅ Correct!',
-        showAnswer: true,
-        stats: {
-          ...prev.stats,
-          correct: prev.stats.correct + 1,
-          total: prev.stats.total + 1
-        }
-      }));
+    // Update feedback using external setter if available, otherwise local state
+    const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. The answer is: ${correctAnswer}`;
+    
+    if (setTypingFeedback) {
+      setTypingFeedback(feedback);
     } else {
       setActivityState(prev => ({
         ...prev,
-        typingFeedback: `❌ Incorrect. The answer is: ${correctAnswer}`,
+        typingFeedback: feedback,
         showAnswer: true,
         stats: {
           ...prev.stats,
-          incorrect: prev.stats.incorrect + 1,
+          correct: prev.stats.correct + (isCorrect ? 1 : 0),
+          incorrect: prev.stats.incorrect + (isCorrect ? 0 : 1),
           total: prev.stats.total + 1
         }
       }));
     }
-  }, [currentWord, studyMode]);
+  }, [word, studyMode, setTypingFeedback]);
 
   const handleTypedAnswerChange = React.useCallback((value) => {
-    setActivityState(prev => ({ ...prev, typedAnswer: value }));
-  }, []);
+    if (setTypedAnswer) {
+      setTypedAnswer(value);
+    } else {
+      setActivityState(prev => ({ ...prev, typedAnswer: value }));
+    }
+  }, [setTypedAnswer]);
 
   const handleNextCard = React.useCallback(() => {
     // Clear any auto-advance timer
@@ -93,7 +99,7 @@ const TypingActivity = ({
     nextCard();
   }, [nextCard, activityState.autoAdvanceTimer]);
 
-  if (!currentWord) {
+  if (!word) {
     return (
       <div className="w-card">
         <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
@@ -103,8 +109,8 @@ const TypingActivity = ({
     );
   }
 
-  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
-  const answer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+  const question = studyMode === 'english-to-lithuanian' ? word.english : word.lithuanian;
+  const answer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
   const promptText = studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
     'Type the English word';
@@ -112,7 +118,7 @@ const TypingActivity = ({
   return (
     <div>
       <WordDisplayCard
-        currentWord={currentWord}
+        currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
@@ -124,14 +130,14 @@ const TypingActivity = ({
       />
 
       <TypingResponse
-        currentWord={currentWord}
+        currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         onSubmit={handleSubmit}
         showAnswer={activityState.showAnswer}
-        feedback={activityState.typingFeedback}
-        typedAnswer={activityState.typedAnswer}
+        feedback={typingFeedback || activityState.typingFeedback}
+        typedAnswer={typedAnswer || activityState.typedAnswer}
         onTypedAnswerChange={handleTypedAnswerChange}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}

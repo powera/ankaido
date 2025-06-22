@@ -4,6 +4,7 @@ import AudioButton from './AudioButton';
 const MultipleChoiceOptions = ({ 
   wordListManager,
   wordListState,
+  currentWord, // Accept currentWord as prop
   studyMode,
   quizMode,
   handleMultipleChoiceAnswer,
@@ -11,22 +12,24 @@ const MultipleChoiceOptions = ({
   playAudio,
   preventAutoPlay
 }) => {
+  // Use currentWord from props, fallback to wordListManager if available
+  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
+  
   return (
     <div className="w-multiple-choice">
       {wordListState.multipleChoiceOptions.map((option, index) => {
-        const currentWord = wordListManager.getCurrentWord();
-        if (!currentWord) return null;
+        if (!word) return null;
 
         // Determine correct answer based on mode
         let correctAnswer;
         if (quizMode === 'listening') {
           if (studyMode === 'lithuanian-to-lithuanian') {
-            correctAnswer = currentWord.lithuanian;
+            correctAnswer = word.lithuanian;
           } else {
-            correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+            correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
           }
         } else {
-          correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+          correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
         }
 
         const isCorrect = option === correctAnswer;
@@ -49,17 +52,17 @@ const MultipleChoiceOptions = ({
           if (studyMode === 'lithuanian-to-lithuanian') {
             // For LT-to-LT mode, show English translation
             if (isCorrect) {
-              translation = currentWord.english;
+              translation = word.english;
             } else {
               // Find the word that matches this Lithuanian option
-              const matchingWord = wordListState.allWords.find(w => w.lithuanian === option);
+              const matchingWord = wordListState.allWords?.find(w => w.lithuanian === option);
               if (matchingWord) {
                 translation = matchingWord.english;
               }
             }
           } else if (isCorrect) {
             // For correct answer, show the opposite translation
-            translation = studyMode === 'lithuanian-to-english' ? currentWord.lithuanian : currentWord.english;
+            translation = studyMode === 'lithuanian-to-english' ? word.lithuanian : word.english;
           } else {
             // For all other options, find the word that matches this option
             const matchingWord = wordListState.allWords.find(w => 
@@ -112,7 +115,7 @@ const MultipleChoiceOptions = ({
                   alignItems: 'center'
                 }}>
                   <AudioButton 
-                    word={studyMode === 'english-to-lithuanian' ? option : currentWord.lithuanian}
+                    word={studyMode === 'english-to-lithuanian' ? option : word.lithuanian}
                     audioEnabled={audioEnabled}
                     playAudio={playAudio}
                     size="small"

@@ -6,7 +6,6 @@ import TypingActivity from '../Activities/TypingActivity';
 
 import { 
   journeyStatsManager, 
-  updateWordListManagerStats, 
   getExposedWords, 
   getNewWords, 
   getTotalCorrectExposures 
@@ -179,11 +178,7 @@ const JourneyMode = ({
   const advanceToNextActivity = React.useCallback(() => {
     const nextActivity = selectNextActivity();
 
-    // Reset answer state for all components
-    wordListManager.selectedAnswer = null;
-    wordListManager.setShowAnswer(false);
-    wordListManager.setTypedAnswer('');
-    wordListManager.setTypingFeedback('');
+    // Note: Answer state reset is now handled by individual activity components
 
     // Update journey state in one place
     setJourneyState({

@@ -5,6 +5,8 @@ class WordListManager {
     this.allWords = [];
     this.currentCard = 0;
     this.onStateChange = null; // Callback for state updates
+    // Per-session stats (separate from persistent journey stats)
+    this.sessionStats = { correct: 0, incorrect: 0, total: 0 };
   }
 
   setStateChangeCallback(callback) {
@@ -15,7 +17,8 @@ class WordListManager {
     if (this.onStateChange) {
       this.onStateChange({
         allWords: this.allWords,
-        currentCard: this.currentCard
+        currentCard: this.currentCard,
+        stats: this.sessionStats
       });
     }
   }
@@ -56,6 +59,8 @@ class WordListManager {
 
   resetCards() {
     this.currentCard = 0;
+    // Reset session stats when resetting cards
+    this.sessionStats = { correct: 0, incorrect: 0, total: 0 };
     this.notifyStateChange();
   }
 
@@ -75,6 +80,28 @@ class WordListManager {
 
   getTotalWords() {
     return this.allWords.length;
+  }
+
+  // Session stats methods (separate from persistent journey stats)
+  updateSessionStatsCorrect() {
+    this.sessionStats.correct++;
+    this.sessionStats.total++;
+    this.notifyStateChange();
+  }
+
+  updateSessionStatsIncorrect() {
+    this.sessionStats.incorrect++;
+    this.sessionStats.total++;
+    this.notifyStateChange();
+  }
+
+  getSessionStats() {
+    return { ...this.sessionStats };
+  }
+
+  resetSessionStats() {
+    this.sessionStats = { correct: 0, incorrect: 0, total: 0 };
+    this.notifyStateChange();
   }
 }
 

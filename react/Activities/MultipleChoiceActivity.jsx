@@ -7,6 +7,10 @@ import journeyStatsManager from '../Managers/journeyStatsManager';
 const MultipleChoiceActivity = ({ 
   wordListManager,
   wordListState,
+  currentWord, // Accept currentWord as prop
+  showAnswer, // Accept showAnswer as prop
+  selectedAnswer, // Accept selectedAnswer as prop
+  multipleChoiceOptions, // Accept multipleChoiceOptions as prop
   studyMode,
   audioEnabled,
   playAudio,
@@ -16,15 +20,16 @@ const MultipleChoiceActivity = ({
   settings
 }) => {
   const [activityState, setActivityState] = React.useState({
-    showAnswer: false,
-    selectedAnswer: null,
-    multipleChoiceOptions: [],
+    showAnswer: showAnswer || false,
+    selectedAnswer: selectedAnswer || null,
+    multipleChoiceOptions: multipleChoiceOptions || [],
     autoAdvanceTimer: null
   });
 
-  const currentWord = wordListManager.getCurrentWord();
+  // Use currentWord from props, fallback to wordListManager if available
+  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
   
-  if (!currentWord) return null;
+  if (!word) return null;
 
   // Initialize journey stats manager on first render
   React.useEffect(() => {
@@ -33,24 +38,26 @@ const MultipleChoiceActivity = ({
 
   // Generate multiple choice options when word changes
   React.useEffect(() => {
-    if (currentWord) {
+    if (word && !multipleChoiceOptions?.length) {
       generateMultipleChoiceOptions();
     }
-  }, [currentWord, studyMode, settings?.difficulty]);
+  }, [word, studyMode, settings?.difficulty, multipleChoiceOptions?.length]);
 
   const generateMultipleChoiceOptions = React.useCallback(() => {
-    if (!currentWord) return;
+    if (!word) return;
 
-    const correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+    const correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
     const answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
 
     // Determine number of options based on difficulty
     const numOptions = settings?.difficulty === 'easy' ? 4 : settings?.difficulty === 'medium' ? 6 : 8;
     const numWrongAnswers = numOptions - 1;
 
-    const sameCorpusWords = wordListState.allWords.filter(word => 
-      word.corpus === currentWord.corpus && 
-      word[answerField] !== correctAnswer
+    // Use wordListState if available, otherwise create minimal options
+    const allWords = wordListState?.allWords || [];
+    const sameCorpusWords = allWords.filter(w => 
+      w.corpus === word.corpus && 
+      w[answerField] !== correctAnswer
     );
     const wrongAnswersSet = new Set();
     const wrongAnswers = [];
@@ -68,7 +75,7 @@ const MultipleChoiceActivity = ({
     
     // Pad with any other words if needed
     if (wrongAnswers.length < numWrongAnswers) {
-      const fallbackWords = wordListState.allWords
+      const fallbackWords = allWords
         .map(w => w[answerField])
         .filter(ans => ans !== correctAnswer && !wrongAnswersSet.has(ans))
         .sort(() => Math.random() - 0.5);
@@ -99,11 +106,11 @@ const MultipleChoiceActivity = ({
     }
 
     setActivityState(prev => ({ ...prev, multipleChoiceOptions: options }));
-  }, [currentWord, studyMode, settings?.difficulty, wordListState.allWords]);
+  }, [word, studyMode, settings?.difficulty, wordListState?.allWords]);
 
   // Enhanced multiple choice handler that updates Journey stats and manages state
   const handleMultipleChoiceWithStats = React.useCallback(async (selectedOption) => {
-    const correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+    const correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
     const isCorrect = selectedOption === correctAnswer;
 
     // Update local state
@@ -115,7 +122,7 @@ const MultipleChoiceActivity = ({
 
     // Update Journey stats
     try {
-      await journeyStatsManager.updateWordStats(currentWord, 'multipleChoice', isCorrect);
+      await journeyStatsManager.updateWordStats(word, 'multipleChoice', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats in MultipleChoiceMode:', error);
     }
@@ -124,7 +131,7 @@ const MultipleChoiceActivity = ({
     if (handleMultipleChoiceAnswer) {
       handleMultipleChoiceAnswer(selectedOption);
     }
-  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
+  }, [word, studyMode, handleMultipleChoiceAnswer]);
 
   // Reset state when word changes
   React.useEffect(() => {
@@ -133,9 +140,9 @@ const MultipleChoiceActivity = ({
       showAnswer: false,
       selectedAnswer: null
     }));
-  }, [currentWord]);
+  }, [word]);
 
-  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
+  const question = studyMode === 'english-to-lithuanian' ? word.english : word.lithuanian;
 
   // Create enhanced state object for MultipleChoiceOptions
   const enhancedWordListState = React.useMemo(() => ({
@@ -146,7 +153,7 @@ const MultipleChoiceActivity = ({
   return (
     <div>
       <WordDisplayCard
-        currentWord={currentWord}
+        currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
@@ -160,6 +167,7 @@ const MultipleChoiceActivity = ({
       <MultipleChoiceOptions
         wordListManager={wordListManager}
         wordListState={enhancedWordListState}
+        currentWord={word}
         studyMode={studyMode}
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleMultipleChoiceWithStats}

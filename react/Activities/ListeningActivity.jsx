@@ -7,6 +7,10 @@ import journeyStatsManager from '../Managers/journeyStatsManager';
 const ListeningActivity = ({ 
   wordListManager,
   wordListState,
+  currentWord, // Accept currentWord as prop
+  showAnswer, // Accept showAnswer as prop
+  selectedAnswer, // Accept selectedAnswer as prop
+  multipleChoiceOptions, // Accept multipleChoiceOptions as prop
   studyMode,
   audioEnabled,
   playAudio,
@@ -15,15 +19,16 @@ const ListeningActivity = ({
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
   const [activityState, setActivityState] = React.useState({
-    showAnswer: false,
-    selectedAnswer: null,
-    multipleChoiceOptions: [],
+    showAnswer: showAnswer || false,
+    selectedAnswer: selectedAnswer || null,
+    multipleChoiceOptions: multipleChoiceOptions || [],
     autoAdvanceTimer: null
   });
 
-  const currentWord = wordListManager.getCurrentWord();
+  // Use currentWord from props, fallback to wordListManager if available
+  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
   
-  if (!currentWord) return null;
+  if (!word) return null;
 
   // Initialize journey stats manager on first render
   React.useEffect(() => {
@@ -33,27 +38,27 @@ const ListeningActivity = ({
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
     setPreventAutoPlay(false);
-  }, [currentWord]);
+  }, [word]);
 
   // Generate multiple choice options when word changes
   React.useEffect(() => {
-    if (currentWord) {
+    if (word && !multipleChoiceOptions?.length) {
       generateMultipleChoiceOptions();
     }
-  }, [currentWord, studyMode, settings?.difficulty]);
+  }, [word, studyMode, settings?.difficulty, multipleChoiceOptions?.length]);
 
   const generateMultipleChoiceOptions = React.useCallback(() => {
-    if (!currentWord) return;
+    if (!word) return;
 
     // For listening mode, determine correct answer based on listening mode type
     let correctAnswer;
     let answerField;
     
     if (studyMode === 'lithuanian-to-lithuanian') {
-      correctAnswer = currentWord.lithuanian;
+      correctAnswer = word.lithuanian;
       answerField = 'lithuanian';
     } else {
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
       answerField = studyMode === 'lithuanian-to-english' ? 'english' : 'lithuanian';
     }
 
@@ -61,9 +66,11 @@ const ListeningActivity = ({
     const numOptions = settings?.difficulty === 'easy' ? 4 : settings?.difficulty === 'medium' ? 6 : 8;
     const numWrongAnswers = numOptions - 1;
 
-    const sameCorpusWords = wordListState.allWords.filter(word => 
-      word.corpus === currentWord.corpus && 
-      word[answerField] !== correctAnswer
+    // Use wordListState if available, otherwise create minimal options
+    const allWords = wordListState?.allWords || [];
+    const sameCorpusWords = allWords.filter(w => 
+      w.corpus === word.corpus && 
+      w[answerField] !== correctAnswer
     );
     const wrongAnswersSet = new Set();
     const wrongAnswers = [];
@@ -81,7 +88,7 @@ const ListeningActivity = ({
     
     // Pad with any other words if needed
     if (wrongAnswers.length < numWrongAnswers) {
-      const fallbackWords = wordListState.allWords
+      const fallbackWords = allWords
         .map(w => w[answerField])
         .filter(ans => ans !== correctAnswer && !wrongAnswersSet.has(ans))
         .sort(() => Math.random() - 0.5);
@@ -112,7 +119,7 @@ const ListeningActivity = ({
     }
 
     setActivityState(prev => ({ ...prev, multipleChoiceOptions: options }));
-  }, [currentWord, studyMode, settings?.difficulty, wordListState.allWords]);
+  }, [word, studyMode, settings?.difficulty, wordListState?.allWords]);
 
   // Enhanced listening handler that updates Journey stats
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {
@@ -122,9 +129,9 @@ const ListeningActivity = ({
     // Determine correct answer based on study mode for listening
     let correctAnswer;
     if (studyMode === 'lithuanian-to-lithuanian') {
-      correctAnswer = currentWord.lithuanian;
+      correctAnswer = word.lithuanian;
     } else {
-      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+      correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
     }
 
     const isCorrect = selectedOption === correctAnswer;
@@ -141,7 +148,7 @@ const ListeningActivity = ({
 
     // Update Journey stats with appropriate mode
     try {
-      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
+      await journeyStatsManager.updateWordStats(word, statsMode, isCorrect);
     } catch (error) {
       console.error('Error updating journey stats in ListeningMode:', error);
     }
@@ -150,7 +157,7 @@ const ListeningActivity = ({
     if (handleMultipleChoiceAnswer) {
       handleMultipleChoiceAnswer(selectedOption);
     }
-  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
+  }, [word, studyMode, handleMultipleChoiceAnswer]);
 
   // Reset state when word changes
   React.useEffect(() => {
@@ -159,7 +166,7 @@ const ListeningActivity = ({
       showAnswer: false,
       selectedAnswer: null
     }));
-  }, [currentWord]);
+  }, [word]);
 
   const instructionText = studyMode === 'lithuanian-to-english' 
     ? 'Choose the English translation:'
@@ -176,7 +183,7 @@ const ListeningActivity = ({
   return (
     <div>
       <WordDisplayCard
-        currentWord={currentWord}
+        currentWord={word}
         studyMode="listening"
         audioEnabled={audioEnabled}
         playAudio={playAudio}
@@ -188,6 +195,7 @@ const ListeningActivity = ({
       <MultipleChoiceOptions
         wordListManager={wordListManager}
         wordListState={enhancedWordListState}
+        currentWord={word}
         studyMode={studyMode}
         quizMode="listening"
         handleMultipleChoiceAnswer={handleListeningWithStats}
