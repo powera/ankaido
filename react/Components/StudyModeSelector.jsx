@@ -24,6 +24,7 @@ const StudyModeSelector = ({
   totalSelectedWords,
   onOpenStudyMaterials,
   onOpenExposureStats,
+  onOpenDrillMode,
   journeyStats
 }) => {
   const [isServerStorage, setIsServerStorage] = React.useState(storageConfigManager.isRemoteStorage());
@@ -153,6 +154,11 @@ const StudyModeSelector = ({
             const selectedMode = e.target.value;
             if (selectedMode === 'grammar') {
               setQuizMode(grammarMode);
+            } else if (selectedMode === 'drill') {
+              // For drill mode, we need to open the drill mode selector
+              // Temporarily set the quiz mode to show the selector
+              setQuizMode('drill');
+              onOpenDrillMode();
             } else {
               setQuizMode(selectedMode);
             }
@@ -165,6 +171,7 @@ const StudyModeSelector = ({
           <option value="listening">🎧 Listening</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
           <option value="journey">🚀 Journey Mode</option>
+          <option value="drill">🎯 Drill Mode</option>
           <option value="grammar">Grammar</option>
         </select>
       </div>

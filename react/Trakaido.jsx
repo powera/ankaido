@@ -13,6 +13,8 @@ import ExposureStatsModal from './Components/ExposureStatsModal.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
 import DeclensionsMode from './Modes/DeclensionsMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
+import DrillMode from './Modes/DrillMode.jsx';
+import DrillModeSelector from './Components/DrillModeSelector.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import WordListManager from './Managers/WordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
@@ -107,6 +109,10 @@ const FlashCardApp = () => {
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
   const [journeyStats, setJourneyStats] = useState({});
+  
+  // Drill mode state
+  const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
+  const [drillConfig, setDrillConfig] = useState(null); // { corpus, group, difficulty }
 
   // Use global settings for audio and auto-advance
   const audioEnabled = settings.audioEnabled;
@@ -471,6 +477,24 @@ const FlashCardApp = () => {
     }
   };
 
+  // Drill mode handlers
+  const handleStartDrill = (config) => {
+    setDrillConfig(config);
+    setQuizMode('drill');
+    setShowDrillModeSelector(false);
+  };
+
+  const handleExitDrill = () => {
+    setDrillConfig(null);
+    setShowDrillModeSelector(false);
+    setQuizMode('flashcard'); // Default back to flashcard mode
+  };
+
+  const handleCancelDrill = () => {
+    setShowDrillModeSelector(false);
+    setQuizMode('flashcard'); // Reset back to flashcard mode when canceling
+  };
+
   const currentWord = wordListManager.getCurrentWord();
   const totalSelectedWords = wordListManager.getTotalWords();
 
@@ -515,8 +539,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations/declensions/journey mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey';
+  // Don't show this message in conjugations/declensions/journey/drill mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -541,10 +565,11 @@ const FlashCardApp = () => {
         totalSelectedWords={totalSelectedWords}
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
         onOpenExposureStats={() => setShowExposureStatsModal(true)}
+        onOpenDrillMode={() => setShowDrillModeSelector(true)}
         journeyStats={journeyStats}
       />
 
-      {!showNoGroupsMessage && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -610,6 +635,39 @@ const FlashCardApp = () => {
           safeStorage={safeStorage}
           setJourneyStats={setJourneyStats}
         />
+      ) : quizMode === 'drill' ? (
+        showDrillModeSelector ? (
+          <DrillModeSelector
+            availableCorpora={availableCorpora}
+            corporaData={corporaData}
+            onStartDrill={handleStartDrill}
+            onCancel={handleCancelDrill}
+          />
+        ) : drillConfig ? (
+          <DrillMode
+            wordListManager={wordListManager}
+            wordListState={wordListState}
+            studyMode={studyMode}
+            audioEnabled={audioEnabled}
+            playAudio={playAudio}
+            handleHoverStart={handleHoverStart}
+            handleHoverEnd={handleHoverEnd}
+            handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+            nextCard={nextCard}
+            autoAdvance={autoAdvance}
+            defaultDelay={defaultDelay}
+            safeStorage={safeStorage}
+            drillConfig={drillConfig}
+            corporaData={corporaData}
+            onExitDrill={handleExitDrill}
+          />
+        ) : (
+          <div className="w-card">
+            <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
+              <div>Loading drill mode...</div>
+            </div>
+          </div>
+        )
       ) : quizMode === 'flashcard' ? (
         <FlashCardMode 
           currentWord={currentWord}
@@ -661,7 +719,7 @@ const FlashCardApp = () => {
       )}
 
       {/* Navigation controls */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
         <div className="w-nav-controls">
           <button className="w-button" onClick={prevCard}>← Previous</button>
           <div className="w-nav-center"></div>
@@ -670,7 +728,7 @@ const FlashCardApp = () => {
       )}
 
       {/* Stats with Reset button */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
         <StatsDisplay stats={wordListState.stats} onReset={resetCards} />
       )}
 

@@ -12,6 +12,8 @@ import {
   getTotalCorrectExposures 
 } from '../Managers/journeyStatsManager';
 
+import { attemptActivitySelection } from '../Utilities/activitySelection';
+
 const JourneyMode = ({
   wordListManager,
   wordListState,
@@ -92,67 +94,7 @@ const JourneyMode = ({
     return getTotalCorrectExposures(stats);
   }, []);
 
-  // Helper function to attempt activity selection for a specific word
-  const attemptActivitySelection = (selectedWord, exposures, audioEnabled) => {
-    const random = Math.random() * 100;
-
-    // Tier 1: exposures < 4
-    if (exposures < 4) {
-      // 50% multiple-choice, 50% easy listening
-      if (random < 50) {
-        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
-      } else {
-        // Easy listening requires audio
-        if (!audioEnabled) return null; // Will trigger retry
-        return { 
-          type: 'listening', 
-          word: selectedWord,
-          mode: 'easy'
-        };
-      }
-    }
-    // Tier 2: exposures < 9
-    else if (exposures < 9) {
-      // 40% multiple-choice, 40% listening, 20% typing
-      if (random < 40) {
-        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
-      } else if (random < 80) {
-        // Listening requires audio
-        if (!audioEnabled) return null; // Will trigger retry
-        // Mix of easy and hard listening
-        const listeningMode = Math.random() < 0.5 ? 'easy' : 'hard';
-        return { 
-          type: 'listening', 
-          word: selectedWord,
-          mode: listeningMode
-        };
-      } else {
-        const typingMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-        return { type: 'typing', word: selectedWord, mode: typingMode };
-      }
-    }
-    // Tier 3: exposures >= 9
-    else {
-      // 20% multiple-choice, 20% hard listening, 60% typing
-      if (random < 20) {
-        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-        return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
-      } else if (random < 40) {
-        // Listening requires audio
-        if (!audioEnabled) return null; // Will trigger retry
-        return { 
-          type: 'listening', 
-          word: selectedWord,
-          mode: 'hard'
-        };
-      } else {
-        const typingMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-        return { type: 'typing', word: selectedWord, mode: typingMode };
-      }
-    }
-  };
+  // Note: attemptActivitySelection is now imported from ../Utilities/activitySelection
 
   // Activity selection algorithm
   const selectNextActivity = React.useCallback(() => {
@@ -233,7 +175,7 @@ const JourneyMode = ({
     // Fallback: always return multiple-choice if we can't find a valid activity
     const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
     return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, attemptActivitySelection]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
