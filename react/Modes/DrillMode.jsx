@@ -49,6 +49,25 @@ const DrillMode = ({
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
+  
+  // Store original wordListManager state to restore when leaving drill mode
+  const originalWordListState = React.useRef(null);
+
+  // Store original wordListManager state when entering drill mode
+  React.useEffect(() => {
+    // Store the original state only once when component mounts
+    if (originalWordListState.current === null) {
+      originalWordListState.current = {
+        allWords: wordListManager.allWords,
+        currentCard: wordListManager.currentCard,
+        multipleChoiceOptions: wordListManager.multipleChoiceOptions
+      };
+      console.log('DrillMode: Stored original wordListManager state', {
+        wordCount: originalWordListState.current.allWords?.length || 0,
+        currentCard: originalWordListState.current.currentCard
+      });
+    }
+  }, [wordListManager]);
 
   // Initialize wordListManager journeyStats property
   React.useEffect(() => {
@@ -88,6 +107,29 @@ const DrillMode = ({
       journeyStatsManager.removeListener(handleStatsUpdate);
     };
   }, [loadStatsFromStorage, wordListManager]);
+
+  // Helper function to restore original wordListManager state
+  const restoreOriginalWordListState = React.useCallback(() => {
+    if (originalWordListState.current) {
+      console.log('DrillMode: Restoring original wordListManager state', {
+        wordCount: originalWordListState.current.allWords?.length || 0,
+        currentCard: originalWordListState.current.currentCard
+      });
+      
+      wordListManager.allWords = originalWordListState.current.allWords;
+      wordListManager.currentCard = originalWordListState.current.currentCard;
+      wordListManager.multipleChoiceOptions = originalWordListState.current.multipleChoiceOptions;
+      wordListManager.notifyStateChange();
+    }
+  }, [wordListManager]);
+
+  // Cleanup effect to restore original wordListManager state when leaving drill mode
+  React.useEffect(() => {
+    return () => {
+      console.log('DrillMode: Component unmounting, restoring original word list state');
+      restoreOriginalWordListState();
+    };
+  }, [restoreOriginalWordListState]);
 
   // Generate drill word list from selected group
   React.useEffect(() => {
@@ -135,37 +177,40 @@ const DrillMode = ({
     return getTotalCorrectExposures(stats);
   }, []);
 
-  // Select next activity for drill mode
-  const selectNextDrillActivity = React.useCallback(() => {
-    if (drillState.drillWords.length === 0) {
-      return null;
+  // Advance to next activity in drill
+  const advanceToNextDrillActivity = React.useCallback((shouldAdvanceIndex = false) => {
+    // If we need to advance the index, we'll calculate the next activity with the incremented index
+    let effectiveIndex = drillState.currentDrillIndex;
+    if (shouldAdvanceIndex) {
+      effectiveIndex = drillState.currentDrillIndex + 1;
     }
 
-    const currentWord = drillState.drillWords[drillState.currentDrillIndex];
+    // Get the word at the effective index
+    if (drillState.drillWords.length === 0) {
+      return;
+    }
+
+    const currentWord = drillState.drillWords[effectiveIndex];
     
+    let nextActivity;
     if (!currentWord) {
       // We've reached the end of the drill
-      return { type: 'drill-complete', word: null };
+      nextActivity = { type: 'drill-complete', word: null };
+    } else {
+      try {
+        nextActivity = selectDrillActivity(
+          currentWord, 
+          drillConfig.difficulty, 
+          audioEnabled, 
+          getTotalCorrectForWord
+        );
+      } catch (error) {
+        console.error('Error selecting drill activity:', error);
+        // Fallback to multiple choice
+        const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+        nextActivity = { type: 'multiple-choice', word: currentWord, mode: mcMode };
+      }
     }
-
-    try {
-      return selectDrillActivity(
-        currentWord, 
-        drillConfig.difficulty, 
-        audioEnabled, 
-        getTotalCorrectForWord
-      );
-    } catch (error) {
-      console.error('Error selecting drill activity:', error);
-      // Fallback to multiple choice
-      const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-      return { type: 'multiple-choice', word: currentWord, mode: mcMode };
-    }
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig.difficulty, audioEnabled, getTotalCorrectForWord]);
-
-  // Advance to next activity in drill
-  const advanceToNextDrillActivity = React.useCallback(() => {
-    const nextActivity = selectNextDrillActivity();
 
     if (!nextActivity) {
       return;
@@ -180,7 +225,15 @@ const DrillMode = ({
         showNewWordIndicator: false,
         listeningMode: null,
         multipleChoiceMode: null,
-        typingMode: null
+        typingMode: null,
+        // Update index and stats if we advanced
+        ...(shouldAdvanceIndex ? {
+          currentDrillIndex: effectiveIndex,
+          drillStats: {
+            ...prev.drillStats,
+            attempted: prev.drillStats.attempted + 1
+          }
+        } : {})
       }));
       return;
     }
@@ -199,13 +252,21 @@ const DrillMode = ({
       showNewWordIndicator: nextActivity.type === 'new-word',
       listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null,
       multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null,
-      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null
+      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null,
+      // Update index and stats if we advanced
+      ...(shouldAdvanceIndex ? {
+        currentDrillIndex: effectiveIndex,
+        drillStats: {
+          ...prev.drillStats,
+          attempted: prev.drillStats.attempted + 1
+        }
+      } : {})
     }));
 
     // Set up the word for activities in drill mode
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening' || nextActivity.type === 'typing') && nextActivity.word) {
       // For drill mode, we need to temporarily set up the word in wordListManager
-      // First, we'll add the drill words to the wordListManager for this session
+      // NOTE: This modifies wordListManager temporarily - original state is restored when leaving drill mode
       if (drillState.drillWords.length > 0) {
         // Temporarily replace the wordListManager's word list with drill words
         wordListManager.allWords = drillState.drillWords;
@@ -241,22 +302,7 @@ const DrillMode = ({
         }
       }
     }
-  }, [selectNextDrillActivity, wordListManager, wordListState.allWords, studyMode]);
-
-  // Move to next word in drill
-  const moveToNextDrillWord = React.useCallback(() => {
-    setDrillState(prev => {
-      const nextIndex = prev.currentDrillIndex + 1;
-      return {
-        ...prev,
-        currentDrillIndex: nextIndex,
-        drillStats: {
-          ...prev.drillStats,
-          attempted: prev.drillStats.attempted + 1
-        }
-      };
-    });
-  }, []);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, wordListManager, studyMode]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
@@ -319,10 +365,9 @@ const DrillMode = ({
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
-      moveToNextDrillWord();
-      advanceToNextDrillActivity();
+      advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.multipleChoiceMode, drillState.currentWord, handleMultipleChoiceAnswer, moveToNextDrillWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.multipleChoiceMode, drillState.currentWord, handleMultipleChoiceAnswer, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   // Custom nextCard handler for drill mode that tracks stats
   const handleDrillNextCard = React.useCallback(() => {
@@ -341,9 +386,8 @@ const DrillMode = ({
     }));
 
     // Move to next word
-    moveToNextDrillWord();
-    advanceToNextDrillActivity();
-  }, [wordListState.typingFeedback, moveToNextDrillWord, advanceToNextDrillActivity]);
+    advanceToNextDrillActivity(true);
+  }, [wordListState.typingFeedback, advanceToNextDrillActivity]);
 
   const handleDrillListening = React.useCallback(async (selectedOption) => {
     // Determine correct answer based on listening mode
@@ -374,10 +418,9 @@ const DrillMode = ({
     // Move to next word after a delay (ensure minimum 2 seconds to show feedback)
     const delay = autoAdvance ? Math.max(defaultDelay, 2) : 2;
     setTimeout(() => {
-      moveToNextDrillWord();
-      advanceToNextDrillActivity();
+      advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.listeningMode, drillState.currentWord, handleMultipleChoiceAnswer, moveToNextDrillWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.listeningMode, drillState.currentWord, handleMultipleChoiceAnswer, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   if (!drillState.isInitialized) {
     return (
@@ -397,7 +440,10 @@ const DrillMode = ({
           <p>No vocabulary words were found for the selected group.</p>
           <button 
             className="w-button"
-            onClick={onExitDrill}
+            onClick={() => {
+              restoreOriginalWordListState();
+              onExitDrill();
+            }}
             style={{ marginTop: '1rem' }}
           >
             Back to Mode Selection
@@ -459,7 +505,10 @@ const DrillMode = ({
             </button>
             <button 
               className="w-button"
-              onClick={onExitDrill}
+              onClick={() => {
+                restoreOriginalWordListState();
+                onExitDrill();
+              }}
             >
               📚 Back to Modes
             </button>
