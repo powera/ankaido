@@ -95,13 +95,13 @@ const DrillMode = ({
     // Add the correct answer
     options.push(correctAnswer);
 
-    // Add 3 random incorrect options from other drill words
+    // Add 5 random incorrect options from other drill words
     const otherWords = drillState.drillWords.filter(w => 
       w.lithuanian !== currentWord.lithuanian || w.english !== currentWord.english
     );
 
     const shuffledOthers = [...otherWords].sort(() => Math.random() - 0.5);
-    for (let i = 0; i < Math.min(3, shuffledOthers.length); i++) {
+    for (let i = 0; i < Math.min(5, shuffledOthers.length); i++) {
       const incorrectAnswer = isEnToLt ? shuffledOthers[i].lithuanian : shuffledOthers[i].english;
       if (!options.includes(incorrectAnswer)) {
         options.push(incorrectAnswer);
