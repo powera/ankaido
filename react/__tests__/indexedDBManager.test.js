@@ -1,5 +1,5 @@
 
-import indexedDBManager from '../indexedDBManager';
+import indexedDBManager from '../DataStorage/indexedDBManager';
 
 describe('indexedDBManager', () => {
   let mockDB;

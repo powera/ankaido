@@ -1,7 +1,7 @@
 import React from 'react';
-import journeyStatsManager from '../journeyStatsManager';
-import corpusChoicesManager from '../corpusChoicesManager';
-import storageConfigManager, { STORAGE_MODES } from '../storageConfigManager';
+import { journeyStatsManager } from '../Managers/journeyStatsManager';
+import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
+import { storageConfigManager, STORAGE_MODES } from '../Managers/storageConfigManager';
 
 // API Configuration - using Vite proxy
 const API_BASE_URL = '/api/trakaido/journeystats';
@@ -37,36 +37,36 @@ const StudyModeSelector = ({
 
     // Set initial state
     setIsServerStorage(storageConfigManager.isRemoteStorage());
-    
+
     // Listen for changes
     storageConfigManager.addListener(handleStorageModeChange);
-    
+
     // Cleanup
     return () => storageConfigManager.removeListener(handleStorageModeChange);
   }, []);
 
   const handleStorageSwitch = async () => {
     if (isSwitching) return;
-    
+
     setIsSwitching(true);
     try {
       const newMode = isServerStorage ? STORAGE_MODES.LOCAL : STORAGE_MODES.REMOTE;
-      
+
       if (newMode === STORAGE_MODES.REMOTE) {
         // Switching to server storage - save current local data to server first
         console.log('Switching to server storage, saving local data...');
-        
+
         // Get current local data before switching
         const currentStats = journeyStatsManager.getAllStats();
         const currentCorpusChoices = corpusChoicesManager.getAllChoices();
-        
+
         // Switch to server mode first
         storageConfigManager.setStorageMode(STORAGE_MODES.REMOTE);
-        
+
         // Force reinitialize managers with new storage mode
         await journeyStatsManager.forceReinitialize();
         await corpusChoicesManager.forceReinitialize();
-        
+
         // If we have local data, explicitly save it to server
         if (Object.keys(currentStats).length > 0) {
           try {
@@ -78,7 +78,7 @@ const StudyModeSelector = ({
               },
               body: JSON.stringify({ stats: currentStats }),
             });
-            
+
             if (response.ok) {
               console.log('Local journey stats successfully saved to server');
             } else {
@@ -88,7 +88,7 @@ const StudyModeSelector = ({
             console.error('Error saving local journey stats to server:', saveError);
           }
         }
-        
+
         // Save corpus choices to server
         if (Object.keys(currentCorpusChoices).length > 0) {
           try {
@@ -99,7 +99,7 @@ const StudyModeSelector = ({
               },
               body: JSON.stringify({ choices: currentCorpusChoices }),
             });
-            
+
             if (response.ok) {
               console.log('Local corpus choices successfully saved to server');
             } else {
@@ -109,18 +109,18 @@ const StudyModeSelector = ({
             console.error('Error saving local corpus choices to server:', saveError);
           }
         }
-        
+
         alert('Local data successfully transferred to server storage!');
       } else {
         // Switching to local storage
         console.log('Switching to local storage...');
         storageConfigManager.setStorageMode(STORAGE_MODES.LOCAL);
-        
+
         // Force reinitialize managers with new storage mode
         await journeyStatsManager.forceReinitialize();
         await corpusChoicesManager.forceReinitialize();
       }
-      
+
       // State will be updated by the listener
     } catch (error) {
       console.error('Error switching storage mode:', error);

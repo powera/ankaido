@@ -1,5 +1,5 @@
 
-import WordListManager from '../WordListManager';
+import WordListManager from '../Managers/WordListManager';
 
 describe('WordListManager', () => {
   let manager;

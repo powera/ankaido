@@ -9,30 +9,30 @@ const DEFAULT_SETTINGS = {
   audioEnabled: true,
   soundVolume: 0.7, // 0-1 range
   hapticFeedback: true, // For mobile devices
-  
+
   // Difficulty & Learning
   difficulty: 'medium', // 'easy', 'medium', 'hard'
   adaptiveDifficulty: true, // Auto-adjust based on performance
   hintsEnabled: true,
-  
+
   // Personalization
   userName: '',
   preferredLanguage: 'en', // For multi-language widgets
-  
+
   // Visual & Animations
   animations: true,
   reducedMotion: false, // Accessibility: honor prefers-reduced-motion
   theme: 'auto', // 'auto', 'light', 'dark', 'high-contrast'
   fontSize: 'medium', // 'small', 'medium', 'large'
-  
+
   // Timing & Flow
   autoAdvance: false,
   defaultDelay: 2.5, // seconds, range 1.0 to 7.5
-  
+
   // Privacy & Data
   anonymousMode: false, // Don't track any progress/stats
   shareProgress: true, // Allow sharing achievements
-  
+
   // Accessibility
   keyboardShortcuts: true,
   screenReaderMode: false,
@@ -143,7 +143,7 @@ export const useGlobalSettings = (options = {}) => {
     if (window.matchMedia) {
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      
+
       setSettings(prev => ({
         ...prev,
         reducedMotion: prev.reducedMotion || prefersReducedMotion,
@@ -158,7 +158,7 @@ export const useGlobalSettings = (options = {}) => {
     if (modalRef.current) {
       scrollPositionRef.current = modalRef.current.scrollTop;
     }
-    
+
     setSettings(prev => ({
       ...prev,
       [key]: value
@@ -170,7 +170,7 @@ export const useGlobalSettings = (options = {}) => {
     if (modalRef.current) {
       scrollPositionRef.current = modalRef.current.scrollTop;
     }
-    
+
     setSettings(prev => ({
       ...prev,
       ...updates

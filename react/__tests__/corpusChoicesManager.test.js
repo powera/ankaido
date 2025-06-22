@@ -2,7 +2,7 @@
  * Tests for corpusChoicesManager
  */
 
-import corpusChoicesManager, { setUseServerStorage } from '../corpusChoicesManager';
+import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
 import safeStorage from '../safeStorage';
 
 // Mock safeStorage
@@ -19,12 +19,12 @@ describe('CorpusChoicesManager', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Reset manager state
     corpusChoicesManager.choices = {};
     corpusChoicesManager.isInitialized = false;
     corpusChoicesManager.listeners = [];
-    
+
     // Default to local storage mode
     setUseServerStorage(false);
   });
@@ -37,9 +37,9 @@ describe('CorpusChoicesManager', () => {
     describe('initialize', () => {
       it('should initialize with empty choices when no localStorage data', async () => {
         safeStorage.getItem.mockReturnValue(null);
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual({});
         expect(corpusChoicesManager.isInitialized).toBe(true);
         expect(safeStorage.getItem).toHaveBeenCalledWith('flashcard-selected-groups');
@@ -48,18 +48,18 @@ describe('CorpusChoicesManager', () => {
       it('should initialize with saved choices from localStorage', async () => {
         const savedChoices = { corpus1: ['group1', 'group2'] };
         safeStorage.getItem.mockReturnValue(JSON.stringify(savedChoices));
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual(savedChoices);
         expect(corpusChoicesManager.choices).toEqual(savedChoices);
       });
 
       it('should handle JSON parse errors gracefully', async () => {
         safeStorage.getItem.mockReturnValue('invalid json');
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual({});
         expect(corpusChoicesManager.isInitialized).toBe(true);
       });
@@ -67,9 +67,9 @@ describe('CorpusChoicesManager', () => {
       it('should return existing choices if already initialized', async () => {
         corpusChoicesManager.choices = { existing: ['data'] };
         corpusChoicesManager.isInitialized = true;
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual({ existing: ['data'] });
         expect(safeStorage.getItem).not.toHaveBeenCalled();
       });
@@ -78,9 +78,9 @@ describe('CorpusChoicesManager', () => {
     describe('updateCorpusChoices', () => {
       it('should update corpus choices and save to localStorage', async () => {
         await corpusChoicesManager.initialize();
-        
+
         const result = await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1', 'group2']);
-        
+
         expect(result).toEqual(['group1', 'group2']);
         expect(corpusChoicesManager.choices.corpus1).toEqual(['group1', 'group2']);
         expect(safeStorage.setItem).toHaveBeenCalledWith(
@@ -91,9 +91,9 @@ describe('CorpusChoicesManager', () => {
 
       it('should initialize if not already initialized', async () => {
         safeStorage.getItem.mockReturnValue(null);
-        
+
         await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1']);
-        
+
         expect(corpusChoicesManager.isInitialized).toBe(true);
         expect(safeStorage.getItem).toHaveBeenCalled();
       });
@@ -105,10 +105,10 @@ describe('CorpusChoicesManager', () => {
           corpus1: ['group1', 'group2'],
           corpus2: ['groupA', 'groupB']
         };
-        
+
         await corpusChoicesManager.initialize();
         const result = await corpusChoicesManager.setAllChoices(newChoices);
-        
+
         expect(result).toEqual(newChoices);
         expect(corpusChoicesManager.choices).toEqual(newChoices);
         expect(safeStorage.setItem).toHaveBeenCalledWith(
@@ -122,9 +122,9 @@ describe('CorpusChoicesManager', () => {
       it('should clear all choices and remove from localStorage', async () => {
         corpusChoicesManager.choices = { corpus1: ['group1'] };
         await corpusChoicesManager.initialize();
-        
+
         const result = await corpusChoicesManager.clearAllChoices();
-        
+
         expect(result).toEqual({});
         expect(corpusChoicesManager.choices).toEqual({});
         expect(safeStorage.removeItem).toHaveBeenCalledWith('flashcard-selected-groups');
@@ -144,9 +144,9 @@ describe('CorpusChoicesManager', () => {
           ok: true,
           json: async () => ({ choices: serverChoices })
         });
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual(serverChoices);
         expect(fetch).toHaveBeenCalledWith('/api/trakaido/corpuschoices/', {
           method: 'GET',
@@ -156,9 +156,9 @@ describe('CorpusChoicesManager', () => {
 
       it('should handle server errors gracefully', async () => {
         fetch.mockRejectedValueOnce(new Error('Server error'));
-        
+
         const choices = await corpusChoicesManager.initialize();
-        
+
         expect(choices).toEqual({});
         expect(corpusChoicesManager.isInitialized).toBe(true);
       });
@@ -175,10 +175,10 @@ describe('CorpusChoicesManager', () => {
             ok: true,
             json: async () => ({ success: true })
           });
-        
+
         await corpusChoicesManager.initialize();
         const result = await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1', 'group2']);
-        
+
         expect(result).toEqual(['group1', 'group2']);
         expect(fetch).toHaveBeenCalledWith('/api/trakaido/corpuschoices/corpus', {
           method: 'POST',
@@ -194,7 +194,7 @@ describe('CorpusChoicesManager', () => {
     describe('setAllChoices', () => {
       it('should save all choices to server', async () => {
         const newChoices = { corpus1: ['group1'], corpus2: ['groupA'] };
-        
+
         fetch
           .mockResolvedValueOnce({
             ok: true,
@@ -204,10 +204,10 @@ describe('CorpusChoicesManager', () => {
             ok: true,
             json: async () => ({ success: true })
           });
-        
+
         await corpusChoicesManager.initialize();
         const result = await corpusChoicesManager.setAllChoices(newChoices);
-        
+
         expect(result).toEqual(newChoices);
         expect(fetch).toHaveBeenCalledWith('/api/trakaido/corpuschoices/', {
           method: 'PUT',
@@ -277,7 +277,7 @@ describe('CorpusChoicesManager', () => {
       it('should return correct storage mode', () => {
         setUseServerStorage(false);
         expect(corpusChoicesManager.getCurrentStorageMode()).toBe('localStorage');
-        
+
         setUseServerStorage(true);
         expect(corpusChoicesManager.getCurrentStorageMode()).toBe('server');
       });
@@ -288,39 +288,39 @@ describe('CorpusChoicesManager', () => {
     it('should add and notify listeners', async () => {
       const listener1 = jest.fn();
       const listener2 = jest.fn();
-      
+
       corpusChoicesManager.addListener(listener1);
       corpusChoicesManager.addListener(listener2);
-      
+
       await corpusChoicesManager.initialize();
       await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1']);
-      
+
       expect(listener1).toHaveBeenCalledWith({ corpus1: ['group1'] });
       expect(listener2).toHaveBeenCalledWith({ corpus1: ['group1'] });
     });
 
     it('should remove listeners', async () => {
       const listener = jest.fn();
-      
+
       corpusChoicesManager.addListener(listener);
       corpusChoicesManager.removeListener(listener);
-      
+
       await corpusChoicesManager.initialize();
       await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1']);
-      
+
       expect(listener).not.toHaveBeenCalled();
     });
 
     it('should handle listener errors gracefully', async () => {
       const errorListener = jest.fn(() => { throw new Error('Listener error'); });
       const goodListener = jest.fn();
-      
+
       corpusChoicesManager.addListener(errorListener);
       corpusChoicesManager.addListener(goodListener);
-      
+
       await corpusChoicesManager.initialize();
       await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1']);
-      
+
       expect(errorListener).toHaveBeenCalled();
       expect(goodListener).toHaveBeenCalled();
     });
@@ -330,11 +330,11 @@ describe('CorpusChoicesManager', () => {
     it('should reinitialize the manager', async () => {
       corpusChoicesManager.choices = { old: ['data'] };
       corpusChoicesManager.isInitialized = true;
-      
+
       safeStorage.getItem.mockReturnValue(JSON.stringify({ new: ['data'] }));
-      
+
       const choices = await corpusChoicesManager.forceReinitialize();
-      
+
       expect(choices).toEqual({ new: ['data'] });
       expect(corpusChoicesManager.isInitialized).toBe(true);
     });

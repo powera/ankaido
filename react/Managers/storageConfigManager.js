@@ -1,0 +1,1 @@
+import safeStorage from '../DataStorage/safeStorage';

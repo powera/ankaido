@@ -98,12 +98,12 @@ def get_component_dependencies():
     # Define the dependency order (components that don't depend on others first)
     component_order = [
         # Utilities and hooks first
-        "safeStorage.js",
-        "indexedDBManager.js", 
-        "journeyStatsManager.jsx",
-        "corpusChoicesManager.js",
-        "storageConfigManager.js",
-        "WordListManager.js",
+        "DataStorage/safeStorage.js",
+        "DataStorage/indexedDBManager.js", 
+        "Managers/journeyStatsManager.jsx",
+        "Managers/corpusChoicesManager.js",
+        "Managers/storageConfigManager.js",
+        "Managers/WordListManager.js",
         "useGlobalSettings.jsx",
         "useFullscreen.js",
         

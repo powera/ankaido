@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import BaseModal from './shared/BaseModal';
 import DataTable from './shared/DataTable';
-import journeyStatsManager, { convertStatsToDisplayArray, formatDate } from '../journeyStatsManager';
+import { 
+  journeyStatsManager, 
+  convertStatsToDisplayArray, 
+  formatDate 
+} from '../Managers/journeyStatsManager';
 import safeStorage from '../safeStorage';
 
 const ExposureStatsModal = ({
@@ -150,8 +154,8 @@ const ExposureStatsModal = ({
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                       MC: {word.multipleChoice?.incorrect || 0} | 
                       Listen Easy: {word.listeningEasy?.incorrect || 0} | 
-                      Listen Hard: {word.listeningHard?.incorrect || 0} | 
-                      Type: {word.typing?.incorrect || 0}
+                      Listen Hard: {word.listeningHard?.correct || 0} | 
+                      Type: {word.typing?.correct || 0}
                     </div>
                   </div>
                 )

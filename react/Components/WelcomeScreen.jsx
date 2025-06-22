@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { STORAGE_MODES } from '../storageConfigManager';
+import { STORAGE_MODES } from '../Managers/storageConfigManager';
 
 const WelcomeScreen = ({ onComplete }) => {
   const [selectedLevel, setSelectedLevel] = useState('');

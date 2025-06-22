@@ -5,7 +5,7 @@ import journeyStatsManager, {
   calculateTotalIncorrect,
   DEFAULT_WORD_STATS,
   convertStatsToDisplayArray
-} from '../journeyStatsManager';
+} from '../Managers/journeyStatsManager';
 
 // Mock indexedDBManager
 const mockIndexedDBManager = {

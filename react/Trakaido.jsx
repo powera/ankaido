@@ -12,15 +12,19 @@ import StudyModeSelector from './Components/StudyModeSelector.jsx';
 import ExposureStatsModal from './Components/ExposureStatsModal.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
 import DeclensionsMode from './Modes/DeclensionsMode.jsx';
-import WordListManager from './WordListManager.js';
+import JourneyMode from './Modes/JourneyMode.jsx';
+import safeStorage from './DataStorage/safeStorage';
+import { updateWordListManagerStats } from './Managers/journeyStatsManager';
+import { journeyStatsManager } from './Managers/journeyStatsManager';
+import { storageConfigManager } from './Managers/storageConfigManager';
+import { corpusChoicesManager } from './Managers/corpusChoicesManager';
+import WordListManager from './Managers/WordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
-import JourneyMode from './Modes/JourneyMode.jsx';
-import safeStorage from './safeStorage.js';
-import journeyStatsManager, { updateWordListManagerStats } from './journeyStatsManager';
-import storageConfigManager from './storageConfigManager';
-import corpusChoicesManager from './corpusChoicesManager';
-
+import corpusChoicesManager from './Managers/corpusChoicesManager';
+import storageConfigManager from './Managers/storageConfigManager';
+import journeyStatsManager, { updateWordListManagerStats } from './Managers/journeyStatsManager';
+import corpusChoicesManager from './Managers/corpusChoicesManager';
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
 const { 
@@ -171,11 +175,11 @@ const FlashCardApp = () => {
         try {
           await corpusChoicesManager.initialize();
           const currentChoices = corpusChoicesManager.getAllChoices();
-          
+
           // Only set defaults if user has seen intro but has no choices
           const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
           const shouldSetDefaults = Object.keys(currentChoices).length === 0 && hasSeenIntro;
-          
+
           if (shouldSetDefaults) {
             const defaultSelectedGroups = {};
             Object.keys(corporaStructures).forEach(corpus => {

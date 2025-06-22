@@ -5,14 +5,13 @@ import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
 
-import journeyStatsManager, { 
-  DEFAULT_WORD_STATS, 
-  createWordKey, 
-  updateWordListManagerStats,
-  getTotalCorrectExposures,
-  getExposedWords,
-  getNewWords
-} from '../journeyStatsManager';
+import { 
+  journeyStatsManager, 
+  updateWordListManagerStats, 
+  getExposedWords, 
+  getNewWords, 
+  getTotalCorrectExposures 
+} from '../Managers/journeyStatsManager';
 
 // Global variable for activity selection system
 // "advanced" = new system with exposure-based selection
@@ -290,7 +289,7 @@ const JourneyMode = ({
         // Force regeneration of multiple choice options by clearing them first
         wordListManager.multipleChoiceOptions = [];
         wordListManager.generateMultipleChoiceOptions(effectiveStudyMode, nextActivity.type);
-        
+
         // Notify state change after everything is updated
         wordListManager.notifyStateChange();
       }
@@ -308,17 +307,17 @@ const JourneyMode = ({
   React.useEffect(() => {
     if (audioEnabled && journeyState.currentWord) {
       let shouldPlayAudio = false;
-      
+
       // Play audio for listening activities
       if (journeyState.currentActivity === 'listening') {
         shouldPlayAudio = true;
       }
-      
+
       // Play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
       if (journeyState.currentActivity === 'multiple-choice' && journeyState.multipleChoiceMode === 'lt-to-en') {
         shouldPlayAudio = true;
       }
-      
+
       if (shouldPlayAudio) {
         // Small delay to ensure the UI has updated
         const timer = setTimeout(() => {
@@ -537,7 +536,7 @@ const JourneyMode = ({
       // Lithuanian-to-English multiple choice: Lithuanian prompt, English answers
       effectiveStudyMode = 'lithuanian-to-english';
     }
-    
+
     return (
       <div>
         <ActivityHeader 

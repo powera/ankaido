@@ -1,5 +1,5 @@
 
-import safeStorage from '../safeStorage';
+import safeStorage from '../DataStorage/safeStorage';
 
 describe('safeStorage', () => {
   beforeEach(() => {
