@@ -1,5 +1,6 @@
+
 import React from 'react';
-import FlashCardActivity from '../Activities/FlashCardActivity';
+import WordDisplayCard from '../Components/WordDisplayCard';
 
 const FlashCardMode = ({ 
   currentWord, 
@@ -10,19 +11,29 @@ const FlashCardMode = ({
   playAudio, 
   handleHoverStart, 
   handleHoverEnd,
-  isNewWord = false
+  isNewWord = false // Prop to indicate if this is a new word being introduced
 }) => {
+  if (!currentWord) return null;
+
+  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
+  const answer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+  
+  // Determine whether to show the answer based on showAnswer state or isNewWord prop
+  const shouldShowAnswer = showAnswer || isNewWord;
+
   return (
-    <FlashCardActivity
+    <WordDisplayCard
       currentWord={currentWord}
-      showAnswer={showAnswer}
-      setShowAnswer={setShowAnswer}
       studyMode={studyMode}
       audioEnabled={audioEnabled}
       playAudio={playAudio}
       handleHoverStart={handleHoverStart}
       handleHoverEnd={handleHoverEnd}
-      isNewWord={isNewWord}
+      questionText={question}
+      answerText={answer}
+      showAnswer={shouldShowAnswer}
+      isClickable={true}
+      onClick={() => setShowAnswer(!showAnswer)}
     />
   );
 };

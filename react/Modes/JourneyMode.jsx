@@ -1,10 +1,10 @@
 import React from 'react';
-import FlashCardActivity from '../Activities/FlashCardActivity';
-import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
-import ListeningActivity from '../Activities/ListeningActivity';
-import TypingActivity from '../Activities/TypingActivity';
+import FlashCardMode from './FlashCardMode';
+import MultipleChoiceMode from './MultipleChoiceMode';
+import ListeningMode from './ListeningMode';
 import AudioButton from '../Components/AudioButton';
 import ExposureStatsModal from '../Components/ExposureStatsModal';
+import TypingResponse from '../Components/TypingResponse';
 
 import { 
   journeyStatsManager, 
@@ -509,7 +509,7 @@ const JourneyMode = ({
             background="linear-gradient(135deg, #4CAF50, #45a049)"
           />
         )}
-        <FlashCardActivity 
+        <FlashCardMode 
           currentWord={journeyState.currentWord}
           showAnswer={wordListState.showAnswer}
           setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
@@ -544,7 +544,7 @@ const JourneyMode = ({
           title="🎯 Multiple Choice Challenge"
           background="linear-gradient(135deg, #2196F3, #1976D2)"
         />
-        <MultipleChoiceActivity 
+        <MultipleChoiceMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={effectiveStudyMode}
@@ -552,7 +552,7 @@ const JourneyMode = ({
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAnswer={handleJourneyMultipleChoice}
+          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
         <NavigationControls />
       </div>
@@ -578,13 +578,13 @@ const JourneyMode = ({
           title={challengeTitle}
           background="linear-gradient(135deg, #9C27B0, #7B1FA2)"
         />
-        <ListeningActivity 
+        <ListeningMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onAnswer={handleJourneyMultipleChoice}
+          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
         <NavigationControls />
       </div>
@@ -598,8 +598,8 @@ const JourneyMode = ({
           title="⌨️ Typing Challenge"
           background="linear-gradient(135deg, #FF9800, #F57C00)"
         />
-        <TypingActivity 
-          currentWord={journeyState.currentWord}
+        <JourneyTypingMode 
+          journeyWord={journeyState.currentWord}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
@@ -615,6 +615,80 @@ const JourneyMode = ({
   return null;
 };
 
+// Custom typing mode component for Journey mode
+const JourneyTypingMode = ({ 
+  journeyWord,
+  studyMode,
+  audioEnabled,
+  playAudio,
+  onComplete,
+  autoAdvance,
+  defaultDelay,
+  onNext
+}) => {
+  const [typedAnswer, setTypedAnswer] = React.useState('');
+  const [showAnswer, setShowAnswer] = React.useState(false);
+  const [feedback, setFeedback] = React.useState('');
 
+  // Reset state when journeyWord changes
+  React.useEffect(() => {
+    setTypedAnswer('');
+    setShowAnswer(false);
+    setFeedback('');
+  }, [journeyWord]);
+
+  const handleSubmit = (answer) => {
+    const correctAnswer = studyMode === 'english-to-lithuanian' ? 
+      journeyWord.lithuanian : journeyWord.english;
+
+    const isCorrect = answer.trim().toLowerCase() === correctAnswer.toLowerCase();
+
+    if (isCorrect) {
+      setFeedback('✅ Correct!');
+    } else {
+      setFeedback(`❌ Incorrect. The answer is: ${correctAnswer}`);
+    }
+
+    setShowAnswer(true);
+    onComplete(isCorrect);
+  };
+
+  const question = studyMode === 'english-to-lithuanian' ? journeyWord.english : journeyWord.lithuanian;
+
+  return (
+    <div className="w-card">
+      <div className="w-badge">{journeyWord.corpus} → {journeyWord.group}</div>
+
+      <div className="w-question w-mb-large">
+        <div>{question}</div>
+        {audioEnabled && studyMode === 'lithuanian-to-english' && (
+          <div style={{ marginTop: 'var(--spacing-base)' }}>
+            <AudioButton 
+              word={question}
+              audioEnabled={audioEnabled}
+              playAudio={playAudio}
+            />
+          </div>
+        )}
+      </div>
+
+      <TypingResponse
+        currentWord={journeyWord}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        onSubmit={handleSubmit}
+        showAnswer={showAnswer}
+        feedback={feedback}
+        typedAnswer={typedAnswer}
+        onTypedAnswerChange={setTypedAnswer}
+        autoAdvance={autoAdvance}
+        defaultDelay={defaultDelay}
+        onNext={onNext}
+        autoAdvanceTimer={false}
+      />
+    </div>
+  );
+};
 
 export default JourneyMode;
