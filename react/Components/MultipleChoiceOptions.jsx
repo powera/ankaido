@@ -112,29 +112,17 @@ const MultipleChoiceOptions = ({
             onMouseEnter={shouldUseHover ? () => handleHoverStart(option) : undefined}
             onMouseLeave={shouldUseHover ? handleHoverEnd : undefined}
           >
-            <div className="trakaido-choice-content" style={{ position: 'relative', width: '100%', height: '100%' }}>
-              <div className="trakaido-choice-text-container" style={{ textAlign: 'center', width: '100%' }}>
-                <div className="trakaido-choice-answer" style={{ fontWeight: '500' }}>{option}</div>
+            <div className="trakaido-choice-content">
+              <div className="trakaido-choice-text-container">
+                <div className="trakaido-choice-answer">{option}</div>
                 {shouldShowAnswer && translation && (
-                  <div className="trakaido-choice-translation" style={{ 
-                    fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
-                    marginTop: '2px', 
-                    opacity: 0.8,
-                    color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)'
-                  }}>
+                  <div className={`trakaido-choice-translation ${(isCorrect || isSelected) ? 'correct-selected' : 'unselected'}`}>
                     ({translation})
                   </div>
                 )}
               </div>
               {shouldShowAnswer && isCorrect && (
-                <div style={{ 
-                  position: 'absolute',
-                  bottom: '4px',
-                  right: '4px',
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  alignItems: 'center'
-                }}>
+                <div className="trakaido-audio-button-container">
                   <AudioButton 
                     word={studyMode === 'english-to-lithuanian' ? option : word.lithuanian}
                     audioEnabled={audioEnabled}

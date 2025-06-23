@@ -132,23 +132,9 @@ const StudyModeSelector = ({
   };
   return (
     <div className="w-mode-selector">
-      <div className="w-dropdown-container" style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '0.5rem',
-        margin: '0 0.5rem'
-      }}>
-        <label className="w-hide-mobile" style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>Mode:</label>
+      <div className="w-dropdown-container">
+        <label className="w-hide-mobile">Mode:</label>
         <select 
-          style={{
-            padding: '0.5rem',
-            borderRadius: 'var(--border-radius)',
-            border: '1px solid var(--color-border)',
-            background: 'var(--color-card-bg)',
-            minHeight: '44px',
-            cursor: 'pointer',
-            fontSize: '0.9rem'
-          }}
           value={quizMode === 'conjugations' || quizMode === 'declensions' ? 'grammar' : quizMode}
           onChange={(e) => {
             const selectedMode = e.target.value;
@@ -178,28 +164,14 @@ const StudyModeSelector = ({
 
       {/* Hide direction/grammar selector for Journey and Drill modes */}
       {quizMode !== 'journey' && quizMode !== 'drill' && (
-        <div className="w-dropdown-container" style={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '0.5rem',
-          margin: '0 0.5rem'
-        }}>
+        <div className="w-dropdown-container">
           {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
             <>
-              <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+              <label>
                 <span className="w-hide-mobile">Grammar Type:</span>
                 <span className="w-show-mobile">Grammar:</span>
               </label>
               <select 
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-card-bg)',
-                  minHeight: '44px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem'
-                }}
                 value={quizMode}
                 onChange={(e) => {
                   const selectedGrammarMode = e.target.value;
@@ -214,20 +186,11 @@ const StudyModeSelector = ({
             </>
           ) : (
             <>
-              <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+              <label>
                 <span className="w-hide-mobile">Direction:</span>
                 <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
               </label>
               <select 
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-card-bg)',
-                  minHeight: '44px',
-                  cursor: 'pointer',
-                  fontSize: '0.9rem'
-                }}
                 value={studyMode}
                 onChange={(e) => {
                   setStudyMode(e.target.value);
@@ -276,12 +239,11 @@ const StudyModeSelector = ({
         </button>
       </div>
       {audioEnabled && audioManager.getAvailableVoices().length > 0 && (
-        <div className="w-hide-mobile" style={{ marginTop: '0.5rem' }}>
+        <div className="w-hide-mobile w-voice-selector">
           <select 
             value={selectedVoice || ''} 
             onChange={(e) => setSelectedVoice(e.target.value)}
             className="w-mode-option"
-            style={{ width: '100%', maxWidth: '200px' }}
           >
             <option value="random">🎲 Random Voice</option>
             {audioManager.getAvailableVoices().map(voice => (

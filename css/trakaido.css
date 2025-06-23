@@ -215,6 +215,53 @@
     opacity: 0.5;
 }
 
+/* === CHOICE OPTION CONTENT STRUCTURE === */
+
+/* Main content container for choice options */
+.trakaido-choice-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Text container for choice options */
+.trakaido-choice-text-container {
+    text-align: center;
+    width: 100%;
+}
+
+/* Main answer text */
+.trakaido-choice-answer {
+    font-weight: 500;
+}
+
+/* Translation text styling */
+.trakaido-choice-translation {
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    margin-top: 2px;
+    opacity: 0.8;
+}
+
+/* Translation text for correct/selected answers */
+.trakaido-choice-translation.correct-selected {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Translation text for unselected answers */
+.trakaido-choice-translation.unselected {
+    color: var(--color-text-secondary);
+}
+
+/* Audio button container for correct answers */
+.trakaido-audio-button-container {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* Mobile-optimized multiple choice layout */
 @media screen and (max-width: 767px) {
     .w-multiple-choice {
@@ -277,12 +324,13 @@
     }
     
     /* Audio button container for mobile */
-    .w-choice-option .trakaido-choice-content > div:last-child {
+    .w-choice-option .trakaido-audio-button-container {
         position: absolute;
         bottom: 0.25rem;
         right: 0.25rem;
         display: flex;
         justify-content: center;
+        align-items: center;
         margin: 0;
         padding: 0;
     }
@@ -305,6 +353,8 @@
         color: var(--color-success);
     }
 }
+
+
 
 /* Extra compact for very small screens */
 @media screen and (max-width: 480px) {
@@ -802,15 +852,7 @@
     justify-content: center;
 }
 
-/* Choice content layout */
-.trakaido-choice-content {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
+
 
 /* Corpus section container */
 .trakaido-corpus-section {
@@ -942,6 +984,174 @@
         max-width: calc(33.333% - 0.17rem);
         /* Removed font-size reduction - maintain readable button text */
         padding: 0.3rem 0.4rem;
+    }
+}
+
+/* Landscape mobile optimization - prioritize horizontal space */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .w-button-group-mobile {
+        max-width: none; /* Use full available width */
+        margin: 0.5rem 0; /* Reduce vertical margins to save height */
+        gap: 0.4rem; /* Slightly larger gap for better readability */
+    }
+    
+    .w-compact-button {
+        max-width: none; /* Remove width restriction */
+        flex: 1; /* Equal distribution of available space */
+        padding: 0.4rem 0.5rem; /* Slightly more padding for better touch targets */
+        font-size: 0.85rem; /* Slightly smaller font to fit more content */
+        min-width: 60px; /* Minimum width to prevent too-narrow buttons */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Very small landscape screens (like 480x320) */
+@media screen and (max-width: 480px) and (orientation: landscape) {
+    .w-button-group-mobile {
+        gap: 0.25rem; /* Tighter spacing */
+        margin: 0.25rem 0; /* Minimal vertical margins */
+    }
+    
+    .w-compact-button {
+        padding: 0.3rem 0.4rem; /* More compact padding */
+        font-size: 0.8rem; /* Smaller font for very small screens */
+        min-width: 50px; /* Smaller minimum width */
+    }
+}
+
+/* === STUDY MODE SELECTOR STYLES === */
+
+/* Dropdown container styling */
+.w-dropdown-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0 0.5rem;
+}
+
+.w-dropdown-container label {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.w-dropdown-container select {
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    min-height: 44px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.w-dropdown-container select:hover {
+    border-color: var(--color-primary);
+}
+
+.w-dropdown-container select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* Voice selector styling */
+.w-voice-selector {
+    margin-top: 0.5rem;
+}
+
+.w-voice-selector select {
+    width: 100%;
+    max-width: 200px;
+}
+
+/* === STUDY MODE SELECTOR LANDSCAPE OPTIMIZATIONS === */
+
+/* Optimize dropdown containers for landscape mobile */
+@media screen and (max-width: 767px) and (orientation: landscape) {
+    .w-dropdown-container {
+        margin: 0 0.15rem; /* Reduce horizontal margins */
+        gap: 0.25rem; /* Tighter gap between label and select */
+        flex: 0 0 auto; /* Don't grow or shrink, use content size */
+        width: 140px; /* Fixed width for predictable layout */
+    }
+    
+    .w-dropdown-container label {
+        font-size: 0.8rem; /* Smaller label text */
+        margin-bottom: 0; /* Remove bottom margin if any */
+    }
+    
+    .w-dropdown-container select {
+        padding: 0.4rem; /* More compact padding */
+        font-size: 0.85rem; /* Slightly smaller text */
+        min-height: 40px; /* Reduce minimum height */
+    }
+    
+    /* Make the mode selector more compact in landscape */
+    .w-mode-selector {
+        gap: 0.25rem; /* Tighter spacing between elements */
+        margin: 0.5rem 0; /* Reduce vertical margins */
+        flex-wrap: nowrap; /* Prevent wrapping to new lines */
+        flex-direction: row; /* Override mobile column layout */
+        align-items: flex-start; /* Align items to top */
+        justify-content: center; /* Center the content */
+    }
+    
+    /* Make button group fit in remaining space */
+    .w-button-group-mobile {
+        flex: 1; /* Take remaining space */
+        max-width: none; /* Remove width restriction */
+        margin: 0; /* Remove margins to save space */
+        min-width: 0; /* Allow shrinking if needed */
+    }
+    
+    .w-voice-selector {
+        margin-top: 0.25rem;
+    }
+}
+
+/* Extra compact for very small landscape screens */
+@media screen and (max-width: 480px) and (orientation: landscape) {
+    .w-dropdown-container {
+        margin: 0 0.15rem;
+    }
+    
+    .w-dropdown-container label {
+        font-size: 0.75rem;
+    }
+    
+    .w-dropdown-container select {
+        padding: 0.3rem;
+        font-size: 0.8rem;
+        min-height: 36px;
+    }
+    
+    .w-mode-selector {
+        gap: 0.15rem;
+        margin: 0.3rem 0;
+        flex-wrap: nowrap; /* Maintain single line layout */
+    }
+    
+    .w-dropdown-container {
+        width: 120px; /* Even smaller fixed width for very small screens */
+        margin: 0 0.1rem; /* Tighter margins */
+    }
+    
+    .w-button-group-mobile {
+        flex: 1;
+        margin: 0;
+        min-width: 0;
+    }
+    
+    .w-voice-selector {
+        margin-top: 0.15rem;
+    }
+    
+    .w-voice-selector select {
+        max-width: 160px;
     }
 }
 

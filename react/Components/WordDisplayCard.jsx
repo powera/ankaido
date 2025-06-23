@@ -92,7 +92,7 @@ const WordDisplayCard = ({
       )}
 
       {showHints && hintText && (
-        <div className="w-hide-mobile" style={{ 
+        <div style={{ 
           color: 'var(--color-text-muted)', 
           fontSize: '0.9rem', 
           marginTop: 'var(--spacing-base)',
