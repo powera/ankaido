@@ -176,73 +176,75 @@ const StudyModeSelector = ({
         </select>
       </div>
 
-      <div className="w-dropdown-container" style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        gap: '0.5rem',
-        margin: '0 0.5rem'
-      }}>
-        <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+      {/* Hide direction/grammar selector for Journey and Drill modes */}
+      {quizMode !== 'journey' && quizMode !== 'drill' && (
+        <div className="w-dropdown-container" style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '0.5rem',
+          margin: '0 0.5rem'
+        }}>
           {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
             <>
-              <span className="w-hide-mobile">Grammar Type:</span>
-              <span className="w-show-mobile">Grammar:</span>
+              <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+                <span className="w-hide-mobile">Grammar Type:</span>
+                <span className="w-show-mobile">Grammar:</span>
+              </label>
+              <select 
+                style={{
+                  padding: '0.5rem',
+                  borderRadius: 'var(--border-radius)',
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-card-bg)',
+                  minHeight: '44px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem'
+                }}
+                value={quizMode}
+                onChange={(e) => {
+                  const selectedGrammarMode = e.target.value;
+                  setQuizMode(selectedGrammarMode);
+                  setGrammarMode(selectedGrammarMode);
+                  safeStorage.setItem('flashcard-quiz-mode', selectedGrammarMode);
+                }}
+              >
+                <option value="conjugations">📖 Conjugations</option>
+                <option value="declensions">📋 Declensions</option>
+              </select>
             </>
           ) : (
             <>
-              <span className="w-hide-mobile">Direction:</span>
-              <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
+              <label style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
+                <span className="w-hide-mobile">Direction:</span>
+                <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
+              </label>
+              <select 
+                style={{
+                  padding: '0.5rem',
+                  borderRadius: 'var(--border-radius)',
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-card-bg)',
+                  minHeight: '44px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem'
+                }}
+                value={studyMode}
+                onChange={(e) => {
+                  setStudyMode(e.target.value);
+                  safeStorage.setItem('flashcard-study-mode', e.target.value);
+                }}
+              >
+                <option value="english-to-lithuanian">
+                  🇺🇸 → 🇱🇹
+                </option>
+                <option value="lithuanian-to-english">
+                  🇱🇹 → 🇺🇸
+                </option>
+              </select>
             </>
           )}
-        </label>
-        {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
-          <select 
-            style={{
-              padding: '0.5rem',
-              borderRadius: 'var(--border-radius)',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-card-bg)',
-              minHeight: '44px',
-              cursor: 'pointer',
-              fontSize: '0.9rem'
-            }}
-            value={quizMode}
-            onChange={(e) => {
-              const selectedGrammarMode = e.target.value;
-              setQuizMode(selectedGrammarMode);
-              setGrammarMode(selectedGrammarMode);
-              safeStorage.setItem('flashcard-quiz-mode', selectedGrammarMode);
-            }}
-          >
-            <option value="conjugations">📖 Conjugations</option>
-            <option value="declensions">📋 Declensions</option>
-          </select>
-        ) : (
-          <select 
-            style={{
-              padding: '0.5rem',
-              borderRadius: 'var(--border-radius)',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-card-bg)',
-              minHeight: '44px',
-              cursor: 'pointer',
-              fontSize: '0.9rem'
-            }}
-            value={studyMode}
-            onChange={(e) => {
-              setStudyMode(e.target.value);
-              safeStorage.setItem('flashcard-study-mode', e.target.value);
-            }}
-          >
-            <option value="english-to-lithuanian">
-              🇺🇸 → 🇱🇹
-            </option>
-            <option value="lithuanian-to-english">
-              🇱🇹 → 🇺🇸
-            </option>
-          </select>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="w-button-group-mobile">
         <button
