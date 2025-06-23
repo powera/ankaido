@@ -359,11 +359,6 @@ const FlashCardApp = () => {
   const nextCard = () => wordListManager.nextCard();
   const prevCard = () => wordListManager.prevCard();
   const resetCards = () => wordListManager.resetCards();
-  const handleMultipleChoiceAnswer = (selectedOption) => {
-    // Activities now handle their own stats tracking and auto-advance logic
-    // This handler just manages UI flow for manual advancement
-    nextCard();
-  };
 
   // Helper function to get a random voice from available voices
   const getRandomVoice = () => {
@@ -539,8 +534,6 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAdvanceToNext={handleMultipleChoiceAnswer}
-          nextCard={nextCard}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           safeStorage={safeStorage}
@@ -563,8 +556,6 @@ const FlashCardApp = () => {
             playAudio={playAudio}
             handleHoverStart={handleHoverStart}
             handleHoverEnd={handleHoverEnd}
-            onAdvanceToNext={handleMultipleChoiceAnswer}
-            nextCard={nextCard}
             autoAdvance={autoAdvance}
             defaultDelay={defaultDelay}
             safeStorage={safeStorage}
@@ -602,7 +593,6 @@ const FlashCardApp = () => {
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onAdvanceToNext={handleMultipleChoiceAnswer}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
@@ -613,7 +603,6 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAdvanceToNext={handleMultipleChoiceAnswer}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
