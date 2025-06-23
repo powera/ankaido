@@ -85,7 +85,7 @@ const TypingActivity = ({
         // Set up auto-advance if enabled
         if (autoAdvance && defaultDelay > 0) {
           const timer = setTimeout(() => {
-            if (nextCard) nextCard();
+            if (nextCard) nextCard({ selectedAnswer: typedAnswer, feedback, isCorrect });
           }, defaultDelay * 1000);
           setActivityState(prev => ({ ...prev, autoAdvanceTimer: timer }));
         }
@@ -112,8 +112,14 @@ const TypingActivity = ({
       clearTimeout(activityState.autoAdvanceTimer);
       setActivityState(prev => ({ ...prev, autoAdvanceTimer: null }));
     }
-    nextCard();
-  }, [nextCard, activityState.autoAdvanceTimer]);
+    // Pass the current state to nextCard if available
+    const result = activityState.showAnswer ? {
+      selectedAnswer: activityState.typedAnswer,
+      feedback: activityState.typingFeedback,
+      isCorrect: activityState.typingFeedback.includes('✅')
+    } : null;
+    nextCard(result);
+  }, [nextCard, activityState.autoAdvanceTimer, activityState.showAnswer, activityState.typedAnswer, activityState.typingFeedback]);
 
   // Clean up timer on unmount or word change
   React.useEffect(() => {

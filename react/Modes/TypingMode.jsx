@@ -11,11 +11,31 @@ const TypingMode = ({
   autoAdvance,
   defaultDelay
 }) => {
-  const nextCard = () => wordListManager.nextCard();
+  const nextCard = () => {
+    // Get the current word before advancing
+    const currentWord = wordListManager.getCurrentWord();
+    
+    // Check if there was a typing response and update stats accordingly
+    // This is a simplified approach - in a real implementation you'd want to track the actual answer
+    wordListManager.nextCard();
+  };
+  
   const prevCard = () => wordListManager.prevCard();
   
   const handleReset = () => {
     wordListManager.resetSessionStats();
+  };
+
+  // Custom nextCard handler that updates session stats
+  const handleTypingComplete = (result) => {
+    if (result && typeof result === 'object' && 'isCorrect' in result) {
+      if (result.isCorrect) {
+        wordListManager.updateSessionStatsCorrect();
+      } else {
+        wordListManager.updateSessionStatsIncorrect();
+      }
+    }
+    nextCard();
   };
 
   return (
@@ -24,7 +44,7 @@ const TypingMode = ({
         wordListManager={wordListManager}
         wordListState={wordListState}
         studyMode={studyMode}
-        nextCard={nextCard}
+        nextCard={handleTypingComplete}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         autoAdvance={autoAdvance}

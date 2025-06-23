@@ -39,6 +39,30 @@ const ListeningMode = ({
     wordListManager.resetSessionStats();
   };
 
+  const handleAdvanceWithStats = (selectedOption) => {
+    // Determine correct answer based on listening mode
+    let correctAnswer;
+    if (studyMode === 'lithuanian-to-lithuanian') {
+      correctAnswer = currentWord.lithuanian;
+    } else {
+      correctAnswer = studyMode === 'lithuanian-to-english' ? currentWord.english : currentWord.lithuanian;
+    }
+    
+    const isCorrect = selectedOption === correctAnswer;
+
+    // Update session stats in WordListManager
+    if (isCorrect) {
+      wordListManager.updateSessionStatsCorrect();
+    } else {
+      wordListManager.updateSessionStatsIncorrect();
+    }
+
+    // Call the original handler if provided
+    if (onAdvanceToNext) {
+      onAdvanceToNext(selectedOption);
+    }
+  };
+
   if (!currentWord || !multipleChoiceOptions.length) return null;
 
   return (
@@ -49,7 +73,7 @@ const ListeningMode = ({
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
-        onAdvanceToNext={onAdvanceToNext}
+        onAdvanceToNext={handleAdvanceWithStats}
         settings={settings}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
