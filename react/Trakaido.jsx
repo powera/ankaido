@@ -238,19 +238,18 @@ const FlashCardApp = () => {
     loadCorpusChoices();
   }, []);
 
+  // Combined localStorage persistence
   useEffect(() => {
-    safeStorage.setItem('flashcard-study-mode', studyMode);
-  }, [studyMode]);
+    const persistenceUpdates = {
+      'flashcard-study-mode': studyMode,
+      'flashcard-quiz-mode': quizMode,
+      ...(selectedVoice && { 'flashcard-selected-voice': selectedVoice })
+    };
 
-  useEffect(() => {
-    safeStorage.setItem('flashcard-quiz-mode', quizMode);
-  }, [quizMode]);
-
-  useEffect(() => {
-    if (selectedVoice) {
-      safeStorage.setItem('flashcard-selected-voice', selectedVoice);
-    }
-  }, [selectedVoice]);
+    Object.entries(persistenceUpdates).forEach(([key, value]) => {
+      safeStorage.setItem(key, value);
+    });
+  }, [studyMode, quizMode, selectedVoice]);
 
   // Generate words list when selected groups change
   useEffect(() => {
