@@ -360,13 +360,9 @@ const FlashCardApp = () => {
   const prevCard = () => wordListManager.prevCard();
   const resetCards = () => wordListManager.resetCards();
   const handleMultipleChoiceAnswer = (selectedOption) => {
-    // Activities now handle their own stats tracking
-    // This handler just manages UI flow
-    if (autoAdvance) {
-      setTimeout(() => {
-        nextCard();
-      }, defaultDelay * 1000);
-    }
+    // Activities now handle their own stats tracking and auto-advance logic
+    // This handler just manages UI flow for manual advancement
+    nextCard();
   };
 
   // Helper function to get a random voice from available voices
@@ -618,6 +614,8 @@ const FlashCardApp = () => {
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
       ) : (
         <div className="w-card">

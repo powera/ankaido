@@ -11,7 +11,9 @@ const MultipleChoiceMode = ({
   handleHoverStart,
   handleHoverEnd,
   handleMultipleChoiceAnswer,
-  settings
+  settings,
+  autoAdvance,
+  defaultDelay
 }) => {
   const [multipleChoiceOptions, setMultipleChoiceOptions] = React.useState([]);
   const currentWord = wordListManager?.getCurrentWord();
@@ -43,6 +45,8 @@ const MultipleChoiceMode = ({
       handleHoverEnd={handleHoverEnd}
       handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
       settings={settings}
+      autoAdvance={autoAdvance}
+      defaultDelay={defaultDelay}
     />
   );
 };

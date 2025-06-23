@@ -20,11 +20,14 @@ const MultipleChoiceActivity = ({
   handleHoverStart,
   handleHoverEnd,
   handleMultipleChoiceAnswer,
-  settings
+  settings,
+  autoAdvance,
+  defaultDelay
 }) => {
   const [activityState, setActivityState] = React.useState(() => 
     createInitialActivityState(showAnswer || false, selectedAnswer || null)
   );
+  const [autoAdvanceTimer, setAutoAdvanceTimer] = React.useState(null);
 
   // Reset activity state when word changes
   React.useEffect(() => {
@@ -33,7 +36,12 @@ const MultipleChoiceActivity = ({
       showAnswer: false,
       selectedAnswer: null
     }));
-  }, [currentWord]);
+    // Clear any existing timer when word changes
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      setAutoAdvanceTimer(null);
+    }
+  }, [currentWord, autoAdvanceTimer]);
 
   // Auto-play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
   React.useEffect(() => {
@@ -57,8 +65,11 @@ const MultipleChoiceActivity = ({
     [currentWord, handleMultipleChoiceAnswer]
   );
 
-  // Enhanced handler that also updates local state
+  // Enhanced handler that also updates local state and manages auto-advance
   const handleAnswer = React.useCallback(async (selectedOption) => {
+    // Prevent double-clicking by checking if answer is already shown
+    if (activityState.showAnswer) return;
+    
     const result = await handleMultipleChoiceWithStats(selectedOption);
     
     setActivityState(prev => ({
@@ -66,7 +77,27 @@ const MultipleChoiceActivity = ({
       selectedAnswer: selectedOption,
       showAnswer: true
     }));
-  }, [handleMultipleChoiceWithStats]);
+
+    // Set up auto-advance timer if enabled
+    if (autoAdvance && defaultDelay > 0) {
+      const timer = setTimeout(() => {
+        // Call the parent handler without additional auto-advance logic
+        if (handleMultipleChoiceAnswer) {
+          handleMultipleChoiceAnswer(selectedOption);
+        }
+      }, defaultDelay * 1000);
+      setAutoAdvanceTimer(timer);
+    }
+  }, [handleMultipleChoiceWithStats, activityState.showAnswer, autoAdvance, defaultDelay, handleMultipleChoiceAnswer]);
+
+  // Clean up timer on unmount
+  React.useEffect(() => {
+    return () => {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+      }
+    };
+  }, [autoAdvanceTimer]);
 
   // Early return after all hooks
   if (!currentWord) return null;

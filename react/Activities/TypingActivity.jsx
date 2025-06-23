@@ -1,9 +1,9 @@
-
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
 import journeyStatsManager from '../Managers/journeyStatsManager';
 import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
+import { createStatsHandler } from '../Utilities/statsHelper';
 
 /**
  * Typing Activity Component
@@ -53,32 +53,48 @@ const TypingActivity = ({
     }
   }, [word, studyMode, audioEnabled, playAudio]);
 
-  // Handle typed answer submission with stats tracking
-  const handleSubmit = React.useCallback(async (typedAnswer) => {
-    const correctAnswer = getCorrectAnswer(word, studyMode);
-    const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
+  // Handle typing submission with stats tracking
+  const handleTypingSubmit = React.useCallback(
+    createStatsHandler(
+      journeyStatsManager,
+      word,
+      'typing',
+      (typedAnswer) => {
+        // Prevent double submission
+        if (activityState.showAnswer) return;
 
-    // Update journey stats
-    try {
-      await journeyStatsManager.updateWordStats(word, 'typing', isCorrect);
-    } catch (error) {
-      console.error('Error updating journey stats in TypingActivity:', error);
-    }
+        // Custom logic for typing mode
+        const correctAnswer = studyMode === 'english-to-lithuanian' ? 
+          word.lithuanian : word.english;
 
-    // Generate feedback message
-    const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
-    
-    // Update feedback using external setter if available, otherwise local state
-    if (setTypingFeedback) {
-      setTypingFeedback(feedback);
-    } else {
-      setActivityState(prev => ({
-        ...prev,
-        typingFeedback: feedback,
-        showAnswer: true
-      }));
-    }
-  }, [word, studyMode, setTypingFeedback]);
+        const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+        const feedback = isCorrect ? 
+          '✅ Correct!' : 
+          `❌ Incorrect. The correct answer is: ${correctAnswer}`;
+
+        // Update local state
+        setActivityState(prev => ({
+          ...prev,
+          showAnswer: true,
+          typingFeedback: feedback
+        }));
+
+        // Update external state if setters are provided
+        if (setTypingFeedback) setTypingFeedback(feedback);
+
+        // Set up auto-advance if enabled
+        if (autoAdvance && defaultDelay > 0) {
+          const timer = setTimeout(() => {
+            if (nextCard) nextCard();
+          }, defaultDelay * 1000);
+          setActivityState(prev => ({ ...prev, autoAdvanceTimer: timer }));
+        }
+
+        return { selectedAnswer: typedAnswer, feedback, isCorrect };
+      }
+    ),
+    [word, studyMode, setTypingFeedback, autoAdvance, defaultDelay, nextCard, activityState.showAnswer]
+  );
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value) => {
@@ -99,6 +115,15 @@ const TypingActivity = ({
     nextCard();
   }, [nextCard, activityState.autoAdvanceTimer]);
 
+  // Clean up timer on unmount or word change
+  React.useEffect(() => {
+    return () => {
+      if (activityState.autoAdvanceTimer) {
+        clearTimeout(activityState.autoAdvanceTimer);
+      }
+    };
+  }, [activityState.autoAdvanceTimer]);
+
   // Early return after all hooks
   if (!word) {
     return (
@@ -112,7 +137,7 @@ const TypingActivity = ({
 
   const question = getQuestionText(word, studyMode);
   const answer = getCorrectAnswer(word, studyMode);
-  
+
   // Generate prompt text based on study mode
   const promptText = studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
@@ -137,7 +162,7 @@ const TypingActivity = ({
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
-        onSubmit={handleSubmit}
+        onSubmit={handleTypingSubmit}
         showAnswer={activityState.showAnswer}
         feedback={typingFeedback || activityState.typingFeedback}
         typedAnswer={typedAnswer || activityState.typedAnswer}
