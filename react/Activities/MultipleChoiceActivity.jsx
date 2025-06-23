@@ -18,7 +18,7 @@ const MultipleChoiceActivity = ({
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  handleMultipleChoiceAnswer,
+  onAdvanceToNext,
   settings,
   autoAdvance,
   defaultDelay
@@ -59,9 +59,9 @@ const MultipleChoiceActivity = ({
       journeyStatsManager,
       currentWord,
       'multipleChoice',
-      handleMultipleChoiceAnswer
+      onAdvanceToNext
     ),
-    [currentWord, handleMultipleChoiceAnswer]
+    [currentWord, onAdvanceToNext]
   );
 
   // Enhanced handler that also updates local state and manages auto-advance
@@ -81,15 +81,15 @@ const MultipleChoiceActivity = ({
     if (autoAdvance && defaultDelay > 0) {
       const timer = setTimeout(() => {
         // Call the parent handler to advance to next question
-        if (handleMultipleChoiceAnswer) {
-          handleMultipleChoiceAnswer(selectedOption);
+        if (onAdvanceToNext) {
+          onAdvanceToNext(selectedOption);
         }
       }, defaultDelay * 1000);
       setAutoAdvanceTimer(timer);
     } else if (!autoAdvance) {
       // If auto-advance is disabled, advance immediately
-      if (handleMultipleChoiceAnswer) {
-        handleMultipleChoiceAnswer(selectedOption);
+      if (onAdvanceToNext) {
+        onAdvanceToNext(selectedOption);
       }
     }
   }, [handleMultipleChoiceWithStats, activityState.showAnswer, autoAdvance, defaultDelay, handleMultipleChoiceAnswer]);

@@ -11,7 +11,7 @@ const MultipleChoiceMode = ({
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  handleMultipleChoiceAnswer,
+  onAdvanceToNext,
   settings,
   autoAdvance,
   defaultDelay
@@ -49,7 +49,7 @@ const MultipleChoiceMode = ({
         playAudio={playAudio}
         handleHoverStart={handleHoverStart}
         handleHoverEnd={handleHoverEnd}
-        handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        onAdvanceToNext={onAdvanceToNext}
         settings={settings}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}

@@ -10,7 +10,7 @@ const ListeningMode = ({
   studyMode,
   audioEnabled,
   playAudio,
-  handleMultipleChoiceAnswer,
+  onAdvanceToNext,
   settings
 }) => {
   const [multipleChoiceOptions, setMultipleChoiceOptions] = React.useState([]);
@@ -44,7 +44,7 @@ const ListeningMode = ({
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
-        handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        onAdvanceToNext={onAdvanceToNext}
         settings={settings}
       />
       <StatsDisplay stats={wordListState.stats} onReset={handleReset} />

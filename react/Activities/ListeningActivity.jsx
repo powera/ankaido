@@ -17,7 +17,7 @@ const ListeningActivity = ({
   studyMode,
   audioEnabled,
   playAudio,
-  handleMultipleChoiceAnswer,
+  onAdvanceToNext,
   settings
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
@@ -83,10 +83,10 @@ const ListeningActivity = ({
     }
 
     // Call the original handler for UI updates and flow control
-    if (handleMultipleChoiceAnswer) {
-      handleMultipleChoiceAnswer(selectedOption);
+    if (onAdvanceToNext) {
+      onAdvanceToNext(selectedOption);
     }
-  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
+  }, [currentWord, studyMode, onAdvanceToNext]);
 
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
