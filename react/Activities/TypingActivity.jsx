@@ -3,7 +3,7 @@ import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
 import journeyStatsManager from '../Managers/journeyStatsManager';
 import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
-import { createStatsHandler } from '../Utilities/statsHelper';
+import { createStatsHandler } from "../Utilities/activityHelpers";
 
 /**
  * Typing Activity Component

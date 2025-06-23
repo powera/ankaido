@@ -1,4 +1,3 @@
-
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
@@ -69,9 +68,9 @@ const MultipleChoiceActivity = ({
   const handleAnswer = React.useCallback(async (selectedOption) => {
     // Prevent double-clicking by checking if answer is already shown
     if (activityState.showAnswer) return;
-    
+
     const result = await handleMultipleChoiceWithStats(selectedOption);
-    
+
     setActivityState(prev => ({
       ...prev,
       selectedAnswer: selectedOption,
@@ -103,7 +102,7 @@ const MultipleChoiceActivity = ({
   if (!currentWord) return null;
 
   const question = getQuestionText(currentWord, studyMode);
-  
+
   // Use external state if provided, otherwise use internal state
   const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
   const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
