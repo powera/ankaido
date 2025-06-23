@@ -539,7 +539,7 @@ const DrillMode = ({
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAdvanceToNext={handleDrillMultipleChoice}
+          handleMultipleChoiceAnswer={handleDrillMultipleChoice}
         />
       ) : drillState.currentActivity === 'listening' ? (
         <ListeningActivity
@@ -550,7 +550,7 @@ const DrillMode = ({
           studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onAdvanceToNext={handleDrillListening}
+          handleMultipleChoiceAnswer={handleDrillListening}
         />
       ) : drillState.currentActivity === 'typing' ? (
         <TypingActivity

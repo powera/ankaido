@@ -22,7 +22,7 @@ const JourneyMode = ({
   playAudio,
   handleHoverStart,
   handleHoverEnd,
-  onAdvanceToNext,
+  handleMultipleChoiceAnswer,
   nextCard,
   autoAdvance,
   defaultDelay,
@@ -193,12 +193,24 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
+  
+
+
+
   // Simplified handlers that just manage UI flow - stats are handled by Activity components
-  const handleJourneyActivityAdvance = React.useCallback((selectedOption) => {
-    // In Journey Mode, Activity components handle their own auto-advance timing
-    // When they call this function, they're ready to advance to the next activity
-    advanceToNextActivity();
-  }, [advanceToNextActivity]);
+  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption) => {
+    // Just delegate to the original handler - the Activity components handle stats updates
+    handleMultipleChoiceAnswer(selectedOption);
+    
+    // Auto-advance if enabled
+    if (autoAdvance) {
+      setTimeout(() => {
+        advanceToNextActivity();
+      }, defaultDelay * 1000);
+    }
+  }, [handleMultipleChoiceAnswer, autoAdvance, defaultDelay, advanceToNextActivity]);
+
+
 
   // Loading states
   if (!journeyState.isInitialized) {
@@ -351,9 +363,7 @@ const JourneyMode = ({
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAdvanceToNext={handleJourneyActivityAdvance}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
         <NavigationControls />
       </div>
@@ -385,9 +395,7 @@ const JourneyMode = ({
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onAdvanceToNext={handleJourneyActivityAdvance}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
         />
         <NavigationControls />
       </div>

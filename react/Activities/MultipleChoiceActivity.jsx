@@ -1,7 +1,9 @@
+
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import { getQuestionText } from '../Utilities/activityHelpers';
+import journeyStatsManager from '../Managers/journeyStatsManager';
+import { createInitialActivityState, getQuestionText, createStatsHandler } from '../Utilities/activityHelpers';
 
 /**
  * Multiple Choice Activity Component
@@ -11,15 +13,28 @@ const MultipleChoiceActivity = ({
   currentWord,
   showAnswer,
   selectedAnswer,
-  onAnswerClick,
   multipleChoiceOptions,
   studyMode,
   audioEnabled,
   playAudio,
   handleHoverStart,
   handleHoverEnd,
+  handleMultipleChoiceAnswer,
   settings
 }) => {
+  const [activityState, setActivityState] = React.useState(() => 
+    createInitialActivityState(showAnswer || false, selectedAnswer || null)
+  );
+
+  // Reset activity state when word changes
+  React.useEffect(() => {
+    setActivityState(prev => ({
+      ...prev,
+      showAnswer: false,
+      selectedAnswer: null
+    }));
+  }, [currentWord]);
+
   // Auto-play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
   React.useEffect(() => {
     if (audioEnabled && currentWord && studyMode === 'lithuanian-to-english') {
@@ -31,29 +46,36 @@ const MultipleChoiceActivity = ({
     }
   }, [currentWord, studyMode, audioEnabled, playAudio]);
 
-  // Handle answer selection
-  const handleAnswer = React.useCallback((selectedOption) => {
-    // Prevent double-clicking by checking if answer is already shown
-    if (showAnswer) return;
+  // Handle multiple choice selection with stats tracking
+  const handleMultipleChoiceWithStats = React.useCallback(
+    createStatsHandler(
+      journeyStatsManager,
+      currentWord,
+      'multipleChoice',
+      handleMultipleChoiceAnswer
+    ),
+    [currentWord, handleMultipleChoiceAnswer]
+  );
 
-    // Immediately play audio for correct answers in EN->LT mode
-    if (audioEnabled && studyMode === 'english-to-lithuanian') {
-      const correctAnswer = currentWord.lithuanian;
-      if (selectedOption === correctAnswer) {
-        playAudio(selectedOption);
-      }
-    }
-
-    // Call the provided callback
-    if (onAnswerClick) {
-      onAnswerClick(selectedOption);
-    }
-  }, [showAnswer, audioEnabled, studyMode, currentWord, playAudio, onAnswerClick]);
+  // Enhanced handler that also updates local state
+  const handleAnswer = React.useCallback(async (selectedOption) => {
+    const result = await handleMultipleChoiceWithStats(selectedOption);
+    
+    setActivityState(prev => ({
+      ...prev,
+      selectedAnswer: selectedOption,
+      showAnswer: true
+    }));
+  }, [handleMultipleChoiceWithStats]);
 
   // Early return after all hooks
   if (!currentWord) return null;
 
   const question = getQuestionText(currentWord, studyMode);
+  
+  // Use external state if provided, otherwise use internal state
+  const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
+  const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
@@ -79,8 +101,8 @@ const MultipleChoiceActivity = ({
         handleHoverStart={handleHoverStart}
         handleHoverEnd={handleHoverEnd}
         multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswer}
-        showAnswer={showAnswer}
+        selectedAnswer={selectedAnswerToUse}
+        showAnswer={showAnswerToUse}
       />
     </div>
   );

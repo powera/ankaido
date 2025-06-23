@@ -1,6 +1,9 @@
+
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
+import journeyStatsManager from '../Managers/journeyStatsManager';
+import { createInitialActivityState, getCorrectAnswer } from '../Utilities/activityHelpers';
 
 /**
  * Listening Activity Component
@@ -8,19 +11,19 @@ import WordDisplayCard from '../Components/WordDisplayCard';
  */
 const ListeningActivity = ({ 
   currentWord,
+  showAnswer,
+  selectedAnswer,
   multipleChoiceOptions,
   studyMode,
   audioEnabled,
   playAudio,
-  // Controlled props from Mode
-  showAnswer,
-  selectedAnswer,
-  onAnswerClick,
-  // Optional props
-  settings,
-  wordListState
+  handleMultipleChoiceAnswer,
+  settings
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
+  const [activityState, setActivityState] = React.useState(() =>
+    createInitialActivityState(showAnswer || false, selectedAnswer || null)
+  );
 
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
@@ -38,19 +41,52 @@ const ListeningActivity = ({
     }
   }, [currentWord, audioEnabled, playAudio, preventAutoPlay]);
 
-  // Handle answer selection
-  const handleAnswerClick = React.useCallback((selectedOption) => {
-    // Prevent double-clicking by checking if answer is already shown
-    if (showAnswer) return;
+  // Reset activity state when word changes
+  React.useEffect(() => {
+    setActivityState(prev => ({
+      ...prev,
+      showAnswer: false,
+      selectedAnswer: null
+    }));
+  }, [currentWord]);
 
+  // Handle listening activity with stats tracking
+  const handleListeningWithStats = React.useCallback(async (selectedOption) => {
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
-
-    // Call the callback provided by the Mode
-    if (onAnswerClick) {
-      onAnswerClick(selectedOption);
+    
+    // Determine correct answer based on listening mode
+    let correctAnswer;
+    if (studyMode === 'lithuanian-to-lithuanian') {
+      correctAnswer = currentWord.lithuanian;
+    } else {
+      correctAnswer = getCorrectAnswer(currentWord, studyMode);
     }
-  }, [showAnswer, onAnswerClick]);
+
+    const isCorrect = selectedOption === correctAnswer;
+
+    // Update local state
+    setActivityState(prev => ({
+      ...prev,
+      selectedAnswer: selectedOption,
+      showAnswer: true
+    }));
+
+    // Determine stats mode based on difficulty
+    const statsMode = studyMode === 'lithuanian-to-lithuanian' ? 'listeningEasy' : 'listeningHard';
+
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats in ListeningActivity:', error);
+    }
+
+    // Call the original handler for UI updates and flow control
+    if (handleMultipleChoiceAnswer) {
+      handleMultipleChoiceAnswer(selectedOption);
+    }
+  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
 
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
@@ -66,6 +102,10 @@ const ListeningActivity = ({
         return 'Choose the matching Lithuanian word:';
     }
   };
+
+  // Use external state if provided, otherwise use internal state
+  const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
+  const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
@@ -83,13 +123,12 @@ const ListeningActivity = ({
         currentWord={currentWord}
         studyMode={studyMode}
         quizMode="listening"
-        handleMultipleChoiceAnswer={handleAnswerClick}
+        handleMultipleChoiceAnswer={handleListeningWithStats}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswer}
-        showAnswer={showAnswer}
-        wordListState={wordListState}
+        selectedAnswer={selectedAnswerToUse}
+        showAnswer={showAnswerToUse}
       />
     </div>
   );

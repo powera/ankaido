@@ -3,7 +3,7 @@ import { useGlobalSettings } from './useGlobalSettings.jsx';
 import { useFullscreen } from './useFullscreen.js';
 import VocabularyList from './Components/VocabularyList.jsx';
 import TypingMode from './Modes/TypingMode.jsx';
-
+import StatsDisplay from './Components/StatsDisplay.jsx';
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
@@ -96,7 +96,7 @@ const FlashCardApp = () => {
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
   const [journeyStats, setJourneyStats] = useState({});
-
+  
   // Drill mode state
   const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
   const [drillConfig, setDrillConfig] = useState(null); // { corpus, group, difficulty }
@@ -258,6 +258,10 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
+  
+
+
+
   // Generate all available groups from all corpuses
   useEffect(() => {
     if (Object.keys(corporaData).length === 0) return;
@@ -349,6 +353,19 @@ const FlashCardApp = () => {
       console.error('Error resetting settings:', error);
       // Still show welcome screen even if there's an error
       setShowWelcome(true);
+    }
+  };
+
+  const nextCard = () => wordListManager.nextCard();
+  const prevCard = () => wordListManager.prevCard();
+  const resetCards = () => wordListManager.resetCards();
+  const handleMultipleChoiceAnswer = (selectedOption) => {
+    // Activities now handle their own stats tracking
+    // This handler just manages UI flow
+    if (autoAdvance) {
+      setTimeout(() => {
+        nextCard();
+      }, defaultDelay * 1000);
     }
   };
 
@@ -526,6 +543,8 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          nextCard={nextCard}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           safeStorage={safeStorage}
@@ -548,6 +567,8 @@ const FlashCardApp = () => {
             playAudio={playAudio}
             handleHoverStart={handleHoverStart}
             handleHoverEnd={handleHoverEnd}
+            handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+            nextCard={nextCard}
             autoAdvance={autoAdvance}
             defaultDelay={defaultDelay}
             safeStorage={safeStorage}
@@ -566,13 +587,13 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          wordListManager={wordListManager}
         />
       ) : quizMode === 'typing' ? (
         <TypingMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={studyMode}
+          nextCard={nextCard}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           autoAdvance={autoAdvance}
@@ -585,6 +606,7 @@ const FlashCardApp = () => {
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
@@ -595,8 +617,7 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
         />
       ) : (
         <div className="w-card">
@@ -604,6 +625,20 @@ const FlashCardApp = () => {
             <div>Loading word...</div>
           </div>
         </div>
+      )}
+
+      {/* Navigation controls */}
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
+        <div className="w-nav-controls">
+          <button className="w-button" onClick={prevCard}>← Previous</button>
+          <div className="w-nav-center"></div>
+          <button className="w-button" onClick={nextCard}>Next →</button>
+        </div>
+      )}
+
+      {/* Stats with Reset button */}
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
+        <StatsDisplay stats={wordListState.stats} onReset={resetCards} />
       )}
 
       <SettingsModal />

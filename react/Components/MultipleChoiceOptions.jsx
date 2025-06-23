@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AudioButton from './AudioButton';
 
@@ -14,7 +13,7 @@ const MultipleChoiceOptions = ({
   multipleChoiceOptions,
   selectedAnswer,
   showAnswer,
-  wordListState // Make optional
+  allWords
 }) => {
   // Use currentWord from props
   const word = currentWord;
@@ -23,7 +22,7 @@ const MultipleChoiceOptions = ({
   const options = multipleChoiceOptions || [];
   const isAnswerSelected = selectedAnswer;
   const shouldShowAnswer = showAnswer;
-  const wordsForTranslation = wordListState?.allWords || [];
+  const wordsForTranslation = allWords || [];
   
   return (
     <div className="w-multiple-choice">
@@ -58,7 +57,7 @@ const MultipleChoiceOptions = ({
 
         // Find the translation for all options when showAnswer is true
         let translation = null;
-        if (shouldShowAnswer && wordsForTranslation.length > 0) {
+        if (shouldShowAnswer) {
           if (studyMode === 'lithuanian-to-lithuanian') {
             // For LT-to-LT mode, show English translation
             if (isCorrect) {
