@@ -31,17 +31,6 @@ const TypingActivity = ({
   // Use currentWord from props, fallback to wordListManager if available
   const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
 
-  // Early return after all hooks
-  if (!word) {
-    return (
-      <div className="w-card">
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
-          <div>Loading word...</div>
-        </div>
-      </div>
-    );
-  }
-
   // Reset state when word or external state changes
   React.useEffect(() => {
     setActivityState(prev => ({
@@ -52,6 +41,17 @@ const TypingActivity = ({
       autoAdvanceTimer: null
     }));
   }, [word, typedAnswer, typingFeedback]);
+
+  // Early return after all hooks
+  if (!word) {
+    return (
+      <div className="w-card">
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
+          <div>Loading word...</div>
+        </div>
+      </div>
+    );
+  }
 
   // Handle typed answer submission with stats tracking
   const handleSubmit = React.useCallback(async (typedAnswer) => {

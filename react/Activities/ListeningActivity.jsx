@@ -25,9 +25,6 @@ const ListeningActivity = ({
     createInitialActivityState(showAnswer || false, selectedAnswer || null)
   );
 
-  // Early return after all hooks
-  if (!currentWord || !multipleChoiceOptions?.length) return null;
-
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
     setPreventAutoPlay(false);
@@ -41,6 +38,9 @@ const ListeningActivity = ({
       selectedAnswer: null
     }));
   }, [currentWord]);
+
+  // Early return after all hooks
+  if (!currentWord || !multipleChoiceOptions?.length) return null;
 
   // Handle listening activity with stats tracking
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {

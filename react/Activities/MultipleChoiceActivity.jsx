@@ -26,9 +26,6 @@ const MultipleChoiceActivity = ({
     createInitialActivityState(showAnswer || false, selectedAnswer || null)
   );
 
-  // Early return after all hooks
-  if (!currentWord) return null;
-
   // Reset activity state when word changes
   React.useEffect(() => {
     setActivityState(prev => ({
@@ -37,6 +34,9 @@ const MultipleChoiceActivity = ({
       selectedAnswer: null
     }));
   }, [currentWord]);
+
+  // Early return after all hooks
+  if (!currentWord) return null;
 
   // Handle multiple choice selection with stats tracking
   const handleMultipleChoiceWithStats = React.useCallback(
