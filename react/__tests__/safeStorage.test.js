@@ -1,9 +1,18 @@
 
 import safeStorage from '../DataStorage/safeStorage';
 
+// Mock localStorage
+const localStorageMock = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn()
+};
+global.localStorage = localStorageMock;
+
 describe('safeStorage', () => {
   beforeEach(() => {
-    localStorage.clear();
+    localStorageMock.clear();
     jest.clearAllMocks();
   });
 

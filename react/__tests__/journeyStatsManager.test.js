@@ -12,7 +12,7 @@ const mockIndexedDBManager = {
   loadJourneyStats: jest.fn(() => Promise.resolve({})),
   saveJourneyStats: jest.fn(() => Promise.resolve(true))
 };
-jest.mock('../indexedDBManager', () => ({
+jest.mock('../DataStorage/indexedDBManager', () => ({
   __esModule: true,
   default: mockIndexedDBManager,
   ...mockIndexedDBManager
@@ -111,7 +111,7 @@ describe('JourneyStatsManager', () => {
     journeyStatsManager.isInitialized = false;
     journeyStatsManager.listeners = [];
     
-    indexedDBManager = require('../indexedDBManager').default;
+    indexedDBManager = require('../DataStorage/indexedDBManager').default;
     jest.clearAllMocks();
   });
 

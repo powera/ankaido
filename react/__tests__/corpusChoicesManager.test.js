@@ -3,14 +3,20 @@
  */
 
 import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
-import safeStorage from '../safeStorage';
+import safeStorage from '../DataStorage/safeStorage';
 
 // Mock safeStorage
-jest.mock('../safeStorage', () => ({
+jest.mock('../DataStorage/safeStorage', () => ({
   getItem: jest.fn(),
   setItem: jest.fn(),
   removeItem: jest.fn()
 }));
+
+// Mock helper function for testing
+const setUseServerStorage = (useServer) => {
+  // This would normally be handled by storageConfigManager
+  global.mockUseServerStorage = useServer;
+};
 
 // Mock fetch
 global.fetch = jest.fn();
