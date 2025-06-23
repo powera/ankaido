@@ -35,9 +35,6 @@ const MultipleChoiceActivity = ({
     }));
   }, [currentWord]);
 
-  // Early return after all hooks
-  if (!currentWord) return null;
-
   // Handle multiple choice selection with stats tracking
   const handleMultipleChoiceWithStats = React.useCallback(
     createStatsHandler(
@@ -59,6 +56,9 @@ const MultipleChoiceActivity = ({
       showAnswer: true
     }));
   }, [handleMultipleChoiceWithStats]);
+
+  // Early return after all hooks
+  if (!currentWord) return null;
 
   const question = getQuestionText(currentWord, studyMode);
   

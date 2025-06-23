@@ -39,9 +39,6 @@ const ListeningActivity = ({
     }));
   }, [currentWord]);
 
-  // Early return after all hooks
-  if (!currentWord || !multipleChoiceOptions?.length) return null;
-
   // Handle listening activity with stats tracking
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {
     // Prevent auto-play when an answer is selected
@@ -79,6 +76,9 @@ const ListeningActivity = ({
       handleMultipleChoiceAnswer(selectedOption);
     }
   }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
+
+  // Early return after all hooks
+  if (!currentWord || !multipleChoiceOptions?.length) return null;
 
   // Generate instruction text based on study mode
   const getInstructionText = () => {

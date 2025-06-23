@@ -42,17 +42,6 @@ const TypingActivity = ({
     }));
   }, [word, typedAnswer, typingFeedback]);
 
-  // Early return after all hooks
-  if (!word) {
-    return (
-      <div className="w-card">
-        <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
-          <div>Loading word...</div>
-        </div>
-      </div>
-    );
-  }
-
   // Handle typed answer submission with stats tracking
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);
@@ -98,6 +87,17 @@ const TypingActivity = ({
     }
     nextCard();
   }, [nextCard, activityState.autoAdvanceTimer]);
+
+  // Early return after all hooks
+  if (!word) {
+    return (
+      <div className="w-card">
+        <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
+          <div>Loading word...</div>
+        </div>
+      </div>
+    );
+  }
 
   const question = getQuestionText(word, studyMode);
   const answer = getCorrectAnswer(word, studyMode);
