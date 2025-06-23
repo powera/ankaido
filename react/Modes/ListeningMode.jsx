@@ -30,7 +30,7 @@ const ListeningMode = ({
       );
       setMultipleChoiceOptions(options);
     }
-  }, [currentWord, studyMode, wordListState, settings?.difficulty]);
+  }, [currentWord?.lithuanian, currentWord?.english, studyMode, wordListState?.allWords, settings?.difficulty]);
 
   const nextCard = () => wordListManager.nextCard();
   const prevCard = () => wordListManager.prevCard();
