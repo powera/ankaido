@@ -1,6 +1,7 @@
 import React from 'react';
 import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
+import StatsDisplay from '../Components/StatsDisplay';
 
 const MultipleChoiceMode = ({ 
   wordListManager,
@@ -30,9 +31,14 @@ const MultipleChoiceMode = ({
     }
   }, [currentWord, studyMode, wordListState, settings?.difficulty]);
 
+  const handleReset = () => {
+    wordListManager.resetSessionStats();
+  };
+
   if (!currentWord || !multipleChoiceOptions.length) return null;
 
   return (
+    <>
     <MultipleChoiceActivity
       currentWord={currentWord}
       multipleChoiceOptions={multipleChoiceOptions}
@@ -44,6 +50,8 @@ const MultipleChoiceMode = ({
       handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
       settings={settings}
     />
+      <StatsDisplay stats={wordListState.stats} onReset={handleReset} />
+    </>
   );
 };
 

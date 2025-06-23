@@ -3,7 +3,7 @@ import { useGlobalSettings } from './useGlobalSettings.jsx';
 import { useFullscreen } from './useFullscreen.js';
 import VocabularyList from './Components/VocabularyList.jsx';
 import TypingMode from './Modes/TypingMode.jsx';
-import StatsDisplay from './Components/StatsDisplay.jsx';
+
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
@@ -636,10 +636,7 @@ const FlashCardApp = () => {
         </div>
       )}
 
-      {/* Stats with Reset button */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
-        <StatsDisplay stats={wordListState.stats} onReset={resetCards} />
-      )}
+      
 
       <SettingsModal />
       <StudyMaterialsModal

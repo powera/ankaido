@@ -2,6 +2,7 @@
 import React from 'react';
 import ListeningActivity from '../Activities/ListeningActivity';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
+import StatsDisplay from '../Components/StatsDisplay';
 
 const ListeningMode = ({ 
   wordListManager,
@@ -29,18 +30,25 @@ const ListeningMode = ({
     }
   }, [currentWord, studyMode, wordListState, settings?.difficulty]);
 
+  const handleReset = () => {
+    wordListManager.resetSessionStats();
+  };
+
   if (!currentWord || !multipleChoiceOptions.length) return null;
 
   return (
-    <ListeningActivity
-      currentWord={currentWord}
-      multipleChoiceOptions={multipleChoiceOptions}
-      studyMode={studyMode}
-      audioEnabled={audioEnabled}
-      playAudio={playAudio}
-      handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
-      settings={settings}
-    />
+    <>
+      <ListeningActivity
+        currentWord={currentWord}
+        multipleChoiceOptions={multipleChoiceOptions}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        playAudio={playAudio}
+        handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+        settings={settings}
+      />
+      <StatsDisplay stats={wordListState.stats} onReset={handleReset} />
+    </>
   );
 };
 
