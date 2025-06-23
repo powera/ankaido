@@ -112,7 +112,7 @@ const MultipleChoiceOptions = ({
             onMouseEnter={shouldUseHover ? () => handleHoverStart(option) : undefined}
             onMouseLeave={shouldUseHover ? handleHoverEnd : undefined}
           >
-            <div className="trakaido-choice-content">
+            <div className="trakaido-choice-content" style={{ position: 'relative', width: '100%', height: '100%' }}>
               <div className="trakaido-choice-text-container" style={{ textAlign: 'center', width: '100%' }}>
                 <div className="trakaido-choice-answer" style={{ fontWeight: '500' }}>{option}</div>
                 {shouldShowAnswer && translation && (
@@ -128,6 +128,9 @@ const MultipleChoiceOptions = ({
               </div>
               {shouldShowAnswer && isCorrect && (
                 <div style={{ 
+                  position: 'absolute',
+                  bottom: '4px',
+                  right: '4px',
                   display: 'flex', 
                   justifyContent: 'center', 
                   alignItems: 'center'
