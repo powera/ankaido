@@ -250,7 +250,7 @@
     }
     
     /* Main text styling for mobile */
-    .w-choice-option .trakaido-choice-content > div:first-child {
+    .w-choice-option .trakaido-choice-answer {
         font-weight: 500;
         /* Removed font-size reduction - maintain readable size */
         line-height: 1.1;
@@ -265,7 +265,7 @@
     }
     
     /* Translation text styling for mobile */
-    .w-choice-option .trakaido-choice-content > div:first-child > div:last-child {
+    .w-choice-option .trakaido-choice-translation {
         font-size: 0.85rem !important; /* Increased from 0.7rem for better readability */
         line-height: 1;
         margin-top: 0.15rem;
@@ -319,11 +319,11 @@
         /* Removed font-size reduction - let rem scale naturally */
     }
     
-    .w-choice-option .trakaido-choice-content > div:first-child {
+    .w-choice-option .trakaido-choice-answer {
         /* Removed font-size reduction - let rem scale naturally */
     }
     
-    .w-choice-option .trakaido-choice-content > div:first-child > div:last-child {
+    .w-choice-option .trakaido-choice-translation {
         font-size: 0.8rem !important; /* Increased from 0.65rem for better readability */
     }
 }

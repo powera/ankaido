@@ -113,10 +113,10 @@ const MultipleChoiceOptions = ({
             onMouseLeave={shouldUseHover ? handleHoverEnd : undefined}
           >
             <div className="trakaido-choice-content">
-              <div style={{ textAlign: 'center', width: '100%' }}>
-                <div style={{ fontWeight: '500' }}>{option}</div>
+              <div className="trakaido-choice-text-container" style={{ textAlign: 'center', width: '100%' }}>
+                <div className="trakaido-choice-answer" style={{ fontWeight: '500' }}>{option}</div>
                 {shouldShowAnswer && translation && (
-                  <div style={{ 
+                  <div className="trakaido-choice-translation" style={{ 
                     fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
                     marginTop: '2px', 
                     opacity: 0.8
