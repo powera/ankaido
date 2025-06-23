@@ -40,6 +40,24 @@ const MultipleChoiceMode = ({
     wordListManager.resetSessionStats();
   };
 
+  const handleAdvanceWithStats = (selectedOption) => {
+    // Determine correct answer based on mode
+    const correctAnswer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+    const isCorrect = selectedOption === correctAnswer;
+
+    // Update session stats in WordListManager
+    if (isCorrect) {
+      wordListManager.updateSessionStatsCorrect();
+    } else {
+      wordListManager.updateSessionStatsIncorrect();
+    }
+
+    // Call the original handler if provided
+    if (onAdvanceToNext) {
+      onAdvanceToNext(selectedOption);
+    }
+  };
+
   if (!currentWord || !multipleChoiceOptions.length) return null;
 
   return (
@@ -52,7 +70,7 @@ const MultipleChoiceMode = ({
         playAudio={playAudio}
         handleHoverStart={handleHoverStart}
         handleHoverEnd={handleHoverEnd}
-        onAdvanceToNext={onAdvanceToNext}
+        onAdvanceToNext={handleAdvanceWithStats}
         settings={settings}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
