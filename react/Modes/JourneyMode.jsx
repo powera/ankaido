@@ -11,7 +11,7 @@ import {
   getTotalCorrectExposures 
 } from '../Managers/journeyStatsManager';
 
-import { attemptActivitySelection } from '../Utilities/activitySelection';
+import { selectJourneyActivity } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({
@@ -93,87 +93,16 @@ const JourneyMode = ({
     return getTotalCorrectExposures(stats);
   }, []);
 
-  // Note: attemptActivitySelection is now imported from ../Utilities/activitySelection
-
-  // Activity selection algorithm
+  // Activity selection using centralized utility
   const selectNextActivity = React.useCallback(() => {
-    const exposedWords = getExposedWordsList();
-    const newWords = getNewWordsList();
-
-    if (wordListState.allWords.length === 0) {
-      return { type: 'new-word', word: wordListManager.getCurrentWord() };
-    }
-
-    // If fewer than 10 known words, always show new word
-    if (exposedWords.length < 10 && newWords.length > 0) {
-      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-      return { type: 'new-word', word: randomNewWord };
-    }
-
-    // First, decide if we should show a motivational interstitial (3% chance)
-    let random = Math.random() * 100;
-    if (random < 3) {
-      return { type: 'motivational-break', word: null };
-    }
-
-    // Then, decide if we should introduce a new word
-    random = Math.random() * 100;
-    if (random < 20 && newWords.length > 0) {
-      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-      return { type: 'new-word', word: randomNewWord };
-    }
-
-    // Otherwise, choose an exposed word
-    if (exposedWords.length === 0) {
-      // If no exposed words, fall back to new word
-      if (newWords.length > 0) {
-        const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-        return { type: 'new-word', word: randomNewWord };
-      }
-      return { type: 'grammar-break', word: null };
-    }
-
-    // Filter words by exposure count
-    let filteredWords = [...exposedWords];
-
-    // For words with 10+ exposures, 75% chance to redraw
-    if (filteredWords.some(word => getTotalCorrectForWord(word) >= 10)) {
-      filteredWords = filteredWords.filter(word => {
-        const exposures = getTotalCorrectForWord(word);
-        if (exposures >= 10) {
-          // 75% chance to exclude this word
-          return Math.random() > 0.75;
-        }
-        return true;
-      });
-
-      // If we filtered out all words, use the original list
-      if (filteredWords.length === 0) {
-        filteredWords = [...exposedWords];
-      }
-    }
-
-    // Choose a random word from the filtered list
-    const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
-    const exposures = getTotalCorrectForWord(selectedWord);
-
-    // Keep trying until we get a valid activity (handles audio disabled scenarios)
-    let attempts = 0;
-    const maxAttempts = 10; // Prevent infinite loops
-    
-    while (attempts < maxAttempts) {
-      const activityResult = attemptActivitySelection(selectedWord, exposures, audioEnabled);
-      
-      if (activityResult !== null) {
-        return activityResult;
-      }
-      
-      attempts++;
-    }
-
-    // Fallback: always return multiple-choice if we can't find a valid activity
-    const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-    return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
+    return selectJourneyActivity(
+      getExposedWordsList,
+      getNewWordsList,
+      wordListState.allWords,
+      wordListManager,
+      getTotalCorrectForWord,
+      audioEnabled
+    );
   }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH

@@ -152,3 +152,109 @@ export const selectDrillActivity = (selectedWord, difficulty, audioEnabled, getT
   const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
   return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
 };
+
+/**
+ * Journey mode activity selection probabilities
+ */
+const JOURNEY_PROBABILITIES = {
+  motivationalBreak: 3,    // 3% chance for motivational break
+  newWordIntroduction: 20  // 20% chance for new word introduction
+};
+
+/**
+ * Select the next activity for Journey Mode based on learning algorithm
+ * @param {function} getExposedWordsList - Function to get words with exposures
+ * @param {function} getNewWordsList - Function to get unexposed words
+ * @param {Array} allWords - All available words
+ * @param {Object} wordListManager - Word list manager instance
+ * @param {function} getTotalCorrectForWord - Function to get exposure count for a word
+ * @param {boolean} audioEnabled - Whether audio is enabled
+ * @returns {Object} Activity selection result
+ */
+export const selectJourneyActivity = (
+  getExposedWordsList,
+  getNewWordsList, 
+  allWords,
+  wordListManager,
+  getTotalCorrectForWord,
+  audioEnabled
+) => {
+  const exposedWords = getExposedWordsList();
+  const newWords = getNewWordsList();
+
+  // Safety check: if no words available, get current word
+  if (allWords.length === 0) {
+    return { type: 'new-word', word: wordListManager.getCurrentWord() };
+  }
+
+  // Early learning phase: if fewer than 10 known words, prioritize new words
+  if (exposedWords.length < 10 && newWords.length > 0) {
+    const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+    return { type: 'new-word', word: randomNewWord };
+  }
+
+  // Random chance for motivational break (3% probability)
+  let random = Math.random() * 100;
+  if (random < JOURNEY_PROBABILITIES.motivationalBreak) {
+    return { type: 'motivational-break', word: null };
+  }
+
+  // Random chance for new word introduction (20% probability)
+  random = Math.random() * 100;
+  if (random < JOURNEY_PROBABILITIES.newWordIntroduction && newWords.length > 0) {
+    const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+    return { type: 'new-word', word: randomNewWord };
+  }
+
+  // No exposed words available - fallback logic
+  if (exposedWords.length === 0) {
+    if (newWords.length > 0) {
+      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+      return { type: 'new-word', word: randomNewWord };
+    }
+    return { type: 'grammar-break', word: null };
+  }
+
+  // Filter exposed words by mastery level
+  let filteredWords = [...exposedWords];
+
+  // Apply spaced repetition: for well-learned words (10+ exposures), 
+  // reduce selection probability by 75% to focus on less familiar words
+  if (filteredWords.some(word => getTotalCorrectForWord(word) >= 10)) {
+    filteredWords = filteredWords.filter(word => {
+      const exposures = getTotalCorrectForWord(word);
+      if (exposures >= 10) {
+        // 75% chance to exclude well-learned words from selection
+        return Math.random() > 0.75;
+      }
+      return true;
+    });
+
+    // Safety net: if all words were filtered out, use original list
+    if (filteredWords.length === 0) {
+      filteredWords = [...exposedWords];
+    }
+  }
+
+  // Select a random word from the filtered pool
+  const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+  const exposures = getTotalCorrectForWord(selectedWord);
+
+  // Attempt activity selection with retry logic
+  let attempts = 0;
+  const maxAttempts = 10;
+  
+  while (attempts < maxAttempts) {
+    const activityResult = attemptActivitySelection(selectedWord, exposures, audioEnabled);
+    
+    if (activityResult !== null) {
+      return activityResult;
+    }
+    
+    attempts++;
+  }
+
+  // Ultimate fallback: multiple-choice activity
+  const mcMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
+  return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
+};
