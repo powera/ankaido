@@ -119,11 +119,10 @@ const MultipleChoiceOptions = ({
                   <div className="trakaido-choice-translation" style={{ 
                     fontSize: 'clamp(0.7rem, 2vw, 0.8rem)', 
                     marginTop: '2px', 
-                    opacity: 0.8
+                    opacity: 0.8,
+                    color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)'
                   }}>
-                    <span style={{ color: (isCorrect || isSelected) ? 'rgba(255,255,255,0.8)' : 'var(--color-text-secondary)' }}>
-                      ({translation})
-                    </span>
+                    ({translation})
                   </div>
                 )}
               </div>
