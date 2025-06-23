@@ -317,12 +317,8 @@ const DrillMode = ({
     }, delay * 1000);
   }, [drillState.multipleChoiceMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
-  // Custom nextCard handler for drill mode that tracks stats
-  const handleDrillNextCard = React.useCallback(async () => {
-    // For typing activities, we need to track the result based on the feedback
-    const feedback = questionInteractionState.typingFeedback;
-    const isCorrect = feedback && feedback.includes('✅');
-
+  // Handler for typing submissions with stats and auto-advance
+  const handleDrillTyping = React.useCallback(async (typedAnswer, isCorrect) => {
     // Update drill stats
     setDrillState(prev => ({
       ...prev,
@@ -340,9 +336,13 @@ const DrillMode = ({
       console.error('Error updating journey stats:', error);
     }
 
-    // Move to next word
-    advanceToNextDrillActivity(true);
-  }, [questionInteractionState.typingFeedback, drillState.currentWord, advanceToNextDrillActivity]);
+    // Auto-advance if enabled, otherwise wait for manual advance
+    if (autoAdvance) {
+      setTimeout(() => {
+        advanceToNextDrillActivity(true);
+      }, defaultDelay * 1000);
+    }
+  }, [drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   const handleDrillListening = React.useCallback(async (selectedOption, isCorrect) => {
 
@@ -530,18 +530,25 @@ const DrillMode = ({
           defaultDelay={Math.max(defaultDelay, 2)}
         />
       ) : drillState.currentActivity === 'typing' ? (
-        <TypingActivity
-          currentWord={drillState.currentWord}
-          typedAnswer={questionInteractionState.typedAnswer}
-          typingFeedback={questionInteractionState.typingFeedback}
-          setTypedAnswer={(value) => setQuestionInteractionState(prev => ({ ...prev, typedAnswer: value }))}
-          setTypingFeedback={(value) => setQuestionInteractionState(prev => ({ ...prev, typingFeedback: value }))}
-          studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
-          nextCard={handleDrillNextCard}
-          audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
-        />
+        <div>
+          <TypingActivity
+            currentWord={drillState.currentWord}
+            typedAnswer={questionInteractionState.typedAnswer}
+            typingFeedback={questionInteractionState.typingFeedback}
+            setTypedAnswer={(value) => setQuestionInteractionState(prev => ({ ...prev, typedAnswer: value }))}
+            setTypingFeedback={(value) => setQuestionInteractionState(prev => ({ ...prev, typingFeedback: value }))}
+            studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
+            onSubmit={handleDrillTyping}
+            audioEnabled={audioEnabled}
+          />
+          {!autoAdvance && questionInteractionState.typingFeedback && (
+            <div className="w-nav-controls">
+              <button className="w-button" onClick={() => advanceToNextDrillActivity(true)}>
+                Next →
+              </button>
+            </div>
+          )}
+        </div>
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>

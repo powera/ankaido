@@ -252,6 +252,23 @@ const JourneyMode = ({
     }
   }, [journeyState.listeningMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
+  // Handler for typing submissions with stats and auto-advance
+  const handleJourneyTyping = React.useCallback(async (typedAnswer, isCorrect) => {
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
+    }
+
+    // Auto-advance if enabled
+    if (autoAdvance) {
+      setTimeout(() => {
+        advanceToNextActivity();
+      }, defaultDelay * 1000);
+    }
+  }, [journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
+
 
 
   // Loading states
@@ -465,13 +482,10 @@ const JourneyMode = ({
           background="linear-gradient(135deg, #FF9800, #F57C00)"
         />
         <TypingActivity 
-          wordListManager={wordListManager}
-          wordListState={wordListState}
+          currentWord={journeyState.currentWord}
           studyMode={effectiveStudyMode}
-          nextCard={advanceToNextActivity}
+          onSubmit={handleJourneyTyping}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
         />
       </div>
     );
