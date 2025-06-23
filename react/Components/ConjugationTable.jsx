@@ -1,10 +1,22 @@
 
 import React from 'react';
 import DataTable from './shared/DataTable';
+import { createHoverHandlers } from '../Utilities/hoverHelpers';
+import AudioManager from '../Managers/audioManager';
 
-const ConjugationTable = ({ verb, conjugations, audioEnabled, playAudio, handleHoverStart, handleHoverEnd }) => {
+const ConjugationTable = ({ verb, conjugations, audioEnabled, selectedVoice }) => {
   const conjugationList = conjugations[verb];
   if (!conjugationList) return null;
+
+  // Use the global audio manager instance
+  const audioManager = AudioManager.getInstance();
+
+  // Create hover handlers
+  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(
+    audioManager.playAudio.bind(audioManager),
+    audioEnabled,
+    selectedVoice
+  );
 
   // Create a 3x3 grid for conjugations
   const conjugationGrid = {
@@ -60,7 +72,7 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled, playAudio, handleH
           columns={columns}
           data={tableData}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
+          playAudio={audioManager.playAudio.bind(audioManager)}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           maxHeight="none"

@@ -6,10 +6,7 @@ import ConjugationTable from '../Components/ConjugationTable';
 const { fetchVerbCorpuses, fetchConjugations } = window.lithuanianApi;
 
 const ConjugationsMode = ({
-  audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd
+  audioEnabled
 }) => {
   // Internal state for conjugations mode
   const [availableVerbCorpuses, setAvailableVerbCorpuses] = useState([]);
@@ -139,9 +136,6 @@ const ConjugationsMode = ({
           verb={selectedVerb}
           conjugations={conjugations}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
         />
       )}
     </div>

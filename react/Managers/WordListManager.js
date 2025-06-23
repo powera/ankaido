@@ -95,6 +95,15 @@ class WordListManager {
     this.notifyStateChange();
   }
 
+  // Convenience method that takes a boolean and calls the appropriate method
+  updateSessionStats(isCorrect) {
+    if (isCorrect) {
+      this.updateSessionStatsCorrect();
+    } else {
+      this.updateSessionStatsIncorrect();
+    }
+  }
+
   getSessionStats() {
     return { ...this.sessionStats };
   }

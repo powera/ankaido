@@ -3,6 +3,7 @@ import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
 import journeyStatsManager from '../Managers/journeyStatsManager';
+import audioManager from '../Managers/audioManager';
 import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 
 /**
@@ -20,7 +21,6 @@ const TypingActivity = ({
   studyMode,
   nextCard,
   audioEnabled,
-  playAudio,
   autoAdvance,
   defaultDelay
 }) => {
@@ -47,11 +47,11 @@ const TypingActivity = ({
     if (audioEnabled && word && studyMode === 'lithuanian-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        playAudio(word.lithuanian);
+        audioManager.playAudio(word.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [word, studyMode, audioEnabled, playAudio]);
+  }, [word, studyMode, audioEnabled, audioManager]);
 
   // Handle typed answer submission with stats tracking
   const handleSubmit = React.useCallback(async (typedAnswer) => {
@@ -124,7 +124,6 @@ const TypingActivity = ({
         currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
-        playAudio={playAudio}
         questionText={question}
         answerText={answer}
         showAnswer={activityState.showAnswer}
@@ -136,7 +135,7 @@ const TypingActivity = ({
         currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
-        playAudio={playAudio}
+        playAudio={audioManager.playAudio.bind(audioManager)}
         onSubmit={handleSubmit}
         showAnswer={activityState.showAnswer}
         feedback={typingFeedback || activityState.typingFeedback}

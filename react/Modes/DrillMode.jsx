@@ -17,9 +17,6 @@ import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenera
 
 const DrillMode = ({
   audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd,
   autoAdvance,
   defaultDelay,
   drillConfig, // { corpus, group, difficulty }
@@ -284,19 +281,10 @@ const DrillMode = ({
     }
   }, [drillState.isInitialized, drillState.drillWords.length, drillState.currentActivity, advanceToNextDrillActivity]);
 
-  
+
 
   // Enhanced handlers that update drill stats
-  const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {
-    // Determine correct answer based on current activity mode
-    let correctAnswer;
-    if (drillState.multipleChoiceMode === 'en-to-lt') {
-      correctAnswer = drillState.currentWord.lithuanian;
-    } else {
-      correctAnswer = drillState.currentWord.english;
-    }
-
-    const isCorrect = selectedOption === correctAnswer;
+  const handleDrillMultipleChoice = React.useCallback(async (selectedOption, isCorrect) => {
 
     // Update local drill activity state
     setQuestionInteractionState(prev => ({
@@ -315,13 +303,9 @@ const DrillMode = ({
       }
     }));
 
-    // Update journey stats
+    // Update journey stats using correct API
     try {
-      await journeyStatsManager.updateWordStats(drillState.currentWord, {
-        exposures: 1,
-        correct: isCorrect ? 1 : 0,
-        incorrect: isCorrect ? 0 : 1
-      });
+      await journeyStatsManager.updateWordStats(drillState.currentWord, 'multipleChoice', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -334,7 +318,7 @@ const DrillMode = ({
   }, [drillState.multipleChoiceMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   // Custom nextCard handler for drill mode that tracks stats
-  const handleDrillNextCard = React.useCallback(() => {
+  const handleDrillNextCard = React.useCallback(async () => {
     // For typing activities, we need to track the result based on the feedback
     const feedback = questionInteractionState.typingFeedback;
     const isCorrect = feedback && feedback.includes('✅');
@@ -349,22 +333,18 @@ const DrillMode = ({
       }
     }));
 
-    // Move to next word
-    advanceToNextDrillActivity(true);
-  }, [questionInteractionState.typingFeedback, advanceToNextDrillActivity]);
-
-  const handleDrillListening = React.useCallback(async (selectedOption) => {
-    // Determine correct answer based on listening mode
-    let correctAnswer;
-    if (drillState.listeningMode === 'easy') {
-      // Lithuanian audio -> Lithuanian options
-      correctAnswer = drillState.currentWord.lithuanian;
-    } else {
-      // Lithuanian audio -> English options
-      correctAnswer = drillState.currentWord.english;
+    // Update journey stats for typing activity
+    try {
+      await journeyStatsManager.updateWordStats(drillState.currentWord, 'typing', isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
     }
 
-    const isCorrect = selectedOption === correctAnswer;
+    // Move to next word
+    advanceToNextDrillActivity(true);
+  }, [questionInteractionState.typingFeedback, drillState.currentWord, advanceToNextDrillActivity]);
+
+  const handleDrillListening = React.useCallback(async (selectedOption, isCorrect) => {
 
     // Update local drill activity state
     setQuestionInteractionState(prev => ({
@@ -383,13 +363,10 @@ const DrillMode = ({
       }
     }));
 
-    // Update journey stats
+    // Update journey stats using correct API and mode mapping
     try {
-      await journeyStatsManager.updateWordStats(drillState.currentWord, {
-        exposures: 1,
-        correct: isCorrect ? 1 : 0,
-        incorrect: isCorrect ? 0 : 1
-      });
+      const listeningMode = drillState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
+      await journeyStatsManager.updateWordStats(drillState.currentWord, listeningMode, isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -536,10 +513,9 @@ const DrillMode = ({
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
           studyMode={drillState.multipleChoiceMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleDrillMultipleChoice}
+          onAnswerClick={handleDrillMultipleChoice}
+          autoAdvance={autoAdvance}
+          defaultDelay={Math.max(defaultDelay, 2)}
         />
       ) : drillState.currentActivity === 'listening' ? (
         <ListeningActivity
@@ -549,8 +525,9 @@ const DrillMode = ({
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
           studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleMultipleChoiceAnswer={handleDrillListening}
+          onAnswerClick={handleDrillListening}
+          autoAdvance={autoAdvance}
+          defaultDelay={Math.max(defaultDelay, 2)}
         />
       ) : drillState.currentActivity === 'typing' ? (
         <TypingActivity
@@ -562,7 +539,6 @@ const DrillMode = ({
           studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
           nextCard={handleDrillNextCard}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />

@@ -2,6 +2,7 @@ import React from 'react';
 import { journeyStatsManager } from '../Managers/journeyStatsManager';
 import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
 import { storageConfigManager, STORAGE_MODES } from '../Managers/storageConfigManager';
+import audioManager from '../Managers/audioManager';
 
 // API Configuration - using Vite proxy
 const API_BASE_URL = '/api/trakaido/journeystats';
@@ -16,7 +17,6 @@ const StudyModeSelector = ({
   safeStorage,
   SettingsToggle,
   audioEnabled,
-  availableVoices,
   selectedVoice,
   setSelectedVoice,
   isFullscreen,
@@ -275,7 +275,7 @@ const StudyModeSelector = ({
           {isFullscreen ? '🗗 Close Fullscreen' : '⛶ Fullscreen'}
         </button>
       </div>
-      {audioEnabled && availableVoices.length > 0 && (
+      {audioEnabled && audioManager.getAvailableVoices().length > 0 && (
         <div className="w-hide-mobile" style={{ marginTop: '0.5rem' }}>
           <select 
             value={selectedVoice || ''} 
@@ -284,7 +284,7 @@ const StudyModeSelector = ({
             style={{ width: '100%', maxWidth: '200px' }}
           >
             <option value="random">🎲 Random Voice</option>
-            {availableVoices.map(voice => (
+            {audioManager.getAvailableVoices().map(voice => (
               <option key={voice} value={voice}>
                 🎤 {voice}
               </option>

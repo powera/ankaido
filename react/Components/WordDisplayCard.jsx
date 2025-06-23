@@ -1,14 +1,13 @@
 
 import React from 'react';
 import AudioButton from './AudioButton';
+import audioManager from '../Managers/audioManager';
+import { createHoverHandlers } from '../Utilities/hoverHelpers';
 
 const WordDisplayCard = ({
   currentWord,
   studyMode,
   audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd,
   showAnswer = false,
   questionText = null,
   answerText = null,
@@ -23,6 +22,9 @@ const WordDisplayCard = ({
   hintText = null
 }) => {
   if (!currentWord) return null;
+
+  // Create hover handlers
+  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(audioEnabled);
 
   // Determine question and answer based on study mode if not provided
   const question = questionText || (studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian);
@@ -68,7 +70,7 @@ const WordDisplayCard = ({
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
-              playAudio={playAudio}
+              playAudio={audioManager.playAudio.bind(audioManager)}
             />
           )}
         </div>
@@ -82,7 +84,7 @@ const WordDisplayCard = ({
               <AudioButton 
                 word={audioWord}
                 audioEnabled={audioEnabled}
-                playAudio={playAudio}
+                playAudio={audioManager.playAudio.bind(audioManager)}
               />
             )}
           </div>

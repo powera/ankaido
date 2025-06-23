@@ -2,6 +2,7 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
+import audioManager from '../Managers/audioManager';
 import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
 
 /**
@@ -15,9 +16,6 @@ const FlashCardActivity = ({
   setShowAnswer, 
   studyMode, 
   audioEnabled, 
-  playAudio, 
-  handleHoverStart, 
-  handleHoverEnd,
   isNewWord = false
 }) => {
 
@@ -49,9 +47,6 @@ const FlashCardActivity = ({
       currentWord={currentWord}
       studyMode={studyMode}
       audioEnabled={audioEnabled}
-      playAudio={playAudio}
-      handleHoverStart={handleHoverStart}
-      handleHoverEnd={handleHoverEnd}
       questionText={question}
       answerText={answer}
       showAnswer={shouldShowAnswer}

@@ -6,23 +6,27 @@ const FlashCardMode = ({
   showAnswer, 
   setShowAnswer, 
   studyMode, 
-  audioEnabled, 
-  playAudio, 
-  handleHoverStart, 
-  handleHoverEnd
+  audioEnabled,
+  wordListManager
 }) => {
   return (
-    <FlashCardActivity
-      currentWord={currentWord}
-      showAnswer={showAnswer}
-      setShowAnswer={setShowAnswer}
-      studyMode={studyMode}
-      audioEnabled={audioEnabled}
-      playAudio={playAudio}
-      handleHoverStart={handleHoverStart}
-      handleHoverEnd={handleHoverEnd}
-      isNewWord={false} // Never mark as new in FlashCardMode
-    />
+    <>
+      <FlashCardActivity
+        currentWord={currentWord}
+        showAnswer={showAnswer}
+        setShowAnswer={setShowAnswer}
+        studyMode={studyMode}
+        audioEnabled={audioEnabled}
+        isNewWord={false} // Never mark as new in FlashCardMode
+      />
+      {currentWord && (
+        <div className="w-nav-controls">
+          <button className="w-button" onClick={() => wordListManager.prevCard()}>← Previous</button>
+          <div className="w-nav-center"></div>
+          <button className="w-button" onClick={() => wordListManager.nextCard()}>Next →</button>
+        </div>
+      )}
+    </>
   );
 };
 

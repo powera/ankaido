@@ -1,10 +1,22 @@
 
 import React from 'react';
 import DataTable from './shared/DataTable';
+import { createHoverHandlers } from '../Utilities/hoverHelpers';
+import AudioManager from '../Managers/audioManager';
 
-const DeclensionTable = ({ noun, declensions, audioEnabled, playAudio, handleHoverStart, handleHoverEnd }) => {
+const DeclensionTable = ({ noun, declensions, audioEnabled, selectedVoice }) => {
   const nounData = declensions[noun];
   if (!nounData) return null;
+
+  // Use the global audio manager instance
+  const audioManager = AudioManager.getInstance();
+
+  // Create hover handlers
+  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(
+    audioManager.playAudio.bind(audioManager),
+    audioEnabled,
+    selectedVoice
+  );
 
   const cases = ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'locative', 'vocative'];
 
@@ -79,7 +91,7 @@ const DeclensionTable = ({ noun, declensions, audioEnabled, playAudio, handleHov
           columns={columns}
           data={tableData}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
+          playAudio={audioManager.playAudio.bind(audioManager)}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           maxHeight="none"

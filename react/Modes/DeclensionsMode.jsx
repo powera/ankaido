@@ -6,10 +6,7 @@ import DeclensionTable from '../Components/DeclensionTable';
 const { fetchDeclensions } = window.lithuanianApi;
 
 const DeclensionsMode = ({
-  audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd
+  audioEnabled
 }) => {
   // Internal state for declensions mode
   const [selectedNoun, setSelectedNoun] = useState(null);
@@ -81,9 +78,6 @@ const DeclensionsMode = ({
           noun={selectedNoun}
           declensions={declensions}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
         />
       )}
     </div>

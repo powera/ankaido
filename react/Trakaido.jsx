@@ -22,13 +22,13 @@ import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import storageConfigManager from './Managers/storageConfigManager';
 import journeyStatsManager from './Managers/journeyStatsManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
+import audioManager from './Managers/audioManager';
 // Use the namespaced lithuanianApi from window
 // These are provided by the script tag in widget.html: /js/lithuanianApi.js
 const { 
   fetchCorpora, 
   fetchCorpusStructure, 
-  fetchAvailableVoices, 
-  AudioManager
+  fetchAvailableVoices
 } = window.lithuanianApi;
 
 // The CSS classes available are primarily in widget_tools.css .
@@ -73,13 +73,8 @@ const FlashCardApp = () => {
     autoAdvanceTimer: null
   });
 
-  const [audioManager] = useState(() => new AudioManager());
   const [wordListManager] = useState(() => new WordListManager(safeStorage, settings));
-  const [hoverTimeout, setHoverTimeout] = useState(null);
   const [availableVoices, setAvailableVoices] = useState([]);
-  const [selectedVoice, setSelectedVoice] = useState(() => {
-    return safeStorage?.getItem('flashcard-selected-voice') || null;
-  });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
     // Check both intro and storage configuration
@@ -96,7 +91,7 @@ const FlashCardApp = () => {
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
   const [journeyStats, setJourneyStats] = useState({});
-  
+
   // Drill mode state
   const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
   const [drillConfig, setDrillConfig] = useState(null); // { corpus, group, difficulty }
@@ -136,9 +131,10 @@ const FlashCardApp = () => {
         ]);
         setAvailableCorpora(corpora);
         setAvailableVoices(voices);
-        if (voices.length > 0 && !selectedVoice) {
-          setSelectedVoice('random');
-        }
+        
+        // Initialize audioManager with available voices
+        await audioManager.initialize(voices);
+        
         const corporaStructures = {};
         // Load corpus structures
         for (const corpus of corpora) {
@@ -242,14 +238,13 @@ const FlashCardApp = () => {
   useEffect(() => {
     const persistenceUpdates = {
       'flashcard-study-mode': studyMode,
-      'flashcard-quiz-mode': quizMode,
-      ...(selectedVoice && { 'flashcard-selected-voice': selectedVoice })
+      'flashcard-quiz-mode': quizMode
     };
 
     Object.entries(persistenceUpdates).forEach(([key, value]) => {
       safeStorage.setItem(key, value);
     });
-  }, [studyMode, quizMode, selectedVoice]);
+  }, [studyMode, quizMode]);
 
   // Generate words list when selected groups change
   useEffect(() => {
@@ -258,7 +253,7 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
-  
+
 
 
 
@@ -346,7 +341,6 @@ const FlashCardApp = () => {
       // Reset state to defaults
       setStudyMode('english-to-lithuanian');
       setQuizMode('flashcard');
-      setSelectedVoice('random');
       // selectedGroups will be updated by the corpus choices manager listener
       setShowWelcome(true);
     } catch (error) {
@@ -356,53 +350,7 @@ const FlashCardApp = () => {
     }
   };
 
-  const nextCard = () => wordListManager.nextCard();
-  const prevCard = () => wordListManager.prevCard();
   const resetCards = () => wordListManager.resetCards();
-  const handleMultipleChoiceAnswer = (selectedOption) => {
-    // Activities now handle their own stats tracking
-    // This handler just manages UI flow
-    if (autoAdvance) {
-      setTimeout(() => {
-        nextCard();
-      }, defaultDelay * 1000);
-    }
-  };
-
-  // Helper function to get a random voice from available voices
-  const getRandomVoice = () => {
-    if (availableVoices.length === 0) return null;
-    const randomIndex = Math.floor(Math.random() * availableVoices.length);
-    return availableVoices[randomIndex];
-  };
-
-  // Helper function to get the actual voice to use (handles random selection)
-  const getVoiceToUse = () => {
-    if (selectedVoice === 'random') {
-      return getRandomVoice();
-    }
-    return selectedVoice;
-  };
-
-  const playAudio = async (word, onlyCached = false) => {
-    const voiceToUse = getVoiceToUse();
-    audioManager.playAudio(word, voiceToUse, audioEnabled, onlyCached);
-  };
-
-  const handleHoverStart = (word) => {
-    if (!audioEnabled || !selectedVoice) return;
-    const timeout = setTimeout(() => {
-      playAudio(word, true); // Only play if cached
-    }, 900);
-    setHoverTimeout(timeout);
-  };
-
-  const handleHoverEnd = () => {
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-      setHoverTimeout(null);
-    }
-  };
 
   // Drill mode handlers
   const handleStartDrill = (config) => {
@@ -484,9 +432,6 @@ const FlashCardApp = () => {
         safeStorage={safeStorage}
         SettingsToggle={SettingsToggle}
         audioEnabled={audioEnabled}
-        availableVoices={availableVoices}
-        selectedVoice={selectedVoice}
-        setSelectedVoice={setSelectedVoice}
         isFullscreen={isFullscreen}
         toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
@@ -512,16 +457,10 @@ const FlashCardApp = () => {
       ) : quizMode === 'conjugations' ? (
         <ConjugationsMode 
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
         />
       ) : quizMode === 'declensions' ? (
         <DeclensionsMode 
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
         />
       ) : quizMode === 'vocabulary-list' ? (
         <VocabularyList 
@@ -532,7 +471,6 @@ const FlashCardApp = () => {
           setVocabListWords={setVocabListWords}
           corporaData={corporaData}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
         />
       ) : quizMode === 'journey' ? (
         <JourneyMode 
@@ -540,11 +478,6 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
-          nextCard={nextCard}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           safeStorage={safeStorage}
@@ -564,11 +497,6 @@ const FlashCardApp = () => {
             wordListState={wordListState}
             studyMode={studyMode}
             audioEnabled={audioEnabled}
-            playAudio={playAudio}
-            handleHoverStart={handleHoverStart}
-            handleHoverEnd={handleHoverEnd}
-            handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
-            nextCard={nextCard}
             autoAdvance={autoAdvance}
             defaultDelay={defaultDelay}
             safeStorage={safeStorage}
@@ -584,18 +512,14 @@ const FlashCardApp = () => {
           setShowAnswer={(value) => setWordListState(prev => ({ ...prev, showAnswer: value }))}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
+          wordListManager={wordListManager}
         />
       ) : quizMode === 'typing' ? (
         <TypingMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={studyMode}
-          nextCard={nextCard}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
@@ -605,8 +529,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
@@ -614,10 +538,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
       ) : (
         <div className="w-card">
@@ -627,16 +549,9 @@ const FlashCardApp = () => {
         </div>
       )}
 
-      {/* Navigation controls */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
-        <div className="w-nav-controls">
-          <button className="w-button" onClick={prevCard}>← Previous</button>
-          <div className="w-nav-center"></div>
-          <button className="w-button" onClick={nextCard}>Next →</button>
-        </div>
-      )}
 
-      
+
+
 
       <SettingsModal />
       <StudyMaterialsModal

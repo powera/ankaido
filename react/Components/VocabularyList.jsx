@@ -1,4 +1,3 @@
-
 import React from 'react';
 import DataTable from './shared/DataTable';
 
@@ -18,20 +17,20 @@ const VocabularyList = ({
       setVocabListWords([]);
       return;
     }
-    
+
     // Parse the combined value to get corpus and group
     const [corpus, group] = optionValue.split('|');
     if (!corpus || !group || !corporaData[corpus]?.groups[group]) return;
-    
+
     setSelectedVocabGroup(optionValue);
-    
+
     // Get words for this specific group
     const words = corporaData[corpus].groups[group].map(word => ({
       ...word,
       corpus,
       group
     }));
-    
+
     // Sort alphabetically by Lithuanian word
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
     setVocabListWords(words);
@@ -58,7 +57,7 @@ const VocabularyList = ({
           ))}
         </select>
       </div>
-      
+
       {selectedVocabGroup && (
         <div>
           <h4>{vocabListWords.length} Words</h4>

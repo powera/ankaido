@@ -14,18 +14,13 @@ import {
 import { selectJourneyActivity } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
-const JourneyMode = ({
-  wordListManager,
-  wordListState,
-  studyMode,
-  audioEnabled,
-  playAudio,
-  handleHoverStart,
-  handleHoverEnd,
-  handleMultipleChoiceAnswer,
-  nextCard,
-  autoAdvance,
-  defaultDelay,
+const JourneyMode = ({ 
+  wordListManager, 
+  wordListState, 
+  studyMode, 
+  audioEnabled, 
+  autoAdvance, 
+  defaultDelay, 
   safeStorage
 }) => {
   const [journeyState, setJourneyState] = React.useState({
@@ -37,6 +32,11 @@ const JourneyMode = ({
     multipleChoiceMode: null,
     typingMode: null,
     multipleChoiceOptions: []
+  });
+
+  const [activityAnswerState, setActivityAnswerState] = React.useState({
+    showAnswer: false,
+    selectedAnswer: null
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
@@ -147,6 +147,12 @@ const JourneyMode = ({
       multipleChoiceOptions: multipleChoiceOptions
     });
 
+    // Reset answer state for new activity
+    setActivityAnswerState({
+      showAnswer: false,
+      selectedAnswer: null
+    });
+
     // Note: New words will be marked as exposed by the FlashCardActivity when first shown
 
     // Generate multiple choice options if needed, or set up typing activities
@@ -193,22 +199,58 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
-  
 
 
 
-  // Simplified handlers that just manage UI flow - stats are handled by Activity components
-  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption) => {
-    // Just delegate to the original handler - the Activity components handle stats updates
-    handleMultipleChoiceAnswer(selectedOption);
-    
+
+  // Handler for multiple choice answers with stats and auto-advance
+  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption, isCorrect) => {
+    // Update local answer state
+    setActivityAnswerState({
+      showAnswer: true,
+      selectedAnswer: selectedOption
+    });
+
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
+    }
+
     // Auto-advance if enabled
     if (autoAdvance) {
       setTimeout(() => {
         advanceToNextActivity();
       }, defaultDelay * 1000);
     }
-  }, [handleMultipleChoiceAnswer, autoAdvance, defaultDelay, advanceToNextActivity]);
+  }, [journeyState.multipleChoiceMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
+
+  // Handler for listening answers with stats and auto-advance
+  const handleJourneyListening = React.useCallback(async (selectedOption, isCorrect) => {
+    // Update local answer state
+    setActivityAnswerState({
+      showAnswer: true,
+      selectedAnswer: selectedOption
+    });
+
+    // Determine stats mode based on difficulty
+    const statsMode = journeyState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
+
+    // Update journey stats
+    try {
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect);
+    } catch (error) {
+      console.error('Error updating journey stats:', error);
+    }
+
+    // Auto-advance if enabled
+    if (autoAdvance) {
+      setTimeout(() => {
+        advanceToNextActivity();
+      }, defaultDelay * 1000);
+    }
+  }, [journeyState.listeningMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
 
 
@@ -326,9 +368,6 @@ const JourneyMode = ({
           setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
           isNewWord={true}
         />
         <div className="w-nav-controls">
@@ -357,13 +396,14 @@ const JourneyMode = ({
         />
         <MultipleChoiceActivity 
           currentWord={journeyState.currentWord}
+          showAnswer={activityAnswerState.showAnswer}
+          selectedAnswer={activityAnswerState.selectedAnswer}
           multipleChoiceOptions={journeyState.multipleChoiceOptions}
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
+          onAnswerClick={handleJourneyMultipleChoice}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
         <NavigationControls />
       </div>
@@ -391,11 +431,14 @@ const JourneyMode = ({
         />
         <ListeningActivity 
           currentWord={journeyState.currentWord}
+          showAnswer={activityAnswerState.showAnswer}
+          selectedAnswer={activityAnswerState.selectedAnswer}
           multipleChoiceOptions={journeyState.multipleChoiceOptions}
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
-          handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
+          onAnswerClick={handleJourneyListening}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
         <NavigationControls />
       </div>
@@ -427,7 +470,6 @@ const JourneyMode = ({
           studyMode={effectiveStudyMode}
           nextCard={advanceToNextActivity}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
@@ -437,7 +479,5 @@ const JourneyMode = ({
 
   return null;
 };
-
-
 
 export default JourneyMode;

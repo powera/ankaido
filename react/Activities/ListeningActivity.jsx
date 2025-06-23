@@ -2,8 +2,7 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import journeyStatsManager from '../Managers/journeyStatsManager';
-import { createInitialActivityState, getCorrectAnswer } from '../Utilities/activityHelpers';
+import audioManager from '../Managers/audioManager';
 
 /**
  * Listening Activity Component
@@ -16,14 +15,13 @@ const ListeningActivity = ({
   multipleChoiceOptions,
   studyMode,
   audioEnabled,
-  playAudio,
-  handleMultipleChoiceAnswer,
-  settings
+  onAnswerClick,
+  settings,
+  allWords,
+  autoAdvance,
+  defaultDelay
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
-  const [activityState, setActivityState] = React.useState(() =>
-    createInitialActivityState(showAnswer || false, selectedAnswer || null)
-  );
 
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
@@ -35,58 +33,34 @@ const ListeningActivity = ({
     if (audioEnabled && currentWord && !preventAutoPlay) {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        playAudio(currentWord.lithuanian);
+        audioManager.playAudio(currentWord.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [currentWord, audioEnabled, playAudio, preventAutoPlay]);
+  }, [currentWord, audioEnabled, audioManager, preventAutoPlay]);
 
-  // Reset activity state when word changes
-  React.useEffect(() => {
-    setActivityState(prev => ({
-      ...prev,
-      showAnswer: false,
-      selectedAnswer: null
-    }));
-  }, [currentWord]);
-
-  // Handle listening activity with stats tracking
-  const handleListeningWithStats = React.useCallback(async (selectedOption) => {
+  // Handle answer click
+  const handleAnswerClick = React.useCallback((selectedOption) => {
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
     
-    // Determine correct answer based on listening mode
+    // Determine correct answer based on study mode
     let correctAnswer;
     if (studyMode === 'lithuanian-to-lithuanian') {
       correctAnswer = currentWord.lithuanian;
+    } else if (studyMode === 'lithuanian-to-english') {
+      correctAnswer = currentWord.english;
     } else {
-      correctAnswer = getCorrectAnswer(currentWord, studyMode);
+      correctAnswer = currentWord.lithuanian; // Default fallback
     }
 
     const isCorrect = selectedOption === correctAnswer;
-
-    // Update local state
-    setActivityState(prev => ({
-      ...prev,
-      selectedAnswer: selectedOption,
-      showAnswer: true
-    }));
-
-    // Determine stats mode based on difficulty
-    const statsMode = studyMode === 'lithuanian-to-lithuanian' ? 'listeningEasy' : 'listeningHard';
-
-    // Update journey stats
-    try {
-      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
-    } catch (error) {
-      console.error('Error updating journey stats in ListeningActivity:', error);
+    
+    // Call the onAnswerClick callback with correctness information
+    if (onAnswerClick) {
+      onAnswerClick(selectedOption, isCorrect);
     }
-
-    // Call the original handler for UI updates and flow control
-    if (handleMultipleChoiceAnswer) {
-      handleMultipleChoiceAnswer(selectedOption);
-    }
-  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
+  }, [onAnswerClick, studyMode, currentWord]);
 
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
@@ -103,9 +77,33 @@ const ListeningActivity = ({
     }
   };
 
-  // Use external state if provided, otherwise use internal state
-  const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
-  const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
+  // Generate hint text based on answer state
+  const getHintText = () => {
+    if (!showAnswer) {
+      return getInstructionText();
+    }
+    
+    // Determine if the selected answer was correct
+    let correctAnswer;
+    if (studyMode === 'lithuanian-to-lithuanian') {
+      correctAnswer = currentWord.lithuanian;
+    } else if (studyMode === 'lithuanian-to-english') {
+      correctAnswer = currentWord.english;
+    } else {
+      correctAnswer = currentWord.lithuanian; // Default fallback
+    }
+    
+    const isCorrect = selectedAnswer === correctAnswer;
+    
+    let hintText = isCorrect ? "Correct" : "Incorrect";
+    
+    // Add auto-advance information if enabled
+    if (autoAdvance && defaultDelay) {
+      hintText += ` - will advance after ${defaultDelay} second${defaultDelay !== 1 ? 's' : ''}`;
+    }
+    
+    return hintText;
+  };
 
   return (
     <div>
@@ -113,22 +111,23 @@ const ListeningActivity = ({
         currentWord={currentWord}
         studyMode="listening"
         audioEnabled={audioEnabled}
-        playAudio={playAudio}
         questionText="🎧 Listen and choose the correct answer:"
         showAudioButton={true}
-        promptText={getInstructionText()}
+        showHints={true}
+        hintText={getHintText()}
         isClickable={false}
       />
       <MultipleChoiceOptions
         currentWord={currentWord}
         studyMode={studyMode}
         quizMode="listening"
-        handleMultipleChoiceAnswer={handleListeningWithStats}
+        handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        playAudio={playAudio}
+        playAudio={audioManager.playAudio.bind(audioManager)}
         multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswerToUse}
-        showAnswer={showAnswerToUse}
+        selectedAnswer={selectedAnswer}
+        showAnswer={showAnswer}
+        allWords={allWords}
       />
     </div>
   );
