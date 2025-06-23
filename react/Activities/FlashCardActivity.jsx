@@ -20,9 +20,6 @@ const FlashCardActivity = ({
   handleHoverEnd,
   isNewWord = false
 }) => {
-  // Early return after all hooks
-  if (!currentWord) return null;
-
   // Initialize journey stats manager
   React.useEffect(() => {
     journeyStatsManager.initialize();
@@ -41,6 +38,9 @@ const FlashCardActivity = ({
       markAsExposed();
     }
   }, [isNewWord, currentWord]);
+
+  // Early return after all hooks
+  if (!currentWord) return null;
 
   const question = getQuestionText(currentWord, studyMode);
   const answer = getCorrectAnswer(currentWord, studyMode);
