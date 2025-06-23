@@ -1,137 +1,42 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
-import journeyStatsManager from '../Managers/journeyStatsManager';
-import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
-import { createStatsHandler } from "../Utilities/activityHelpers";
+import { getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 
 /**
  * Typing Activity Component
  * Presents a word and requires user to type the translation
  */
 const TypingActivity = ({ 
-  wordListManager,
-  wordListState,
   currentWord,
-  typedAnswer,
-  typingFeedback,
-  setTypedAnswer,
-  setTypingFeedback,
   studyMode,
-  nextCard,
   audioEnabled,
   playAudio,
+  // Controlled props from Mode
+  showAnswer,
+  typedAnswer,
+  typingFeedback,
+  onTypedAnswerChange,
+  onSubmit,
+  // Auto-advance props
   autoAdvance,
-  defaultDelay
+  defaultDelay,
+  onNext,
+  autoAdvanceTimer
 }) => {
-  const [activityState, setActivityState] = React.useState(() =>
-    createInitialActivityState(false, null, typedAnswer || '', typingFeedback || '')
-  );
-
-  // Use currentWord from props, fallback to wordListManager if available
-  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
-
-  // Reset state when word or external state changes
-  React.useEffect(() => {
-    setActivityState(prev => ({
-      ...prev,
-      showAnswer: false,
-      typedAnswer: typedAnswer || '',
-      typingFeedback: typingFeedback || '',
-      autoAdvanceTimer: null
-    }));
-  }, [word, typedAnswer, typingFeedback]);
-
   // Auto-play audio for LT->EN typing (Lithuanian prompt, player types English answer)
   React.useEffect(() => {
-    if (audioEnabled && word && studyMode === 'lithuanian-to-english') {
+    if (audioEnabled && currentWord && studyMode === 'lithuanian-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        playAudio(word.lithuanian);
+        playAudio(currentWord.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [word, studyMode, audioEnabled, playAudio]);
-
-  // Handle typing submission with stats tracking
-  const handleTypingSubmit = React.useCallback(
-    createStatsHandler(
-      journeyStatsManager,
-      word,
-      'typing',
-      (typedAnswer) => {
-        // Prevent double submission
-        if (activityState.showAnswer) return;
-
-        // Custom logic for typing mode
-        const correctAnswer = studyMode === 'english-to-lithuanian' ? 
-          word.lithuanian : word.english;
-
-        const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
-        const feedback = isCorrect ? 
-          '✅ Correct!' : 
-          `❌ Incorrect. The correct answer is: ${correctAnswer}`;
-
-        // Update local state
-        setActivityState(prev => ({
-          ...prev,
-          showAnswer: true,
-          typingFeedback: feedback
-        }));
-
-        // Update external state if setters are provided
-        if (setTypingFeedback) setTypingFeedback(feedback);
-
-        // Set up auto-advance if enabled
-        if (autoAdvance && defaultDelay > 0) {
-          const timer = setTimeout(() => {
-            if (nextCard) nextCard({ selectedAnswer: typedAnswer, feedback, isCorrect });
-          }, defaultDelay * 1000);
-          setActivityState(prev => ({ ...prev, autoAdvanceTimer: timer }));
-        }
-
-        return { selectedAnswer: typedAnswer, feedback, isCorrect };
-      }
-    ),
-    [word, studyMode, setTypingFeedback, autoAdvance, defaultDelay, nextCard, activityState.showAnswer]
-  );
-
-  // Handle typed answer changes
-  const handleTypedAnswerChange = React.useCallback((value) => {
-    if (setTypedAnswer) {
-      setTypedAnswer(value);
-    } else {
-      setActivityState(prev => ({ ...prev, typedAnswer: value }));
-    }
-  }, [setTypedAnswer]);
-
-  // Handle next card navigation
-  const handleNextCard = React.useCallback(() => {
-    // Clear any auto-advance timer
-    if (activityState.autoAdvanceTimer) {
-      clearTimeout(activityState.autoAdvanceTimer);
-      setActivityState(prev => ({ ...prev, autoAdvanceTimer: null }));
-    }
-    // Pass the current state to nextCard if available
-    const result = activityState.showAnswer ? {
-      selectedAnswer: activityState.typedAnswer,
-      feedback: activityState.typingFeedback,
-      isCorrect: activityState.typingFeedback.includes('✅')
-    } : null;
-    nextCard(result);
-  }, [nextCard, activityState.autoAdvanceTimer, activityState.showAnswer, activityState.typedAnswer, activityState.typingFeedback]);
-
-  // Clean up timer on unmount or word change
-  React.useEffect(() => {
-    return () => {
-      if (activityState.autoAdvanceTimer) {
-        clearTimeout(activityState.autoAdvanceTimer);
-      }
-    };
-  }, [activityState.autoAdvanceTimer]);
+  }, [currentWord, studyMode, audioEnabled, playAudio]);
 
   // Early return after all hooks
-  if (!word) {
+  if (!currentWord) {
     return (
       <div className="w-card">
         <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
@@ -141,8 +46,8 @@ const TypingActivity = ({
     );
   }
 
-  const question = getQuestionText(word, studyMode);
-  const answer = getCorrectAnswer(word, studyMode);
+  const question = getQuestionText(currentWord, studyMode);
+  const answer = getCorrectAnswer(currentWord, studyMode);
 
   // Generate prompt text based on study mode
   const promptText = studyMode === 'english-to-lithuanian' ? 
@@ -152,31 +57,31 @@ const TypingActivity = ({
   return (
     <div>
       <WordDisplayCard
-        currentWord={word}
+        currentWord={currentWord}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         questionText={question}
         answerText={answer}
-        showAnswer={activityState.showAnswer}
+        showAnswer={showAnswer}
         promptText={promptText}
         isClickable={false}
       />
 
       <TypingResponse
-        currentWord={word}
+        currentWord={currentWord}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
-        onSubmit={handleTypingSubmit}
-        showAnswer={activityState.showAnswer}
-        feedback={typingFeedback || activityState.typingFeedback}
-        typedAnswer={typedAnswer || activityState.typedAnswer}
-        onTypedAnswerChange={handleTypedAnswerChange}
+        onSubmit={onSubmit}
+        showAnswer={showAnswer}
+        feedback={typingFeedback}
+        typedAnswer={typedAnswer}
+        onTypedAnswerChange={onTypedAnswerChange}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
-        onNext={handleNextCard}
-        autoAdvanceTimer={activityState.autoAdvanceTimer}
+        onNext={onNext}
+        autoAdvanceTimer={autoAdvanceTimer}
       />
     </div>
   );
