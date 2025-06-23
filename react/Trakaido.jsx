@@ -28,9 +28,6 @@ const {
   fetchCorpora, 
   fetchCorpusStructure, 
   fetchAvailableVoices, 
-  fetchVerbCorpuses, 
-  fetchConjugations, 
-  fetchDeclensions,
   AudioManager
 } = window.lithuanianApi;
 
@@ -95,15 +92,6 @@ const FlashCardApp = () => {
   const [showStudyMaterialsModal, setShowStudyMaterialsModal] = useState(false);
   const [showExposureStatsModal, setShowExposureStatsModal] = useState(false);
   const [loadingWords, setLoadingWords] = useState(false);
-  const [conjugations, setConjugations] = useState({});
-  const [availableVerbs, setAvailableVerbs] = useState([]);
-  const [selectedVerb, setSelectedVerb] = useState(null);
-  const [loadingConjugations, setLoadingConjugations] = useState(false);
-  const [availableVerbCorpuses, setAvailableVerbCorpuses] = useState([]);
-  const [selectedVerbCorpus, setSelectedVerbCorpus] = useState('verbs_present');
-  const [declensions, setDeclensions] = useState({});
-  const [availableNouns, setAvailableNouns] = useState([]);
-  const [selectedNoun, setSelectedNoun] = useState(null);
   const [selectedVocabGroup, setSelectedVocabGroup] = useState(null);
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
@@ -142,20 +130,12 @@ const FlashCardApp = () => {
       setLoading(true);
       setError(null);
       try {
-        const [corpora, voices, verbCorpuses, conjugationData, declensionData] = await Promise.all([
+        const [corpora, voices] = await Promise.all([
           fetchCorpora(),
-          fetchAvailableVoices(),
-          fetchVerbCorpuses(),
-          fetchConjugations(),
-          fetchDeclensions()
+          fetchAvailableVoices()
         ]);
         setAvailableCorpora(corpora);
         setAvailableVoices(voices);
-        setAvailableVerbCorpuses(verbCorpuses);
-        setConjugations(conjugationData.conjugations);
-        setAvailableVerbs(conjugationData.verbs);
-        setDeclensions(declensionData.declensions);
-        setAvailableNouns(declensionData.available_nouns);
         if (voices.length > 0 && !selectedVoice) {
           setSelectedVoice('random');
         }
@@ -290,28 +270,7 @@ const FlashCardApp = () => {
     }
   }, [wordListState.currentCard, quizMode, audioEnabled, wordListState.allWords]);
 
-  // Reload conjugations when verb corpus changes
-  useEffect(() => {
-    const loadConjugationsForCorpus = async () => {
-      if (selectedVerbCorpus && !loading) {
-        setLoadingConjugations(true);
-        try {
-          const conjugationData = await fetchConjugations(selectedVerbCorpus);
-          setConjugations(conjugationData.conjugations);
-          setAvailableVerbs(conjugationData.verbs);
-          // Only reset selected verb if it doesn't exist in the new corpus
-          if (selectedVerb && !conjugationData.verbs.includes(selectedVerb)) {
-            setSelectedVerb(null);
-          }
-        } catch (error) {
-          console.error('Failed to load conjugations for corpus:', selectedVerbCorpus, error);
-        } finally {
-          setLoadingConjugations(false);
-        }
-      }
-    };
-    loadConjugationsForCorpus();
-  }, [selectedVerbCorpus, loading]);
+
 
   // Generate all available groups from all corpuses
   useEffect(() => {
@@ -554,14 +513,6 @@ const FlashCardApp = () => {
         </div>
       ) : quizMode === 'conjugations' ? (
         <ConjugationsMode 
-          selectedVerbCorpus={selectedVerbCorpus}
-          setSelectedVerbCorpus={setSelectedVerbCorpus}
-          availableVerbCorpuses={availableVerbCorpuses}
-          loadingConjugations={loadingConjugations}
-          selectedVerb={selectedVerb}
-          setSelectedVerb={setSelectedVerb}
-          availableVerbs={availableVerbs}
-          conjugations={conjugations}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
@@ -569,10 +520,6 @@ const FlashCardApp = () => {
         />
       ) : quizMode === 'declensions' ? (
         <DeclensionsMode 
-          selectedNoun={selectedNoun}
-          setSelectedNoun={setSelectedNoun}
-          availableNouns={availableNouns}
-          declensions={declensions}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
