@@ -227,7 +227,7 @@
     
     .w-choice-option {
         padding: 0.75rem 0.5rem;
-        font-size: 0.9rem;
+        /* Removed font-size reduction - maintain default rem sizing */
         line-height: 1.2;
         display: flex;
         flex-direction: column;
@@ -252,7 +252,7 @@
     /* Main text styling for mobile */
     .w-choice-option .trakaido-choice-content > div:first-child {
         font-weight: 500;
-        font-size: 0.9rem;
+        /* Removed font-size reduction - maintain readable size */
         line-height: 1.1;
         max-height: 2.2em; /* Limit to 2 lines */
         overflow: hidden;
@@ -266,7 +266,7 @@
     
     /* Translation text styling for mobile */
     .w-choice-option .trakaido-choice-content > div:first-child > div:last-child {
-        font-size: 0.7rem !important;
+        font-size: 0.85rem !important; /* Increased from 0.7rem for better readability */
         line-height: 1;
         margin-top: 0.15rem;
         opacity: 0.8;
@@ -316,15 +316,15 @@
     
     .w-choice-option {
         padding: 0.6rem 0.4rem;
-        font-size: 0.85rem;
+        /* Removed font-size reduction - let rem scale naturally */
     }
     
     .w-choice-option .trakaido-choice-content > div:first-child {
-        font-size: 0.85rem;
+        /* Removed font-size reduction - let rem scale naturally */
     }
     
     .w-choice-option .trakaido-choice-content > div:first-child > div:last-child {
-        font-size: 0.65rem !important;
+        font-size: 0.8rem !important; /* Increased from 0.65rem for better readability */
     }
 }
 
@@ -456,7 +456,7 @@
     
     .w-nav-controls .w-button {
         padding: 0.75rem 0.5rem;
-        font-size: 0.85rem;
+        /* Removed font-size reduction - maintain readable button text */
         min-height: 44px;
     }
     
@@ -929,7 +929,7 @@
 
 /* Compact buttons for mobile */
 .w-compact-button {
-    font-size: 0.8rem;
+    /* Removed font-size reduction - maintain readable button text */
     padding: 0.4rem 0.6rem;
     min-height: 36px;
     flex: 1;
@@ -948,7 +948,7 @@
     
     .w-compact-button {
         max-width: calc(33.333% - 0.17rem);
-        font-size: 0.75rem;
+        /* Removed font-size reduction - maintain readable button text */
         padding: 0.3rem 0.4rem;
     }
 }
