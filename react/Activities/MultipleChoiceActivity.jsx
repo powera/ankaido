@@ -40,7 +40,7 @@ const MultipleChoiceActivity = ({
       clearTimeout(autoAdvanceTimer);
       setAutoAdvanceTimer(null);
     }
-  }, [currentWord, autoAdvanceTimer]);
+  }, [currentWord]);
 
   // Auto-play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
   React.useEffect(() => {
