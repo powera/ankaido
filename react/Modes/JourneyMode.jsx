@@ -436,7 +436,6 @@ const JourneyMode = ({
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
-          settings={settings}
         />
         <NavigationControls />
       </div>
@@ -469,7 +468,6 @@ const JourneyMode = ({
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           handleMultipleChoiceAnswer={handleJourneyMultipleChoice}
-          settings={settings}
         />
         <NavigationControls />
       </div>

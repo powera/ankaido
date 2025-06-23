@@ -4,8 +4,6 @@ import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
 
 const MultipleChoiceActivity = ({ 
-  wordListManager,
-  wordListState,
   currentWord, // Accept currentWord as prop
   showAnswer, // Accept showAnswer as prop
   selectedAnswer, // Accept selectedAnswer as prop
@@ -24,8 +22,8 @@ const MultipleChoiceActivity = ({
     autoAdvanceTimer: null
   });
 
-  // Use currentWord from props, fallback to wordListManager if available
-  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
+  // Use currentWord from props
+  const word = currentWord;
 
   if (!word) return null;
 
