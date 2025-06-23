@@ -11,7 +11,9 @@ const ListeningMode = ({
   audioEnabled,
   playAudio,
   onAdvanceToNext,
-  settings
+  settings,
+  autoAdvance,
+  defaultDelay
 }) => {
   const [multipleChoiceOptions, setMultipleChoiceOptions] = React.useState([]);
   const currentWord = wordListManager?.getCurrentWord();
@@ -46,6 +48,8 @@ const ListeningMode = ({
         playAudio={playAudio}
         onAdvanceToNext={onAdvanceToNext}
         settings={settings}
+        autoAdvance={autoAdvance}
+        defaultDelay={defaultDelay}
       />
       <StatsDisplay stats={wordListState.stats} onReset={handleReset} />
     </>

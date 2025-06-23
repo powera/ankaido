@@ -18,12 +18,15 @@ const ListeningActivity = ({
   audioEnabled,
   playAudio,
   onAdvanceToNext,
-  settings
+  settings,
+  autoAdvance,
+  defaultDelay
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
   const [activityState, setActivityState] = React.useState(() =>
     createInitialActivityState(showAnswer || false, selectedAnswer || null)
   );
+  const [autoAdvanceTimer, setAutoAdvanceTimer] = React.useState(null);
 
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
@@ -48,6 +51,11 @@ const ListeningActivity = ({
       showAnswer: false,
       selectedAnswer: null
     }));
+    // Clear any existing timer when word changes
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+      setAutoAdvanceTimer(null);
+    }
   }, [currentWord]);
 
   // Handle listening activity with stats tracking
@@ -82,11 +90,31 @@ const ListeningActivity = ({
       console.error('Error updating journey stats in ListeningActivity:', error);
     }
 
-    // Call the original handler for UI updates and flow control
-    if (onAdvanceToNext) {
-      onAdvanceToNext(selectedOption);
+    // Set up auto-advance timer if enabled, otherwise advance immediately
+    if (autoAdvance && defaultDelay > 0) {
+      const timer = setTimeout(() => {
+        // Call the parent handler to advance to next question
+        if (onAdvanceToNext) {
+          onAdvanceToNext(selectedOption);
+        }
+      }, defaultDelay * 1000);
+      setAutoAdvanceTimer(timer);
+    } else if (!autoAdvance) {
+      // If auto-advance is disabled, advance immediately
+      if (onAdvanceToNext) {
+        onAdvanceToNext(selectedOption);
+      }
     }
-  }, [currentWord, studyMode, onAdvanceToNext]);
+  }, [currentWord, studyMode, onAdvanceToNext, autoAdvance, defaultDelay]);
+
+  // Clean up timer on unmount
+  React.useEffect(() => {
+    return () => {
+      if (autoAdvanceTimer) {
+        clearTimeout(autoAdvanceTimer);
+      }
+    };
+  }, [autoAdvanceTimer]);
 
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
