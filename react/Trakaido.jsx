@@ -258,10 +258,6 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
-
-
-
-
   // Generate all available groups from all corpuses
   useEffect(() => {
     if (Object.keys(corporaData).length === 0) return;
@@ -355,10 +351,6 @@ const FlashCardApp = () => {
       setShowWelcome(true);
     }
   };
-
-  const nextCard = () => wordListManager.nextCard();
-  const prevCard = () => wordListManager.prevCard();
-  const resetCards = () => wordListManager.resetCards();
 
   // Helper function to get a random voice from available voices
   const getRandomVoice = () => {
@@ -574,13 +566,13 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
+          wordListManager={wordListManager}
         />
       ) : quizMode === 'typing' ? (
         <TypingMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
           studyMode={studyMode}
-          nextCard={nextCard}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
           autoAdvance={autoAdvance}
@@ -613,17 +605,6 @@ const FlashCardApp = () => {
           </div>
         </div>
       )}
-
-      {/* Navigation controls */}
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
-        <div className="w-nav-controls">
-          <button className="w-button" onClick={prevCard}>← Previous</button>
-          <div className="w-nav-center"></div>
-          <button className="w-button" onClick={nextCard}>Next →</button>
-        </div>
-      )}
-
-
 
       <SettingsModal />
       <StudyMaterialsModal
