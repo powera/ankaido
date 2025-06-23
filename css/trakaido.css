@@ -318,14 +318,6 @@
         padding: 0.6rem 0.4rem;
         /* Removed font-size reduction - let rem scale naturally */
     }
-    
-    .w-choice-option .trakaido-choice-answer {
-        /* Removed font-size reduction - let rem scale naturally */
-    }
-    
-    .w-choice-option .trakaido-choice-translation {
-        font-size: 0.8rem !important; /* Increased from 0.65rem for better readability */
-    }
 }
 
 /* === MOBILE-OPTIMIZED QUESTION CARD === */
