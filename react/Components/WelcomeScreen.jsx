@@ -7,6 +7,7 @@ const WelcomeScreen = ({ onComplete }) => {
   const [selectedStorage, setSelectedStorage] = useState('');
   const [userInfo, setUserInfo] = useState(null);
   const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+  const [hasExistingData, setHasExistingData] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -15,6 +16,15 @@ const WelcomeScreen = ({ onComplete }) => {
         if (response.ok) {
           const data = await response.json();
           setUserInfo(data);
+          
+          // Check if user has existing corpus choice data
+          const hasData = data.has_corpus_choice_file === true;
+          setHasExistingData(hasData);
+          
+          // If user has existing data, auto-select remote storage
+          if (hasData && data.authenticated && data.can_save_journey_stats) {
+            setSelectedStorage(STORAGE_MODES.REMOTE);
+          }
         } else {
           setUserInfo({ authenticated: false, can_save_journey_stats: false });
         }
@@ -30,7 +40,10 @@ const WelcomeScreen = ({ onComplete }) => {
   }, []);
 
   const handleContinue = () => {
-    if (selectedLevel && selectedStorage) {
+    // Users with existing data don't need to select a level
+    if (hasExistingData && selectedStorage) {
+      onComplete(null, selectedStorage); // Pass null for level when user has existing data
+    } else if (selectedLevel && selectedStorage) {
       onComplete(selectedLevel, selectedStorage);
     }
   };
@@ -61,46 +74,59 @@ const WelcomeScreen = ({ onComplete }) => {
           </ul>
         </div>
 
-        <div className="w-welcome-section">
-          <h3 className="w-welcome-section-title">What's your Lithuanian level?</h3>
-          <div className="w-welcome-options">
-            <label className={`w-welcome-option ${selectedLevel === 'beginner' ? 'w-welcome-option-selected' : ''}`}>
-              <input
-                type="radio"
-                name="level"
-                value="beginner"
-                checked={selectedLevel === 'beginner'}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                className="w-welcome-radio"
-              />
-              <span>🌱 <strong>Completely new to Lithuanian</strong></span>
-            </label>
-            
-            <label className={`w-welcome-option ${selectedLevel === 'intermediate' ? 'w-welcome-option-selected' : ''}`}>
-              <input
-                type="radio"
-                name="level"
-                value="intermediate"
-                checked={selectedLevel === 'intermediate'}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                className="w-welcome-radio"
-              />
-              <span>📚 <strong>Have some skill</strong></span>
-            </label>
-            
-            <label className={`w-welcome-option ${selectedLevel === 'expert' ? 'w-welcome-option-selected' : ''}`}>
-              <input
-                type="radio"
-                name="level"
-                value="expert"
-                checked={selectedLevel === 'expert'}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                className="w-welcome-radio"
-              />
-              <span>🎓 <strong>Expert</strong></span>
-            </label>
+        {!hasExistingData && (
+          <div className="w-welcome-section">
+            <h3 className="w-welcome-section-title">What's your Lithuanian level?</h3>
+            <div className="w-welcome-options">
+              <label className={`w-welcome-option ${selectedLevel === 'beginner' ? 'w-welcome-option-selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="level"
+                  value="beginner"
+                  checked={selectedLevel === 'beginner'}
+                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  className="w-welcome-radio"
+                />
+                <span>🌱 <strong>Completely new to Lithuanian</strong></span>
+              </label>
+              
+              <label className={`w-welcome-option ${selectedLevel === 'intermediate' ? 'w-welcome-option-selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="level"
+                  value="intermediate"
+                  checked={selectedLevel === 'intermediate'}
+                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  className="w-welcome-radio"
+                />
+                <span>📚 <strong>Have some skill</strong></span>
+              </label>
+              
+              <label className={`w-welcome-option ${selectedLevel === 'expert' ? 'w-welcome-option-selected' : ''}`}>
+                <input
+                  type="radio"
+                  name="level"
+                  value="expert"
+                  checked={selectedLevel === 'expert'}
+                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  className="w-welcome-radio"
+                />
+                <span>🎓 <strong>Expert</strong></span>
+              </label>
+            </div>
           </div>
-        </div>
+        )}
+
+        {hasExistingData && (
+          <div className="w-welcome-section">
+            <div className="w-welcome-existing-data">
+              <h3 className="w-welcome-section-title">Welcome back! 👋</h3>
+              <p className="w-welcome-existing-message">
+                We found your existing learning data on the server. You can continue where you left off!
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="w-welcome-section">
           <h3 className="w-welcome-section-title">Where would you like to store your progress?</h3>
@@ -157,10 +183,10 @@ const WelcomeScreen = ({ onComplete }) => {
 
         <button
           onClick={handleContinue}
-          disabled={!selectedLevel || !selectedStorage}
-          className={`w-button w-welcome-button ${(!selectedLevel || !selectedStorage) ? 'w-button-disabled' : ''}`}
+          disabled={hasExistingData ? !selectedStorage : (!selectedLevel || !selectedStorage)}
+          className={`w-button w-welcome-button ${hasExistingData ? (!selectedStorage ? 'w-button-disabled' : '') : ((!selectedLevel || !selectedStorage) ? 'w-button-disabled' : '')}`}
         >
-          Let's Start Learning! 🚀
+          {hasExistingData ? 'Continue Learning! 🚀' : 'Let\'s Start Learning! 🚀'}
         </button>
 
         <div className="w-splash-footer">
