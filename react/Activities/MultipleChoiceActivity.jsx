@@ -77,15 +77,20 @@ const MultipleChoiceActivity = ({
       showAnswer: true
     }));
 
-    // Set up auto-advance timer if enabled
+    // Set up auto-advance timer if enabled, otherwise advance immediately
     if (autoAdvance && defaultDelay > 0) {
       const timer = setTimeout(() => {
-        // Call the parent handler without additional auto-advance logic
+        // Call the parent handler to advance to next question
         if (handleMultipleChoiceAnswer) {
           handleMultipleChoiceAnswer(selectedOption);
         }
       }, defaultDelay * 1000);
       setAutoAdvanceTimer(timer);
+    } else if (!autoAdvance) {
+      // If auto-advance is disabled, advance immediately
+      if (handleMultipleChoiceAnswer) {
+        handleMultipleChoiceAnswer(selectedOption);
+      }
     }
   }, [handleMultipleChoiceWithStats, activityState.showAnswer, autoAdvance, defaultDelay, handleMultipleChoiceAnswer]);
 
