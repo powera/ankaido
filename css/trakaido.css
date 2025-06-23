@@ -448,15 +448,22 @@
 
 @media screen and (max-width: 767px) {
     .w-nav-controls {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-base);
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-small);
         text-align: center;
         margin: 1rem 0;
     }
     
     .w-nav-controls .w-button {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+    
+    .w-nav-center {
+        grid-column: 1 / -1;
+        order: 3;
+        margin-top: var(--spacing-small);
     }
 }
 
