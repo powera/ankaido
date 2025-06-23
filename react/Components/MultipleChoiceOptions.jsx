@@ -13,7 +13,7 @@ const MultipleChoiceOptions = ({
   multipleChoiceOptions,
   selectedAnswer,
   showAnswer,
-  allWords
+  wordListState
 }) => {
   // Use currentWord from props
   const word = currentWord;
@@ -22,7 +22,7 @@ const MultipleChoiceOptions = ({
   const options = multipleChoiceOptions || [];
   const isAnswerSelected = selectedAnswer;
   const shouldShowAnswer = showAnswer;
-  const wordsForTranslation = allWords || [];
+  const wordsForTranslation = wordListState?.allWords || [];
   
   return (
     <div className="w-multiple-choice">
