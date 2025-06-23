@@ -258,16 +258,7 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
-  // Auto-play audio in listening mode when card changes
-  useEffect(() => {
-    if (quizMode === 'listening' && audioEnabled && wordListState.allWords.length > 0 && wordListState.allWords[wordListState.currentCard]) {
-      // Small delay to ensure the UI has updated
-      const timer = setTimeout(() => {
-        playAudio(wordListState.allWords[wordListState.currentCard].lithuanian);
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [wordListState.currentCard, quizMode, audioEnabled, wordListState.allWords]);
+  
 
 
 

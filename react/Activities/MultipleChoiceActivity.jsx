@@ -35,6 +35,17 @@ const MultipleChoiceActivity = ({
     }));
   }, [currentWord]);
 
+  // Auto-play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
+  React.useEffect(() => {
+    if (audioEnabled && currentWord && studyMode === 'lithuanian-to-english') {
+      // Small delay to ensure the UI has updated
+      const timer = setTimeout(() => {
+        playAudio(currentWord.lithuanian);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentWord, studyMode, audioEnabled, playAudio]);
+
   // Handle multiple choice selection with stats tracking
   const handleMultipleChoiceWithStats = React.useCallback(
     createStatsHandler(

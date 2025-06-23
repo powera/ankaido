@@ -42,6 +42,17 @@ const TypingActivity = ({
     }));
   }, [word, typedAnswer, typingFeedback]);
 
+  // Auto-play audio for LT->EN typing (Lithuanian prompt, player types English answer)
+  React.useEffect(() => {
+    if (audioEnabled && word && studyMode === 'lithuanian-to-english') {
+      // Small delay to ensure the UI has updated
+      const timer = setTimeout(() => {
+        playAudio(word.lithuanian);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [word, studyMode, audioEnabled, playAudio]);
+
   // Handle typed answer submission with stats tracking
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);

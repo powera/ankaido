@@ -193,35 +193,7 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
-  // Auto-play audio for listening activities, LT->EN multiple choice, and LT->EN typing in Journey Mode
-  React.useEffect(() => {
-    if (audioEnabled && journeyState.currentWord) {
-      let shouldPlayAudio = false;
-
-      // Play audio for listening activities
-      if (journeyState.currentActivity === 'listening') {
-        shouldPlayAudio = true;
-      }
-
-      // Play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
-      if (journeyState.currentActivity === 'multiple-choice' && journeyState.multipleChoiceMode === 'lt-to-en') {
-        shouldPlayAudio = true;
-      }
-
-      // Play audio for LT->EN typing (Lithuanian prompt, player types English answer)
-      if (journeyState.currentActivity === 'typing' && journeyState.typingMode === 'lt-to-en') {
-        shouldPlayAudio = true;
-      }
-
-      if (shouldPlayAudio) {
-        // Small delay to ensure the UI has updated
-        const timer = setTimeout(() => {
-          playAudio(journeyState.currentWord.lithuanian);
-        }, 300);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [journeyState.currentActivity, journeyState.multipleChoiceMode, journeyState.typingMode, journeyState.currentWord, audioEnabled, playAudio]);
+  
 
 
 

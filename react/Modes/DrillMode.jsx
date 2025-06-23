@@ -284,36 +284,7 @@ const DrillMode = ({
     }
   }, [drillState.isInitialized, drillState.drillWords.length, drillState.currentActivity, advanceToNextDrillActivity]);
 
-  // Auto-play audio for listening activities and LT->EN activities
-  React.useEffect(() => {
-    if (audioEnabled && drillState.currentWord) {
-      let shouldPlayAudio = false;
-
-      if (drillState.currentActivity === 'listening') {
-        shouldPlayAudio = true;
-      }
-
-      if (drillState.currentActivity === 'multiple-choice' && drillState.multipleChoiceMode === 'lt-to-en') {
-        shouldPlayAudio = true;
-      }
-
-      if (drillState.currentActivity === 'typing' && drillState.typingMode === 'lt-to-en') {
-        shouldPlayAudio = true;
-      }
-
-      if (shouldPlayAudio) {
-        const timer = setTimeout(async () => {
-          try {
-            await playAudio(drillState.currentWord.lithuanian);
-          } catch (error) {
-            console.warn('Auto-play audio failed:', error);
-            // Continue with the activity even if audio fails
-          }
-        }, 300);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [drillState.currentActivity, drillState.multipleChoiceMode, drillState.typingMode, drillState.currentWord, audioEnabled, playAudio]);
+  
 
   // Enhanced handlers that update drill stats
   const handleDrillMultipleChoice = React.useCallback(async (selectedOption) => {

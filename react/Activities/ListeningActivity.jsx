@@ -30,6 +30,17 @@ const ListeningActivity = ({
     setPreventAutoPlay(false);
   }, [currentWord]);
 
+  // Auto-play audio for listening activities
+  React.useEffect(() => {
+    if (audioEnabled && currentWord && !preventAutoPlay) {
+      // Small delay to ensure the UI has updated
+      const timer = setTimeout(() => {
+        playAudio(currentWord.lithuanian);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentWord, audioEnabled, playAudio, preventAutoPlay]);
+
   // Reset activity state when word changes
   React.useEffect(() => {
     setActivityState(prev => ({
