@@ -193,24 +193,12 @@ const JourneyMode = ({
     }
   }, [journeyState.isInitialized, wordListState.allWords.length, journeyState.currentActivity, advanceToNextActivity]);
 
-
-
-
-
   // Simplified handlers that just manage UI flow - stats are handled by Activity components
-  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption) => {
-    // Just delegate to the original handler - the Activity components handle stats updates
-    onAdvanceToNext(selectedOption);
-
-    // Auto-advance if enabled
-    if (autoAdvance) {
-      setTimeout(() => {
-        advanceToNextActivity();
-      }, defaultDelay * 1000);
-    }
-  }, [onAdvanceToNext, autoAdvance, defaultDelay, advanceToNextActivity]);
-
-
+  const handleJourneyActivityAdvance = React.useCallback((selectedOption) => {
+    // In Journey Mode, Activity components handle their own auto-advance timing
+    // When they call this function, they're ready to advance to the next activity
+    advanceToNextActivity();
+  }, [advanceToNextActivity]);
 
   // Loading states
   if (!journeyState.isInitialized) {
@@ -363,7 +351,9 @@ const JourneyMode = ({
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          onAdvanceToNext={handleJourneyMultipleChoice}
+          onAdvanceToNext={handleJourneyActivityAdvance}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
         <NavigationControls />
       </div>
@@ -395,7 +385,9 @@ const JourneyMode = ({
           studyMode={effectiveStudyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          onAdvanceToNext={handleJourneyMultipleChoice}
+          onAdvanceToNext={handleJourneyActivityAdvance}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
         />
         <NavigationControls />
       </div>

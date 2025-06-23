@@ -60,6 +60,9 @@ const ListeningActivity = ({
 
   // Handle listening activity with stats tracking
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {
+    // Prevent double-clicking by checking if answer is already shown
+    if (activityState.showAnswer) return;
+
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
     
@@ -90,22 +93,29 @@ const ListeningActivity = ({
       console.error('Error updating journey stats in ListeningActivity:', error);
     }
 
-    // Set up auto-advance timer if enabled, otherwise advance immediately
-    if (autoAdvance && defaultDelay > 0) {
-      const timer = setTimeout(() => {
-        // Call the parent handler to advance to next question
+    // Handle auto-advance timing
+    if (autoAdvance) {
+      if (defaultDelay > 0) {
+        // Advance after delay
+        const timer = setTimeout(() => {
+          if (onAdvanceToNext) {
+            onAdvanceToNext(selectedOption);
+          }
+        }, defaultDelay * 1000);
+        setAutoAdvanceTimer(timer);
+      } else {
+        // Advance immediately if delay is 0 or less
         if (onAdvanceToNext) {
           onAdvanceToNext(selectedOption);
         }
-      }, defaultDelay * 1000);
-      setAutoAdvanceTimer(timer);
-    } else if (!autoAdvance) {
+      }
+    } else {
       // If auto-advance is disabled, advance immediately
       if (onAdvanceToNext) {
         onAdvanceToNext(selectedOption);
       }
     }
-  }, [currentWord, studyMode, onAdvanceToNext, autoAdvance, defaultDelay]);
+  }, [currentWord, studyMode, onAdvanceToNext, autoAdvance, defaultDelay, activityState.showAnswer]);
 
   // Clean up timer on unmount
   React.useEffect(() => {
