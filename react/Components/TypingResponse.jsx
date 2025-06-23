@@ -59,11 +59,6 @@ const TypingResponse = ({
           <div>
             <strong>Your answer:</strong> {typedAnswer}
           </div>
-          {!feedback.includes('✅') && (
-            <div>
-              <strong>Correct answer:</strong> {correctAnswer}
-            </div>
-          )}
         </div>
       )}
 
@@ -124,18 +119,6 @@ const TypingResponse = ({
           </div>
         ) : (
           <div>
-            {/* Show answer with audio */}
-            <div className="trakaido-answer-text" style={{ marginBottom: 'var(--spacing-base)' }}>
-              <span>{correctAnswer}</span>
-              {audioEnabled && (
-                <AudioButton 
-                  word={correctAnswer}
-                  audioEnabled={audioEnabled}
-                  playAudio={playAudio}
-                />
-              )}
-            </div>
-            
             {/* Next button */}
             <button 
               className="w-button"

@@ -66,7 +66,7 @@ const TypingActivity = ({
     }
 
     // Generate feedback message
-    const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. The answer is: ${correctAnswer}`;
+    const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
     
     // Update feedback using external setter if available, otherwise local state
     if (setTypingFeedback) {
