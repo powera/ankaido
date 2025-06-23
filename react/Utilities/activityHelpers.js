@@ -18,14 +18,34 @@ export const createInitialActivityState = (showAnswer = false, selectedAnswer = 
  * Determines the correct answer based on study mode and word
  */
 export const getCorrectAnswer = (word, studyMode) => {
-  return studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
+  switch (studyMode) {
+    case 'english-to-lithuanian':
+      return word.lithuanian;
+    case 'lithuanian-to-english':
+      return word.english;
+    case 'lithuanian-to-lithuanian':
+      return word.lithuanian;
+    default:
+      console.warn(`Unknown study mode in getCorrectAnswer: ${studyMode}`);
+      return word.lithuanian; // Default fallback
+  }
 };
 
 /**
  * Determines the question text based on study mode and word
  */
 export const getQuestionText = (word, studyMode) => {
-  return studyMode === 'english-to-lithuanian' ? word.english : word.lithuanian;
+  switch (studyMode) {
+    case 'english-to-lithuanian':
+      return word.english;
+    case 'lithuanian-to-english':
+      return word.lithuanian;
+    case 'lithuanian-to-lithuanian':
+      return word.lithuanian;
+    default:
+      console.warn(`Unknown study mode in getQuestionText: ${studyMode}`);
+      return word.english; // Default fallback
+  }
 };
 
 /**
