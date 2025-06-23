@@ -1,9 +1,6 @@
-
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import journeyStatsManager from '../Managers/journeyStatsManager';
-import { createInitialActivityState, getCorrectAnswer } from '../Utilities/activityHelpers';
 
 /**
  * Listening Activity Component
@@ -11,22 +8,19 @@ import { createInitialActivityState, getCorrectAnswer } from '../Utilities/activ
  */
 const ListeningActivity = ({ 
   currentWord,
-  showAnswer,
-  selectedAnswer,
   multipleChoiceOptions,
   studyMode,
   audioEnabled,
   playAudio,
-  onAdvanceToNext,
+  // Controlled props from Mode
+  showAnswer,
+  selectedAnswer,
+  onAnswerClick,
+  // Optional props
   settings,
-  autoAdvance,
-  defaultDelay
+  wordListState
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
-  const [activityState, setActivityState] = React.useState(() =>
-    createInitialActivityState(showAnswer || false, selectedAnswer || null)
-  );
-  const [autoAdvanceTimer, setAutoAdvanceTimer] = React.useState(null);
 
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
@@ -44,87 +38,19 @@ const ListeningActivity = ({
     }
   }, [currentWord, audioEnabled, playAudio, preventAutoPlay]);
 
-  // Reset activity state when word changes
-  React.useEffect(() => {
-    setActivityState(prev => ({
-      ...prev,
-      showAnswer: false,
-      selectedAnswer: null
-    }));
-    // Clear any existing timer when word changes
-    if (autoAdvanceTimer) {
-      clearTimeout(autoAdvanceTimer);
-      setAutoAdvanceTimer(null);
-    }
-  }, [currentWord]);
-
-  // Handle listening activity with stats tracking
-  const handleListeningWithStats = React.useCallback(async (selectedOption) => {
+  // Handle answer selection
+  const handleAnswerClick = React.useCallback((selectedOption) => {
     // Prevent double-clicking by checking if answer is already shown
-    if (activityState.showAnswer) return;
+    if (showAnswer) return;
 
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
-    
-    // Determine correct answer based on listening mode
-    let correctAnswer;
-    if (studyMode === 'lithuanian-to-lithuanian') {
-      correctAnswer = currentWord.lithuanian;
-    } else {
-      correctAnswer = getCorrectAnswer(currentWord, studyMode);
+
+    // Call the callback provided by the Mode
+    if (onAnswerClick) {
+      onAnswerClick(selectedOption);
     }
-
-    const isCorrect = selectedOption === correctAnswer;
-
-    // Update local state
-    setActivityState(prev => ({
-      ...prev,
-      selectedAnswer: selectedOption,
-      showAnswer: true
-    }));
-
-    // Determine stats mode based on difficulty
-    const statsMode = studyMode === 'lithuanian-to-lithuanian' ? 'listeningEasy' : 'listeningHard';
-
-    // Update journey stats
-    try {
-      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
-    } catch (error) {
-      console.error('Error updating journey stats in ListeningActivity:', error);
-    }
-
-    // Handle auto-advance timing
-    if (autoAdvance) {
-      if (defaultDelay > 0) {
-        // Advance after delay
-        const timer = setTimeout(() => {
-          if (onAdvanceToNext) {
-            onAdvanceToNext(selectedOption);
-          }
-        }, defaultDelay * 1000);
-        setAutoAdvanceTimer(timer);
-      } else {
-        // Advance immediately if delay is 0 or less
-        if (onAdvanceToNext) {
-          onAdvanceToNext(selectedOption);
-        }
-      }
-    } else {
-      // If auto-advance is disabled, advance immediately
-      if (onAdvanceToNext) {
-        onAdvanceToNext(selectedOption);
-      }
-    }
-  }, [currentWord, studyMode, onAdvanceToNext, autoAdvance, defaultDelay, activityState.showAnswer]);
-
-  // Clean up timer on unmount
-  React.useEffect(() => {
-    return () => {
-      if (autoAdvanceTimer) {
-        clearTimeout(autoAdvanceTimer);
-      }
-    };
-  }, [autoAdvanceTimer]);
+  }, [showAnswer, onAnswerClick]);
 
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
@@ -140,10 +66,6 @@ const ListeningActivity = ({
         return 'Choose the matching Lithuanian word:';
     }
   };
-
-  // Use external state if provided, otherwise use internal state
-  const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
-  const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
@@ -161,12 +83,13 @@ const ListeningActivity = ({
         currentWord={currentWord}
         studyMode={studyMode}
         quizMode="listening"
-        handleMultipleChoiceAnswer={handleListeningWithStats}
+        handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         multipleChoiceOptions={multipleChoiceOptions}
-        selectedAnswer={selectedAnswerToUse}
-        showAnswer={showAnswerToUse}
+        selectedAnswer={selectedAnswer}
+        showAnswer={showAnswer}
+        wordListState={wordListState}
       />
     </div>
   );
