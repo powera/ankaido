@@ -3,12 +3,17 @@ import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
+import { createInitialActivityState, getCorrectAnswer } from '../Utilities/activityHelpers';
 
+/**
+ * Listening Activity Component
+ * Plays audio of a word and asks user to select the correct translation or matching word
+ */
 const ListeningActivity = ({ 
-  currentWord, // Accept currentWord as prop
-  showAnswer, // Accept showAnswer as prop
-  selectedAnswer, // Accept selectedAnswer as prop
-  multipleChoiceOptions, // Accept multipleChoiceOptions as prop (required)
+  currentWord,
+  showAnswer,
+  selectedAnswer,
+  multipleChoiceOptions,
   studyMode,
   audioEnabled,
   playAudio,
@@ -16,17 +21,14 @@ const ListeningActivity = ({
   settings
 }) => {
   const [preventAutoPlay, setPreventAutoPlay] = React.useState(false);
-  const [activityState, setActivityState] = React.useState({
-    showAnswer: showAnswer || false,
-    selectedAnswer: selectedAnswer || null,
-    autoAdvanceTimer: null
-  });
+  const [activityState, setActivityState] = React.useState(() =>
+    createInitialActivityState(showAnswer || false, selectedAnswer || null)
+  );
 
-  const word = currentWord;
-  
-  if (!word || !multipleChoiceOptions?.length) return null;
+  // Early return after all hooks
+  if (!currentWord || !multipleChoiceOptions?.length) return null;
 
-  // Initialize journey stats manager on first render
+  // Initialize journey stats manager
   React.useEffect(() => {
     journeyStatsManager.initialize();
   }, []);
@@ -34,21 +36,28 @@ const ListeningActivity = ({
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
     setPreventAutoPlay(false);
-  }, [word]);
+  }, [currentWord]);
 
-  
+  // Reset activity state when word changes
+  React.useEffect(() => {
+    setActivityState(prev => ({
+      ...prev,
+      showAnswer: false,
+      selectedAnswer: null
+    }));
+  }, [currentWord]);
 
-  // Enhanced listening handler that updates Journey stats
+  // Handle listening activity with stats tracking
   const handleListeningWithStats = React.useCallback(async (selectedOption) => {
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
     
-    // Determine correct answer based on study mode for listening
+    // Determine correct answer based on listening mode
     let correctAnswer;
     if (studyMode === 'lithuanian-to-lithuanian') {
-      correctAnswer = word.lithuanian;
+      correctAnswer = currentWord.lithuanian;
     } else {
-      correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
+      correctAnswer = getCorrectAnswer(currentWord, studyMode);
     }
 
     const isCorrect = selectedOption === correctAnswer;
@@ -63,52 +72,49 @@ const ListeningActivity = ({
     // Determine stats mode based on difficulty
     const statsMode = studyMode === 'lithuanian-to-lithuanian' ? 'listeningEasy' : 'listeningHard';
 
-    // Update Journey stats with appropriate mode
+    // Update journey stats
     try {
-      await journeyStatsManager.updateWordStats(word, statsMode, isCorrect);
+      await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
     } catch (error) {
-      console.error('Error updating journey stats in ListeningMode:', error);
+      console.error('Error updating journey stats in ListeningActivity:', error);
     }
 
     // Call the original handler for UI updates and flow control
     if (handleMultipleChoiceAnswer) {
       handleMultipleChoiceAnswer(selectedOption);
     }
-  }, [word, studyMode, handleMultipleChoiceAnswer]);
+  }, [currentWord, studyMode, handleMultipleChoiceAnswer]);
 
-  // Reset state when word changes
-  React.useEffect(() => {
-    setActivityState(prev => ({
-      ...prev,
-      showAnswer: false,
-      selectedAnswer: null
-    }));
-  }, [word]);
+  // Generate instruction text based on study mode
+  const getInstructionText = () => {
+    switch (studyMode) {
+      case 'lithuanian-to-english':
+        return 'Choose the English translation:';
+      case 'lithuanian-to-lithuanian':
+        return 'Choose the matching Lithuanian word:';
+      default:
+        return 'Choose the matching Lithuanian word:';
+    }
+  };
 
-  const instructionText = studyMode === 'lithuanian-to-english' 
-    ? 'Choose the English translation:'
-    : studyMode === 'lithuanian-to-lithuanian'
-      ? 'Choose the matching Lithuanian word:'
-      : 'Choose the matching Lithuanian word:';
-
-  // Use props directly
+  // Use external state if provided, otherwise use internal state
   const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
   const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
       <WordDisplayCard
-        currentWord={word}
+        currentWord={currentWord}
         studyMode="listening"
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         questionText="🎧 Listen and choose the correct answer:"
         showAudioButton={true}
-        promptText={instructionText}
+        promptText={getInstructionText()}
         isClickable={false}
       />
       <MultipleChoiceOptions
-        currentWord={word}
+        currentWord={currentWord}
         studyMode={studyMode}
         quizMode="listening"
         handleMultipleChoiceAnswer={handleListeningWithStats}

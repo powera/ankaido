@@ -1,7 +1,14 @@
+
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
+import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
 
+/**
+ * Flash Card Activity Component
+ * Displays a word with clickable reveal functionality
+ * Optionally marks new words as exposed for tracking purposes
+ */
 const FlashCardActivity = ({ 
   currentWord, 
   showAnswer, 
@@ -11,11 +18,12 @@ const FlashCardActivity = ({
   playAudio, 
   handleHoverStart, 
   handleHoverEnd,
-  isNewWord = false // Prop to indicate if this is a new word being introduced
+  isNewWord = false
 }) => {
+  // Early return after all hooks
   if (!currentWord) return null;
 
-  // Initialize journey stats manager on first render
+  // Initialize journey stats manager
   React.useEffect(() => {
     journeyStatsManager.initialize();
   }, []);
@@ -34,8 +42,8 @@ const FlashCardActivity = ({
     }
   }, [isNewWord, currentWord]);
 
-  const question = studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian;
-  const answer = studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english;
+  const question = getQuestionText(currentWord, studyMode);
+  const answer = getCorrectAnswer(currentWord, studyMode);
   
   // Determine whether to show the answer based on showAnswer state or isNewWord prop
   const shouldShowAnswer = showAnswer || isNewWord;

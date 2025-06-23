@@ -1,13 +1,19 @@
+
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
+import { createInitialActivityState, getQuestionText, createStatsHandler } from '../Utilities/activityHelpers';
 
+/**
+ * Multiple Choice Activity Component
+ * Presents a word in one language and provides multiple choice options in another language
+ */
 const MultipleChoiceActivity = ({ 
-  currentWord, // Accept currentWord as prop
-  showAnswer, // Accept showAnswer as prop
-  selectedAnswer, // Accept selectedAnswer as prop
-  multipleChoiceOptions, // Accept multipleChoiceOptions as prop
+  currentWord,
+  showAnswer,
+  selectedAnswer,
+  multipleChoiceOptions,
   studyMode,
   audioEnabled,
   playAudio,
@@ -16,70 +22,59 @@ const MultipleChoiceActivity = ({
   handleMultipleChoiceAnswer,
   settings
 }) => {
-  const [activityState, setActivityState] = React.useState({
-    showAnswer: showAnswer || false,
-    selectedAnswer: selectedAnswer || null,
-    autoAdvanceTimer: null
-  });
+  const [activityState, setActivityState] = React.useState(() => 
+    createInitialActivityState(showAnswer || false, selectedAnswer || null)
+  );
 
-  // Use currentWord from props
-  const word = currentWord;
+  // Early return after all hooks
+  if (!currentWord) return null;
 
-  if (!word) return null;
-
-  // Initialize journey stats manager on first render
+  // Initialize journey stats manager
   React.useEffect(() => {
     journeyStatsManager.initialize();
   }, []);
 
-  // Generate multiple choice options when word changes
-  React.useEffect(() => {
-    // No longer generating options internally
-  }, [word, studyMode, settings?.difficulty, multipleChoiceOptions?.length]);
-
-  const handleMultipleChoiceWithStats = React.useCallback(async (selectedOption) => {
-    const correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
-    const isCorrect = selectedOption === correctAnswer;
-
-    // Update local state
-    setActivityState(prev => ({
-      ...prev,
-      selectedAnswer: selectedOption,
-      showAnswer: true
-    }));
-
-    // Update Journey stats
-    try {
-      await journeyStatsManager.updateWordStats(word, 'multipleChoice', isCorrect);
-    } catch (error) {
-      console.error('Error updating journey stats in MultipleChoiceMode:', error);
-    }
-
-    // Call the original handler for UI updates and flow control
-    if (handleMultipleChoiceAnswer) {
-      handleMultipleChoiceAnswer(selectedOption);
-    }
-  }, [word, studyMode, handleMultipleChoiceAnswer]);
-
-  // Reset state when word changes
+  // Reset activity state when word changes
   React.useEffect(() => {
     setActivityState(prev => ({
       ...prev,
       showAnswer: false,
       selectedAnswer: null
     }));
-  }, [word]);
+  }, [currentWord]);
 
-  const question = studyMode === 'english-to-lithuanian' ? word.english : word.lithuanian;
+  // Handle multiple choice selection with stats tracking
+  const handleMultipleChoiceWithStats = React.useCallback(
+    createStatsHandler(
+      journeyStatsManager,
+      currentWord,
+      'multipleChoice',
+      handleMultipleChoiceAnswer
+    ),
+    [currentWord, handleMultipleChoiceAnswer]
+  );
 
-  // Use props directly
+  // Enhanced handler that also updates local state
+  const handleAnswer = React.useCallback(async (selectedOption) => {
+    const result = await handleMultipleChoiceWithStats(selectedOption);
+    
+    setActivityState(prev => ({
+      ...prev,
+      selectedAnswer: selectedOption,
+      showAnswer: true
+    }));
+  }, [handleMultipleChoiceWithStats]);
+
+  const question = getQuestionText(currentWord, studyMode);
+  
+  // Use external state if provided, otherwise use internal state
   const showAnswerToUse = showAnswer !== undefined ? showAnswer : activityState.showAnswer;
   const selectedAnswerToUse = selectedAnswer !== undefined ? selectedAnswer : activityState.selectedAnswer;
 
   return (
     <div>
       <WordDisplayCard
-        currentWord={word}
+        currentWord={currentWord}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
@@ -91,10 +86,10 @@ const MultipleChoiceActivity = ({
         style={{ padding: 'min(var(--spacing-large), 1rem)' }}
       />
       <MultipleChoiceOptions
-        currentWord={word}
+        currentWord={currentWord}
         studyMode={studyMode}
         quizMode="multiple-choice"
-        handleMultipleChoiceAnswer={handleMultipleChoiceWithStats}
+        handleMultipleChoiceAnswer={handleAnswer}
         audioEnabled={audioEnabled}
         playAudio={playAudio}
         handleHoverStart={handleHoverStart}
