@@ -101,12 +101,6 @@ const FlashCardApp = () => {
   const autoAdvance = settings.autoAdvance;
   const defaultDelay = settings.defaultDelay;
 
-  // Setup WordListManager callback
-  useEffect(() => {
-    wordListManager.setStateChangeCallback(setWordListState);
-    wordListManager.settings = settings; // Update settings reference
-  }, [wordListManager, settings]);
-
   // Handle splash screen timing
   useEffect(() => {
     const splashTimer = setTimeout(() => {
@@ -177,10 +171,19 @@ const FlashCardApp = () => {
     loadInitialData();
   }, [showSplash]);
 
-  // Initialize word list manager with settings
+  // Comprehensive WordListManager update handler
   useEffect(() => {
-    wordListManager.settings = settings; // Update settings reference
-  }, [wordListManager, settings]);
+    // Initialize callback if not already set
+    wordListManager.setStateChangeCallback(setWordListState);
+    
+    // Update settings reference
+    wordListManager.settings = settings;
+    
+    // Generate words list when data is available and not loading
+    if (!loading && Object.keys(selectedGroups).length > 0 && Object.keys(corporaData).length > 0) {
+      wordListManager.generateWordsList(selectedGroups, corporaData);
+    }
+  }, [wordListManager, settings, selectedGroups, loading, corporaData]);
 
   // Load journey stats using journeyStatsManager
   useEffect(() => {
@@ -246,15 +249,6 @@ const FlashCardApp = () => {
     });
   }, [studyMode, quizMode]);
 
-  // Generate words list when selected groups change
-  useEffect(() => {
-    if (!loading) {
-      wordListManager.generateWordsList(selectedGroups, corporaData);
-    }
-  }, [selectedGroups, loading, corporaData, wordListManager]);
-
-
-
 
 
   // Generate all available groups from all corpuses
@@ -292,29 +286,33 @@ const FlashCardApp = () => {
       await corpusChoicesManager.forceReinitialize();
       await journeyStatsManager.forceReinitialize();
 
-      // Set initial corpus selection based on skill level
-      const initialSelectedGroups = {};
-      if (skillLevel === 'beginner') {
-        // For beginners, only enable nouns_one corpus
-        if (corporaData['nouns_one']) {
-          initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
-        }
-      } else if (skillLevel === 'intermediate') {
-        // For intermediate, enable a moderate selection
-        ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
-          if (corporaData[corpus]) {
-            initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+      // Only set initial corpus selection for new users (when skillLevel is not null)
+      if (skillLevel !== null) {
+        const initialSelectedGroups = {};
+        if (skillLevel === 'beginner') {
+          // For beginners, only enable nouns_one corpus
+          if (corporaData['nouns_one']) {
+            initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
           }
-        });
-      } else {
-        // For experts, enable all groups (same as current default)
-        Object.keys(corporaData).forEach(corpus => {
-          initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
-        });
-      }
+        } else if (skillLevel === 'intermediate') {
+          // For intermediate, enable a moderate selection
+          ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
+            if (corporaData[corpus]) {
+              initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+            }
+          });
+        } else if (skillLevel === 'expert') {
+          // For experts, enable all groups (same as current default)
+          Object.keys(corporaData).forEach(corpus => {
+            initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+          });
+        }
 
-      // Update corpus choices using the manager - this will notify listeners and update state
-      await corpusChoicesManager.setAllChoices(initialSelectedGroups);
+        // Update corpus choices using the manager - this will notify listeners and update state
+        await corpusChoicesManager.setAllChoices(initialSelectedGroups);
+      }
+      // For users with existing data (skillLevel === null), we don't modify their corpus choices
+
       setShowWelcome(false);
     } catch (error) {
       console.error('Error completing welcome setup:', error);
@@ -349,8 +347,6 @@ const FlashCardApp = () => {
       setShowWelcome(true);
     }
   };
-
-  const resetCards = () => wordListManager.resetCards();
 
   // Drill mode handlers
   const handleStartDrill = (config) => {
