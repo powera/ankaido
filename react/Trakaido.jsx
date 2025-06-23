@@ -359,7 +359,15 @@ const FlashCardApp = () => {
   const nextCard = () => wordListManager.nextCard();
   const prevCard = () => wordListManager.prevCard();
   const resetCards = () => wordListManager.resetCards();
-  const handleMultipleChoiceAnswer = (selectedOption) => wordListManager.handleMultipleChoiceAnswer(selectedOption, studyMode, quizMode, autoAdvance, defaultDelay);
+  const handleMultipleChoiceAnswer = (selectedOption) => {
+    // Activities now handle their own stats tracking
+    // This handler just manages UI flow
+    if (autoAdvance) {
+      setTimeout(() => {
+        nextCard();
+      }, defaultDelay * 1000);
+    }
+  };
 
   // Helper function to get a random voice from available voices
   const getRandomVoice = () => {
