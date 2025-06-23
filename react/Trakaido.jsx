@@ -581,7 +581,7 @@ const FlashCardApp = () => {
         <FlashCardMode 
           currentWord={currentWord}
           showAnswer={wordListState.showAnswer}
-          setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
+          setShowAnswer={(value) => setWordListState(prev => ({ ...prev, showAnswer: value }))}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
