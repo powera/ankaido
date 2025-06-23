@@ -42,11 +42,6 @@ const TypingActivity = ({
     );
   }
 
-  // Initialize journey stats manager
-  React.useEffect(() => {
-    journeyStatsManager.initialize();
-  }, []);
-
   // Reset state when word or external state changes
   React.useEffect(() => {
     setActivityState(prev => ({

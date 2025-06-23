@@ -20,10 +20,6 @@ const FlashCardActivity = ({
   handleHoverEnd,
   isNewWord = false
 }) => {
-  // Initialize journey stats manager
-  React.useEffect(() => {
-    journeyStatsManager.initialize();
-  }, []);
 
   // Mark new words as exposed when they are first shown
   React.useEffect(() => {

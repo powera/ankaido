@@ -29,11 +29,6 @@ const MultipleChoiceActivity = ({
   // Early return after all hooks
   if (!currentWord) return null;
 
-  // Initialize journey stats manager
-  React.useEffect(() => {
-    journeyStatsManager.initialize();
-  }, []);
-
   // Reset activity state when word changes
   React.useEffect(() => {
     setActivityState(prev => ({

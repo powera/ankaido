@@ -28,11 +28,6 @@ const ListeningActivity = ({
   // Early return after all hooks
   if (!currentWord || !multipleChoiceOptions?.length) return null;
 
-  // Initialize journey stats manager
-  React.useEffect(() => {
-    journeyStatsManager.initialize();
-  }, []);
-
   // Reset prevent auto-play flag when word changes
   React.useEffect(() => {
     setPreventAutoPlay(false);
