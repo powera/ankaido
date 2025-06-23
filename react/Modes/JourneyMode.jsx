@@ -12,6 +12,7 @@ import {
 } from '../Managers/journeyStatsManager';
 
 import { attemptActivitySelection } from '../Utilities/activitySelection';
+import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({
   wordListManager,
@@ -34,7 +35,8 @@ const JourneyMode = ({
     showNewWordIndicator: false,
     listeningMode: null,
     multipleChoiceMode: null,
-    typingMode: null
+    typingMode: null,
+    multipleChoiceOptions: []
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
@@ -180,6 +182,30 @@ const JourneyMode = ({
 
     // Note: Answer state reset is now handled by individual activity components
 
+    // Generate multiple choice options for activities that need them
+    let multipleChoiceOptions = [];
+    if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening') && nextActivity.word) {
+      // Determine the effective study mode for option generation
+      let effectiveStudyMode = studyMode;
+      if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
+        effectiveStudyMode = 'lithuanian-to-lithuanian';
+      } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
+        effectiveStudyMode = 'lithuanian-to-english';
+      } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'en-to-lt') {
+        effectiveStudyMode = 'english-to-lithuanian';
+      } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'lt-to-en') {
+        effectiveStudyMode = 'lithuanian-to-english';
+      }
+
+      multipleChoiceOptions = generateMultipleChoiceOptions(
+        nextActivity.word,
+        effectiveStudyMode,
+        nextActivity.type === 'listening' ? 'listening' : 'multiple-choice',
+        wordListState,
+        { difficulty: 'easy' } // Default difficulty for Journey mode
+      );
+    }
+
     // Update journey state in one place
     setJourneyState({
       isInitialized: true,
@@ -188,7 +214,8 @@ const JourneyMode = ({
       showNewWordIndicator: nextActivity.type === 'new-word',
       listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null, // Store the listening mode (easy/hard)
       multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null, // Store the multiple-choice mode (en-to-lt/lt-to-en)
-      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null // Store the typing mode (en-to-lt/lt-to-en)
+      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null, // Store the typing mode (en-to-lt/lt-to-en)
+      multipleChoiceOptions: multipleChoiceOptions
     });
 
     // Note: New words will be marked as exposed by the FlashCardActivity when first shown
