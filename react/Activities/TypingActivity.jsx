@@ -19,10 +19,8 @@ const TypingActivity = ({
   setTypedAnswer,
   setTypingFeedback,
   studyMode,
-  nextCard,
-  audioEnabled,
-  autoAdvance,
-  defaultDelay
+  onSubmit,
+  audioEnabled
 }) => {
   const [activityState, setActivityState] = React.useState(() =>
     createInitialActivityState(false, null, typedAnswer || '', typingFeedback || '')
@@ -37,8 +35,7 @@ const TypingActivity = ({
       ...prev,
       showAnswer: false,
       typedAnswer: typedAnswer || '',
-      typingFeedback: typingFeedback || '',
-      autoAdvanceTimer: null
+      typingFeedback: typingFeedback || ''
     }));
   }, [word, typedAnswer, typingFeedback]);
 
@@ -53,17 +50,10 @@ const TypingActivity = ({
     }
   }, [word, studyMode, audioEnabled, audioManager]);
 
-  // Handle typed answer submission with stats tracking
+  // Handle typed answer submission
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);
     const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
-
-    // Update journey stats
-    try {
-      await journeyStatsManager.updateWordStats(word, 'typing', isCorrect);
-    } catch (error) {
-      console.error('Error updating journey stats in TypingActivity:', error);
-    }
 
     // Generate feedback message
     const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
@@ -78,7 +68,12 @@ const TypingActivity = ({
         showAnswer: true
       }));
     }
-  }, [word, studyMode, setTypingFeedback]);
+
+    // Call external submit handler if provided
+    if (onSubmit) {
+      onSubmit(typedAnswer, isCorrect);
+    }
+  }, [word, studyMode, setTypingFeedback, onSubmit]);
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value) => {
@@ -89,15 +84,7 @@ const TypingActivity = ({
     }
   }, [setTypedAnswer]);
 
-  // Handle next card navigation
-  const handleNextCard = React.useCallback(() => {
-    // Clear any auto-advance timer
-    if (activityState.autoAdvanceTimer) {
-      clearTimeout(activityState.autoAdvanceTimer);
-      setActivityState(prev => ({ ...prev, autoAdvanceTimer: null }));
-    }
-    nextCard();
-  }, [nextCard, activityState.autoAdvanceTimer]);
+  
 
   // Early return after all hooks
   if (!word) {
@@ -141,10 +128,6 @@ const TypingActivity = ({
         feedback={typingFeedback || activityState.typingFeedback}
         typedAnswer={typedAnswer || activityState.typedAnswer}
         onTypedAnswerChange={handleTypedAnswerChange}
-        autoAdvance={autoAdvance}
-        defaultDelay={defaultDelay}
-        onNext={handleNextCard}
-        autoAdvanceTimer={activityState.autoAdvanceTimer}
       />
     </div>
   );
