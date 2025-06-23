@@ -96,7 +96,7 @@ const FlashCardApp = () => {
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
   const [journeyStats, setJourneyStats] = useState({});
-  
+
   // Drill mode state
   const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
   const [drillConfig, setDrillConfig] = useState(null); // { corpus, group, difficulty }
@@ -258,7 +258,7 @@ const FlashCardApp = () => {
     }
   }, [selectedGroups, loading, corporaData, wordListManager]);
 
-  
+
 
 
 
@@ -539,7 +539,7 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          onAdvanceToNext={handleMultipleChoiceAnswer}
           nextCard={nextCard}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
@@ -563,7 +563,7 @@ const FlashCardApp = () => {
             playAudio={playAudio}
             handleHoverStart={handleHoverStart}
             handleHoverEnd={handleHoverEnd}
-            handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+            onAdvanceToNext={handleMultipleChoiceAnswer}
             nextCard={nextCard}
             autoAdvance={autoAdvance}
             defaultDelay={defaultDelay}
@@ -602,7 +602,7 @@ const FlashCardApp = () => {
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          onAdvanceToNext={handleMultipleChoiceAnswer}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
@@ -613,7 +613,7 @@ const FlashCardApp = () => {
           playAudio={playAudio}
           handleHoverStart={handleHoverStart}
           handleHoverEnd={handleHoverEnd}
-          handleMultipleChoiceAnswer={handleMultipleChoiceAnswer}
+          onAdvanceToNext={handleMultipleChoiceAnswer}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
@@ -634,7 +634,7 @@ const FlashCardApp = () => {
         </div>
       )}
 
-      
+
 
       <SettingsModal />
       <StudyMaterialsModal

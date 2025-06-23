@@ -92,7 +92,7 @@ const MultipleChoiceActivity = ({
         onAdvanceToNext(selectedOption);
       }
     }
-  }, [handleMultipleChoiceWithStats, activityState.showAnswer, autoAdvance, defaultDelay, handleMultipleChoiceAnswer]);
+  }, [handleMultipleChoiceWithStats, activityState.showAnswer, autoAdvance, defaultDelay, onAdvanceToNext]);
 
   // Clean up timer on unmount
   React.useEffect(() => {
