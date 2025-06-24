@@ -421,6 +421,7 @@ const JourneyMode = ({
           onAnswerClick={handleJourneyMultipleChoice}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
+          allWords={wordListState.allWords}
         />
         <NavigationControls />
       </div>
@@ -456,6 +457,7 @@ const JourneyMode = ({
           onAnswerClick={handleJourneyListening}
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
+          allWords={wordListState.allWords}
         />
         <NavigationControls />
       </div>
