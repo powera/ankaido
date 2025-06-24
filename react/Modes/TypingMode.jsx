@@ -11,11 +11,10 @@ const TypingMode = ({
   autoAdvance,
   defaultDelay
 }) => {
-  const [typingFeedback, setTypingFeedback] = React.useState('');
   const [autoAdvanceTimer, setAutoAdvanceTimer] = React.useState(null);
   const currentWord = wordListManager?.getCurrentWord();
 
-  // Reset feedback when word changes
+  // Clear auto-advance timer when word changes
   React.useEffect(() => {
     if (currentWord) {
       // Clear any existing auto-advance timer
@@ -23,7 +22,6 @@ const TypingMode = ({
         clearTimeout(autoAdvanceTimer);
         setAutoAdvanceTimer(null);
       }
-      setTypingFeedback('');
     }
   }, [currentWord, autoAdvanceTimer]);
 
@@ -79,8 +77,6 @@ const TypingMode = ({
         wordListState={wordListState}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
-        typingFeedback={typingFeedback}
-        setTypingFeedback={setTypingFeedback}
         onSubmit={handleTypingSubmit}
       />
       {currentWord && (

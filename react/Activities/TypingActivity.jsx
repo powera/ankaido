@@ -2,7 +2,6 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
-import journeyStatsManager from '../Managers/journeyStatsManager';
 import audioManager from '../Managers/audioManager';
 import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 
@@ -14,30 +13,26 @@ const TypingActivity = ({
   wordListManager,
   wordListState,
   currentWord,
-  typedAnswer,
-  typingFeedback,
-  setTypedAnswer,
-  setTypingFeedback,
   studyMode,
   onSubmit,
   audioEnabled
 }) => {
   const [activityState, setActivityState] = React.useState(() =>
-    createInitialActivityState(false, null, typedAnswer || '', typingFeedback || '')
+    createInitialActivityState(false, null, '', '')
   );
 
   // Use currentWord from props, fallback to wordListManager if available
   const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
 
-  // Reset state when word or external state changes
+  // Reset state when word changes
   React.useEffect(() => {
     setActivityState(prev => ({
       ...prev,
       showAnswer: false,
-      typedAnswer: typedAnswer || '',
-      typingFeedback: typingFeedback || ''
+      typedAnswer: '',
+      typingFeedback: ''
     }));
-  }, [word, typedAnswer, typingFeedback]);
+  }, [word]);
 
   // Auto-play audio for LT->EN typing (Lithuanian prompt, player types English answer)
   React.useEffect(() => {
@@ -58,33 +53,23 @@ const TypingActivity = ({
     // Generate feedback message
     const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
     
-    // Update feedback using external setter if available, otherwise local state
-    if (setTypingFeedback) {
-      setTypingFeedback(feedback);
-    } else {
-      setActivityState(prev => ({
-        ...prev,
-        typingFeedback: feedback,
-        showAnswer: true
-      }));
-    }
+    // Update local state with feedback
+    setActivityState(prev => ({
+      ...prev,
+      typingFeedback: feedback,
+      showAnswer: true
+    }));
 
     // Call external submit handler if provided
     if (onSubmit) {
       onSubmit(typedAnswer, isCorrect);
     }
-  }, [word, studyMode, setTypingFeedback, onSubmit]);
+  }, [word, studyMode, onSubmit]);
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value) => {
-    if (setTypedAnswer) {
-      setTypedAnswer(value);
-    } else {
-      setActivityState(prev => ({ ...prev, typedAnswer: value }));
-    }
-  }, [setTypedAnswer]);
-
-  
+    setActivityState(prev => ({ ...prev, typedAnswer: value }));
+  }, []);
 
   // Early return after all hooks
   if (!word) {
@@ -125,8 +110,8 @@ const TypingActivity = ({
         playAudio={audioManager.playAudio.bind(audioManager)}
         onSubmit={handleSubmit}
         showAnswer={activityState.showAnswer}
-        feedback={typingFeedback || activityState.typingFeedback}
-        typedAnswer={typedAnswer || activityState.typedAnswer}
+        feedback={activityState.typingFeedback}
+        typedAnswer={activityState.typedAnswer}
         onTypedAnswerChange={handleTypedAnswerChange}
       />
     </div>

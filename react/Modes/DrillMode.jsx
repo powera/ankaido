@@ -46,9 +46,7 @@ const DrillMode = ({
   // State for user interactions with the current question
   const [questionInteractionState, setQuestionInteractionState] = React.useState({
     showAnswer: false,
-    selectedAnswer: null,
-    typedAnswer: '',
-    typingFeedback: ''
+    selectedAnswer: null
   });
 
   // Load stats from storage
@@ -226,9 +224,7 @@ const DrillMode = ({
       // Reset local drill activity state
       setQuestionInteractionState({
         showAnswer: false,
-        selectedAnswer: null,
-        typedAnswer: '',
-        typingFeedback: ''
+        selectedAnswer: null
       });
       return;
     }
@@ -268,9 +264,7 @@ const DrillMode = ({
     // Reset local drill activity state for new activity
     setQuestionInteractionState({
       showAnswer: false,
-      selectedAnswer: null,
-      typedAnswer: '',
-      typingFeedback: ''
+      selectedAnswer: null
     });
   }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptionsForDrill]);
 
@@ -437,9 +431,7 @@ const DrillMode = ({
                 // Reset local activity state
                 setQuestionInteractionState({
                   showAnswer: false,
-                  selectedAnswer: null,
-                  typedAnswer: '',
-                  typingFeedback: ''
+                  selectedAnswer: null
                 });
               }}
             />
@@ -458,9 +450,7 @@ const DrillMode = ({
                 }));
                 setQuestionInteractionState({
                   showAnswer: false,
-                  selectedAnswer: null,
-                  typedAnswer: '',
-                  typingFeedback: ''
+                  selectedAnswer: null
                 });
               }}
             >
@@ -535,15 +525,11 @@ const DrillMode = ({
         <div>
           <TypingActivity
             currentWord={drillState.currentWord}
-            typedAnswer={questionInteractionState.typedAnswer}
-            typingFeedback={questionInteractionState.typingFeedback}
-            setTypedAnswer={(value) => setQuestionInteractionState(prev => ({ ...prev, typedAnswer: value }))}
-            setTypingFeedback={(value) => setQuestionInteractionState(prev => ({ ...prev, typingFeedback: value }))}
             studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
             onSubmit={handleDrillTyping}
             audioEnabled={audioEnabled}
           />
-          {!autoAdvance && questionInteractionState.typingFeedback && (
+          {!autoAdvance && (
             <div className="w-nav-controls">
               <button className="w-button" onClick={() => advanceToNextDrillActivity(true)}>
                 Next →
