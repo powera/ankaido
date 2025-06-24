@@ -118,16 +118,8 @@ const TypingResponse = ({
             )}
           </div>
         ) : (
-          <div>
-            {/* Next button */}
-            <button 
-              className="w-button"
-              onClick={onNext}
-              style={{ width: '100%' }}
-            >
-              Next Word →
-            </button>
-          </div>
+          <>
+          </>
         )}
       </div>
     </div>

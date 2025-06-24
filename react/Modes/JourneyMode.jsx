@@ -489,6 +489,7 @@ const JourneyMode = ({
           onSubmit={handleJourneyTyping}
           audioEnabled={audioEnabled}
         />
+        <NavigationControls />
       </div>
     );
   }
