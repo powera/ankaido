@@ -516,6 +516,7 @@ const DrillMode = ({
           onAnswerClick={handleDrillMultipleChoice}
           autoAdvance={autoAdvance}
           defaultDelay={Math.max(defaultDelay, 2)}
+          allWords={drillState.drillWords}
         />
       ) : drillState.currentActivity === 'listening' ? (
         <ListeningActivity
@@ -528,6 +529,7 @@ const DrillMode = ({
           onAnswerClick={handleDrillListening}
           autoAdvance={autoAdvance}
           defaultDelay={Math.max(defaultDelay, 2)}
+          allWords={drillState.drillWords}
         />
       ) : drillState.currentActivity === 'typing' ? (
         <div>
