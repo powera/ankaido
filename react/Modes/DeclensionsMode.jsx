@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import DeclensionTable from '../Components/DeclensionTable';
+import DeclensionTable from '../Activities/DeclensionTable';
 import { fetchDeclensions } from '../Utilities/apiClient.js';
 
 const DeclensionsMode = ({

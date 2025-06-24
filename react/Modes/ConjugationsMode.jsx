@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ConjugationTable from '../Components/ConjugationTable';
+import ConjugationTable from '../Activities/ConjugationTable';
 import { fetchVerbCorpuses, fetchConjugations } from '../Utilities/apiClient.js';
 
 const ConjugationsMode = ({

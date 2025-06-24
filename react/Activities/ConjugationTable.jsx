@@ -1,22 +1,17 @@
 
 import React from 'react';
-import DataTable from './shared/DataTable';
+import DataTable from '../Components/shared/DataTable';
 import { createHoverHandlers } from '../Utilities/hoverHelpers';
-import AudioManager from '../Managers/audioManager';
+import audioManager from '../Managers/audioManager';
 
-const ConjugationTable = ({ verb, conjugations, audioEnabled, selectedVoice }) => {
+const ConjugationTable = ({ verb, conjugations, audioEnabled }) => {
   const conjugationList = conjugations[verb];
   if (!conjugationList) return null;
 
-  // Use the global audio manager instance
-  const audioManager = AudioManager.getInstance();
+  // Use the global audio manager instance (already imported as singleton)
 
   // Create hover handlers
-  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(
-    audioManager.playAudio.bind(audioManager),
-    audioEnabled,
-    selectedVoice
-  );
+  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(audioEnabled);
 
   // Create a 3x3 grid for conjugations
   const conjugationGrid = {
