@@ -1,9 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import DeclensionTable from '../Components/DeclensionTable';
-
-// Use the namespaced lithuanianApi from window
-const { fetchDeclensions } = window.lithuanianApi;
+import { fetchDeclensions } from '../Utilities/apiClient.js';
 
 const DeclensionsMode = ({
   audioEnabled

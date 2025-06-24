@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import ConjugationTable from '../Components/ConjugationTable';
 import { fetchVerbCorpuses, fetchConjugations } from '../Utilities/apiClient.js';
