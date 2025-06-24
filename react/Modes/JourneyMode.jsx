@@ -11,7 +11,7 @@ import {
   getTotalCorrectExposures 
 } from '../Managers/journeyStatsManager';
 
-import { selectJourneyActivity } from '../Utilities/activitySelection';
+import { selectJourneyActivity, createJourneyModeState } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({ 
@@ -40,6 +40,9 @@ const JourneyMode = ({
   });
 
   const [journeyStats, setJourneyStats] = React.useState({});
+
+  // Journey mode state for activity selection constraints (not persisted)
+  const [activitySelectorState, setActivitySelectorState] = React.useState(() => createJourneyModeState());
 
   // Initialize wordListManager journeyStats property
   React.useEffect(() => {
@@ -101,9 +104,10 @@ const JourneyMode = ({
       wordListState.allWords,
       wordListManager,
       getTotalCorrectForWord,
-      audioEnabled
+      audioEnabled,
+      activitySelectorState
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
