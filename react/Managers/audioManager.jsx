@@ -1,8 +1,6 @@
 
 import safeStorage from '../DataStorage/safeStorage';
-
-// Get the AudioManager class from lithuanianApi
-const { AudioManager: LithuanianAudioManager } = window.lithuanianApi;
+import { AudioManager as LithuanianAudioManager } from '../Utilities/audioClient.js';
 
 class AudioManager {
   constructor() {

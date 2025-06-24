@@ -23,13 +23,11 @@ import storageConfigManager from './Managers/storageConfigManager';
 import journeyStatsManager from './Managers/journeyStatsManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
 import audioManager from './Managers/audioManager';
-// Use the namespaced lithuanianApi from window
-// These are provided by the script tag in widget.html: /js/lithuanianApi.js
-const { 
+import { 
   fetchCorpora, 
   fetchCorpusStructure, 
   fetchAvailableVoices
-} = window.lithuanianApi;
+} from './Utilities/apiClient.js';
 
 // The CSS classes available are primarily in widget_tools.css .
 

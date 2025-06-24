@@ -1,9 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import ConjugationTable from '../Components/ConjugationTable';
-
-// Use the namespaced lithuanianApi from window
-const { fetchVerbCorpuses, fetchConjugations } = window.lithuanianApi;
+import { fetchVerbCorpuses, fetchConjugations } from '../Utilities/apiClient.js';
 
 const ConjugationsMode = ({
   audioEnabled
