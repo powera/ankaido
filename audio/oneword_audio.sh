@@ -89,7 +89,7 @@ echo "Copying audio files to production server..."
 SANITIZED_WORD=$(echo "$LITHUANIAN_WORD" | tr '[:upper:]' '[:lower:]' | sed 's/ /_/g')
 
 # Create remote directories if needed
-ssh "${REMOTE_USER}@${REMOTE_HOST}" "mkdir -p '$REMOTE_DIR/lithuanian-audio-cache/ash' '$REMOTE_DIR/lithuanian-audio-cache/alloy' '$REMOTE_DIR/lithuanian-audio-cache/nova'" 2>/dev/null || {
+ssh "${REMOTE_USER}@${REMOTE_HOST}" "mkdir -p '$REMOTE_DIR/ash' '$REMOTE_DIR/alloy' '$REMOTE_DIR/nova'" 2>/dev/null || {
     echo "Error: Cannot create remote directories"
     exit 1
 }
@@ -106,7 +106,7 @@ for speaker in "${SPEAKERS[@]}"; do
         echo "Copying $speaker/${SANITIZED_WORD}.mp3..."
         
         # Use scp to copy the specific file
-        if scp "$LOCAL_FILE" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/lithuanian-audio-cache/$speaker/"; then
+        if scp "$LOCAL_FILE" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/$speaker/"; then
             echo "✓ Successfully copied $speaker/${SANITIZED_WORD}.mp3"
             ((COPY_SUCCESS_COUNT++))
         else
