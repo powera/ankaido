@@ -66,7 +66,7 @@ for speaker in "${SPEAKERS[@]}"; do
     echo "Generating audio with speaker: $speaker"
     
     # Run the audio generation script
-    if python3 "$GENAUDIO_SCRIPT" --lithuanian "$LITHUANIAN_WORD" --lithuanian-speaker "$speaker" --format wav; then
+    if python3 "$GENAUDIO_SCRIPT" --lithuanian "$LITHUANIAN_WORD" --lithuanian-speaker "$speaker" --format mp3; then
         echo "✓ Successfully generated audio with $speaker speaker"
         ((SUCCESS_COUNT++))
     else
@@ -99,18 +99,18 @@ COPY_SUCCESS_COUNT=0
 COPY_TOTAL_COUNT=0
 
 for speaker in "${SPEAKERS[@]}"; do
-    LOCAL_FILE="$LOCAL_CACHE_DIR/$speaker/${SANITIZED_WORD}.wav"
+    LOCAL_FILE="$LOCAL_CACHE_DIR/$speaker/${SANITIZED_WORD}.mp3"
     
     if [[ -f "$LOCAL_FILE" ]]; then
         ((COPY_TOTAL_COUNT++))
-        echo "Copying $speaker/${SANITIZED_WORD}.wav..."
+        echo "Copying $speaker/${SANITIZED_WORD}.mp3..."
         
         # Use scp to copy the specific file
         if scp "$LOCAL_FILE" "${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}/lithuanian-audio-cache/$speaker/"; then
-            echo "✓ Successfully copied $speaker/${SANITIZED_WORD}.wav"
+            echo "✓ Successfully copied $speaker/${SANITIZED_WORD}.mp3"
             ((COPY_SUCCESS_COUNT++))
         else
-            echo "✗ Failed to copy $speaker/${SANITIZED_WORD}.wav"
+            echo "✗ Failed to copy $speaker/${SANITIZED_WORD}.mp3"
         fi
     else
         echo "⚠ Audio file not found: $LOCAL_FILE"
