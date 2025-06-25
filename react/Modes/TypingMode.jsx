@@ -23,7 +23,7 @@ const TypingMode = ({
         setAutoAdvanceTimer(null);
       }
     }
-  }, [currentWord, autoAdvanceTimer]);
+  }, [currentWord]);
 
   const handleTypingSubmit = React.useCallback(async (typedAnswer, isCorrect) => {
     // Update session stats
@@ -78,6 +78,9 @@ const TypingMode = ({
         studyMode={studyMode}
         audioEnabled={audioEnabled}
         onSubmit={handleTypingSubmit}
+        autoAdvance={autoAdvance}
+        defaultDelay={defaultDelay}
+        autoAdvanceTimer={autoAdvanceTimer}
       />
       {currentWord && (
         <div className="w-nav-controls">

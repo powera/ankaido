@@ -492,6 +492,9 @@ const JourneyMode = ({
           studyMode={effectiveStudyMode}
           onSubmit={handleJourneyTyping}
           audioEnabled={audioEnabled}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
+          autoAdvanceTimer={null}
         />
         <NavigationControls />
       </div>

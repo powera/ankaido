@@ -528,6 +528,9 @@ const DrillMode = ({
             studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
             onSubmit={handleDrillTyping}
             audioEnabled={audioEnabled}
+            autoAdvance={autoAdvance}
+            defaultDelay={defaultDelay}
+            autoAdvanceTimer={null}
           />
           {!autoAdvance && (
             <div className="w-nav-controls">

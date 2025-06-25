@@ -15,7 +15,10 @@ const TypingActivity = ({
   currentWord,
   studyMode,
   onSubmit,
-  audioEnabled
+  audioEnabled,
+  autoAdvance,
+  defaultDelay,
+  autoAdvanceTimer
 }) => {
   const [activityState, setActivityState] = React.useState(() =>
     createInitialActivityState(false, null, '', '')
@@ -126,6 +129,9 @@ const TypingActivity = ({
         feedback={activityState.typingFeedback}
         typedAnswer={activityState.typedAnswer}
         onTypedAnswerChange={handleTypedAnswerChange}
+        autoAdvance={autoAdvance}
+        defaultDelay={defaultDelay}
+        autoAdvanceTimer={autoAdvanceTimer}
       />
     </div>
   );
