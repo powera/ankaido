@@ -480,7 +480,7 @@ def main():
                 print(f"Skipping generation: {target_path.name} already exists in {args.format} format")
             else:
                 # Always generate WAV first if we need to convert
-                if need_conversion and not output_path.endswith(".wav"):
+                if need_conversion and not str(output_path).endswith(".wav"):
                     wav_path = Path(output_path).with_suffix(".wav")
                     
                     # Check if WAV exists and we're not forcing overwrite
@@ -493,7 +493,7 @@ def main():
                     if not target_path.exists() or args.force:
                         convert_audio(wav_path, args.format, args.quality, delete_original)
                 else:
-                    generate_lithuanian_audio(interface, args.lithuanian, output_path, args.lithuanian_speaker)
+                    generate_lithuanian_audio(interface, args.lithuanian, str(output_path), args.lithuanian_speaker)
         
         elif args.lithuanian_batch:
             if not output_path:
