@@ -45,6 +45,11 @@ class AudioManager {
     const voice = this.getSelectedVoice();
     const audioEnabled = true; // Audio is enabled by default in activities
     
+    // Ensure audio context is initialized on first interaction
+    if (!this.lithuanianAudioManager.isInitialized) {
+      await this.lithuanianAudioManager.initializeAudioContext();
+    }
+    
     return await this.lithuanianAudioManager.playAudio(word, voice, audioEnabled, onlyCached);
   }
 

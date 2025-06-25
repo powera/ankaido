@@ -31,13 +31,17 @@ const ListeningActivity = ({
   // Auto-play audio for listening activities
   React.useEffect(() => {
     if (audioEnabled && currentWord && !preventAutoPlay) {
-      // Small delay to ensure the UI has updated
-      const timer = setTimeout(() => {
-        audioManager.playAudio(currentWord.lithuanian);
-      }, 300);
+      // Small delay to ensure the UI has updated and audio context is ready
+      const timer = setTimeout(async () => {
+        try {
+          await audioManager.playAudio(currentWord.lithuanian);
+        } catch (error) {
+          console.warn('Auto-play failed, user interaction may be required:', error);
+        }
+      }, 500);
       return () => clearTimeout(timer);
     }
-  }, [currentWord, audioEnabled, audioManager, preventAutoPlay]);
+  }, [currentWord, audioEnabled, preventAutoPlay]);
 
   // Handle answer click
   const handleAnswerClick = React.useCallback((selectedOption) => {

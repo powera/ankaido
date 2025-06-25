@@ -12,6 +12,8 @@ export class AudioManager {
     this.audioContext = null;
     this.isAudioEnabled = true;
     this.currentlyPlaying = null;
+    this.isInitialized = false;
+    this.pendingAudioRequests = new Set();
   }
 
   async initializeAudioContext() {
@@ -33,22 +35,33 @@ export class AudioManager {
       }
     }
 
-    return this.audioContext.state === 'running';
+    this.isInitialized = this.audioContext.state === 'running';
+    return this.isInitialized;
   }
 
   async playAudio(word, voice, audioEnabled = true, onlyCached = false) {
-    if (!audioEnabled) return;
+    if (!audioEnabled || !this.isAudioEnabled) return;
 
-    // If audio is currently playing, ignore this request
-    if (this.currentlyPlaying && !this.currentlyPlaying.ended) {
+    const cacheKey = `${word}-${voice}`;
+    
+    // Prevent duplicate simultaneous requests
+    if (this.pendingAudioRequests.has(cacheKey)) {
       return;
     }
 
-    try {
-      // Initialize audio context if needed
-      await this.initializeAudioContext();
+    // Stop any currently playing audio
+    if (this.currentlyPlaying && !this.currentlyPlaying.ended && !this.currentlyPlaying.paused) {
+      this.currentlyPlaying.pause();
+      this.currentlyPlaying.currentTime = 0;
+    }
 
-      const cacheKey = `${word}-${voice}`;
+    try {
+      this.pendingAudioRequests.add(cacheKey);
+
+      // Initialize audio context if needed
+      if (!this.isInitialized) {
+        await this.initializeAudioContext();
+      }
 
       if (this.audioCache[cacheKey]) {
         const audio = this.audioCache[cacheKey];
@@ -67,13 +80,36 @@ export class AudioManager {
       const audioUrl = getAudioUrl(word, voice);
       const audio = new Audio(audioUrl);
 
-      // Wait for audio to be ready before caching and playing
-      await new Promise((resolve, reject) => {
-        audio.addEventListener('canplaythrough', resolve, { once: true });
-        audio.addEventListener('error', reject, { once: true });
-        audio.load();
-      });
+      // Set up event listeners
+      const setupAudio = () => {
+        return new Promise((resolve, reject) => {
+          const onCanPlay = () => {
+            audio.removeEventListener('canplaythrough', onCanPlay);
+            audio.removeEventListener('error', onError);
+            resolve();
+          };
+          
+          const onError = (error) => {
+            audio.removeEventListener('canplaythrough', onCanPlay);
+            audio.removeEventListener('error', onError);
+            reject(error);
+          };
 
+          audio.addEventListener('canplaythrough', onCanPlay, { once: true });
+          audio.addEventListener('error', onError, { once: true });
+          
+          // Add ended event listener to clear currentlyPlaying
+          audio.addEventListener('ended', () => {
+            if (this.currentlyPlaying === audio) {
+              this.currentlyPlaying = null;
+            }
+          });
+
+          audio.load();
+        });
+      };
+
+      await setupAudio();
       this.audioCache[cacheKey] = audio;
       this.currentlyPlaying = audio;
       await audio.play();
@@ -89,6 +125,8 @@ export class AudioManager {
           this.isAudioEnabled = true;
         }, 5000);
       }
+    } finally {
+      this.pendingAudioRequests.delete(cacheKey);
     }
   }
 
