@@ -215,9 +215,9 @@ const JourneyMode = ({
       selectedAnswer: selectedOption
     });
 
-    // Update journey stats
+    // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect);
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -241,9 +241,9 @@ const JourneyMode = ({
     // Determine stats mode based on difficulty
     const statsMode = journeyState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
 
-    // Update journey stats
+    // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect);
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -258,9 +258,9 @@ const JourneyMode = ({
 
   // Handler for typing submissions with stats and auto-advance
   const handleJourneyTyping = React.useCallback(async (typedAnswer, isCorrect) => {
-    // Update journey stats
+    // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect);
+      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }

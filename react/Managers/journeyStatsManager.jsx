@@ -259,7 +259,7 @@ class JourneyStatsManager {
   /**
    * Update stats for a word
    */
-  async updateWordStats(word, mode, isCorrect) {
+  async updateWordStats(word, mode, isCorrect, shouldExposeWord = false) {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -273,7 +273,7 @@ class JourneyStatsManager {
     // Create updated stats
     const updatedStats = {
       ...currentStats,
-      exposed: currentStats.exposed || isCorrect, // Only mark as exposed if correct
+      exposed: currentStats.exposed || (shouldExposeWord && isCorrect), // Only expose if explicitly allowed and correct
       [mode]: {
         ...currentModeStats,
         [isCorrect ? 'correct' : 'incorrect']: currentModeStats[isCorrect ? 'correct' : 'incorrect'] + 1
