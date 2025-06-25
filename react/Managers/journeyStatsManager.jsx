@@ -267,13 +267,18 @@ class JourneyStatsManager {
     const wordKey = createWordKey(word);
     const currentStats = this.getWordStats(word);
     
+    // Early exit: if word is not exposed and we shouldn't expose it, don't update stats
+    if (!currentStats.exposed && !shouldExposeWord) {
+      return currentStats;
+    }
+    
     // Ensure the mode exists with default values
     const currentModeStats = currentStats[mode] || { correct: 0, incorrect: 0 };
     
     // Create updated stats
     const updatedStats = {
       ...currentStats,
-      exposed: currentStats.exposed || (shouldExposeWord && isCorrect), // Only expose if explicitly allowed and correct
+      exposed: currentStats.exposed || shouldExposeWord, // Only expose if explicitly allowed
       [mode]: {
         ...currentModeStats,
         [isCorrect ? 'correct' : 'incorrect']: currentModeStats[isCorrect ? 'correct' : 'incorrect'] + 1
