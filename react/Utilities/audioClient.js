@@ -14,6 +14,8 @@ export class AudioManager {
     this.currentlyPlaying = null;
     this.isInitialized = false;
     this.pendingAudioRequests = new Set();
+    this.playbackQueue = [];
+    this.isProcessingQueue = false;
   }
 
   async initializeAudioContext() {
@@ -44,18 +46,52 @@ export class AudioManager {
 
     const cacheKey = `${word}-${voice}`;
     
-    // Prevent duplicate simultaneous requests
-    if (this.pendingAudioRequests.has(cacheKey)) {
+    // Add to queue instead of playing immediately to prevent race conditions
+    return new Promise((resolve, reject) => {
+      this.playbackQueue.push({
+        word,
+        voice,
+        cacheKey,
+        onlyCached,
+        resolve,
+        reject
+      });
+      
+      this.processPlaybackQueue();
+    });
+  }
+
+  async processPlaybackQueue() {
+    if (this.isProcessingQueue || this.playbackQueue.length === 0) {
       return;
     }
 
-    // Stop any currently playing audio
-    if (this.currentlyPlaying && !this.currentlyPlaying.ended && !this.currentlyPlaying.paused) {
-      this.currentlyPlaying.pause();
-      this.currentlyPlaying.currentTime = 0;
-    }
+    this.isProcessingQueue = true;
 
     try {
+      while (this.playbackQueue.length > 0) {
+        // Clear queue except for the most recent request to prevent audio spam
+        const latestRequest = this.playbackQueue.pop();
+        this.playbackQueue = []; // Clear all other requests
+        
+        await this.playAudioInternal(latestRequest);
+      }
+    } finally {
+      this.isProcessingQueue = false;
+    }
+  }
+
+  async playAudioInternal({ word, voice, cacheKey, onlyCached, resolve, reject }) {
+    try {
+      // Prevent duplicate simultaneous requests
+      if (this.pendingAudioRequests.has(cacheKey)) {
+        resolve();
+        return;
+      }
+
+      // Gracefully stop any currently playing audio
+      await this.stopCurrentAudio();
+
       this.pendingAudioRequests.add(cacheKey);
 
       // Initialize audio context if needed
@@ -63,56 +99,29 @@ export class AudioManager {
         await this.initializeAudioContext();
       }
 
+      let audio;
+      
       if (this.audioCache[cacheKey]) {
-        const audio = this.audioCache[cacheKey];
-        // Reset audio to beginning in case it was played before
-        audio.currentTime = 0;
-        this.currentlyPlaying = audio;
-        await audio.play();
-        return;
+        audio = this.audioCache[cacheKey];
+        // Ensure audio is ready to play from the beginning
+        if (audio.currentTime > 0) {
+          audio.currentTime = 0;
+        }
+        // Wait a bit to ensure the audio is properly reset
+        await new Promise(resolve => setTimeout(resolve, 10));
+      } else {
+        // If onlyCached is true, don't fetch new audio
+        if (onlyCached) {
+          resolve();
+          return;
+        }
+
+        audio = await this.createAndSetupAudio(word, voice, cacheKey);
       }
 
-      // If onlyCached is true, don't fetch new audio
-      if (onlyCached) {
-        return;
-      }
-
-      const audioUrl = getAudioUrl(word, voice);
-      const audio = new Audio(audioUrl);
-
-      // Set up event listeners
-      const setupAudio = () => {
-        return new Promise((resolve, reject) => {
-          const onCanPlay = () => {
-            audio.removeEventListener('canplaythrough', onCanPlay);
-            audio.removeEventListener('error', onError);
-            resolve();
-          };
-          
-          const onError = (error) => {
-            audio.removeEventListener('canplaythrough', onCanPlay);
-            audio.removeEventListener('error', onError);
-            reject(error);
-          };
-
-          audio.addEventListener('canplaythrough', onCanPlay, { once: true });
-          audio.addEventListener('error', onError, { once: true });
-          
-          // Add ended event listener to clear currentlyPlaying
-          audio.addEventListener('ended', () => {
-            if (this.currentlyPlaying === audio) {
-              this.currentlyPlaying = null;
-            }
-          });
-
-          audio.load();
-        });
-      };
-
-      await setupAudio();
-      this.audioCache[cacheKey] = audio;
       this.currentlyPlaying = audio;
       await audio.play();
+      resolve();
     } catch (error) {
       console.warn(`Failed to play audio for: ${word}`, error);
 
@@ -125,23 +134,95 @@ export class AudioManager {
           this.isAudioEnabled = true;
         }, 5000);
       }
+      reject(error);
     } finally {
       this.pendingAudioRequests.delete(cacheKey);
     }
+  }
+
+  async stopCurrentAudio() {
+    if (this.currentlyPlaying && !this.currentlyPlaying.ended && !this.currentlyPlaying.paused) {
+      return new Promise((resolve) => {
+        const audio = this.currentlyPlaying;
+        
+        // Set up event listener for when audio actually stops
+        const onPause = () => {
+          audio.removeEventListener('pause', onPause);
+          resolve();
+        };
+        
+        audio.addEventListener('pause', onPause, { once: true });
+        
+        // Fade out audio to prevent abrupt cutoff
+        if (audio.volume > 0) {
+          const fadeOut = setInterval(() => {
+            if (audio.volume > 0.1) {
+              audio.volume = Math.max(0, audio.volume - 0.1);
+            } else {
+              clearInterval(fadeOut);
+              audio.volume = 1; // Reset volume for next play
+              audio.pause();
+              audio.currentTime = 0;
+            }
+          }, 20);
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+        }
+        
+        // Fallback timeout in case pause event doesn't fire
+        setTimeout(resolve, 200);
+      });
+    }
+  }
+
+  async createAndSetupAudio(word, voice, cacheKey) {
+    const audioUrl = getAudioUrl(word, voice);
+    const audio = new Audio(audioUrl);
+
+    // Set up event listeners
+    await new Promise((resolve, reject) => {
+      const onCanPlay = () => {
+        audio.removeEventListener('canplaythrough', onCanPlay);
+        audio.removeEventListener('error', onError);
+        resolve();
+      };
+      
+      const onError = (error) => {
+        audio.removeEventListener('canplaythrough', onCanPlay);
+        audio.removeEventListener('error', onError);
+        reject(error);
+      };
+
+      audio.addEventListener('canplaythrough', onCanPlay, { once: true });
+      audio.addEventListener('error', onError, { once: true });
+      
+      // Add ended event listener to clear currentlyPlaying
+      audio.addEventListener('ended', () => {
+        if (this.currentlyPlaying === audio) {
+          this.currentlyPlaying = null;
+        }
+      });
+
+      // Add pause event listener to clear currentlyPlaying
+      audio.addEventListener('pause', () => {
+        if (this.currentlyPlaying === audio && audio.ended) {
+          this.currentlyPlaying = null;
+        }
+      });
+
+      audio.load();
+    });
+
+    this.audioCache[cacheKey] = audio;
+    return audio;
   }
 
   async preloadAudio(word, voice) {
     try {
       const cacheKey = `${word}-${voice}`;
       if (!this.audioCache[cacheKey]) {
-        const audioUrl = getAudioUrl(word, voice);
-        const audio = new Audio(audioUrl);
-        await new Promise((resolve, reject) => {
-          audio.addEventListener('canplaythrough', resolve, { once: true });
-          audio.addEventListener('error', reject, { once: true });
-          audio.load();
-        });
-        this.audioCache[cacheKey] = audio;
+        await this.createAndSetupAudio(word, voice, cacheKey);
       }
       return true;
     } catch (error) {
