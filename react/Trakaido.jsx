@@ -101,12 +101,17 @@ const FlashCardApp = () => {
 
   // Handle splash screen timing
   useEffect(() => {
-    const splashTimer = setTimeout(() => {
-      setShowSplash(false);
-    }, 2000); // Show splash for 2 seconds
+    // For new users (showWelcome = true), auto-advance after 2 seconds
+    // For returning users (showWelcome = false), require user interaction
+    if (showWelcome) {
+      const splashTimer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2000); // Show splash for 2 seconds for new users
 
-    return () => clearTimeout(splashTimer);
-  }, []);
+      return () => clearTimeout(splashTimer);
+    }
+    // For returning users, splash will remain until user clicks
+  }, [showWelcome]);
 
   // Load initial data
   useEffect(() => {
@@ -364,12 +369,21 @@ const FlashCardApp = () => {
     setQuizMode('flashcard'); // Reset back to flashcard mode when canceling
   };
 
+  const handleSplashContinue = () => {
+    setShowSplash(false);
+  };
+
   const currentWord = wordListManager.getCurrentWord();
   const totalSelectedWords = wordListManager.getTotalWords();
 
   // Splash screen
   if (showSplash) {
-    return <SplashScreen />;
+    return (
+      <SplashScreen 
+        requiresInteraction={!showWelcome} 
+        onContinue={handleSplashContinue}
+      />
+    );
   }
 
   // Welcome screen for new users

@@ -1,6 +1,12 @@
 import React from 'react';
 
-const SplashScreen = () => {
+const SplashScreen = ({ requiresInteraction = false, onContinue = null }) => {
+  const handleClick = () => {
+    if (requiresInteraction && onContinue) {
+      onContinue();
+    }
+  };
+
   return (
     <div className="w-container">
       <div className="w-card w-splash-card">
@@ -12,6 +18,16 @@ const SplashScreen = () => {
             Learn Lithuanian
           </p>
         </div>
+        {requiresInteraction && (
+          <div className="w-splash-interaction">
+            <button 
+              className="w-button w-button-primary w-mb-medium"
+              onClick={handleClick}
+            >
+              Continue Learning
+            </button>
+          </div>
+        )}
         <div className="w-splash-footer">
           © 2025 Yevaud Platforms LLC. All rights reserved.
         </div>
