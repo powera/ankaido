@@ -45,10 +45,23 @@ const TypingActivity = ({
     }
   }, [word, studyMode, audioEnabled, audioManager]);
 
+  // Helper function to normalize text for comparison
+  const normalizeForComparison = (text) => {
+    return text
+      .replace(/\([^)]*\)/g, '') // Remove text in parentheses
+      .replace(/[^\w\s]/g, '') // Remove punctuation
+      .trim()
+      .toLowerCase();
+  };
+
   // Handle typed answer submission
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);
-    const isCorrect = typedAnswer.trim().toLowerCase() === correctAnswer.toLowerCase();
+    
+    // Normalize both answers for comparison
+    const normalizedTyped = normalizeForComparison(typedAnswer);
+    const normalizedCorrect = normalizeForComparison(correctAnswer);
+    const isCorrect = normalizedTyped === normalizedCorrect;
 
     // Generate feedback message
     const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
