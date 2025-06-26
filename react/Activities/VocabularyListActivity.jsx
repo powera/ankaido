@@ -1,7 +1,7 @@
 import React from 'react';
-import DataTable from './shared/DataTable';
+import DataTable from '../Components/shared/DataTable';
 
-const VocabularyList = ({ 
+const VocabularyListActivity = ({ 
   selectedVocabGroup,
   setSelectedVocabGroup,
   vocabGroupOptions,
@@ -35,6 +35,7 @@ const VocabularyList = ({
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
     setVocabListWords(words);
   };
+
   return (
     <div className="w-card">
       <h3>Lithuanian Vocabulary List</h3>
@@ -92,4 +93,4 @@ const VocabularyList = ({
   );
 };
 
-export default VocabularyList;
+export default VocabularyListActivity;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalSettings } from './useGlobalSettings.jsx';
 import { useFullscreen } from './useFullscreen.js';
-import VocabularyList from './Components/VocabularyList.jsx';
+import VocabularyListMode from './Modes/VocabularyListMode.jsx';
 import TypingMode from './Modes/TypingMode.jsx';
 
 import FlashCardMode from './Modes/FlashCardMode.jsx';
@@ -471,7 +471,7 @@ const FlashCardApp = () => {
           audioEnabled={audioEnabled}
         />
       ) : quizMode === 'vocabulary-list' ? (
-        <VocabularyList 
+        <VocabularyListMode 
           selectedVocabGroup={selectedVocabGroup}
           setSelectedVocabGroup={setSelectedVocabGroup}
           vocabGroupOptions={vocabGroupOptions}
@@ -479,6 +479,7 @@ const FlashCardApp = () => {
           setVocabListWords={setVocabListWords}
           corporaData={corporaData}
           audioEnabled={audioEnabled}
+          playAudio={audioManager.playAudio.bind(audioManager)}
         />
       ) : quizMode === 'journey' ? (
         <JourneyMode 
