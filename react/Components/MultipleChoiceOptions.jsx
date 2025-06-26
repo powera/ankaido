@@ -1,6 +1,5 @@
 import React from 'react';
 import AudioButton from './AudioButton';
-import { createHoverHandlers } from '../Utilities/hoverHelpers';
 
 const MultipleChoiceOptions = ({ 
   currentWord, // Accept currentWord as prop
@@ -25,12 +24,6 @@ const MultipleChoiceOptions = ({
   const isAnswerSelected = selectedAnswer;
   const shouldShowAnswer = showAnswer;
   const wordsForTranslation = allWords || [];
-
-  // Create hover handlers for EN->LT mode
-  const shouldUseHover = studyMode === 'english-to-lithuanian' && quizMode !== 'listening';
-  const { handleHoverStart, handleHoverEnd } = shouldUseHover 
-    ? createHoverHandlers(playAudio, audioEnabled, selectedVoice)
-    : { handleHoverStart: () => {}, handleHoverEnd: () => {} };
   
   return (
     <div className="w-multiple-choice">
@@ -109,8 +102,6 @@ const MultipleChoiceOptions = ({
             className={className}
             onClick={handleOptionClick}
             disabled={shouldShowAnswer}
-            onMouseEnter={shouldUseHover ? () => handleHoverStart(option) : undefined}
-            onMouseLeave={shouldUseHover ? handleHoverEnd : undefined}
           >
             <div className="trakaido-choice-content">
               <div className="trakaido-choice-text-container">
