@@ -12,7 +12,7 @@ import {
   getTotalExposures
 } from '../Managers/journeyStatsManager';
 
-import { selectJourneyActivity, createJourneyModeState } from '../Utilities/activitySelection';
+import { selectJourneyActivity, createJourneyModeState, invalidateWordWeightCache } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({ 
@@ -97,6 +97,10 @@ const JourneyMode = ({
     return getTotalCorrectExposures(stats);
   }, []);
 
+  const getWordWeights = React.useCallback((word) => {
+    return journeyStatsManager.getWordStats(word);
+  }, []);
+
   // Activity selection using centralized utility
   const selectNextActivity = React.useCallback(() => {
     return selectJourneyActivity(
@@ -106,9 +110,10 @@ const JourneyMode = ({
       wordListManager,
       getTotalCorrectForWord,
       audioEnabled,
-      activitySelectorState
+      activitySelectorState,
+      getWordWeights
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState, getWordWeights]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
@@ -224,6 +229,8 @@ const JourneyMode = ({
     // Update journey stats (Journey Mode can expose words)
     try {
       await journeyStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
+      // Invalidate weight cache for this word since stats changed
+      invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -250,6 +257,8 @@ const JourneyMode = ({
     // Update journey stats (Journey Mode can expose words)
     try {
       await journeyStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
+      // Invalidate weight cache for this word since stats changed
+      invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -267,6 +276,8 @@ const JourneyMode = ({
     // Update journey stats (Journey Mode can expose words)
     try {
       await journeyStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
+      // Invalidate weight cache for this word since stats changed
+      invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }

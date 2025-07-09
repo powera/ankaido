@@ -4,6 +4,7 @@ import WordDisplayCard from '../Components/WordDisplayCard';
 import journeyStatsManager from '../Managers/journeyStatsManager';
 import audioManager from '../Managers/audioManager';
 import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
+import { invalidateWordWeightCache } from '../Utilities/activitySelection';
 
 /**
  * Flash Card Activity Component
@@ -25,6 +26,8 @@ const FlashCardActivity = ({
       const markAsExposed = async () => {
         try {
           await journeyStatsManager.updateWordStatsDirectly(currentWord, { exposed: true });
+          // Invalidate weight cache for this word since stats changed
+          invalidateWordWeightCache(currentWord);
         } catch (error) {
           console.error('Error marking word as exposed in FlashCardActivity:', error);
         }
