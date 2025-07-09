@@ -11,24 +11,12 @@ const DataTable = ({
   onSort,
   audioEnabled = false,
   playAudio,
-  handleHoverStart,
-  handleHoverEnd,
   maxHeight = '60vh',
   stickyHeader = true,
   striped = true,
   className = ''
 }) => {
-  const handleCellHover = (value, isHoverable) => {
-    if (audioEnabled && isHoverable && handleHoverStart) {
-      handleHoverStart(value);
-    }
-  };
 
-  const handleCellLeave = () => {
-    if (audioEnabled && handleHoverEnd) {
-      handleHoverEnd();
-    }
-  };
 
   const renderCell = (column, rowData, rowIndex) => {
     // Handle audio column type first
@@ -44,20 +32,6 @@ const DataTable = ({
     }
     
     const value = column.accessor ? rowData[column.accessor] : column.render(rowData, rowIndex);
-    
-    // Handle hoverable text columns
-    if (column.hoverable && audioEnabled) {
-      const hoverValue = column.hoverValue ? rowData[column.hoverValue] : value;
-      return (
-        <span
-          style={{ cursor: 'pointer' }}
-          onMouseEnter={() => handleCellHover(hoverValue, true)}
-          onMouseLeave={handleCellLeave}
-        >
-          {value}
-        </span>
-      );
-    }
     
     return value;
   };

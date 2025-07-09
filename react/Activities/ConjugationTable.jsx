@@ -1,7 +1,6 @@
 
 import React from 'react';
 import DataTable from '../Components/shared/DataTable';
-import { createHoverHandlers } from '../Utilities/hoverHelpers';
 import audioManager from '../Managers/audioManager';
 
 const ConjugationTable = ({ verb, conjugations, audioEnabled }) => {
@@ -9,9 +8,6 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled }) => {
   if (!conjugationList) return null;
 
   // Use the global audio manager instance (already imported as singleton)
-
-  // Create hover handlers
-  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(audioEnabled);
 
   // Create a 3x3 grid for conjugations
   const conjugationGrid = {
@@ -46,9 +42,7 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled }) => {
     },
     {
       header: 'Lithuanian',
-      accessor: 'lithuanian',
-      hoverable: true,
-      hoverValue: 'lithuanian'
+      accessor: 'lithuanian'
     },
     {
       header: 'Audio',
@@ -68,8 +62,6 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled }) => {
           data={tableData}
           audioEnabled={audioEnabled}
           playAudio={audioManager.playAudio.bind(audioManager)}
-          handleHoverStart={handleHoverStart}
-          handleHoverEnd={handleHoverEnd}
           maxHeight="none"
           stickyHeader={false}
         />

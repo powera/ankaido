@@ -2,7 +2,6 @@
 import React from 'react';
 import AudioButton from './AudioButton';
 import audioManager from '../Managers/audioManager';
-import { createHoverHandlers } from '../Utilities/hoverHelpers';
 
 const WordDisplayCard = ({
   currentWord,
@@ -22,9 +21,6 @@ const WordDisplayCard = ({
   hintText = null
 }) => {
   if (!currentWord) return null;
-
-  // Create hover handlers
-  const { handleHoverStart, handleHoverEnd } = createHoverHandlers(audioEnabled);
 
   // Determine question and answer based on study mode if not provided
   const question = questionText || (studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian);
@@ -56,10 +52,7 @@ const WordDisplayCard = ({
       
       <div 
         className="w-question"
-        onMouseEnter={() => audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart && handleHoverStart(question)}
-        onMouseLeave={handleHoverEnd}
         style={{ 
-          cursor: audioEnabled && studyMode === 'lithuanian-to-english' && handleHoverStart ? 'pointer' : 'default',
           fontSize: 'clamp(1.2rem, 4vw, 1.5rem)',
           marginBottom: 'clamp(1rem, 3vw, var(--spacing-large))'
         }}
@@ -110,11 +103,6 @@ const WordDisplayCard = ({
           textAlign: 'center'
         }}>
           Click to reveal answer
-          {audioEnabled && studyMode === 'lithuanian-to-english' && (
-            <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>
-              (Hover over Lithuanian word to hear pronunciation)
-            </div>
-          )}
         </div>
       )}
 
