@@ -32,7 +32,7 @@ const MultipleChoiceMode = ({
         studyMode,
         'multiple-choice',
         wordListState,
-        { difficulty: 'easy' }
+        { numOptions: 4 } // Use 4 options for MultipleChoiceMode
       );
       setMultipleChoiceOptions(options);
       // Reset answer state when word changes

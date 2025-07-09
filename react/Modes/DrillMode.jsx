@@ -79,41 +79,15 @@ const DrillMode = ({
     };
   }, [loadStatsFromStorage]);
 
-  // Helper function to generate multiple choice options
-  const generateMultipleChoiceOptionsForDrill = React.useCallback((currentWord, mode) => {
-    if (!currentWord || !drillState.drillWords.length) return [];
-
-    const options = [];
-    const isEnToLt = mode === 'en-to-lt';
-    const correctAnswer = isEnToLt ? currentWord.lithuanian : currentWord.english;
-
-    // Add the correct answer
-    options.push(correctAnswer);
-
-    // Add 5 random incorrect options from other drill words
-    const otherWords = drillState.drillWords.filter(w => 
-      w.lithuanian !== currentWord.lithuanian || w.english !== currentWord.english
-    );
-
-    const shuffledOthers = [...otherWords].sort(() => Math.random() - 0.5);
-    for (let i = 0; i < Math.min(5, shuffledOthers.length); i++) {
-      const incorrectAnswer = isEnToLt ? shuffledOthers[i].lithuanian : shuffledOthers[i].english;
-      if (!options.includes(incorrectAnswer)) {
-        options.push(incorrectAnswer);
-      }
+  // Helper function to get number of options based on difficulty
+  const getNumOptionsForDifficulty = React.useCallback((difficulty) => {
+    switch (difficulty) {
+      case 'easy': return 4;
+      case 'medium': return 6;
+      case 'hard': return 6;
+      default: return 4;
     }
-
-    // If we don't have enough options, pad with some defaults
-    while (options.length < 4) {
-      const placeholder = isEnToLt ? `Option ${options.length}` : `Option ${options.length}`;
-      if (!options.includes(placeholder)) {
-        options.push(placeholder);
-      }
-    }
-
-    // Shuffle the options
-    return options.sort(() => Math.random() - 0.5);
-  }, [drillState.drillWords]);
+  }, []);
 
   // Generate drill word list from selected group
   React.useEffect(() => {
@@ -232,13 +206,27 @@ const DrillMode = ({
     // Generate multiple choice options if needed
     let multipleChoiceOptions = [];
     if (nextActivity.type === 'multiple-choice') {
-      multipleChoiceOptions = generateMultipleChoiceOptionsForDrill(nextActivity.word, nextActivity.mode);
+      const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
+      multipleChoiceOptions = generateMultipleChoiceOptions(
+        nextActivity.word,
+        nextActivity.mode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english',
+        'multiple-choice',
+        wordListState,
+        { numOptions }
+      );
     } else if (nextActivity.type === 'listening') {
       // For listening activities, generate options based on the mode
       // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
       // Hard mode: Lithuanian audio -> English options (lt-to-en)
-      const mode = nextActivity.mode === 'easy' ? 'en-to-lt' : 'lt-to-en';
-      multipleChoiceOptions = generateMultipleChoiceOptionsForDrill(nextActivity.word, mode);
+      const studyMode = nextActivity.mode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english';
+      const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
+      multipleChoiceOptions = generateMultipleChoiceOptions(
+        nextActivity.word,
+        studyMode,
+        'listening',
+        wordListState,
+        { numOptions }
+      );
     }
 
     // Update drill state with new activity
@@ -266,7 +254,7 @@ const DrillMode = ({
       showAnswer: false,
       selectedAnswer: null
     });
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, generateMultipleChoiceOptionsForDrill]);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, getNumOptionsForDifficulty, wordListState]);
 
   // Initialize first activity when ready
   React.useEffect(() => {

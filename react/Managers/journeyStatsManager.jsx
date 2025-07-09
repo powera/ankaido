@@ -194,6 +194,13 @@ export const getTotalCorrectExposures = (wordStats) => {
 };
 
 /**
+ * Calculate total exposures (correct + incorrect) for a word across all modes
+ */
+export const getTotalExposures = (wordStats) => {
+  return calculateTotalCorrect(wordStats) + calculateTotalIncorrect(wordStats);
+};
+
+/**
  * Filter words to get only those that have been exposed (seen before)
  */
 export const getExposedWords = (allWords, statsManager) => {

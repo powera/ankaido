@@ -35,7 +35,7 @@ const ListeningMode = ({
         studyMode,
         'listening',
         wordListState,
-        { difficulty: 'easy' }
+        { numOptions: 4 } // Use 4 options for ListeningMode
       );
       setMultipleChoiceOptions(options);
       // Reset answer state for new word

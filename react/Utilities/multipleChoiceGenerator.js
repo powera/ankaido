@@ -3,7 +3,7 @@
  * Utility for generating multiple choice options across different activities
  */
 
-export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordListState, settings) => {
+export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordListState, settings = {}) => {
   if (!word) return [];
 
   // Determine correct answer and answer field based on mode
@@ -24,8 +24,8 @@ export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordLis
     answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
   }
 
-  // Determine number of options based on difficulty
-  const numOptions = settings?.difficulty === 'easy' ? 4 : settings?.difficulty === 'medium' ? 6 : 8;
+  // Use provided number of options, default to 4
+  const numOptions = settings.numOptions || 4;
   const numWrongAnswers = numOptions - 1;
 
   // Use wordListState if available, otherwise create minimal options
@@ -63,8 +63,8 @@ export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordLis
 
   let options = [correctAnswer, ...wrongAnswers];
 
-  // Sort alphabetically for medium and hard difficulty, otherwise shuffle
-  if (settings?.difficulty === 'medium' || settings?.difficulty === 'hard') {
+  // Sort alphabetically for 6+ options, otherwise shuffle
+  if (numOptions >= 6) {
     options = options.sort();
     // Rearrange to fill columns first
     const rearranged = [];

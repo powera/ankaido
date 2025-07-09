@@ -8,7 +8,8 @@ import {
   journeyStatsManager, 
   getExposedWords, 
   getNewWords, 
-  getTotalCorrectExposures 
+  getTotalCorrectExposures,
+  getTotalExposures
 } from '../Managers/journeyStatsManager';
 
 import { selectJourneyActivity, createJourneyModeState } from '../Utilities/activitySelection';
@@ -130,12 +131,17 @@ const JourneyMode = ({
         effectiveStudyMode = 'lithuanian-to-english';
       }
 
+      // Determine number of options based on word exposure count
+      const wordStats = journeyStatsManager.getWordStats(nextActivity.word);
+      const totalExposures = getTotalExposures(wordStats);
+      const numOptions = totalExposures > 8 ? 6 : 4; // Use 6 options if >8 exposures, otherwise 4
+
       multipleChoiceOptions = generateMultipleChoiceOptions(
         nextActivity.word,
         effectiveStudyMode,
         nextActivity.type === 'listening' ? 'listening' : 'multiple-choice',
         wordListState,
-        { difficulty: 'easy' } // Default difficulty for Journey mode
+        { numOptions: numOptions }
       );
     }
 
