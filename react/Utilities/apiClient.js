@@ -64,4 +64,16 @@ export const fetchDeclensions = async () => {
   }
 };
 
+export const fetchLevels = async () => {
+  try {
+    const response = await fetch(`${API_BASE}/wordlists/levels`);
+    if (!response.ok) throw new Error('Failed to fetch levels');
+    const data = await response.json();
+    return data.levels;
+  } catch (error) {
+    console.warn('Failed to fetch levels:', error);
+    return {};
+  }
+};
+
 export const getApiBase = () => API_BASE;
