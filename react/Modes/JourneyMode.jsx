@@ -3,6 +3,7 @@ import FlashCardActivity from '../Activities/FlashCardActivity';
 import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
 import TypingActivity from '../Activities/TypingActivity';
+import MotivationalBreakActivity from '../Activities/MotivationalBreakActivity';
 
 import { 
   journeyStatsManager, 
@@ -315,59 +316,9 @@ const JourneyMode = ({
     );
   }
 
-  // Activity renderers
-  if (journeyState.currentActivity === 'grammar-break') {
-    return (
-      <div className="w-card">
-        <div className="w-text-center w-mb-large">
-          <div className="w-question w-mb-large">📚 Grammar Break</div>
-          <div>Take a moment to review grammar concepts!</div>
-          <div style={{ margin: 'var(--spacing-large) 0' }}>
-            <p>Consider reviewing:</p>
-            <ul style={{ textAlign: 'left', display: 'inline-block' }}>
-              <li>Verb conjugations</li>
-              <li>Noun declensions</li>
-              <li>Sentence structure</li>
-            </ul>
-          </div>
-          <button className="w-button" onClick={advanceToNextActivity}>
-            Continue Journey
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   if (journeyState.currentActivity === 'motivational-break') {
-    const motivationalMessages = [
-      "Keep going, you're doing great! 🌟",
-      "Your progress is impressive! 💪",
-      "You're building amazing language skills! 🚀",
-      "Every word you learn is a step forward! ✨",
-      "Your dedication is paying off! 🎯",
-      "You're becoming more fluent every day! 🌱",
-      "Great job staying consistent! 👏",
-      "Your Lithuanian journey is inspiring! 🏆",
-      "Keep up the excellent work! 💫",
-      "You're mastering this language! 🎉"
-    ];
-
-    const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-
     return (
-      <div className="w-card">
-        <div className="w-text-center w-mb-large">
-          <div className="w-question w-mb-large" style={{ fontSize: '2rem', margin: 'var(--spacing-large) 0' }}>
-            {randomMessage}
-          </div>
-          <div style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', margin: 'var(--spacing-base) 0' }}>
-            Take a moment to appreciate your progress!
-          </div>
-          <button className="w-button" onClick={advanceToNextActivity} style={{ marginTop: 'var(--spacing-large)' }}>
-            Continue Journey →
-          </button>
-        </div>
-      </div>
+      <MotivationalBreakActivity onContinue={advanceToNextActivity} />
     );
   }
 
