@@ -207,11 +207,15 @@ const DrillMode = ({
     let multipleChoiceOptions = [];
     if (nextActivity.type === 'multiple-choice') {
       const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
+      // Create synthetic wordListState from drill words
+      const syntheticWordListState = {
+        allWords: drillState.drillWords
+      };
       multipleChoiceOptions = generateMultipleChoiceOptions(
         nextActivity.word,
         nextActivity.mode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english',
         'multiple-choice',
-        wordListState,
+        syntheticWordListState,
         { numOptions }
       );
     } else if (nextActivity.type === 'listening') {
@@ -220,11 +224,15 @@ const DrillMode = ({
       // Hard mode: Lithuanian audio -> English options (lt-to-en)
       const studyMode = nextActivity.mode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english';
       const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
+      // Create synthetic wordListState from drill words
+      const syntheticWordListState = {
+        allWords: drillState.drillWords
+      };
       multipleChoiceOptions = generateMultipleChoiceOptions(
         nextActivity.word,
         studyMode,
         'listening',
-        wordListState,
+        syntheticWordListState,
         { numOptions }
       );
     }
@@ -254,7 +262,7 @@ const DrillMode = ({
       showAnswer: false,
       selectedAnswer: null
     });
-  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, getNumOptionsForDifficulty, wordListState]);
+  }, [drillState.drillWords, drillState.currentDrillIndex, drillConfig?.difficulty, audioEnabled, getTotalCorrectForWord, getNumOptionsForDifficulty]);
 
   // Initialize first activity when ready
   React.useEffect(() => {
