@@ -576,6 +576,8 @@ const FlashCardApp = () => {
       <ExposureStatsModal
         isOpen={showExposureStatsModal}
         onClose={() => setShowExposureStatsModal(false)}
+        corporaData={corporaData}
+        selectedGroups={selectedGroups}
       />
     </div>
   );
