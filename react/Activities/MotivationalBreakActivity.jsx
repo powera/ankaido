@@ -15,13 +15,13 @@ const MotivationalBreakActivity = ({ onContinue }) => {
   ];
 
   const appUsageTips = [
-    "💡 Tip: Use the audio feature to improve your pronunciation!",
-    "💡 Tip: Try different study modes to challenge yourself!",
-    "💡 Tip: In typing mode, don't type the parentheticals like (f.), (body part), etc.",
-    "💡 Tip: Consistent daily practice is more effective than long sessions!",
-    "💡 Tip: Don't worry about mistakes - they're part of learning!",
-    "💡 Tip: The journey mode adapts to your learning progress!",
-    "💡 Tip: Take breaks when you need them - your brain needs time to process!"
+    "Tip: Use the audio feature to improve your pronunciation!",
+    "Tip: Try different study modes to challenge yourself!",
+    "Tip: In typing mode, don't type the parentheticals like (f.), (body part), etc.",
+    "Tip: Consistent daily practice is more effective than long sessions!",
+    "Tip: Don't worry about mistakes - they're part of learning!",
+    "Tip: The journey mode adapts to your learning progress!",
+    "Tip: Take breaks when you need them - your brain needs time to process!"
   ];
 
   const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
