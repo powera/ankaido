@@ -41,7 +41,7 @@ class AudioManager {
     return selectedVoice;
   }
 
-  async playAudio(word, onlyCached = false) {
+  async playAudio(word, onlyCached = false, sequential = false) {
     const voice = this.getSelectedVoice();
     const audioEnabled = true; // Audio is enabled by default in activities
     
@@ -50,7 +50,7 @@ class AudioManager {
       await this.lithuanianAudioManager.initializeAudioContext();
     }
     
-    return await this.lithuanianAudioManager.playAudio(word, voice, audioEnabled, onlyCached);
+    return await this.lithuanianAudioManager.playAudio(word, voice, audioEnabled, onlyCached, sequential);
   }
 
   async preloadAudio(word) {

@@ -7,6 +7,7 @@ import TypingMode from './Modes/TypingMode.jsx';
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
+import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import StudyModeSelector from './Components/StudyModeSelector.jsx';
 import ExposureStatsModal from './Components/ExposureStatsModal.jsx';
@@ -253,7 +254,6 @@ const FlashCardApp = () => {
   }, [studyMode, quizMode]);
 
 
-
   // Generate all available groups from all corpuses
   useEffect(() => {
     if (Object.keys(corporaData).length === 0) return;
@@ -449,7 +449,7 @@ const FlashCardApp = () => {
         journeyStats={journeyStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'multi-word-sequence' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -550,6 +550,16 @@ const FlashCardApp = () => {
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
+      ) : quizMode === 'multi-word-sequence' ? (
+        <MultiWordSequenceMode 
+          wordListManager={wordListManager}
+          wordListState={wordListState}
+          studyMode={studyMode}
+          audioEnabled={audioEnabled}
+          autoAdvance={autoAdvance}
+          defaultDelay={defaultDelay}
+          settings={settings}
+        />
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
@@ -557,9 +567,6 @@ const FlashCardApp = () => {
           </div>
         </div>
       )}
-
-
-
 
 
       <SettingsModal />

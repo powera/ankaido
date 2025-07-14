@@ -155,6 +155,7 @@ const StudyModeSelector = ({
           <option value="multiple-choice">Multiple Choice</option>
           <option value="typing">⌨️ Typing</option>
           <option value="listening">🎧 Listening</option>
+          <option value="multi-word-sequence">🎵 Multi-Word Sequence</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
           <option value="journey">🚀 Journey Mode</option>
           <option value="drill">🎯 Drill Mode</option>

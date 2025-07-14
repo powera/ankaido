@@ -41,7 +41,7 @@ export class AudioManager {
     return this.isInitialized;
   }
 
-  async playAudio(word, voice, audioEnabled = true, onlyCached = false) {
+  async playAudio(word, voice, audioEnabled = true, onlyCached = false, sequential = false) {
     if (!audioEnabled || !this.isAudioEnabled) return;
 
     const cacheKey = `${word}-${voice}`;
@@ -53,6 +53,7 @@ export class AudioManager {
         voice,
         cacheKey,
         onlyCached,
+        sequential,
         resolve,
         reject
       });
@@ -69,19 +70,17 @@ export class AudioManager {
     this.isProcessingQueue = true;
 
     try {
+      // Process all requests in order for sequential playback
       while (this.playbackQueue.length > 0) {
-        // Clear queue except for the most recent request to prevent audio spam
-        const latestRequest = this.playbackQueue.pop();
-        this.playbackQueue = []; // Clear all other requests
-        
-        await this.playAudioInternal(latestRequest);
+        const request = this.playbackQueue.shift(); // Take first request (FIFO)
+        await this.playAudioInternal(request);
       }
     } finally {
       this.isProcessingQueue = false;
     }
   }
 
-  async playAudioInternal({ word, voice, cacheKey, onlyCached, resolve, reject }) {
+  async playAudioInternal({ word, voice, cacheKey, onlyCached, sequential, resolve, reject }) {
     try {
       // Prevent duplicate simultaneous requests
       if (this.pendingAudioRequests.has(cacheKey)) {
@@ -89,8 +88,10 @@ export class AudioManager {
         return;
       }
 
-      // Gracefully stop any currently playing audio
-      await this.stopCurrentAudio();
+      // Gracefully stop any currently playing audio (unless this is sequential playback)
+      if (!sequential) {
+        await this.stopCurrentAudio();
+      }
 
       this.pendingAudioRequests.add(cacheKey);
 
@@ -120,7 +121,27 @@ export class AudioManager {
       }
 
       this.currentlyPlaying = audio;
-      await audio.play();
+      
+      // Wait for audio to complete playing
+      await new Promise((playResolve, playReject) => {
+        const onEnded = () => {
+          audio.removeEventListener('ended', onEnded);
+          audio.removeEventListener('error', onError);
+          playResolve();
+        };
+        
+        const onError = (error) => {
+          audio.removeEventListener('ended', onEnded);
+          audio.removeEventListener('error', onError);
+          playReject(error);
+        };
+        
+        audio.addEventListener('ended', onEnded, { once: true });
+        audio.addEventListener('error', onError, { once: true });
+        
+        audio.play().catch(playReject);
+      });
+      
       resolve();
     } catch (error) {
       console.warn(`Failed to play audio for: ${word}`, error);
