@@ -76,4 +76,16 @@ export const fetchLevels = async () => {
   }
 };
 
+export const fetchDailyStats = async () => {
+  try {
+    const response = await fetch('/api/trakaido/journeystats/daily');
+    if (!response.ok) throw new Error('Failed to fetch daily stats');
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.warn('Failed to fetch daily stats:', error);
+    return null;
+  }
+};
+
 export const getApiBase = () => API_BASE;
