@@ -27,7 +27,8 @@ import audioManager from './Managers/audioManager';
 import { 
   fetchCorpora, 
   fetchCorpusStructure, 
-  fetchAvailableVoices
+  fetchAvailableVoices,
+  fetchLevels
 } from './Utilities/apiClient.js';
 
 // The CSS classes available are primarily in widget_tools.css .
@@ -293,17 +294,73 @@ const FlashCardApp = () => {
       if (skillLevel !== null) {
         const initialSelectedGroups = {};
         if (skillLevel === 'beginner') {
-          // For beginners, only enable nouns_one corpus
-          if (corporaData['nouns_one']) {
-            initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
+          // For beginners, only enable Level 1 groups
+          try {
+            const levelsData = await fetchLevels();
+            if (!levelsData || !levelsData.level_1) {
+              throw new Error('Level 1 data not available');
+            }
+            
+            // Group Level 1 items by corpus
+            const level1GroupsByCorpus = {};
+            levelsData.level_1.forEach(item => {
+              if (!level1GroupsByCorpus[item.corpus]) {
+                level1GroupsByCorpus[item.corpus] = [];
+              }
+              level1GroupsByCorpus[item.corpus].push(item.group);
+            });
+            
+            // Only include corpuses that exist in corporaData
+            Object.entries(level1GroupsByCorpus).forEach(([corpus, groups]) => {
+              if (corporaData[corpus]) {
+                initialSelectedGroups[corpus] = groups;
+              }
+            });
+          } catch (error) {
+            console.error('Failed to fetch levels data for beginner setup:', error);
+            // Fallback to nouns_one
+            if (corporaData['nouns_one']) {
+              initialSelectedGroups['nouns_one'] = Object.keys(corporaData['nouns_one']?.groups || {});
+            }
           }
         } else if (skillLevel === 'intermediate') {
-          // For intermediate, enable a moderate selection
-          ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
-            if (corporaData[corpus]) {
-              initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+          // For intermediate, enable levels 1-8
+          try {
+            const levelsData = await fetchLevels();
+            if (!levelsData) {
+              throw new Error('Levels data not available');
             }
-          });
+            
+            const intermediateLevelsByCorpus = {};
+            
+            // Collect groups from levels 1-8
+            for (let level = 1; level <= 8; level++) {
+              const levelKey = `level_${level}`;
+              if (levelsData[levelKey]) {
+                levelsData[levelKey].forEach(item => {
+                  if (!intermediateLevelsByCorpus[item.corpus]) {
+                    intermediateLevelsByCorpus[item.corpus] = new Set();
+                  }
+                  intermediateLevelsByCorpus[item.corpus].add(item.group);
+                });
+              }
+            }
+            
+            // Convert Sets to arrays and only include corpuses that exist in corporaData
+            Object.entries(intermediateLevelsByCorpus).forEach(([corpus, groupsSet]) => {
+              if (corporaData[corpus]) {
+                initialSelectedGroups[corpus] = Array.from(groupsSet);
+              }
+            });
+          } catch (error) {
+            console.error('Failed to fetch levels data for intermediate setup:', error);
+            // Fallback to original intermediate selection
+            ['nouns_one', 'nouns_two', 'verbs_present'].forEach(corpus => {
+              if (corporaData[corpus]) {
+                initialSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+              }
+            });
+          }
         } else if (skillLevel === 'expert') {
           // For experts, enable all groups (same as current default)
           Object.keys(corporaData).forEach(corpus => {
