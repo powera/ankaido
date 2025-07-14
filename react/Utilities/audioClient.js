@@ -199,44 +199,62 @@ export class AudioManager {
 
   async createAndSetupAudio(word, voice, cacheKey) {
     const audioUrl = getAudioUrl(word, voice);
-    const audio = new Audio(audioUrl);
-
-    // Set up event listeners
-    await new Promise((resolve, reject) => {
-      const onCanPlay = () => {
-        audio.removeEventListener('canplaythrough', onCanPlay);
-        audio.removeEventListener('error', onError);
-        resolve();
-      };
+    
+    // Use fetch to load audio data in a single request, then create blob URL
+    try {
+      const response = await fetch(audioUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
       
-      const onError = (error) => {
-        audio.removeEventListener('canplaythrough', onCanPlay);
-        audio.removeEventListener('error', onError);
-        reject(error);
-      };
-
-      audio.addEventListener('canplaythrough', onCanPlay, { once: true });
-      audio.addEventListener('error', onError, { once: true });
+      const audioBlob = await response.blob();
+      const blobUrl = URL.createObjectURL(audioBlob);
       
-      // Add ended event listener to clear currentlyPlaying
-      audio.addEventListener('ended', () => {
-        if (this.currentlyPlaying === audio) {
-          this.currentlyPlaying = null;
-        }
+      const audio = new Audio(blobUrl);
+      
+      // Set up event listeners
+      await new Promise((resolve, reject) => {
+        const onCanPlay = () => {
+          audio.removeEventListener('canplaythrough', onCanPlay);
+          audio.removeEventListener('error', onError);
+          resolve();
+        };
+        
+        const onError = (error) => {
+          audio.removeEventListener('canplaythrough', onCanPlay);
+          audio.removeEventListener('error', onError);
+          // Clean up blob URL on error
+          URL.revokeObjectURL(blobUrl);
+          reject(error);
+        };
+
+        audio.addEventListener('canplaythrough', onCanPlay, { once: true });
+        audio.addEventListener('error', onError, { once: true });
+        
+        // Add ended event listener to clear currentlyPlaying and clean up blob URL
+        audio.addEventListener('ended', () => {
+          if (this.currentlyPlaying === audio) {
+            this.currentlyPlaying = null;
+          }
+        });
+
+        // Add pause event listener to clear currentlyPlaying
+        audio.addEventListener('pause', () => {
+          if (this.currentlyPlaying === audio && audio.ended) {
+            this.currentlyPlaying = null;
+          }
+        });
       });
-
-      // Add pause event listener to clear currentlyPlaying
-      audio.addEventListener('pause', () => {
-        if (this.currentlyPlaying === audio && audio.ended) {
-          this.currentlyPlaying = null;
-        }
-      });
-
-      audio.load();
-    });
-
-    this.audioCache[cacheKey] = audio;
-    return audio;
+      
+      // Store blob URL for cleanup later
+      audio._blobUrl = blobUrl;
+      
+      this.audioCache[cacheKey] = audio;
+      return audio;
+    } catch (error) {
+      console.warn(`Failed to fetch audio for: ${word}`, error);
+      throw error;
+    }
   }
 
   async preloadAudio(word, voice) {
@@ -264,5 +282,25 @@ export class AudioManager {
   hasInCache(word, voice) {
     const cacheKey = `${word}-${voice}`;
     return !!this.audioCache[cacheKey];
+  }
+
+  // Clean up blob URLs to prevent memory leaks
+  clearCache() {
+    Object.values(this.audioCache).forEach(audio => {
+      if (audio._blobUrl) {
+        URL.revokeObjectURL(audio._blobUrl);
+      }
+    });
+    this.audioCache = {};
+  }
+
+  // Clean up a specific cached audio
+  removeCachedAudio(word, voice) {
+    const cacheKey = `${word}-${voice}`;
+    const audio = this.audioCache[cacheKey];
+    if (audio && audio._blobUrl) {
+      URL.revokeObjectURL(audio._blobUrl);
+    }
+    delete this.audioCache[cacheKey];
   }
 }
