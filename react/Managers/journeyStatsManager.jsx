@@ -115,6 +115,38 @@ class JourneyStatsAPIClient {
       throw error;
     }
   }
+
+  /**
+   * Increment stats for a single question with nonce protection
+   */
+  async incrementStats(wordKey, statType, correct) {
+    try {
+      const nonce = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
+      const response = await fetch(`${API_BASE_URL}/increment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wordKey,
+          statType,
+          correct,
+          nonce
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.success === true;
+    } catch (error) {
+      console.error('Error incrementing stats on server:', error);
+      throw error;
+    }
+  }
 }
 
 // Create API client instance
@@ -127,7 +159,8 @@ export const DEFAULT_WORD_STATS = {
   listeningEasy: { correct: 0, incorrect: 0 },
   listeningHard: { correct: 0, incorrect: 0 },
   typing: { correct: 0, incorrect: 0 },
-  lastSeen: null
+  lastSeen: null,
+  lastCorrectAnswer: null
 };
 
 // Create a unique key for a word
@@ -282,6 +315,8 @@ class JourneyStatsManager {
     // Ensure the mode exists with default values
     const currentModeStats = currentStats[mode] || { correct: 0, incorrect: 0 };
     
+    const now = Date.now();
+    
     // Create updated stats
     const updatedStats = {
       ...currentStats,
@@ -290,7 +325,8 @@ class JourneyStatsManager {
         ...currentModeStats,
         [isCorrect ? 'correct' : 'incorrect']: currentModeStats[isCorrect ? 'correct' : 'incorrect'] + 1
       },
-      lastSeen: Date.now()
+      lastSeen: now,
+      lastCorrectAnswer: isCorrect ? now : currentStats.lastCorrectAnswer
     };
 
     // Update in memory
@@ -300,11 +336,12 @@ class JourneyStatsManager {
     try {
       let success = false;
       if (storageConfigManager.isRemoteStorage()) {
-        success = await apiClient.updateWordStats(wordKey, updatedStats);
+        // Use the new increment API for remote storage
+        success = await apiClient.incrementStats(wordKey, mode, isCorrect);
         if (success) {
-          console.log(`Updated journey stats on server for ${wordKey}:`, updatedStats);
+          console.log(`Incremented journey stats on server for ${wordKey}: ${mode} ${isCorrect ? 'correct' : 'incorrect'}`);
         } else {
-          console.warn('Failed to save journey stats to server');
+          console.warn('Failed to increment journey stats on server');
         }
       } else {
         success = await indexedDBManager.saveJourneyStats(this.stats);
@@ -371,12 +408,19 @@ class JourneyStatsManager {
     const wordKey = createWordKey(word);
     const currentStats = this.getWordStats(word);
     
+    const now = Date.now();
+    
     // Apply updates to current stats
     const updatedStats = { 
       ...currentStats, 
       ...updates, 
-      lastSeen: Date.now() 
+      lastSeen: now
     };
+    
+    // If lastCorrectAnswer is not explicitly set in updates, preserve the current value
+    if (!updates.hasOwnProperty('lastCorrectAnswer')) {
+      updatedStats.lastCorrectAnswer = currentStats.lastCorrectAnswer;
+    }
     
     // Update in memory
     this.stats[wordKey] = updatedStats;
