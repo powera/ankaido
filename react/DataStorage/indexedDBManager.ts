@@ -1,4 +1,3 @@
-
 /**
  * Utility for safely accessing IndexedDB with error handling
  * 
@@ -6,7 +5,31 @@
  * handling potential errors and providing fallbacks to localStorage.
  */
 
-const indexedDBManager = {
+import { WordStats } from '../Utilities/types';
+
+// Interface for the word stats stored in IndexedDB
+interface WordStatsEntry {
+  wordKey: string;
+  stats: WordStats;
+}
+
+// Interface for journey stats (collection of word stats)
+interface JourneyStats {
+  [wordKey: string]: WordStats;
+}
+
+// Interface for the IndexedDB manager
+interface IndexedDBManager {
+  dbName: string;
+  dbVersion: number;
+  db: IDBDatabase | null;
+  init(): Promise<IDBDatabase | null>;
+  loadJourneyStats(): Promise<JourneyStats>;
+  saveJourneyStats(stats: JourneyStats): Promise<boolean>;
+  close(): void;
+}
+
+const indexedDBManager: IndexedDBManager = {
   dbName: 'LithuanianLearning',
   dbVersion: 1,
   db: null,
@@ -15,31 +38,31 @@ const indexedDBManager = {
    * Initialize the IndexedDB connection
    * @returns {Promise<IDBDatabase|null>} The database instance or null if failed
    */
-  async init() {
+  async init(): Promise<IDBDatabase | null> {
     if (this.db) return this.db;
 
-    return new Promise((resolve) => {
+    return new Promise<IDBDatabase | null>((resolve) => {
       try {
-        const request = indexedDB.open(this.dbName, this.dbVersion);
+        const request: IDBOpenDBRequest = indexedDB.open(this.dbName, this.dbVersion);
         
-        request.onerror = () => {
+        request.onerror = (): void => {
           console.error('IndexedDB failed to open:', request.error);
           this.db = null;
           resolve(null);
         };
         
-        request.onsuccess = () => {
+        request.onsuccess = (): void => {
           this.db = request.result;
           console.log('IndexedDB opened successfully');
           resolve(this.db);
         };
         
-        request.onupgradeneeded = (event) => {
-          const db = event.target.result;
+        request.onupgradeneeded = (event: IDBVersionChangeEvent): void => {
+          const db = (event.target as IDBOpenDBRequest).result;
           
           // Create wordStats store if it doesn't exist
           if (!db.objectStoreNames.contains('wordStats')) {
-            const store = db.createObjectStore('wordStats', { keyPath: 'wordKey' });
+            const store: IDBObjectStore = db.createObjectStore('wordStats', { keyPath: 'wordKey' });
             console.log('Created wordStats object store');
           }
         };
@@ -53,9 +76,9 @@ const indexedDBManager = {
 
   /**
    * Load all journey stats from IndexedDB
-   * @returns {Promise<Object>} The journey stats object
+   * @returns {Promise<JourneyStats>} The journey stats object
    */
-  async loadJourneyStats() {
+  async loadJourneyStats(): Promise<JourneyStats> {
     if (!this.db) {
       await this.init();
     }
@@ -65,22 +88,22 @@ const indexedDBManager = {
       return {};
     }
 
-    return new Promise((resolve) => {
+    return new Promise<JourneyStats>((resolve) => {
       try {
-        const transaction = this.db.transaction(['wordStats'], 'readonly');
-        const store = transaction.objectStore('wordStats');
-        const request = store.getAll();
+        const transaction: IDBTransaction = this.db!.transaction(['wordStats'], 'readonly');
+        const store: IDBObjectStore = transaction.objectStore('wordStats');
+        const request: IDBRequest<WordStatsEntry[]> = store.getAll();
         
-        request.onsuccess = () => {
-          const stats = {};
-          request.result.forEach(item => {
+        request.onsuccess = (): void => {
+          const stats: JourneyStats = {};
+          request.result.forEach((item: WordStatsEntry) => {
             stats[item.wordKey] = item.stats;
           });
           console.log('Loaded journey stats from IndexedDB:', stats);
           resolve(stats);
         };
         
-        request.onerror = () => {
+        request.onerror = (): void => {
           console.error('Error loading from IndexedDB:', request.error);
           resolve({});
         };
@@ -93,10 +116,10 @@ const indexedDBManager = {
 
   /**
    * Save journey stats to IndexedDB
-   * @param {Object} stats - The journey stats to save
+   * @param {JourneyStats} stats - The journey stats to save
    * @returns {Promise<boolean>} Success status
    */
-  async saveJourneyStats(stats) {
+  async saveJourneyStats(stats: JourneyStats): Promise<boolean> {
     if (!this.db) {
       await this.init();
     }
@@ -106,27 +129,28 @@ const indexedDBManager = {
       return false;
     }
 
-    return new Promise((resolve) => {
+    return new Promise<boolean>((resolve) => {
       try {
-        const transaction = this.db.transaction(['wordStats'], 'readwrite');
-        const store = transaction.objectStore('wordStats');
+        const transaction: IDBTransaction = this.db!.transaction(['wordStats'], 'readwrite');
+        const store: IDBObjectStore = transaction.objectStore('wordStats');
         
         // Clear existing data
-        const clearRequest = store.clear();
+        const clearRequest: IDBRequest = store.clear();
         
-        clearRequest.onsuccess = () => {
+        clearRequest.onsuccess = (): void => {
           // Add new data
-          Object.entries(stats).forEach(([wordKey, wordStats]) => {
-            store.add({ wordKey, stats: wordStats });
+          Object.entries(stats).forEach(([wordKey, wordStats]: [string, WordStats]) => {
+            const entry: WordStatsEntry = { wordKey, stats: wordStats };
+            store.add(entry);
           });
         };
         
-        transaction.oncomplete = () => {
+        transaction.oncomplete = (): void => {
           console.log('Journey stats saved to IndexedDB successfully');
           resolve(true);
         };
         
-        transaction.onerror = () => {
+        transaction.onerror = (): void => {
           console.error('Error saving to IndexedDB:', transaction.error);
           resolve(false);
         };
@@ -140,7 +164,7 @@ const indexedDBManager = {
   /**
    * Close the database connection
    */
-  close() {
+  close(): void {
     if (this.db) {
       this.db.close();
       this.db = null;
