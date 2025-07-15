@@ -165,49 +165,48 @@ const StudyModeSelector = ({
 
       {/* Hide direction/grammar selector for Journey and Drill modes */}
       {quizMode !== 'journey' && quizMode !== 'drill' && (
-        <div className="w-dropdown-container">
-          {(quizMode === 'conjugations' || quizMode === 'declensions') ? (
-            <>
-              <label>
-                <span className="w-hide-mobile">Grammar Type:</span>
-                <span className="w-show-mobile">Grammar:</span>
-              </label>
-              <select 
-                value={quizMode}
-                onChange={(e) => {
-                  const selectedGrammarMode = e.target.value;
-                  setQuizMode(selectedGrammarMode);
-                  setGrammarMode(selectedGrammarMode);
-                  safeStorage.setItem('flashcard-quiz-mode', selectedGrammarMode);
-                }}
-              >
-                <option value="conjugations">📖 Conjugations</option>
-                <option value="declensions">📋 Declensions</option>
-              </select>
-            </>
-          ) : (
-            <>
-              <label>
-                <span className="w-hide-mobile">Direction:</span>
-                <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
-              </label>
-              <select 
-                value={studyMode}
-                onChange={(e) => {
-                  setStudyMode(e.target.value);
-                  safeStorage.setItem('flashcard-study-mode', e.target.value);
-                }}
-              >
-                <option value="english-to-lithuanian">
-                  🇺🇸 → 🇱🇹
-                </option>
-                <option value="lithuanian-to-english">
-                  🇱🇹 → 🇺🇸
-                </option>
-              </select>
-            </>
-          )}
-        </div>
+        (quizMode === 'conjugations' || quizMode === 'declensions') ? (
+          <div className="w-dropdown-container">
+            <label>
+              <span className="w-hide-mobile">Grammar Type:</span>
+              <span className="w-show-mobile">Grammar:</span>
+            </label>
+            <select 
+              value={quizMode}
+              onChange={(e) => {
+                const selectedGrammarMode = e.target.value;
+                setQuizMode(selectedGrammarMode);
+                setGrammarMode(selectedGrammarMode);
+                safeStorage.setItem('flashcard-quiz-mode', selectedGrammarMode);
+              }}
+            >
+              <option value="conjugations">📖 Conjugations</option>
+              <option value="declensions">📋 Declensions</option>
+            </select>
+          </div>
+        ) : (
+          <div className="w-dropdown-container">
+            <label>
+              <span className="w-hide-mobile">Direction:</span>
+              <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
+            </label>
+            <select 
+              value={studyMode}
+              onChange={(e) => {
+                setStudyMode(e.target.value);
+                safeStorage.setItem('flashcard-study-mode', e.target.value);
+              }}
+            >
+              <option value="english-to-lithuanian">
+                🇺🇸 → 🇱🇹
+              </option>
+              <option value="lithuanian-to-english">
+                🇱🇹 → 🇺🇸
+              </option>
+            </select>
+          </div>
+        )
+        
       )}
 
       <div className="w-button-group-mobile">
@@ -219,18 +218,14 @@ const StudyModeSelector = ({
           <span className="w-hide-mobile">📚 Study Materials</span>
           <span className="w-show-mobile">📚 Materials</span>
         </button>
-        {quizMode === 'journey' && (
-          <>
-            <button
-              className="w-mode-option w-compact-button"
-              onClick={onOpenActivityStats}
-              title="View activity statistics for journey mode"
-            >
-              <span className="w-hide-mobile">📊 Stats</span>
-              <span className="w-show-mobile">📊 Stats</span>
-            </button>
-          </>
-        )}
+        <button
+          className="w-mode-option w-compact-button"
+          onClick={onOpenActivityStats}
+          title="View activity statistics for journey mode"
+        >
+          <span className="w-hide-mobile">📊 Stats</span>
+          <span className="w-show-mobile">📊 Stats</span>
+        </button>
         <SettingsToggle className="w-mode-option w-compact-button" title="Settings">
           <span className="w-hide-mobile">Settings</span>
           <span className="w-show-mobile">⚙️</span>
