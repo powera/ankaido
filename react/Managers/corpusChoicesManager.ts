@@ -9,6 +9,10 @@
 import safeStorage from '../DataStorage/safeStorage';
 import storageConfigManager from './storageConfigManager';
 
+// --- Types ---
+export type CorpusChoices = Record<string, string[]>;
+type Listener = (choices: CorpusChoices) => void;
+
 // API Configuration
 const API_BASE_URL = '/api/trakaido/corpuschoices';
 
@@ -19,7 +23,7 @@ class CorpusChoicesAPIClient {
   /**
    * Get all corpus choices from server
    */
-  async getAllChoices() {
+  async getAllChoices(): Promise<CorpusChoices> {
     try {
       const response = await fetch(`${API_BASE_URL}/`, {
         method: 'GET',
@@ -43,7 +47,7 @@ class CorpusChoicesAPIClient {
   /**
    * Save all corpus choices to server
    */
-  async saveAllChoices(choices) {
+  async saveAllChoices(choices: CorpusChoices): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/`, {
         method: 'PUT',
@@ -68,7 +72,7 @@ class CorpusChoicesAPIClient {
   /**
    * Update choices for a specific corpus
    */
-  async updateCorpusChoices(corpus, groups) {
+  async updateCorpusChoices(corpus: string, groups: string[]): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/corpus`, {
         method: 'POST',
@@ -96,7 +100,7 @@ class CorpusChoicesAPIClient {
   /**
    * Get choices for a specific corpus
    */
-  async getCorpusChoices(corpus) {
+  async getCorpusChoices(corpus: string): Promise<string[]> {
     try {
       const response = await fetch(`${API_BASE_URL}/corpus/${encodeURIComponent(corpus)}`, {
         method: 'GET',
@@ -129,16 +133,14 @@ const STORAGE_KEY = 'flashcard-selected-groups';
  * Handles loading, saving, and updating corpus/group selections
  */
 class CorpusChoicesManager {
-  constructor() {
-    this.choices = {};
-    this.isInitialized = false;
-    this.listeners = [];
-  }
+  private choices: CorpusChoices = {};
+  private isInitialized: boolean = false;
+  private listeners: Listener[] = [];
 
   /**
    * Initialize and load choices from storage (server or localStorage)
    */
-  async initialize() {
+  async initialize(): Promise<CorpusChoices> {
     if (this.isInitialized) return this.choices;
 
     try {
@@ -163,14 +165,14 @@ class CorpusChoicesManager {
   /**
    * Get choices for a specific corpus
    */
-  getCorpusChoices(corpus) {
+  getCorpusChoices(corpus: string): string[] {
     return this.choices[corpus] || [];
   }
 
   /**
    * Update choices for a specific corpus
    */
-  async updateCorpusChoices(corpus, groups) {
+  async updateCorpusChoices(corpus: string, groups: string[]): Promise<string[]> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -207,7 +209,7 @@ class CorpusChoicesManager {
   /**
    * Set all choices at once
    */
-  async setAllChoices(choices) {
+  async setAllChoices(choices: CorpusChoices): Promise<CorpusChoices> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -244,14 +246,14 @@ class CorpusChoicesManager {
   /**
    * Get all current choices
    */
-  getAllChoices() {
+  getAllChoices(): CorpusChoices {
     return this.choices;
   }
 
   /**
    * Clear all choices
    */
-  async clearAllChoices() {
+  async clearAllChoices(): Promise<CorpusChoices> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -287,21 +289,21 @@ class CorpusChoicesManager {
   /**
    * Add a listener for choices changes
    */
-  addListener(callback) {
+  addListener(callback: Listener): void {
     this.listeners.push(callback);
   }
 
   /**
    * Remove a listener
    */
-  removeListener(callback) {
+  removeListener(callback: Listener): void {
     this.listeners = this.listeners.filter(listener => listener !== callback);
   }
 
   /**
    * Notify all listeners of choices changes
    */
-  notifyListeners() {
+  notifyListeners(): void {
     this.listeners.forEach(callback => {
       try {
         callback(this.choices);
@@ -315,7 +317,7 @@ class CorpusChoicesManager {
    * Force reinitialization of the choices manager
    * Useful when switching between storage modes
    */
-  async forceReinitialize() {
+  async forceReinitialize(): Promise<CorpusChoices> {
     this.isInitialized = false;
     this.choices = {};
     return await this.initialize();
@@ -324,31 +326,31 @@ class CorpusChoicesManager {
   /**
    * Get current storage mode
    */
-  getCurrentStorageMode() {
+  getCurrentStorageMode(): 'server' | 'localStorage' {
     return storageConfigManager.isRemoteStorage() ? 'server' : 'localStorage';
   }
 
   /**
    * Get total number of selected groups across all corpora
    */
-  getTotalSelectedGroups() {
+  getTotalSelectedGroups(): number {
     return Object.values(this.choices).reduce((total, groups) => total + groups.length, 0);
   }
 
   /**
    * Check if a specific corpus has any selected groups
    */
-  hasSelectedGroups(corpus) {
+  hasSelectedGroups(corpus: string): boolean {
     const groups = this.choices[corpus];
-    return groups && groups.length > 0;
+    return !!groups && groups.length > 0;
   }
 
   /**
    * Check if a specific group is selected in a corpus
    */
-  isGroupSelected(corpus, group) {
+  isGroupSelected(corpus: string, group: string): boolean {
     const groups = this.choices[corpus];
-    return groups && groups.includes(group);
+    return !!groups && groups.includes(group);
   }
 }
 

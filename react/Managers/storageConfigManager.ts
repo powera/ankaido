@@ -11,33 +11,40 @@ import safeStorage from '../DataStorage/safeStorage';
 const STORAGE_CONFIG_KEY = 'trakaido-storage-config';
 
 // Storage modes
-export const STORAGE_MODES = {
-  LOCAL: 'local',
-  REMOTE: 'remote'
-};
+export enum STORAGE_MODES {
+  LOCAL = 'local',
+  REMOTE = 'remote'
+}
+
+type StorageMode = STORAGE_MODES.LOCAL | STORAGE_MODES.REMOTE | null;
+
+interface StorageConfig {
+  mode: STORAGE_MODES;
+  timestamp: string;
+}
+
+type StorageModeListener = (newMode: StorageMode, previousMode: StorageMode) => void;
 
 /**
  * Storage Configuration Manager
  * Handles the global storage mode preference
  */
 class StorageConfigManager {
-  constructor() {
-    this.currentMode = null;
-    this.isInitialized = false;
-    this.listeners = [];
-  }
+  private currentMode: StorageMode = null;
+  private isInitialized: boolean = false;
+  private listeners: StorageModeListener[] = [];
 
   /**
    * Initialize the storage configuration
    * This should be called at app startup
    */
-  initialize() {
+  initialize(): StorageMode {
     if (this.isInitialized) return this.currentMode;
 
     try {
       const savedConfig = safeStorage.getItem(STORAGE_CONFIG_KEY);
       if (savedConfig) {
-        const config = JSON.parse(savedConfig);
+        const config: StorageConfig = JSON.parse(savedConfig);
         this.currentMode = config.mode;
         console.log('Storage config initialized from localStorage:', this.currentMode);
       } else {
@@ -57,7 +64,7 @@ class StorageConfigManager {
   /**
    * Set the storage mode preference
    */
-  setStorageMode(mode) {
+  setStorageMode(mode: STORAGE_MODES): StorageMode {
     if (!Object.values(STORAGE_MODES).includes(mode)) {
       throw new Error(`Invalid storage mode: ${mode}. Must be one of: ${Object.values(STORAGE_MODES).join(', ')}`);
     }
@@ -67,7 +74,7 @@ class StorageConfigManager {
 
     // Save to localStorage
     try {
-      const config = {
+      const config: StorageConfig = {
         mode: mode,
         timestamp: new Date().toISOString()
       };
@@ -91,7 +98,7 @@ class StorageConfigManager {
   /**
    * Get the current storage mode
    */
-  getStorageMode() {
+  getStorageMode(): StorageMode {
     if (!this.isInitialized) {
       this.initialize();
     }
@@ -101,7 +108,7 @@ class StorageConfigManager {
   /**
    * Check if storage mode is configured (not a new user)
    */
-  isConfigured() {
+  isConfigured(): boolean {
     if (!this.isInitialized) {
       this.initialize();
     }
@@ -111,46 +118,47 @@ class StorageConfigManager {
   /**
    * Check if current mode is remote storage
    */
-  isRemoteStorage() {
+  isRemoteStorage(): boolean {
     return this.getStorageMode() === STORAGE_MODES.REMOTE;
   }
 
   /**
    * Check if current mode is local storage
    */
-  isLocalStorage() {
+  isLocalStorage(): boolean {
     return this.getStorageMode() === STORAGE_MODES.LOCAL;
   }
 
   /**
    * Reset storage configuration (for testing or user reset)
    */
-  reset() {
+  reset(): void {
+    const previousMode = this.currentMode;
     this.currentMode = null;
     this.isInitialized = false;
     safeStorage.removeItem(STORAGE_CONFIG_KEY);
     console.log('Storage configuration reset');
-    this.notifyListeners(null, this.currentMode);
+    this.notifyListeners(null, previousMode);
   }
 
   /**
    * Add a listener for storage mode changes
    */
-  addListener(callback) {
+  addListener(callback: StorageModeListener): void {
     this.listeners.push(callback);
   }
 
   /**
    * Remove a listener
    */
-  removeListener(callback) {
+  removeListener(callback: StorageModeListener): void {
     this.listeners = this.listeners.filter(listener => listener !== callback);
   }
 
   /**
    * Notify all listeners of storage mode changes
    */
-  notifyListeners(newMode, previousMode) {
+  notifyListeners(newMode: StorageMode, previousMode: StorageMode): void {
     this.listeners.forEach(callback => {
       try {
         callback(newMode, previousMode);
