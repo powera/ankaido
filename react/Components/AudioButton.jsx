@@ -29,6 +29,8 @@ const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = 
   
   const handleAudioClick = async (e) => {
     e.stopPropagation();
+    e.preventDefault(); // Prevent any default behavior
+    
     try {
       const success = await playAudio(word);
       if (!success) {
@@ -40,6 +42,11 @@ const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = 
       }
     } catch (error) {
       console.warn('Audio button click failed:', error);
+      // Visual feedback for error
+      e.target.style.opacity = '0.5';
+      setTimeout(() => {
+        if (e.target) e.target.style.opacity = '1';
+      }, 1000);
     }
   };
 

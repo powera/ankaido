@@ -85,7 +85,12 @@ const MultipleChoiceOptions = ({
           }
         }
 
-        const handleOptionClick = () => {
+        const handleOptionClick = (e) => {
+          // Check if the click came from the audio button
+          if (e.target.closest('.w-audio-button') || e.target.closest('.trakaido-audio-button-container')) {
+            return; // Don't handle option click if it's from the audio button
+          }
+          
           if (shouldShowAnswer) return;
 
           // Play audio immediately for correct answers in EN->LT mode
@@ -101,7 +106,8 @@ const MultipleChoiceOptions = ({
             key={index}
             className={className}
             onClick={handleOptionClick}
-            disabled={shouldShowAnswer}
+            aria-disabled={shouldShowAnswer}
+            style={{ cursor: shouldShowAnswer ? 'not-allowed' : 'pointer' }}
           >
             <div className="trakaido-choice-content">
               <div className="trakaido-choice-text-container">
