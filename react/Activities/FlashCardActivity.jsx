@@ -1,7 +1,7 @@
 
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import journeyStatsManager from '../Managers/journeyStatsManager';
+import activityStatsManager from '../Managers/activityStatsManager';
 import audioManager from '../Managers/audioManager';
 import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
 import { invalidateWordWeightCache } from '../Utilities/activitySelection';
@@ -25,7 +25,7 @@ const FlashCardActivity = ({
     if (isNewWord && currentWord) {
       const markAsExposed = async () => {
         try {
-          await journeyStatsManager.updateWordStatsDirectly(currentWord, { exposed: true });
+          await activityStatsManager.updateWordStatsDirectly(currentWord, { exposed: true });
           // Invalidate weight cache for this word since stats changed
           invalidateWordWeightCache(currentWord);
         } catch (error) {

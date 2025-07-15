@@ -1,7 +1,7 @@
 /**
- * Shared Journey stats management utility
+ * Shared Activity stats management utility
  * 
- * This module provides shared functionality for managing Journey stats
+ * This module provides shared functionality for managing Activity stats
  * across different study modes (Journey, Multiple Choice, Listening, etc.)
  */
 
@@ -12,11 +12,11 @@ import storageConfigManager from './storageConfigManager';
 const API_BASE_URL = '/api/trakaido/journeystats';
 
 /**
- * API Client for server-based journey stats storage
+ * API Client for server-based activity stats storage
  */
-class JourneyStatsAPIClient {
+class ActivityStatsAPIClient {
   /**
-   * Get all journey stats from server
+   * Get all activity stats from server
    */
   async getAllStats() {
     try {
@@ -34,13 +34,13 @@ class JourneyStatsAPIClient {
       const data = await response.json();
       return data.stats || {};
     } catch (error) {
-      console.error('Error fetching journey stats from server:', error);
+      console.error('Error fetching activity stats from server:', error);
       throw error;
     }
   }
 
   /**
-   * Save all journey stats to server
+   * Save all activity stats to server
    */
   async saveAllStats(stats) {
     try {
@@ -59,7 +59,7 @@ class JourneyStatsAPIClient {
       const data = await response.json();
       return data.success === true;
     } catch (error) {
-      console.error('Error saving journey stats to server:', error);
+      console.error('Error saving activity stats to server:', error);
       throw error;
     }
   }
@@ -150,7 +150,7 @@ class JourneyStatsAPIClient {
 }
 
 // Create API client instance
-const apiClient = new JourneyStatsAPIClient();
+const apiClient = new ActivityStatsAPIClient();
 
 // Default stats structure for a word
 export const DEFAULT_WORD_STATS = {
@@ -166,7 +166,7 @@ export const DEFAULT_WORD_STATS = {
 // Create a unique key for a word
 export const createWordKey = (word) => `${word.lithuanian}-${word.english}`;
 
-// WordListManager no longer stores journey stats - they are managed separately by journeyStatsManager
+// WordListManager no longer stores activity stats - they are managed separately by activityStatsManager
 
 /**
  * Calculate total correct answers for a word across all modes
@@ -189,7 +189,7 @@ export const calculateTotalIncorrect = (wordStats) => {
 };
 
 /**
- * Convert journey stats object to array format suitable for display
+ * Convert activity stats object to array format suitable for display
  * Each entry includes word data plus calculated totals
  */
 export const convertStatsToDisplayArray = (stats) => {
@@ -254,10 +254,10 @@ export const getNewWords = (allWords, statsManager) => {
 };
 
 /**
- * Journey Stats Manager
- * Handles loading, saving, and updating journey stats
+ * Activity Stats Manager
+ * Handles loading, saving, and updating activity stats
  */
-class JourneyStatsManager {
+class ActivityStatsManager {
   constructor() {
     this.stats = {};
     this.isInitialized = false;
@@ -280,7 +280,7 @@ class JourneyStatsManager {
       }
       this.isInitialized = true;
     } catch (error) {
-      console.error('Error initializing journey stats:', error);
+      console.error('Error initializing activity stats:', error);
       this.stats = {};
       this.isInitialized = true;
     }
@@ -339,16 +339,16 @@ class JourneyStatsManager {
         // Use the new increment API for remote storage
         success = await apiClient.incrementStats(wordKey, mode, isCorrect);
         if (success) {
-          console.log(`Incremented journey stats on server for ${wordKey}: ${mode} ${isCorrect ? 'correct' : 'incorrect'}`);
+          console.log(`Incremented activity stats on server for ${wordKey}: ${mode} ${isCorrect ? 'correct' : 'incorrect'}`);
         } else {
-          console.warn('Failed to increment journey stats on server');
+          console.warn('Failed to increment activity stats on server');
         }
       } else {
         success = await indexedDBManager.saveJourneyStats(this.stats);
         if (success) {
-          console.log(`Updated journey stats in indexedDB for ${wordKey}:`, updatedStats);
+          console.log(`Updated activity stats in indexedDB for ${wordKey}:`, updatedStats);
         } else {
-          console.warn('Failed to save journey stats to IndexedDB');
+          console.warn('Failed to save activity stats to IndexedDB');
         }
       }
       
@@ -356,7 +356,7 @@ class JourneyStatsManager {
         this.notifyListeners();
       }
     } catch (error) {
-      console.error('Error saving journey stats:', error);
+      console.error('Error saving activity stats:', error);
     }
 
     return updatedStats;
@@ -431,16 +431,16 @@ class JourneyStatsManager {
       if (storageConfigManager.isRemoteStorage()) {
         success = await apiClient.updateWordStats(wordKey, updatedStats);
         if (success) {
-          console.log(`Updated journey stats directly on server for ${wordKey}:`, updatedStats);
+          console.log(`Updated activity stats directly on server for ${wordKey}:`, updatedStats);
         } else {
-          console.warn('Failed to save journey stats to server');
+          console.warn('Failed to save activity stats to server');
         }
       } else {
         success = await indexedDBManager.saveJourneyStats(this.stats);
         if (success) {
-          console.log(`Updated journey stats directly in indexedDB for ${wordKey}:`, updatedStats);
+          console.log(`Updated activity stats directly in indexedDB for ${wordKey}:`, updatedStats);
         } else {
-          console.warn('Failed to save journey stats to IndexedDB');
+          console.warn('Failed to save activity stats to IndexedDB');
         }
       }
       
@@ -448,7 +448,7 @@ class JourneyStatsManager {
         this.notifyListeners();
       }
     } catch (error) {
-      console.error('Error saving journey stats:', error);
+      console.error('Error saving activity stats:', error);
     }
 
     return updatedStats;
@@ -473,5 +473,5 @@ class JourneyStatsManager {
 }
 
 // Create and export a singleton instance
-export const journeyStatsManager = new JourneyStatsManager();
-export default journeyStatsManager;
+export const activityStatsManager = new ActivityStatsManager();
+export default activityStatsManager;

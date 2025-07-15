@@ -51,15 +51,15 @@ export const getQuestionText = (word, studyMode) => {
 /**
  * Creates a stats update handler that wraps the original handler
  */
-export const createStatsHandler = (journeyStatsManager, word, statsMode, originalHandler) => {
+export const createStatsHandler = (activityStatsManager, word, statsMode, originalHandler) => {
   return async (selectedOption) => {
     const correctAnswer = getCorrectAnswer(word, statsMode);
     const isCorrect = selectedOption === correctAnswer;
 
     try {
-      await journeyStatsManager.updateWordStats(word, statsMode, isCorrect);
+      await activityStatsManager.updateWordStats(word, statsMode, isCorrect);
     } catch (error) {
-      console.error(`Error updating journey stats in ${statsMode}:`, error);
+      console.error(`Error updating activity stats in ${statsMode}:`, error);
     }
 
     if (originalHandler) {

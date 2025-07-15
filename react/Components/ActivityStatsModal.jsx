@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import BaseModal from './shared/BaseModal';
 import DataTable from './shared/DataTable';
 import { 
-  journeyStatsManager, 
+  activityStatsManager, 
   convertStatsToDisplayArray, 
   formatDate 
-} from '../Managers/journeyStatsManager';
+} from '../Managers/activityStatsManager';
 import { fetchDailyStats } from '../Utilities/apiClient';
 import safeStorage from '../DataStorage/safeStorage';
 
-const ExposureStatsModal = ({
+const ActivityStatsModal = ({
   isOpen,
   onClose,
   corporaData = {},
@@ -21,7 +21,7 @@ const ExposureStatsModal = ({
   const [unexposedWords, setUnexposedWords] = useState([]);
   const [dailyStats, setDailyStats] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [journeyStats, setJourneyStats] = useState({});
+  const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', or 'daily'
 
   // Helper function to get words from selected groups only
@@ -50,11 +50,11 @@ const ExposureStatsModal = ({
       const loadStats = async () => {
         setLoading(true);
         try {
-          // Load journey stats
-          await journeyStatsManager.initialize();
-          const stats = journeyStatsManager.getAllStats();
-          console.log('ExposureStatsModal loaded journeyStats:', stats);
-          setJourneyStats(stats);
+          // Load activity stats
+          await activityStatsManager.initialize();
+          const stats = activityStatsManager.getAllStats();
+          console.log('ActivityStatsModal loaded activityStats:', stats);
+          setActivityStats(stats);
 
           const wordsArray = convertStatsToDisplayArray(stats);
           setExposedWords(wordsArray);
@@ -84,10 +84,10 @@ const ExposureStatsModal = ({
           setDailyStats(dailyStatsData);
 
           if (wordsArray.length === 0) {
-            console.warn('No journey stats available or empty object');
+            console.warn('No activity stats available or empty object');
           }
         } catch (error) {
-          console.error('Error loading journey stats in ExposureStatsModal:', error);
+          console.error('Error loading activity stats in ActivityStatsModal:', error);
           setExposedWords([]);
           setUnexposedWords([]);
           setDailyStats(null);
@@ -190,7 +190,7 @@ const ExposureStatsModal = ({
       title={getModalTitle()}
       width="90%"
       maxWidth="900px"
-      ariaLabel="Exposure statistics"
+      ariaLabel="Activity statistics"
     >
       <div className="w-settings-form" style={{ maxHeight: '70vh', overflowY: 'auto' }}>
         {/* View Mode Toggle Buttons */}
@@ -226,7 +226,7 @@ const ExposureStatsModal = ({
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <div>Loading journey statistics...</div>
+            <div>Loading activity statistics...</div>
           </div>
         ) : viewMode === 'daily' ? (
           // Daily Stats View
@@ -487,4 +487,4 @@ const ExposureStatsModal = ({
   );
 };
 
-export default ExposureStatsModal;
+export default ActivityStatsModal;

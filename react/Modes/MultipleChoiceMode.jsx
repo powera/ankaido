@@ -2,7 +2,7 @@ import React from 'react';
 import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import StatsDisplay from '../Components/StatsDisplay';
-import { journeyStatsManager } from '../Managers/journeyStatsManager';
+import { activityStatsManager } from '../Managers/activityStatsManager';
 
 const MultipleChoiceMode = ({ 
   wordListManager,
@@ -54,7 +54,7 @@ const MultipleChoiceMode = ({
     // Update journey stats
     if (currentWord && typeof isCorrect === 'boolean') {
       try {
-        await journeyStatsManager.updateWordStats(currentWord, 'multipleChoice', isCorrect);
+        await activityStatsManager.updateWordStats(currentWord, 'multipleChoice', isCorrect);
       } catch (error) {
         console.error('Error updating journey stats:', error);
       }

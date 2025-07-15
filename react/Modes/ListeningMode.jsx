@@ -2,7 +2,7 @@ import React from 'react';
 import ListeningActivity from '../Activities/ListeningActivity';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import StatsDisplay from '../Components/StatsDisplay';
-import { journeyStatsManager } from '../Managers/journeyStatsManager';
+import { activityStatsManager } from '../Managers/activityStatsManager';
 
 const ListeningMode = ({ 
   wordListManager,
@@ -74,7 +74,7 @@ const ListeningMode = ({
           default:
             statsMode = 'listeningHard';
         }
-        await journeyStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
+        await activityStatsManager.updateWordStats(currentWord, statsMode, isCorrect);
       } catch (error) {
         console.error('Error updating journey stats:', error);
       }

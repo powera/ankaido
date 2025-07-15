@@ -6,11 +6,11 @@ import TypingActivity from '../Activities/TypingActivity';
 import StatsDisplay from '../Components/StatsDisplay';
 
 import { 
-  journeyStatsManager, 
+  activityStatsManager, 
   getExposedWords, 
   getNewWords, 
   getTotalCorrectExposures 
-} from '../Managers/journeyStatsManager';
+} from '../Managers/activityStatsManager';
 
 import { selectDrillActivity } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
@@ -41,7 +41,7 @@ const DrillMode = ({
     }
   });
 
-  const [journeyStats, setJourneyStats] = React.useState({});
+  const [activityStats, setActivityStats] = React.useState({});
 
   // State for user interactions with the current question
   const [questionInteractionState, setQuestionInteractionState] = React.useState({
@@ -52,13 +52,13 @@ const DrillMode = ({
   // Load stats from storage
   const loadStatsFromStorage = React.useCallback(async () => {
     try {
-      const stats = await journeyStatsManager.initialize();
-      console.log('Loaded journey stats for drill mode:', stats);
-      setJourneyStats(stats);
+      const stats = await activityStatsManager.initialize();
+      console.log('Loaded activity stats for drill mode:', stats);
+      setActivityStats(stats);
       setDrillState(prev => ({ ...prev, isInitialized: true }));
     } catch (error) {
-      console.error('Error loading journey stats for drill mode:', error);
-      setJourneyStats({});
+      console.error('Error loading activity stats for drill mode:', error);
+      setActivityStats({});
       setDrillState(prev => ({ ...prev, isInitialized: true }));
     }
   }, []);
@@ -69,13 +69,13 @@ const DrillMode = ({
 
     // Listen for stats updates
     const handleStatsUpdate = (updatedStats) => {
-      setJourneyStats(updatedStats);
+      setActivityStats(updatedStats);
     };
 
-    journeyStatsManager.addListener(handleStatsUpdate);
+    activityStatsManager.addListener(handleStatsUpdate);
 
     return () => {
-      journeyStatsManager.removeListener(handleStatsUpdate);
+      activityStatsManager.removeListener(handleStatsUpdate);
     };
   }, [loadStatsFromStorage]);
 
@@ -131,7 +131,7 @@ const DrillMode = ({
 
   // Helper function to get total correct exposures for a word
   const getTotalCorrectForWord = React.useCallback((word) => {
-    const stats = journeyStatsManager.getWordStats(word);
+    const stats = activityStatsManager.getWordStats(word);
     return getTotalCorrectExposures(stats);
   }, []);
 
@@ -295,7 +295,7 @@ const DrillMode = ({
 
     // Update journey stats using correct API
     try {
-      await journeyStatsManager.updateWordStats(drillState.currentWord, 'multipleChoice', isCorrect);
+      await activityStatsManager.updateWordStats(drillState.currentWord, 'multipleChoice', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -321,7 +321,7 @@ const DrillMode = ({
 
     // Update journey stats for typing activity
     try {
-      await journeyStatsManager.updateWordStats(drillState.currentWord, 'typing', isCorrect);
+      await activityStatsManager.updateWordStats(drillState.currentWord, 'typing', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -356,7 +356,7 @@ const DrillMode = ({
     // Update journey stats using correct API and mode mapping
     try {
       const listeningMode = drillState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
-      await journeyStatsManager.updateWordStats(drillState.currentWord, listeningMode, isCorrect);
+      await activityStatsManager.updateWordStats(drillState.currentWord, listeningMode, isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }

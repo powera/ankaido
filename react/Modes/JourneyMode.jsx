@@ -6,12 +6,12 @@ import TypingActivity from '../Activities/TypingActivity';
 import MotivationalBreakActivity from '../Activities/MotivationalBreakActivity';
 
 import { 
-  journeyStatsManager, 
+  activityStatsManager, 
   getExposedWords, 
   getNewWords, 
   getTotalCorrectExposures,
   getTotalExposures
-} from '../Managers/journeyStatsManager';
+} from '../Managers/activityStatsManager';
 
 import { selectJourneyActivity, createJourneyModeState, invalidateWordWeightCache } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
@@ -41,28 +41,28 @@ const JourneyMode = ({
     selectedAnswer: null
   });
 
-  const [journeyStats, setJourneyStats] = React.useState({});
+  const [activityStats, setActivityStats] = React.useState({});
 
   // Journey mode state for activity selection constraints (not persisted)
   const [activitySelectorState, setActivitySelectorState] = React.useState(() => createJourneyModeState());
 
-  // Initialize wordListManager journeyStats property
+  // Initialize wordListManager activityStats property
   React.useEffect(() => {
-    if (!wordListManager.journeyStats) {
-      wordListManager.journeyStats = {};
+    if (!wordListManager.activityStats) {
+      wordListManager.activityStats = {};
     }
   }, [wordListManager]);
 
   // Unified stats loading function using shared manager
   const loadStatsFromStorage = React.useCallback(async () => {
     try {
-      const stats = await journeyStatsManager.initialize();
+      const stats = await activityStatsManager.initialize();
       console.log('Loaded journey stats:', stats);
-      setJourneyStats(stats);
+      setActivityStats(stats);
       setJourneyState(prev => ({ ...prev, isInitialized: true }));
     } catch (error) {
       console.error('Error loading journey stats:', error);
-      setJourneyStats({});
+      setActivityStats({});
       setJourneyState(prev => ({ ...prev, isInitialized: true }));
     }
   }, [wordListManager]);
@@ -73,33 +73,33 @@ const JourneyMode = ({
 
     // Listen for stats updates from other modes
     const handleStatsUpdate = (updatedStats) => {
-      setJourneyStats(updatedStats);
+      setActivityStats(updatedStats);
     };
 
-    journeyStatsManager.addListener(handleStatsUpdate);
+    activityStatsManager.addListener(handleStatsUpdate);
 
     // Cleanup listener on unmount
     return () => {
-      journeyStatsManager.removeListener(handleStatsUpdate);
+      activityStatsManager.removeListener(handleStatsUpdate);
     };
   }, [loadStatsFromStorage, wordListManager]);
 
-  // Helper functions for word categorization (using journeyStatsManager)
+  // Helper functions for word categorization (using activityStatsManager)
   const getExposedWordsList = React.useCallback(() => {
-    return getExposedWords(wordListState.allWords, journeyStatsManager);
+    return getExposedWords(wordListState.allWords, activityStatsManager);
   }, [wordListState.allWords]);
 
   const getNewWordsList = React.useCallback(() => {
-    return getNewWords(wordListState.allWords, journeyStatsManager);
+    return getNewWords(wordListState.allWords, activityStatsManager);
   }, [wordListState.allWords]);
 
   const getTotalCorrectForWord = React.useCallback((word) => {
-    const stats = journeyStatsManager.getWordStats(word);
+    const stats = activityStatsManager.getWordStats(word);
     return getTotalCorrectExposures(stats);
   }, []);
 
   const getWordWeights = React.useCallback((word) => {
-    return journeyStatsManager.getWordStats(word);
+    return activityStatsManager.getWordStats(word);
   }, []);
 
   // Activity selection using centralized utility
@@ -138,7 +138,7 @@ const JourneyMode = ({
       }
 
       // Determine number of options based on word exposure count
-      const wordStats = journeyStatsManager.getWordStats(nextActivity.word);
+      const wordStats = activityStatsManager.getWordStats(nextActivity.word);
       const totalExposures = getTotalExposures(wordStats);
       const numOptions = totalExposures > 8 ? 6 : 4; // Use 6 options if >8 exposures, otherwise 4
 
@@ -229,7 +229,7 @@ const JourneyMode = ({
 
     // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
+      await activityStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
       // Invalidate weight cache for this word since stats changed
       invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {
@@ -257,7 +257,7 @@ const JourneyMode = ({
 
     // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
+      await activityStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
       // Invalidate weight cache for this word since stats changed
       invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {
@@ -276,7 +276,7 @@ const JourneyMode = ({
   const handleJourneyTyping = React.useCallback(async (typedAnswer, isCorrect) => {
     // Update journey stats (Journey Mode can expose words)
     try {
-      await journeyStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
+      await activityStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
       // Invalidate weight cache for this word since stats changed
       invalidateWordWeightCache(journeyState.currentWord);
     } catch (error) {

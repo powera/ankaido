@@ -1,5 +1,5 @@
 import React from 'react';
-import { journeyStatsManager } from '../Managers/journeyStatsManager';
+import { activityStatsManager } from '../Managers/activityStatsManager';
 import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
 import { storageConfigManager, STORAGE_MODES } from '../Managers/storageConfigManager';
 import audioManager from '../Managers/audioManager';
@@ -23,9 +23,9 @@ const StudyModeSelector = ({
   toggleFullscreen,
   totalSelectedWords,
   onOpenStudyMaterials,
-  onOpenExposureStats,
+  onOpenActivityStats,
   onOpenDrillMode,
-  journeyStats
+  activityStats
 }) => {
   const [isServerStorage, setIsServerStorage] = React.useState(storageConfigManager.isRemoteStorage());
   const [isSwitching, setIsSwitching] = React.useState(false);
@@ -58,14 +58,14 @@ const StudyModeSelector = ({
         console.log('Switching to server storage, saving local data...');
 
         // Get current local data before switching
-        const currentStats = journeyStatsManager.getAllStats();
+        const currentStats = activityStatsManager.getAllStats();
         const currentCorpusChoices = corpusChoicesManager.getAllChoices();
 
         // Switch to server mode first
         storageConfigManager.setStorageMode(STORAGE_MODES.REMOTE);
 
         // Force reinitialize managers with new storage mode
-        await journeyStatsManager.forceReinitialize();
+        await activityStatsManager.forceReinitialize();
         await corpusChoicesManager.forceReinitialize();
 
         // If we have local data, explicitly save it to server
@@ -118,7 +118,7 @@ const StudyModeSelector = ({
         storageConfigManager.setStorageMode(STORAGE_MODES.LOCAL);
 
         // Force reinitialize managers with new storage mode
-        await journeyStatsManager.forceReinitialize();
+        await activityStatsManager.forceReinitialize();
         await corpusChoicesManager.forceReinitialize();
       }
 
@@ -223,10 +223,10 @@ const StudyModeSelector = ({
           <>
             <button
               className="w-mode-option w-compact-button"
-              onClick={onOpenExposureStats}
-              title="View exposure statistics for journey mode"
+              onClick={onOpenActivityStats}
+              title="View activity statistics for journey mode"
             >
-              <span className="w-hide-mobile">📊 Exposure Stats</span>
+              <span className="w-hide-mobile">📊 Stats</span>
               <span className="w-show-mobile">📊 Stats</span>
             </button>
           </>

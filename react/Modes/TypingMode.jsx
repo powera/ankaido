@@ -1,7 +1,7 @@
 import React from 'react';
 import TypingActivity from '../Activities/TypingActivity';
 import StatsDisplay from '../Components/StatsDisplay';
-import { journeyStatsManager } from '../Managers/journeyStatsManager';
+import { activityStatsManager } from '../Managers/activityStatsManager';
 
 const TypingMode = ({ 
   wordListManager,
@@ -34,7 +34,7 @@ const TypingMode = ({
     // Update journey stats
     if (currentWord && typeof isCorrect === 'boolean') {
       try {
-        await journeyStatsManager.updateWordStats(currentWord, 'typing', isCorrect);
+        await activityStatsManager.updateWordStats(currentWord, 'typing', isCorrect);
       } catch (error) {
         console.error('Error updating journey stats:', error);
       }

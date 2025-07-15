@@ -10,7 +10,7 @@ import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import StudyModeSelector from './Components/StudyModeSelector.jsx';
-import ExposureStatsModal from './Components/ExposureStatsModal.jsx';
+import ActivityStatsModal from './Components/ActivityStatsModal.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
 import DeclensionsMode from './Modes/DeclensionsMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
@@ -21,7 +21,7 @@ import WordListManager from './Managers/WordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import storageConfigManager from './Managers/storageConfigManager';
-import journeyStatsManager from './Managers/journeyStatsManager';
+import activityStatsManager from './Managers/activityStatsManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
 import audioManager from './Managers/audioManager';
 import { 
@@ -85,12 +85,12 @@ const FlashCardApp = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showStudyMaterialsModal, setShowStudyMaterialsModal] = useState(false);
-  const [showExposureStatsModal, setShowExposureStatsModal] = useState(false);
+  const [showActivityStatsModal, setShowActivityStatsModal] = useState(false);
   const [loadingWords, setLoadingWords] = useState(false);
   const [selectedVocabGroup, setSelectedVocabGroup] = useState(null);
   const [vocabGroupOptions, setVocabGroupOptions] = useState([]);
   const [vocabListWords, setVocabListWords] = useState([]);
-  const [journeyStats, setJourneyStats] = useState({});
+  const [activityStats, setActivityStats] = useState({});
 
   // Drill mode state
   const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
@@ -190,31 +190,31 @@ const FlashCardApp = () => {
     }
   }, [wordListManager, settings, selectedGroups, loading, corporaData]);
 
-  // Load journey stats using journeyStatsManager
+  // Load journey stats using activityStatsManager
   useEffect(() => {
-    const loadJourneyStats = async () => {
+    const loadActivityStats = async () => {
       try {
-        const stats = await journeyStatsManager.initialize();
-        setJourneyStats(stats);
+        const stats = await activityStatsManager.initialize();
+        setActivityStats(stats);
 
-        // Journey stats are now managed separately by journeyStatsManager
+        // Journey stats are now managed separately by activityStatsManager
 
         // Listen for stats changes
         const handleStatsChange = (updatedStats) => {
-          setJourneyStats(updatedStats);
+          setActivityStats(updatedStats);
         };
 
-        journeyStatsManager.addListener(handleStatsChange);
+        activityStatsManager.addListener(handleStatsChange);
 
         // Cleanup listener on unmount
-        return () => journeyStatsManager.removeListener(handleStatsChange);
+        return () => activityStatsManager.removeListener(handleStatsChange);
       } catch (error) {
         console.error('Error loading journey stats:', error);
-        setJourneyStats({});
+        setActivityStats({});
       }
     };
 
-    loadJourneyStats();
+    loadActivityStats();
   }, [wordListManager]);
 
   // Load corpus choices using corpusChoicesManager
@@ -288,7 +288,7 @@ const FlashCardApp = () => {
 
       // Initialize storage managers with the new configuration
       await corpusChoicesManager.forceReinitialize();
-      await journeyStatsManager.forceReinitialize();
+      await activityStatsManager.forceReinitialize();
 
       // Only set initial corpus selection for new users (when skillLevel is not null)
       if (skillLevel !== null) {
@@ -394,7 +394,7 @@ const FlashCardApp = () => {
 
       // Clear data from storage managers
       await corpusChoicesManager.clearAllChoices();
-      await journeyStatsManager.forceReinitialize();
+      await activityStatsManager.forceReinitialize();
 
       // Reset state to defaults
       setStudyMode('english-to-lithuanian');
@@ -501,9 +501,9 @@ const FlashCardApp = () => {
         toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
-        onOpenExposureStats={() => setShowExposureStatsModal(true)}
+        onOpenActivityStats={() => setShowActivityStatsModal(true)}
         onOpenDrillMode={() => setShowDrillModeSelector(true)}
-        journeyStats={journeyStats}
+        activityStats={activityStats}
       />
 
       {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'multi-word-sequence' && (
@@ -547,7 +547,7 @@ const FlashCardApp = () => {
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           safeStorage={safeStorage}
-          setJourneyStats={setJourneyStats}
+          setActivityStats={setActivityStats}
         />
       ) : quizMode === 'drill' ? (
         showDrillModeSelector || !drillConfig ? (
@@ -637,9 +637,9 @@ const FlashCardApp = () => {
         resetAllSettings={resetAllSettings}
         safeStorage={safeStorage}
       />
-      <ExposureStatsModal
-        isOpen={showExposureStatsModal}
-        onClose={() => setShowExposureStatsModal(false)}
+      <ActivityStatsModal
+        isOpen={showActivityStatsModal}
+        onClose={() => setShowActivityStatsModal(false)}
         corporaData={corporaData}
         selectedGroups={selectedGroups}
       />

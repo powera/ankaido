@@ -1,11 +1,11 @@
 
-import journeyStatsManager, { 
+import activityStatsManager, { 
   createWordKey, 
   calculateTotalCorrect, 
   calculateTotalIncorrect,
   DEFAULT_WORD_STATS,
   convertStatsToDisplayArray
-} from '../Managers/journeyStatsManager';
+} from '../Managers/activityStatsManager';
 
 // Mock indexedDBManager
 const mockIndexedDBManager = {
@@ -18,7 +18,7 @@ jest.mock('../DataStorage/indexedDBManager', () => ({
   ...mockIndexedDBManager
 }));
 
-describe('journeyStatsManager utility functions', () => {
+describe('activityStatsManager utility functions', () => {
   describe('createWordKey', () => {
     it('should create correct word key', () => {
       const word = { lithuanian: 'labas', english: 'hello' };
@@ -107,9 +107,9 @@ describe('JourneyStatsManager', () => {
 
   beforeEach(async () => {
     // Reset the manager state
-    journeyStatsManager.stats = {};
-    journeyStatsManager.isInitialized = false;
-    journeyStatsManager.listeners = [];
+    activityStatsManager.stats = {};
+    activityStatsManager.isInitialized = false;
+    activityStatsManager.listeners = [];
     
     indexedDBManager = require('../DataStorage/indexedDBManager').default;
     jest.clearAllMocks();
@@ -120,37 +120,37 @@ describe('JourneyStatsManager', () => {
       const mockStats = { 'test-word': { exposed: true } };
       indexedDBManager.loadJourneyStats.mockResolvedValue(mockStats);
       
-      const result = await journeyStatsManager.initialize();
+      const result = await activityStatsManager.initialize();
       
       expect(indexedDBManager.loadJourneyStats).toHaveBeenCalled();
       expect(result).toEqual(mockStats);
-      expect(journeyStatsManager.isInitialized).toBe(true);
+      expect(activityStatsManager.isInitialized).toBe(true);
     });
 
     it('should handle initialization errors', async () => {
       indexedDBManager.loadJourneyStats.mockRejectedValue(new Error('DB Error'));
       
-      const result = await journeyStatsManager.initialize();
+      const result = await activityStatsManager.initialize();
       
       expect(result).toEqual({});
-      expect(journeyStatsManager.isInitialized).toBe(true);
+      expect(activityStatsManager.isInitialized).toBe(true);
     });
   });
 
   describe('getWordStats', () => {
     it('should return existing stats for a word', () => {
       const wordStats = { exposed: true, multipleChoice: { correct: 3, incorrect: 1 } };
-      journeyStatsManager.stats = { 'labas-hello': wordStats };
+      activityStatsManager.stats = { 'labas-hello': wordStats };
       
       const word = { lithuanian: 'labas', english: 'hello' };
-      const result = journeyStatsManager.getWordStats(word);
+      const result = activityStatsManager.getWordStats(word);
       
       expect(result).toEqual(wordStats);
     });
 
     it('should return default stats for new word', () => {
       const word = { lithuanian: 'naujas', english: 'new' };
-      const result = journeyStatsManager.getWordStats(word);
+      const result = activityStatsManager.getWordStats(word);
       
       expect(result).toEqual(DEFAULT_WORD_STATS);
     });
@@ -158,11 +158,11 @@ describe('JourneyStatsManager', () => {
 
   describe('updateWordStats', () => {
     it('should update stats for correct answer', async () => {
-      journeyStatsManager.isInitialized = true;
+      activityStatsManager.isInitialized = true;
       indexedDBManager.saveJourneyStats.mockResolvedValue(true);
       
       const word = { lithuanian: 'labas', english: 'hello' };
-      const result = await journeyStatsManager.updateWordStats(word, 'multipleChoice', true);
+      const result = await activityStatsManager.updateWordStats(word, 'multipleChoice', true);
       
       expect(result.exposed).toBe(true);
       expect(result.multipleChoice.correct).toBe(1);
@@ -172,11 +172,11 @@ describe('JourneyStatsManager', () => {
     });
 
     it('should update stats for incorrect answer', async () => {
-      journeyStatsManager.isInitialized = true;
+      activityStatsManager.isInitialized = true;
       indexedDBManager.saveJourneyStats.mockResolvedValue(true);
       
       const word = { lithuanian: 'labas', english: 'hello' };
-      const result = await journeyStatsManager.updateWordStats(word, 'multipleChoice', false);
+      const result = await activityStatsManager.updateWordStats(word, 'multipleChoice', false);
       
       expect(result.exposed).toBe(false);
       expect(result.multipleChoice.correct).toBe(0);
@@ -184,34 +184,34 @@ describe('JourneyStatsManager', () => {
     });
 
     it('should initialize if not already initialized', async () => {
-      journeyStatsManager.isInitialized = false;
+      activityStatsManager.isInitialized = false;
       indexedDBManager.loadJourneyStats.mockResolvedValue({});
       indexedDBManager.saveJourneyStats.mockResolvedValue(true);
       
       const word = { lithuanian: 'labas', english: 'hello' };
-      await journeyStatsManager.updateWordStats(word, 'multipleChoice', true);
+      await activityStatsManager.updateWordStats(word, 'multipleChoice', true);
       
       expect(indexedDBManager.loadJourneyStats).toHaveBeenCalled();
-      expect(journeyStatsManager.isInitialized).toBe(true);
+      expect(activityStatsManager.isInitialized).toBe(true);
     });
   });
 
   describe('listeners', () => {
     it('should add and notify listeners', async () => {
       const mockListener = jest.fn();
-      journeyStatsManager.addListener(mockListener);
+      activityStatsManager.addListener(mockListener);
       
-      journeyStatsManager.notifyListeners();
+      activityStatsManager.notifyListeners();
       
-      expect(mockListener).toHaveBeenCalledWith(journeyStatsManager.stats);
+      expect(mockListener).toHaveBeenCalledWith(activityStatsManager.stats);
     });
 
     it('should remove listeners', () => {
       const mockListener = jest.fn();
-      journeyStatsManager.addListener(mockListener);
-      journeyStatsManager.removeListener(mockListener);
+      activityStatsManager.addListener(mockListener);
+      activityStatsManager.removeListener(mockListener);
       
-      journeyStatsManager.notifyListeners();
+      activityStatsManager.notifyListeners();
       
       expect(mockListener).not.toHaveBeenCalled();
     });
@@ -220,11 +220,11 @@ describe('JourneyStatsManager', () => {
       const errorListener = jest.fn(() => { throw new Error('Listener error'); });
       const normalListener = jest.fn();
       
-      journeyStatsManager.addListener(errorListener);
-      journeyStatsManager.addListener(normalListener);
+      activityStatsManager.addListener(errorListener);
+      activityStatsManager.addListener(normalListener);
       
       expect(() => {
-        journeyStatsManager.notifyListeners();
+        activityStatsManager.notifyListeners();
       }).not.toThrow();
       
       expect(normalListener).toHaveBeenCalled();

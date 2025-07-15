@@ -3,7 +3,7 @@
  * 
  * This module provides functionality for managing corpus/group selections
  * across different storage modes (local localStorage vs server-based storage).
- * It mirrors the pattern used by journeyStatsManager.
+ * It mirrors the pattern used by activityStatsManager.
  */
 
 import safeStorage from '../DataStorage/safeStorage';
