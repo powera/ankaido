@@ -11,6 +11,38 @@ import storageConfigManager from './storageConfigManager';
 // API Configuration
 const API_BASE_URL = '/api/trakaido/journeystats';
 
+// --- Types ---
+
+export interface Word {
+  lithuanian: string;
+  english: string;
+  [key: string]: any; // For possible extra properties
+}
+
+export type StatMode = 'multipleChoice' | 'listeningEasy' | 'listeningHard' | 'typing';
+
+export interface ModeStats {
+  correct: number;
+  incorrect: number;
+}
+
+export interface WordStats {
+  exposed: boolean;
+  multipleChoice: ModeStats;
+  listeningEasy: ModeStats;
+  listeningHard: ModeStats;
+  typing: ModeStats;
+  lastSeen: number | null;
+  lastCorrectAnswer: number | null;
+  [key: string]: any; // For possible extra properties
+}
+
+export type Stats = Record<string, WordStats>;
+
+export type StatsListener = (stats: Stats) => void;
+
+// --- API Client ---
+
 /**
  * API Client for server-based activity stats storage
  */
@@ -18,7 +50,7 @@ class ActivityStatsAPIClient {
   /**
    * Get all activity stats from server
    */
-  async getAllStats() {
+  async getAllStats(): Promise<Stats> {
     try {
       const response = await fetch(`${API_BASE_URL}/`, {
         method: 'GET',
@@ -42,7 +74,7 @@ class ActivityStatsAPIClient {
   /**
    * Save all activity stats to server
    */
-  async saveAllStats(stats) {
+  async saveAllStats(stats: Stats): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/`, {
         method: 'PUT',
@@ -67,7 +99,7 @@ class ActivityStatsAPIClient {
   /**
    * Update stats for a specific word
    */
-  async updateWordStats(wordKey, wordStats) {
+  async updateWordStats(wordKey: string, wordStats: WordStats): Promise<boolean> {
     try {
       const response = await fetch(`${API_BASE_URL}/word`, {
         method: 'POST',
@@ -95,7 +127,7 @@ class ActivityStatsAPIClient {
   /**
    * Get stats for a specific word
    */
-  async getWordStats(wordKey) {
+  async getWordStats(wordKey: string): Promise<WordStats> {
     try {
       const response = await fetch(`${API_BASE_URL}/word/${encodeURIComponent(wordKey)}`, {
         method: 'GET',
@@ -119,7 +151,7 @@ class ActivityStatsAPIClient {
   /**
    * Increment stats for a single question with nonce protection
    */
-  async incrementStats(wordKey, statType, correct) {
+  async incrementStats(wordKey: string, statType: StatMode, correct: boolean): Promise<boolean> {
     try {
       const nonce = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       
@@ -153,7 +185,7 @@ class ActivityStatsAPIClient {
 const apiClient = new ActivityStatsAPIClient();
 
 // Default stats structure for a word
-export const DEFAULT_WORD_STATS = {
+export const DEFAULT_WORD_STATS: WordStats = {
   exposed: false,
   multipleChoice: { correct: 0, incorrect: 0 },
   listeningEasy: { correct: 0, incorrect: 0 },
@@ -164,14 +196,14 @@ export const DEFAULT_WORD_STATS = {
 };
 
 // Create a unique key for a word
-export const createWordKey = (word) => `${word.lithuanian}-${word.english}`;
+export const createWordKey = (word: Word): string => `${word.lithuanian}-${word.english}`;
 
 // WordListManager no longer stores activity stats - they are managed separately by activityStatsManager
 
 /**
  * Calculate total correct answers for a word across all modes
  */
-export const calculateTotalCorrect = (wordStats) => {
+export const calculateTotalCorrect = (wordStats: WordStats): number => {
   return (wordStats.multipleChoice?.correct || 0) + 
          (wordStats.listeningEasy?.correct || 0) + 
          (wordStats.listeningHard?.correct || 0) + 
@@ -181,7 +213,7 @@ export const calculateTotalCorrect = (wordStats) => {
 /**
  * Calculate total incorrect answers for a word across all modes
  */
-export const calculateTotalIncorrect = (wordStats) => {
+export const calculateTotalIncorrect = (wordStats: WordStats): number => {
   return (wordStats.multipleChoice?.incorrect || 0) + 
          (wordStats.listeningEasy?.incorrect || 0) + 
          (wordStats.listeningHard?.incorrect || 0) + 
@@ -192,7 +224,14 @@ export const calculateTotalIncorrect = (wordStats) => {
  * Convert activity stats object to array format suitable for display
  * Each entry includes word data plus calculated totals
  */
-export const convertStatsToDisplayArray = (stats) => {
+export interface DisplayWordStats extends WordStats {
+  lithuanian: string;
+  english: string;
+  totalCorrect: number;
+  totalIncorrect: number;
+}
+
+export const convertStatsToDisplayArray = (stats: Stats): DisplayWordStats[] => {
   if (!stats || Object.keys(stats).length === 0) {
     return [];
   }
@@ -212,7 +251,7 @@ export const convertStatsToDisplayArray = (stats) => {
 /**
  * Format timestamp for display in UI
  */
-export const formatDate = (timestamp) => {
+export const formatDate = (timestamp: number | null): string => {
   if (!timestamp) return 'Never';
   const date = new Date(timestamp);
   return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
@@ -222,21 +261,21 @@ export const formatDate = (timestamp) => {
  * Calculate total correct exposures for a word across all modes
  * This is the same as calculateTotalCorrect but with a more descriptive name
  */
-export const getTotalCorrectExposures = (wordStats) => {
+export const getTotalCorrectExposures = (wordStats: WordStats): number => {
   return calculateTotalCorrect(wordStats);
 };
 
 /**
  * Calculate total exposures (correct + incorrect) for a word across all modes
  */
-export const getTotalExposures = (wordStats) => {
+export const getTotalExposures = (wordStats: WordStats): number => {
   return calculateTotalCorrect(wordStats) + calculateTotalIncorrect(wordStats);
 };
 
 /**
  * Filter words to get only those that have been exposed (seen before)
  */
-export const getExposedWords = (allWords, statsManager) => {
+export const getExposedWords = (allWords: Word[], statsManager: ActivityStatsManager): Word[] => {
   return allWords.filter(word => {
     const stats = statsManager.getWordStats(word);
     return stats.exposed;
@@ -246,7 +285,7 @@ export const getExposedWords = (allWords, statsManager) => {
 /**
  * Filter words to get only new words (not yet exposed)
  */
-export const getNewWords = (allWords, statsManager) => {
+export const getNewWords = (allWords: Word[], statsManager: ActivityStatsManager): Word[] => {
   return allWords.filter(word => {
     const stats = statsManager.getWordStats(word);
     return !stats.exposed;
@@ -257,17 +296,15 @@ export const getNewWords = (allWords, statsManager) => {
  * Activity Stats Manager
  * Handles loading, saving, and updating activity stats
  */
-class ActivityStatsManager {
-  constructor() {
-    this.stats = {};
-    this.isInitialized = false;
-    this.listeners = [];
-  }
+export class ActivityStatsManager {
+  private stats: Stats = {};
+  private isInitialized: boolean = false;
+  private listeners: StatsListener[] = [];
 
   /**
    * Initialize and load stats from storage (server or indexedDB)
    */
-  async initialize() {
+  async initialize(): Promise<Stats> {
     if (this.isInitialized) return this.stats;
 
     try {
@@ -291,7 +328,7 @@ class ActivityStatsManager {
   /**
    * Get stats for a specific word
    */
-  getWordStats(word) {
+  getWordStats(word: Word): WordStats {
     const wordKey = createWordKey(word);
     return this.stats[wordKey] || { ...DEFAULT_WORD_STATS };
   }
@@ -299,7 +336,12 @@ class ActivityStatsManager {
   /**
    * Update stats for a word
    */
-  async updateWordStats(word, mode, isCorrect, shouldExposeWord = false) {
+  async updateWordStats(
+    word: Word, 
+    mode: StatMode, 
+    isCorrect: boolean, 
+    shouldExposeWord: boolean = false
+  ): Promise<WordStats> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -318,7 +360,7 @@ class ActivityStatsManager {
     const now = Date.now();
     
     // Create updated stats
-    const updatedStats = {
+    const updatedStats: WordStats = {
       ...currentStats,
       exposed: currentStats.exposed || shouldExposeWord, // Only expose if explicitly allowed
       [mode]: {
@@ -365,28 +407,28 @@ class ActivityStatsManager {
   /**
    * Get all current stats
    */
-  getAllStats() {
+  getAllStats(): Stats {
     return this.stats;
   }
 
   /**
    * Add a listener for stats changes
    */
-  addListener(callback) {
+  addListener(callback: StatsListener): void {
     this.listeners.push(callback);
   }
 
   /**
    * Remove a listener
    */
-  removeListener(callback) {
+  removeListener(callback: StatsListener): void {
     this.listeners = this.listeners.filter(listener => listener !== callback);
   }
 
   /**
    * Notify all listeners of stats changes
    */
-  notifyListeners() {
+  notifyListeners(): void {
     this.listeners.forEach(callback => {
       try {
         callback(this.stats);
@@ -400,7 +442,7 @@ class ActivityStatsManager {
    * Update word stats directly with custom properties
    * Used for special cases like marking words as exposed
    */
-  async updateWordStatsDirectly(word, updates) {
+  async updateWordStatsDirectly(word: Word, updates: Partial<WordStats>): Promise<WordStats> {
     if (!this.isInitialized) {
       await this.initialize();
     }
@@ -411,7 +453,7 @@ class ActivityStatsManager {
     const now = Date.now();
     
     // Apply updates to current stats
-    const updatedStats = { 
+    const updatedStats: WordStats = { 
       ...currentStats, 
       ...updates, 
       lastSeen: now
@@ -458,7 +500,7 @@ class ActivityStatsManager {
    * Force reinitialization of the stats manager
    * Useful when switching between storage modes
    */
-  async forceReinitialize() {
+  async forceReinitialize(): Promise<Stats> {
     this.isInitialized = false;
     this.stats = {};
     return await this.initialize();
@@ -467,7 +509,7 @@ class ActivityStatsManager {
   /**
    * Get current storage mode
    */
-  getCurrentStorageMode() {
+  getCurrentStorageMode(): 'server' | 'indexedDB' {
     return storageConfigManager.isRemoteStorage() ? 'server' : 'indexedDB';
   }
 }
