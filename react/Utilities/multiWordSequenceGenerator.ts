@@ -4,22 +4,56 @@
  * Requires at least 20 words from the same corpus to ensure sufficient options
  */
 
+export interface Word {
+  corpus: string;
+  [key: string]: any; // Allow other properties
+}
+
+export interface MultiWordSequenceSettings {
+  sequenceLength?: number;
+}
+
+export interface MultiWordSequenceActivity {
+  sequence: Word[];
+  options: Word[];
+  corpus: string;
+  type: 'multi-word-sequence';
+  sequenceLength: number;
+}
+
+export interface CorpusStats {
+  corpus: string;
+  wordCount: number;
+  minRequired: number;
+}
+
+export interface MultiWordSequenceStats {
+  eligible: CorpusStats[];
+  ineligible: CorpusStats[];
+  totalWords: number;
+  sequenceLength: number;
+  minRequired: number;
+}
+
 /**
  * Generate a multi-word sequence activity data
- * @param {Array} allWords - All available words
- * @param {Object} settings - Activity settings (sequenceLength: 2-4, default: 4)
- * @returns {Object} Activity data with sequence and options
+ * @param {Word[]} allWords - All available words
+ * @param {MultiWordSequenceSettings} settings - Activity settings (sequenceLength: 2-4, default: 4)
+ * @returns {MultiWordSequenceActivity | null} Activity data with sequence and options
  */
-export const generateMultiWordSequence = (allWords, settings = {}) => {
+export const generateMultiWordSequence = (
+  allWords: Word[],
+  settings: MultiWordSequenceSettings = {}
+): MultiWordSequenceActivity | null => {
   const sequenceLength = Math.max(2, Math.min(4, settings.sequenceLength || 4)); // Default to 4, clamp between 2-4
   const minWordsRequired = sequenceLength * 2; // Need at least double the sequence length for distractors
-  
+
   if (!allWords || allWords.length < Math.max(20, minWordsRequired)) {
     return null; // Not enough words for this activity
   }
 
   // Group words by corpus
-  const wordsByCorpus = {};
+  const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
@@ -30,7 +64,7 @@ export const generateMultiWordSequence = (allWords, settings = {}) => {
   // Find a corpus with at least the minimum required words
   const minRequired = Math.max(20, minWordsRequired);
   const eligibleCorpora = Object.entries(wordsByCorpus)
-    .filter(([corpus, words]) => words.length >= minRequired);
+    .filter(([_, words]) => words.length >= minRequired);
 
   if (eligibleCorpora.length === 0) {
     return null; // No corpus has enough words
@@ -64,20 +98,23 @@ export const generateMultiWordSequence = (allWords, settings = {}) => {
 
 /**
  * Check if multi-word sequence activity is available for the given word list
- * @param {Array} allWords - All available words
+ * @param {Word[]} allWords - All available words
  * @param {number} sequenceLength - Length of sequence (2-4, default: 4)
  * @returns {boolean} Whether the activity can be generated
  */
-export const canGenerateMultiWordSequence = (allWords, sequenceLength = 4) => {
+export const canGenerateMultiWordSequence = (
+  allWords: Word[],
+  sequenceLength: number = 4
+): boolean => {
   const clampedLength = Math.max(2, Math.min(4, sequenceLength));
   const minWordsRequired = clampedLength * 2;
-  
+
   if (!allWords || allWords.length < Math.max(20, minWordsRequired)) {
     return false;
   }
 
   // Group words by corpus and check if any corpus has at least the minimum required words
-  const wordsByCorpus = {};
+  const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
@@ -91,20 +128,23 @@ export const canGenerateMultiWordSequence = (allWords, sequenceLength = 4) => {
 
 /**
  * Get corpus statistics for multi-word sequence eligibility
- * @param {Array} allWords - All available words
+ * @param {Word[]} allWords - All available words
  * @param {number} sequenceLength - Length of sequence (2-4, default: 4)
- * @returns {Object} Statistics about corpus eligibility
+ * @returns {MultiWordSequenceStats} Statistics about corpus eligibility
  */
-export const getMultiWordSequenceStats = (allWords, sequenceLength = 4) => {
+export const getMultiWordSequenceStats = (
+  allWords: Word[],
+  sequenceLength: number = 4
+): MultiWordSequenceStats => {
   if (!allWords) {
-    return { eligible: [], ineligible: [], totalWords: 0, sequenceLength };
+    return { eligible: [], ineligible: [], totalWords: 0, sequenceLength, minRequired: Math.max(20, sequenceLength * 2) };
   }
 
   const clampedLength = Math.max(2, Math.min(4, sequenceLength));
   const minWordsRequired = clampedLength * 2;
   const minRequired = Math.max(20, minWordsRequired);
 
-  const wordsByCorpus = {};
+  const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
@@ -112,11 +152,11 @@ export const getMultiWordSequenceStats = (allWords, sequenceLength = 4) => {
     wordsByCorpus[word.corpus].push(word);
   });
 
-  const eligible = [];
-  const ineligible = [];
+  const eligible: CorpusStats[] = [];
+  const ineligible: CorpusStats[] = [];
 
   Object.entries(wordsByCorpus).forEach(([corpus, words]) => {
-    const corpusInfo = { corpus, wordCount: words.length, minRequired };
+    const corpusInfo: CorpusStats = { corpus, wordCount: words.length, minRequired };
     if (words.length >= minRequired) {
       eligible.push(corpusInfo);
     } else {

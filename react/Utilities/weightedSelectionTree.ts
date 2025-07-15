@@ -1,3 +1,4 @@
+// filepath: /Users/powera/repo/trakaido/react/Utilities/weightedSelectionTree.ts
 /**
  * Binary Indexed Tree (Fenwick Tree) for efficient weighted random selection
  * Provides O(log N) updates and O(log N) queries instead of O(N)
@@ -7,7 +8,19 @@
  * - Querying prefix sums: O(log N)
  * - Weighted random selection: O(log N)
  */
+
+export interface Word {
+  lithuanian: string;
+  english: string;
+  [key: string]: any;
+}
+
 export class WeightedSelectionTree {
+  private tree: number[];
+  private words: Word[];
+  private wordToIndex: Map<string, number>;
+  private size: number;
+
   constructor() {
     this.tree = [];
     this.words = [];
@@ -18,7 +31,7 @@ export class WeightedSelectionTree {
   /**
    * Initialize or resize the tree for a given number of words
    */
-  resize(newSize) {
+  resize(newSize: number): void {
     if (newSize === this.size) return;
     
     this.size = newSize;
@@ -30,7 +43,7 @@ export class WeightedSelectionTree {
   /**
    * Update weight for a word at given index (1-indexed for BIT)
    */
-  updateWeight(index, newWeight) {
+  updateWeight(index: number, newWeight: number): void {
     const oldWeight = this.getWeight(index);
     const delta = newWeight - oldWeight;
     
@@ -43,7 +56,7 @@ export class WeightedSelectionTree {
   /**
    * Get current weight for a word at given index
    */
-  getWeight(index) {
+  getWeight(index: number): number {
     if (index === 1) {
       return this.tree[1] - this.getPrefixSum(0);
     }
@@ -53,7 +66,7 @@ export class WeightedSelectionTree {
   /**
    * Get prefix sum up to index (inclusive)
    */
-  getPrefixSum(index) {
+  getPrefixSum(index: number): number {
     let sum = 0;
     for (let i = index; i > 0; i -= i & (-i)) {
       sum += this.tree[i];
@@ -64,14 +77,14 @@ export class WeightedSelectionTree {
   /**
    * Get total weight of all words
    */
-  getTotalWeight() {
+  getTotalWeight(): number {
     return this.getPrefixSum(this.size);
   }
 
   /**
    * Find word index by cumulative weight using binary search - O(log N)
    */
-  selectByWeight(targetWeight) {
+  selectByWeight(targetWeight: number): number {
     let left = 1, right = this.size;
     
     while (left < right) {
@@ -89,7 +102,7 @@ export class WeightedSelectionTree {
   /**
    * Set word at index and update mapping
    */
-  setWord(index, word) {
+  setWord(index: number, word: Word): void {
     this.words[index - 1] = word; // Convert to 0-indexed for array
     const wordKey = `${word.lithuanian}-${word.english}`;
     this.wordToIndex.set(wordKey, index);
@@ -98,22 +111,29 @@ export class WeightedSelectionTree {
   /**
    * Get word at index
    */
-  getWord(index) {
+  getWord(index: number): Word | undefined {
     return this.words[index - 1]; // Convert to 0-indexed for array
   }
 
   /**
    * Get index for a word
    */
-  getWordIndex(word) {
+  getWordIndex(word: Word): number | undefined {
     const wordKey = `${word.lithuanian}-${word.english}`;
     return this.wordToIndex.get(wordKey);
   }
 
   /**
+   * Get the current size of the tree
+   */
+  getSize(): number {
+    return this.size;
+  }
+
+  /**
    * Clear all data
    */
-  clear() {
+  clear(): void {
     this.tree = [];
     this.words = [];
     this.wordToIndex.clear();
@@ -123,7 +143,12 @@ export class WeightedSelectionTree {
   /**
    * Get statistics about the tree for debugging
    */
-  getStats() {
+  getStats(): {
+    size: number;
+    totalWeight: number;
+    wordCount: number;
+    mappingCount: number;
+  } {
     return {
       size: this.size,
       totalWeight: this.getTotalWeight(),

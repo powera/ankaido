@@ -1,14 +1,36 @@
-
 /**
  * Utility for generating multiple choice options across different activities
  */
 
-export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordListState, settings = {}) => {
+interface Word {
+  lithuanian: string;
+  english: string;
+  corpus?: string;
+  [key: string]: any;
+}
+
+interface WordListState {
+  allWords: Word[];
+  [key: string]: any;
+}
+
+interface MultipleChoiceSettings {
+  numOptions?: number;
+  [key: string]: any;
+}
+
+export const generateMultipleChoiceOptions = (
+  word: Word | undefined,
+  studyMode: string,
+  quizMode: string,
+  wordListState?: WordListState,
+  settings: MultipleChoiceSettings = {}
+): string[] => {
   if (!word) return [];
 
   // Determine correct answer and answer field based on mode
-  let correctAnswer;
-  let answerField;
+  let correctAnswer: string;
+  let answerField: string;
   
   if (quizMode === 'listening') {
     if (studyMode === 'lithuanian-to-lithuanian') {
@@ -34,8 +56,8 @@ export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordLis
     w.corpus === word.corpus && 
     w[answerField] !== correctAnswer
   );
-  const wrongAnswersSet = new Set();
-  const wrongAnswers = [];
+  const wrongAnswersSet = new Set<string>();
+  const wrongAnswers: string[] = [];
   
   // Gather wrong answers from same corpus - shuffle first to get random decoys
   const shuffledSameCorpusWords = [...sameCorpusWords].sort(() => Math.random() - 0.5);
@@ -67,7 +89,7 @@ export const generateMultipleChoiceOptions = (word, studyMode, quizMode, wordLis
   if (numOptions >= 6) {
     options = options.sort();
     // Rearrange to fill columns first
-    const rearranged = [];
+    const rearranged: string[] = [];
     const half = Math.ceil(options.length / 2);
     for (let i = 0; i < half; i++) {
       rearranged.push(options[i]);
