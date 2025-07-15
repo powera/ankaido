@@ -6,8 +6,27 @@ import { generateMultiWordSequence, canGenerateMultiWordSequence } from '../Util
 
 // Mock audioManager
 jest.mock('../Managers/audioManager', () => ({
-  playAudio: jest.fn().mockResolvedValue(true)
+  default: {
+    playAudio: jest.fn().mockResolvedValue(true),
+    getAvailableVoices: jest.fn().mockReturnValue(['nova', 'alloy', 'ash']),
+    lithuanianAudioManager: {
+      playAudio: jest.fn().mockResolvedValue(true),
+      isInitialized: true,
+      initializeAudioContext: jest.fn().mockResolvedValue(true)
+    }
+  }
 }));
+
+// Mock safeStorage
+jest.mock('../DataStorage/safeStorage', () => {
+  return {
+    __esModule: true,
+    default: {
+      getItem: jest.fn().mockReturnValue('random'),
+      setItem: jest.fn()
+    }
+  };
+});
 
 // Mock AudioButton component
 jest.mock('../Components/AudioButton', () => {
@@ -51,6 +70,7 @@ describe('MultiWordSequenceActivity', () => {
     sequenceOptions: mockSequenceData?.options || [],
     audioEnabled: true,
     onAnswerClick: jest.fn(),
+    onResetAnswers: jest.fn(),
     settings: {},
     allWords: mockWords,
     autoAdvance: false,
@@ -86,7 +106,7 @@ describe('MultiWordSequenceActivity', () => {
     // Should call playAudio for each word in sequence
     const sequenceLength = mockSequenceData?.sequence?.length || 4;
     await waitFor(() => {
-      expect(audioManager.playAudio).toHaveBeenCalledTimes(sequenceLength);
+      expect(audioManager.lithuanianAudioManager.playAudio).toHaveBeenCalledTimes(sequenceLength);
     });
   });
 

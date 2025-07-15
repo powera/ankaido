@@ -7,6 +7,9 @@
     "@babel/core": "^7.23.0",
     "@babel/preset-env": "^7.23.0",
     "@babel/preset-react": "^7.22.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^4.5.2",
     "vite": "^6.3.5"
   },
@@ -39,7 +42,6 @@
     ]
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
     "jest": "^30.0.2",
     "jest-dom": "^4.0.0",
     "jest-environment-jsdom": "^30.0.2",

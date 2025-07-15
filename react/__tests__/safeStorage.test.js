@@ -1,18 +1,19 @@
 
-import safeStorage from '../DataStorage/safeStorage';
+// Mock localStorage using Object.defineProperty
+Object.defineProperty(window, 'localStorage', {
+  value: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+    removeItem: jest.fn(),
+    clear: jest.fn()
+  },
+  writable: true
+});
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn()
-};
-global.localStorage = localStorageMock;
+import safeStorage from '../DataStorage/safeStorage';
 
 describe('safeStorage', () => {
   beforeEach(() => {
-    localStorageMock.clear();
     jest.clearAllMocks();
   });
 
