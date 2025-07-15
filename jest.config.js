@@ -1,5 +1,6 @@
 
 module.exports = {
+  preset: 'ts-jest/presets/js-with-ts',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
   moduleNameMapper: {
@@ -12,13 +13,22 @@ module.exports = {
     '<rootDir>/react/**/*.(test|spec).(js|jsx)'
   ],
   transform: {
-    '^.+\\.(js|jsx)$': 'babel-jest'
+    '^.+\\.(js|jsx)$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest'
   },
-  moduleFileExtensions: ['js', 'jsx', 'json'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
   collectCoverageFrom: [
-    'react/**/*.{js,jsx}',
+    'react/**/*.{js,jsx,ts,tsx}',
     '!react/main.jsx',
     '!react/index.html',
     '!react/js/**/*'
-  ]
+  ],
+  globals: {
+    'ts-jest': {
+      useESM: false,
+      tsconfig: {
+        jsx: 'react-jsx'
+      }
+    }
+  }
 };

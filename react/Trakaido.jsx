@@ -17,7 +17,7 @@ import JourneyMode from './Modes/JourneyMode.jsx';
 import DrillMode from './Modes/DrillMode.jsx';
 import DrillModeSelector from './Components/DrillModeSelector.jsx';
 import safeStorage from './DataStorage/safeStorage';
-import WordListManager from './Managers/WordListManager';
+import WordListManager from './Managers/wordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
 import WelcomeScreen from './Components/WelcomeScreen.jsx';
 import storageConfigManager from './Managers/storageConfigManager';

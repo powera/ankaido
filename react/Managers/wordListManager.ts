@@ -1,15 +1,53 @@
+type Word = {
+  [key: string]: any;
+  corpus?: string;
+  group?: string;
+};
+
+type GroupWords = Word[];
+
+type CorporaData = {
+  [corpus: string]: {
+    groups: {
+      [group: string]: GroupWords;
+    };
+  };
+};
+
+type SelectedGroups = {
+  [corpus: string]: string[];
+};
+
+type SessionStats = {
+  correct: number;
+  incorrect: number;
+  total: number;
+};
+
+type StateChangeCallback = (state: {
+  allWords: Word[];
+  currentCard: number;
+  stats: SessionStats;
+}) => void;
+
 class WordListManager {
-  constructor(safeStorage, settings) {
+  private safeStorage: any;
+  private settings: any;
+  private allWords: Word[];
+  private currentCard: number;
+  private onStateChange: StateChangeCallback | null;
+  private sessionStats: SessionStats;
+
+  constructor(safeStorage: any, settings: any) {
     this.safeStorage = safeStorage;
     this.settings = settings;
     this.allWords = [];
     this.currentCard = 0;
-    this.onStateChange = null; // Callback for state updates
-    // Per-session stats (separate from persistent journey stats)
+    this.onStateChange = null;
     this.sessionStats = { correct: 0, incorrect: 0, total: 0 };
   }
 
-  setStateChangeCallback(callback) {
+  setStateChangeCallback(callback: StateChangeCallback) {
     this.onStateChange = callback;
   }
 
@@ -23,7 +61,7 @@ class WordListManager {
     }
   }
 
-  generateWordsList(selectedGroups, corporaData) {
+  generateWordsList(selectedGroups: SelectedGroups, corporaData: CorporaData) {
     if (Object.keys(corporaData).length === 0) {
       this.allWords = [];
       this.currentCard = 0;
@@ -31,7 +69,7 @@ class WordListManager {
       return;
     }
 
-    let words = [];
+    let words: Word[] = [];
     Object.entries(selectedGroups).forEach(([corpus, groups]) => {
       if (corporaData[corpus] && groups.length > 0) {
         groups.forEach(group => {
@@ -47,7 +85,7 @@ class WordListManager {
       }
     });
 
-    // Always shuffle the cards using Fisher-Yates algorithm for better randomness
+    // Shuffle the cards using Fisher-Yates algorithm
     for (let i = words.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [words[i], words[j]] = [words[j], words[i]];
@@ -59,30 +97,30 @@ class WordListManager {
 
   resetCards() {
     this.currentCard = 0;
-    // Reset session stats when resetting cards
     this.sessionStats = { correct: 0, incorrect: 0, total: 0 };
     this.notifyStateChange();
   }
 
   nextCard() {
+    if (this.allWords.length === 0) return;
     this.currentCard = (this.currentCard + 1) % this.allWords.length;
     this.notifyStateChange();
   }
 
   prevCard() {
+    if (this.allWords.length === 0) return;
     this.currentCard = (this.currentCard - 1 + this.allWords.length) % this.allWords.length;
     this.notifyStateChange();
   }
 
-  getCurrentWord() {
+  getCurrentWord(): Word | undefined {
     return this.allWords[this.currentCard];
   }
 
-  getTotalWords() {
+  getTotalWords(): number {
     return this.allWords.length;
   }
 
-  // Session stats methods (separate from persistent journey stats)
   updateSessionStatsCorrect() {
     this.sessionStats.correct++;
     this.sessionStats.total++;
@@ -95,8 +133,7 @@ class WordListManager {
     this.notifyStateChange();
   }
 
-  // Convenience method that takes a boolean and calls the appropriate method
-  updateSessionStats(isCorrect) {
+  updateSessionStats(isCorrect: boolean) {
     if (isCorrect) {
       this.updateSessionStatsCorrect();
     } else {
@@ -104,7 +141,7 @@ class WordListManager {
     }
   }
 
-  getSessionStats() {
+  getSessionStats(): SessionStats {
     return { ...this.sessionStats };
   }
 
