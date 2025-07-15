@@ -19,10 +19,11 @@ import DrillModeSelector from './Components/DrillModeSelector.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import WordListManager from './Managers/wordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
-import WelcomeScreen from './Components/WelcomeScreen.jsx';
+import OnboardingFlow from './Components/Onboarding/OnboardingFlow.jsx';
 import storageConfigManager from './Managers/storageConfigManager';
 import activityStatsManager from './Managers/activityStatsManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
+import onboardingFlowManager from './Managers/onboardingFlowManager.js';
 import audioManager from './Managers/audioManager';
 import { 
   fetchCorpora, 
@@ -280,8 +281,13 @@ const FlashCardApp = () => {
 
   const handleWelcomeComplete = async (skillLevel, storageMode) => {
     try {
-      // Mark that user has seen the intro
-      safeStorage.setItem('trakaido-has-seen-intro', 'true');
+      // If called without parameters, it means onboarding is complete
+      if (skillLevel === undefined && storageMode === undefined) {
+        setShowWelcome(false);
+        return;
+      }
+
+      // Don't mark intro as seen yet - wait until entire onboarding is complete
 
       // Set storage configuration
       storageConfigManager.setStorageMode(storageMode);
@@ -443,9 +449,9 @@ const FlashCardApp = () => {
     );
   }
 
-  // Welcome screen for new users
+  // Onboarding flow for new users
   if (showWelcome && !loading && !error) {
-    return <WelcomeScreen onComplete={handleWelcomeComplete} />;
+    return <OnboardingFlow onComplete={handleWelcomeComplete} />;
   }
 
   // Loading state
