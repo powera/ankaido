@@ -34,6 +34,7 @@ describe('WordListManager', () => {
     it('should initialize with default values', () => {
       expect(manager.allWords).toEqual([]);
       expect(manager.currentCard).toBe(0);
+      expect(manager.sessionStats).toEqual({ correct: 0, incorrect: 0, total: 0 });
     });
 
     it('should set state change callback', () => {
@@ -79,17 +80,13 @@ describe('WordListManager', () => {
       expect(manager.currentCard).toBe(0);
     });
 
-    it('should reset state when generating new list', () => {
+    it('should reset current card when generating new list', () => {
       manager.currentCard = 5;
-      manager.showAnswer = true;
-      manager.selectedAnswer = 'test';
       
       const selectedGroups = { 'corpus1': ['group1'] };
       manager.generateWordsList(selectedGroups, mockCorporaData);
       
       expect(manager.currentCard).toBe(0);
-      expect(manager.showAnswer).toBe(false);
-      expect(manager.selectedAnswer).toBe(null);
     });
   });
 
@@ -123,17 +120,7 @@ describe('WordListManager', () => {
         expect(manager.currentCard).toBe(0);
       });
 
-      it('should reset answer state', () => {
-        manager.showAnswer = true;
-        manager.selectedAnswer = 'test';
-        manager.typedAnswer = 'typed';
-        
-        manager.nextCard();
-        
-        expect(manager.showAnswer).toBe(false);
-        expect(manager.selectedAnswer).toBe(null);
-        expect(manager.typedAnswer).toBe('');
-      });
+
     });
 
     describe('prevCard', () => {
@@ -151,117 +138,48 @@ describe('WordListManager', () => {
     });
   });
 
-  describe('multiple choice options generation', () => {
-    beforeEach(() => {
-      const selectedGroups = { 'corpus1': ['group1'] };
-      const mockCorporaData = {
-        'corpus1': {
-          groups: {
-            'group1': [
-              { lithuanian: 'labas', english: 'hello' },
-              { lithuanian: 'ačiū', english: 'thank you' },
-              { lithuanian: 'taip', english: 'yes' },
-              { lithuanian: 'ne', english: 'no' },
-              { lithuanian: 'prašom', english: 'please' },
-              { lithuanian: 'atsiprašau', english: 'sorry' }
-            ]
-          }
-        }
-      };
-      manager.generateWordsList(selectedGroups, mockCorporaData);
-    });
-
-    it('should generate correct number of options based on difficulty', () => {
-      mockSettings.difficulty = 'easy';
-      manager.generateMultipleChoiceOptions('english-to-lithuanian', 'multiple-choice');
-      expect(manager.multipleChoiceOptions).toHaveLength(4);
-
-      mockSettings.difficulty = 'medium';
-      manager.generateMultipleChoiceOptions('english-to-lithuanian', 'multiple-choice');
-      expect(manager.multipleChoiceOptions).toHaveLength(6);
-
-      mockSettings.difficulty = 'hard';
-      manager.generateMultipleChoiceOptions('english-to-lithuanian', 'multiple-choice');
-      expect(manager.multipleChoiceOptions).toHaveLength(6); // Limited by available words
-    });
-
-    it('should include correct answer in options', () => {
-      const currentWord = manager.getCurrentWord();
-      manager.generateMultipleChoiceOptions('english-to-lithuanian', 'multiple-choice');
-      
-      expect(manager.multipleChoiceOptions).toContain(currentWord.lithuanian);
-    });
-
-    it('should handle listening mode correctly', () => {
-      manager.generateMultipleChoiceOptions('lithuanian-to-english', 'listening');
-      const currentWord = manager.getCurrentWord();
-      
-      expect(manager.multipleChoiceOptions).toContain(currentWord.english);
-    });
-  });
-
   describe('stats management', () => {
     it('should update correct stats', () => {
-      manager.updateStatsCorrect();
+      manager.updateSessionStatsCorrect();
       
-      expect(manager.stats.correct).toBe(1);
-      expect(manager.stats.total).toBe(1);
-      expect(manager.stats.incorrect).toBe(0);
+      expect(manager.sessionStats.correct).toBe(1);
+      expect(manager.sessionStats.total).toBe(1);
+      expect(manager.sessionStats.incorrect).toBe(0);
     });
 
     it('should update incorrect stats', () => {
-      manager.updateStatsIncorrect();
+      manager.updateSessionStatsIncorrect();
       
-      expect(manager.stats.incorrect).toBe(1);
-      expect(manager.stats.total).toBe(1);
-      expect(manager.stats.correct).toBe(0);
+      expect(manager.sessionStats.incorrect).toBe(1);
+      expect(manager.sessionStats.total).toBe(1);
+      expect(manager.sessionStats.correct).toBe(0);
     });
 
-    it('should reset stats', () => {
-      manager.stats = { correct: 5, incorrect: 3, total: 8 };
+    it('should reset stats when resetting cards', () => {
+      manager.sessionStats = { correct: 5, incorrect: 3, total: 8 };
       manager.resetCards();
       
-      expect(manager.stats).toEqual({ correct: 0, incorrect: 0, total: 0 });
-    });
-  });
-
-  describe('multiple choice answer handling', () => {
-    beforeEach(() => {
-      const selectedGroups = { 'corpus1': ['group1'] };
-      const mockCorporaData = {
-        'corpus1': {
-          groups: {
-            'group1': [
-              { lithuanian: 'labas', english: 'hello' },
-              { lithuanian: 'ačiū', english: 'thank you' }
-            ]
-          }
-        }
-      };
-      manager.generateWordsList(selectedGroups, mockCorporaData);
+      expect(manager.sessionStats).toEqual({ correct: 0, incorrect: 0, total: 0 });
     });
 
-    it('should handle correct answer', () => {
-      const currentWord = manager.getCurrentWord();
-      const correctAnswer = currentWord.lithuanian;
-      
-      manager.handleMultipleChoiceAnswer(correctAnswer, 'english-to-lithuanian', 'multiple-choice', false, 2.5);
-      
-      expect(manager.selectedAnswer).toBe(correctAnswer);
-      expect(manager.showAnswer).toBe(true);
-      expect(manager.stats.correct).toBe(1);
-      expect(manager.stats.total).toBe(1);
+    it('should update stats with boolean parameter', () => {
+      manager.updateSessionStats(true);
+      expect(manager.sessionStats.correct).toBe(1);
+      expect(manager.sessionStats.total).toBe(1);
+
+      manager.updateSessionStats(false);
+      expect(manager.sessionStats.incorrect).toBe(1);
+      expect(manager.sessionStats.total).toBe(2);
     });
 
-    it('should handle incorrect answer', () => {
-      const wrongAnswer = 'wrong';
+    it('should get session stats copy', () => {
+      manager.sessionStats.correct = 3;
+      const stats = manager.getSessionStats();
+      expect(stats).toEqual({ correct: 3, incorrect: 0, total: 0 });
       
-      manager.handleMultipleChoiceAnswer(wrongAnswer, 'english-to-lithuanian', 'multiple-choice', false, 2.5);
-      
-      expect(manager.selectedAnswer).toBe(wrongAnswer);
-      expect(manager.showAnswer).toBe(true);
-      expect(manager.stats.incorrect).toBe(1);
-      expect(manager.stats.total).toBe(1);
+      // Verify it's a copy, not reference
+      stats.correct = 10;
+      expect(manager.sessionStats.correct).toBe(3);
     });
   });
 
@@ -290,20 +208,13 @@ describe('WordListManager', () => {
       expect(manager.getTotalWords()).toBe(2);
     });
 
-    it('should set show answer', () => {
-      manager.setShowAnswer(true);
-      expect(manager.showAnswer).toBe(true);
-      expect(mockStateChangeCallback).toHaveBeenCalled();
-    });
-
-    it('should set typed answer', () => {
-      manager.setTypedAnswer('test answer');
-      expect(manager.typedAnswer).toBe('test answer');
-    });
-
-    it('should set typing feedback', () => {
-      manager.setTypingFeedback('correct');
-      expect(manager.typingFeedback).toBe('correct');
+    it('should notify state change when callback is set', () => {
+      manager.notifyStateChange();
+      expect(mockStateChangeCallback).toHaveBeenCalledWith({
+        allWords: manager.allWords,
+        currentCard: manager.currentCard,
+        stats: manager.sessionStats
+      });
     });
   });
 });

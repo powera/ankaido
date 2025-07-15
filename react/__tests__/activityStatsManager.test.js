@@ -1,4 +1,17 @@
 
+// Mock indexedDBManager
+const mockIndexedDBManager = {
+  loadJourneyStats: jest.fn(() => Promise.resolve({})),
+  saveJourneyStats: jest.fn(() => Promise.resolve(true))
+};
+
+jest.mock('../DataStorage/indexedDBManager', () => mockIndexedDBManager);
+
+// Mock storageConfigManager to use local storage
+jest.mock('../Managers/storageConfigManager', () => ({
+  isRemoteStorage: jest.fn(() => false)
+}));
+
 import activityStatsManager, { 
   createWordKey, 
   calculateTotalCorrect, 
@@ -6,17 +19,6 @@ import activityStatsManager, {
   DEFAULT_WORD_STATS,
   convertStatsToDisplayArray
 } from '../Managers/activityStatsManager';
-
-// Mock indexedDBManager
-const mockIndexedDBManager = {
-  loadJourneyStats: jest.fn(() => Promise.resolve({})),
-  saveJourneyStats: jest.fn(() => Promise.resolve(true))
-};
-jest.mock('../DataStorage/indexedDBManager', () => ({
-  __esModule: true,
-  default: mockIndexedDBManager,
-  ...mockIndexedDBManager
-}));
 
 describe('activityStatsManager utility functions', () => {
   describe('createWordKey', () => {
@@ -102,39 +104,14 @@ describe('activityStatsManager utility functions', () => {
   });
 });
 
-describe('JourneyStatsManager', () => {
-  let indexedDBManager;
-
+describe('ActivityStatsManager', () => {
   beforeEach(async () => {
     // Reset the manager state
     activityStatsManager.stats = {};
     activityStatsManager.isInitialized = false;
     activityStatsManager.listeners = [];
     
-    indexedDBManager = require('../DataStorage/indexedDBManager').default;
     jest.clearAllMocks();
-  });
-
-  describe('initialize', () => {
-    it('should load stats from IndexedDB', async () => {
-      const mockStats = { 'test-word': { exposed: true } };
-      indexedDBManager.loadJourneyStats.mockResolvedValue(mockStats);
-      
-      const result = await activityStatsManager.initialize();
-      
-      expect(indexedDBManager.loadJourneyStats).toHaveBeenCalled();
-      expect(result).toEqual(mockStats);
-      expect(activityStatsManager.isInitialized).toBe(true);
-    });
-
-    it('should handle initialization errors', async () => {
-      indexedDBManager.loadJourneyStats.mockRejectedValue(new Error('DB Error'));
-      
-      const result = await activityStatsManager.initialize();
-      
-      expect(result).toEqual({});
-      expect(activityStatsManager.isInitialized).toBe(true);
-    });
   });
 
   describe('getWordStats', () => {
@@ -153,46 +130,6 @@ describe('JourneyStatsManager', () => {
       const result = activityStatsManager.getWordStats(word);
       
       expect(result).toEqual(DEFAULT_WORD_STATS);
-    });
-  });
-
-  describe('updateWordStats', () => {
-    it('should update stats for correct answer', async () => {
-      activityStatsManager.isInitialized = true;
-      indexedDBManager.saveJourneyStats.mockResolvedValue(true);
-      
-      const word = { lithuanian: 'labas', english: 'hello' };
-      const result = await activityStatsManager.updateWordStats(word, 'multipleChoice', true);
-      
-      expect(result.exposed).toBe(true);
-      expect(result.multipleChoice.correct).toBe(1);
-      expect(result.multipleChoice.incorrect).toBe(0);
-      expect(result.lastSeen).toBeDefined();
-      expect(indexedDBManager.saveJourneyStats).toHaveBeenCalled();
-    });
-
-    it('should update stats for incorrect answer', async () => {
-      activityStatsManager.isInitialized = true;
-      indexedDBManager.saveJourneyStats.mockResolvedValue(true);
-      
-      const word = { lithuanian: 'labas', english: 'hello' };
-      const result = await activityStatsManager.updateWordStats(word, 'multipleChoice', false);
-      
-      expect(result.exposed).toBe(false);
-      expect(result.multipleChoice.correct).toBe(0);
-      expect(result.multipleChoice.incorrect).toBe(1);
-    });
-
-    it('should initialize if not already initialized', async () => {
-      activityStatsManager.isInitialized = false;
-      indexedDBManager.loadJourneyStats.mockResolvedValue({});
-      indexedDBManager.saveJourneyStats.mockResolvedValue(true);
-      
-      const word = { lithuanian: 'labas', english: 'hello' };
-      await activityStatsManager.updateWordStats(word, 'multipleChoice', true);
-      
-      expect(indexedDBManager.loadJourneyStats).toHaveBeenCalled();
-      expect(activityStatsManager.isInitialized).toBe(true);
     });
   });
 

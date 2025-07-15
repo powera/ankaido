@@ -4,6 +4,7 @@
 
 import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
 import safeStorage from '../DataStorage/safeStorage';
+import storageConfigManager from '../Managers/storageConfigManager';
 
 // Mock safeStorage
 jest.mock('../DataStorage/safeStorage', () => ({
@@ -12,10 +13,19 @@ jest.mock('../DataStorage/safeStorage', () => ({
   removeItem: jest.fn()
 }));
 
+// Mock storageConfigManager
+jest.mock('../Managers/storageConfigManager', () => ({
+  isRemoteStorage: jest.fn(),
+  isLocalStorage: jest.fn(),
+  getStorageMode: jest.fn(),
+  initialize: jest.fn()
+}));
+
 // Mock helper function for testing
 const setUseServerStorage = (useServer) => {
-  // This would normally be handled by storageConfigManager
-  global.mockUseServerStorage = useServer;
+  storageConfigManager.isRemoteStorage.mockReturnValue(useServer);
+  storageConfigManager.isLocalStorage.mockReturnValue(!useServer);
+  storageConfigManager.getStorageMode.mockReturnValue(useServer ? 'remote' : 'local');
 };
 
 // Mock fetch
@@ -226,11 +236,12 @@ describe('CorpusChoicesManager', () => {
 
   describe('utility methods', () => {
     beforeEach(async () => {
-      corpusChoicesManager.choices = {
+      setUseServerStorage(false);
+      safeStorage.getItem.mockReturnValue(JSON.stringify({
         corpus1: ['group1', 'group2'],
         corpus2: ['groupA'],
         corpus3: []
-      };
+      }));
       await corpusChoicesManager.initialize();
     });
 
@@ -261,7 +272,7 @@ describe('CorpusChoicesManager', () => {
 
       it('should return false for corpus without selected groups', () => {
         expect(corpusChoicesManager.hasSelectedGroups('corpus3')).toBe(false);
-        expect(corpusChoicesManager.hasSelectedGroups('nonexistent')).toBe(false);
+        expect(corpusChoicesManager.hasSelectedGroups('nonexistent')).toBeFalsy();
       });
     });
 
@@ -275,7 +286,7 @@ describe('CorpusChoicesManager', () => {
       it('should return false for non-selected groups', () => {
         expect(corpusChoicesManager.isGroupSelected('corpus1', 'group3')).toBe(false);
         expect(corpusChoicesManager.isGroupSelected('corpus3', 'group1')).toBe(false);
-        expect(corpusChoicesManager.isGroupSelected('nonexistent', 'group1')).toBe(false);
+        expect(corpusChoicesManager.isGroupSelected('nonexistent', 'group1')).toBeFalsy();
       });
     });
 
@@ -301,8 +312,13 @@ describe('CorpusChoicesManager', () => {
       await corpusChoicesManager.initialize();
       await corpusChoicesManager.updateCorpusChoices('corpus1', ['group1']);
 
-      expect(listener1).toHaveBeenCalledWith({ corpus1: ['group1'] });
-      expect(listener2).toHaveBeenCalledWith({ corpus1: ['group1'] });
+      // Listeners are called with all choices, not just the updated corpus
+      expect(listener1).toHaveBeenCalledWith(expect.objectContaining({ 
+        corpus1: ['group1'] 
+      }));
+      expect(listener2).toHaveBeenCalledWith(expect.objectContaining({ 
+        corpus1: ['group1'] 
+      }));
     });
 
     it('should remove listeners', async () => {

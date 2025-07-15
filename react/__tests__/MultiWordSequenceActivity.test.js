@@ -5,14 +5,21 @@ import MultiWordSequenceActivity from '../Activities/MultiWordSequenceActivity';
 import { generateMultiWordSequence, canGenerateMultiWordSequence } from '../Utilities/multiWordSequenceGenerator';
 
 // Mock audioManager
-jest.mock('../Managers/audioManager', () => ({
-  default: {
+jest.mock('../Managers/audioManager', () => {
+  const mockAudioManager = {
     playAudio: jest.fn().mockResolvedValue(true),
     getAvailableVoices: jest.fn().mockReturnValue(['nova', 'alloy', 'ash']),
+    stopCurrentAudio: jest.fn(),
+    stopAllAudio: jest.fn(),
     isInitialized: true,
     initializeAudioContext: jest.fn().mockResolvedValue(true)
-  }
-}));
+  };
+  
+  return {
+    __esModule: true,
+    default: mockAudioManager
+  };
+});
 
 // Mock safeStorage
 jest.mock('../DataStorage/safeStorage', () => {
@@ -83,8 +90,8 @@ describe('MultiWordSequenceActivity', () => {
     
     const sequenceLength = mockSequenceData?.sequence?.length || 4;
     expect(screen.getByText(`🎧 Listen to the sequence of ${sequenceLength} words`)).toBeInTheDocument();
-    expect(screen.getByText('🔄 Replay Sequence')).toBeInTheDocument();
-    expect(screen.getByText(`Select the ${sequenceLength} words you heard in the sequence`)).toBeInTheDocument();
+    expect(screen.getByTitle('Replay the sequence')).toBeInTheDocument();
+    expect(screen.getByText(`Select the ${sequenceLength} words you heard in the correct order`)).toBeInTheDocument();
     
     // Should show options (sequence length * 2)
     const options = screen.getAllByRole('button').filter(btn => 
@@ -97,7 +104,7 @@ describe('MultiWordSequenceActivity', () => {
     const audioManager = require('../Managers/audioManager').default;
     render(<MultiWordSequenceActivity {...defaultProps} />);
     
-    const replayButton = screen.getByText('🔄 Replay Sequence');
+    const replayButton = screen.getByTitle('Replay the sequence');
     fireEvent.click(replayButton);
     
     // Should call playAudio for each word in sequence
