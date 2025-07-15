@@ -23,12 +23,48 @@ class AudioManager {
     this.pendingAudioRequests = new Set();
     this.playbackQueue = [];
     this.isProcessingQueue = false;
+    this.lastAudioActivity = Date.now();
     
     // Voice management properties
     this.availableVoices = [];
     this.isInitialized = false;
     
+    // Add page visibility handling
+    this.setupPageVisibilityHandling();
+    
     AudioManager.instance = this;
+  }
+
+  setupPageVisibilityHandling() {
+    // Handle page visibility changes to reset audio context when coming back from background
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          // Page became visible - reset audio context state and clear any stuck queue
+          this.handlePageBecameVisible();
+        }
+      });
+      
+      // Also handle window focus events as a backup
+      window.addEventListener('focus', () => {
+        this.handlePageBecameVisible();
+      });
+    }
+  }
+
+  async handlePageBecameVisible() {
+    // Reset audio context state - it might have been suspended
+    this.isAudioContextInitialized = false;
+    
+    // Clear any stuck processing state
+    if (this.isProcessingQueue && this.playbackQueue.length === 0) {
+      console.warn('Clearing stuck audio queue processing state');
+      this.isProcessingQueue = false;
+    }
+    
+    // Re-enable audio if it was disabled due to errors
+    this.isAudioEnabled = true;
+    
   }
 
   async initialize(voices) {
@@ -58,20 +94,41 @@ class AudioManager {
   }
 
   async initializeAudioContext() {
-    if (!this.audioContext) {
+    // Always check the current state, don't rely on cached flags
+    if (!this.audioContext || this.audioContext.state === 'closed') {
       try {
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
       } catch (error) {
         console.warn('AudioContext not supported:', error);
+        this.isAudioContextInitialized = false;
         return false;
       }
     }
 
+    // Handle suspended state with retry logic
     if (this.audioContext.state === 'suspended') {
       try {
         await this.audioContext.resume();
+        
+        // Wait a bit and check if it actually resumed
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        if (this.audioContext.state === 'suspended') {
+          console.warn('AudioContext still suspended after resume attempt');
+          // Try creating a new context as a last resort
+          try {
+            this.audioContext.close();
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            await this.audioContext.resume();
+          } catch (recreateError) {
+            console.warn('Failed to recreate AudioContext:', recreateError);
+            this.isAudioContextInitialized = false;
+            return false;
+          }
+        }
       } catch (error) {
         console.warn('Failed to resume AudioContext:', error);
+        this.isAudioContextInitialized = false;
         return false;
       }
     }
@@ -86,6 +143,14 @@ class AudioManager {
     
     if (!audioEnabled || !this.isAudioEnabled) return;
 
+    // Check if audio system might be stuck (no activity for 30 seconds while processing)
+    const now = Date.now();
+    if (this.isProcessingQueue && (now - this.lastAudioActivity) > 30000) {
+      console.warn('Audio system appears stuck, resetting...');
+      await this.resetAudioSystem();
+    }
+
+    this.lastAudioActivity = now;
     const cacheKey = `${word}-${voice}`;
     
     // Add to queue instead of playing immediately to prevent race conditions
@@ -97,7 +162,8 @@ class AudioManager {
         onlyCached,
         sequential,
         resolve,
-        reject
+        reject,
+        timestamp: now
       });
       
       this.processPlaybackQueue();
@@ -115,7 +181,25 @@ class AudioManager {
       // Process all requests in order for sequential playback
       while (this.playbackQueue.length > 0) {
         const request = this.playbackQueue.shift(); // Take first request (FIFO)
-        await this.playAudioInternal(request);
+        try {
+          this.lastAudioActivity = Date.now();
+          await this.playAudioInternal(request);
+        } catch (error) {
+          console.warn('Error processing audio request, continuing with queue:', error);
+          // Reject the specific request but continue processing the queue
+          if (request.reject) {
+            request.reject(error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Critical error in audio queue processing:', error);
+      // Clear the queue and reject all pending requests
+      while (this.playbackQueue.length > 0) {
+        const request = this.playbackQueue.shift();
+        if (request.reject) {
+          request.reject(error);
+        }
       }
     } finally {
       this.isProcessingQueue = false;
@@ -247,6 +331,36 @@ class AudioManager {
     await this.stopCurrentAudio();
     // Reset processing state
     this.isProcessingQueue = false;
+  }
+
+  // Force reset the entire audio system - use when audio gets completely stuck
+  async resetAudioSystem() {
+    console.warn('Resetting audio system due to stuck state');
+    
+    // Stop all current audio
+    await this.stopAllAudio();
+    
+    // Clear all pending requests
+    this.pendingAudioRequests.clear();
+    
+    // Reset audio context
+    if (this.audioContext) {
+      try {
+        this.audioContext.close();
+      } catch (error) {
+        console.warn('Error closing AudioContext:', error);
+      }
+    }
+    this.audioContext = null;
+    this.isAudioContextInitialized = false;
+    
+    // Clear and cleanup audio cache
+    this.clearCache();
+    
+    // Re-enable audio
+    this.isAudioEnabled = true;
+    
+    console.log('Audio system reset complete');
   }
 
   async createAndSetupAudio(word, voice, cacheKey) {
