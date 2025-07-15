@@ -239,6 +239,16 @@ class AudioManager {
     }
   }
 
+  // Stop all audio playback and clear the queue
+  async stopAllAudio() {
+    // Clear the playback queue
+    this.playbackQueue = [];
+    // Stop currently playing audio
+    await this.stopCurrentAudio();
+    // Reset processing state
+    this.isProcessingQueue = false;
+  }
+
   async createAndSetupAudio(word, voice, cacheKey) {
     const audioUrl = getAudioUrl(word, voice);
     

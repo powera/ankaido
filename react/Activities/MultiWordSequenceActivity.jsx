@@ -57,10 +57,21 @@ const MultiWordSequenceActivity = ({
     }
   }, [currentWord, audioEnabled, hasPlayedInitial, questionVoice]);
 
-  // Reset hasPlayedInitial when word changes
+  // Reset hasPlayedInitial when word changes and stop any playing audio
   useEffect(() => {
     setHasPlayedInitial(false);
+    // Stop any currently playing audio when the word changes
+    audioManager.stopCurrentAudio();
   }, [currentWord]);
+
+  // Cleanup: stop audio when component unmounts
+  useEffect(() => {
+    return () => {
+      // Stop all audio playback and clear queue when component unmounts
+      audioManager.stopAllAudio();
+      setIsPlaying(false);
+    };
+  }, []);
 
   // Play the multi-word sequence with 0.2s pauses using the selected voice for this question
   const playSequence = useCallback(async () => {
