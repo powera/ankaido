@@ -4,36 +4,13 @@
  * Requires at least 20 words from the same corpus to ensure sufficient options
  */
 
-export interface Word {
-  corpus: string;
-  [key: string]: any; // Allow other properties
-}
-
-export interface MultiWordSequenceSettings {
-  sequenceLength?: number;
-}
-
-export interface MultiWordSequenceActivity {
-  sequence: Word[];
-  options: Word[];
-  corpus: string;
-  type: 'multi-word-sequence';
-  sequenceLength: number;
-}
-
-export interface CorpusStats {
-  corpus: string;
-  wordCount: number;
-  minRequired: number;
-}
-
-export interface MultiWordSequenceStats {
-  eligible: CorpusStats[];
-  ineligible: CorpusStats[];
-  totalWords: number;
-  sequenceLength: number;
-  minRequired: number;
-}
+import { 
+  Word, 
+  MultiWordSequenceSettings, 
+  MultiWordSequenceActivity, 
+  CorpusStats, 
+  MultiWordSequenceStats 
+} from './types';
 
 /**
  * Generate a multi-word sequence activity data
@@ -55,6 +32,10 @@ export const generateMultiWordSequence = (
   // Group words by corpus
   const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
+    // Skip words without a corpus
+    if (!word.corpus) {
+      return;
+    }
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
     }
@@ -116,6 +97,10 @@ export const canGenerateMultiWordSequence = (
   // Group words by corpus and check if any corpus has at least the minimum required words
   const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
+    // Skip words without a corpus
+    if (!word.corpus) {
+      return;
+    }
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
     }
@@ -146,6 +131,10 @@ export const getMultiWordSequenceStats = (
 
   const wordsByCorpus: Record<string, Word[]> = {};
   allWords.forEach(word => {
+    // Skip words without a corpus
+    if (!word.corpus) {
+      return;
+    }
     if (!wordsByCorpus[word.corpus]) {
       wordsByCorpus[word.corpus] = [];
     }

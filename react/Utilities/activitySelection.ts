@@ -4,33 +4,17 @@
  */
 
 import { WeightedSelectionTree } from './weightedSelectionTree';
+import { 
+  ActivityType, 
+  ActivityMode, 
+  Word, 
+  WordStats, 
+  ActivityResult,
+  DifficultyLevel,
+  DifficultyMapping
+} from './types';
 
-export type ActivityType = 'multiple-choice' | 'listening' | 'typing';
-export type ActivityMode = 'en-to-lt' | 'lt-to-en' | 'easy' | 'hard';
-
-export interface Word {
-  lithuanian: string;
-  english: string;
-  [key: string]: any;
-}
-
-export interface WordStats {
-  lastSeen?: number;
-  [key: string]: any;
-}
-
-export interface ActivityResult {
-  type: ActivityType | 'motivational-break' | 'new-word' | 'grammar-break';
-  word: Word | null;
-  mode?: ActivityMode;
-}
-
-export interface DifficultyMapping {
-  exposureRange: [number, number];
-  tier: number;
-}
-
-export const DIFFICULTY_MAPPINGS: Record<'easy' | 'medium' | 'hard', DifficultyMapping> = {
+export const DIFFICULTY_MAPPINGS: Record<DifficultyLevel, DifficultyMapping> = {
   easy: { exposureRange: [0, 3], tier: 1 },    // Similar to Tier 1 (exposures < 4)
   medium: { exposureRange: [4, 8], tier: 2 },  // Similar to Tier 2 (exposures < 9)
   hard: { exposureRange: [9, Infinity], tier: 3 } // Similar to Tier 3 (exposures >= 9)
@@ -132,7 +116,7 @@ const createActivityResult = (
 
 export const selectDrillActivity = (
   selectedWord: Word,
-  difficulty: 'easy' | 'medium' | 'hard',
+  difficulty: DifficultyLevel,
   audioEnabled: boolean,
   getTotalCorrectForWord: (word: Word) => number
 ): ActivityResult => {

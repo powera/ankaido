@@ -2,24 +2,7 @@
  * Shared utility functions for activity components
  */
 
-export interface Word {
-  english: string;
-  lithuanian: string;
-  [key: string]: string;
-}
-
-export type StudyMode =
-  | 'english-to-lithuanian'
-  | 'lithuanian-to-english'
-  | 'lithuanian-to-lithuanian';
-
-export interface ActivityState {
-  showAnswer: boolean;
-  selectedAnswer: string | null;
-  typedAnswer: string;
-  typingFeedback: string;
-  autoAdvanceTimer: NodeJS.Timeout | null;
-}
+import { Word, StudyMode, ActivityState, ActivityStatsManager } from './types';
 
 /**
  * Creates initial activity state object
@@ -70,10 +53,6 @@ export const getQuestionText = (word: Word, studyMode: StudyMode): string => {
       return word.english; // Default fallback
   }
 };
-
-export interface ActivityStatsManager {
-  updateWordStats: (word: Word, statsMode: StudyMode, isCorrect: boolean) => Promise<void>;
-}
 
 /**
  * Creates a stats update handler that wraps the original handler

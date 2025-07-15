@@ -9,11 +9,7 @@
  * - Weighted random selection: O(log N)
  */
 
-export interface Word {
-  lithuanian: string;
-  english: string;
-  [key: string]: any;
-}
+import { Word } from './types';
 
 export class WeightedSelectionTree {
   private tree: number[];

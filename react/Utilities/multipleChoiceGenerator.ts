@@ -2,22 +2,7 @@
  * Utility for generating multiple choice options across different activities
  */
 
-interface Word {
-  lithuanian: string;
-  english: string;
-  corpus?: string;
-  [key: string]: any;
-}
-
-interface WordListState {
-  allWords: Word[];
-  [key: string]: any;
-}
-
-interface MultipleChoiceSettings {
-  numOptions?: number;
-  [key: string]: any;
-}
+import { Word, WordListState, MultipleChoiceSettings } from './types';
 
 export const generateMultipleChoiceOptions = (
   word: Word | undefined,
