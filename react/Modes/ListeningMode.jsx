@@ -124,6 +124,7 @@ const ListeningMode = ({
         onAnswerClick={handleAnswerClick}
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
+        allWords={wordListState.allWords}
       />
       {currentWord && (
         <div className="w-nav-controls">
