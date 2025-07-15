@@ -9,11 +9,8 @@ jest.mock('../Managers/audioManager', () => ({
   default: {
     playAudio: jest.fn().mockResolvedValue(true),
     getAvailableVoices: jest.fn().mockReturnValue(['nova', 'alloy', 'ash']),
-    lithuanianAudioManager: {
-      playAudio: jest.fn().mockResolvedValue(true),
-      isInitialized: true,
-      initializeAudioContext: jest.fn().mockResolvedValue(true)
-    }
+    isInitialized: true,
+    initializeAudioContext: jest.fn().mockResolvedValue(true)
   }
 }));
 
@@ -106,7 +103,7 @@ describe('MultiWordSequenceActivity', () => {
     // Should call playAudio for each word in sequence
     const sequenceLength = mockSequenceData?.sequence?.length || 4;
     await waitFor(() => {
-      expect(audioManager.lithuanianAudioManager.playAudio).toHaveBeenCalledTimes(sequenceLength);
+      expect(audioManager.playAudio).toHaveBeenCalledTimes(sequenceLength);
     });
   });
 

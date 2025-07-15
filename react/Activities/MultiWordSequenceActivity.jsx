@@ -69,14 +69,14 @@ const MultiWordSequenceActivity = ({
     setIsPlaying(true);
     try {
       // Ensure audio context is initialized on first interaction
-      if (!audioManager.lithuanianAudioManager.isInitialized) {
-        await audioManager.lithuanianAudioManager.initializeAudioContext();
+      if (!audioManager.isInitialized) {
+        await audioManager.initializeAudioContext();
       }
 
       for (let i = 0; i < currentWord.sequence.length; i++) {
         const word = currentWord.sequence[i];
         // Use the specific voice selected for this question
-        await audioManager.lithuanianAudioManager.playAudio(word.lithuanian, questionVoice, true, false, true);
+        await audioManager.playAudio(word.lithuanian, false, true);
         
         // Add 0.2s pause between words (except after the last word)
         if (i < currentWord.sequence.length - 1) {
