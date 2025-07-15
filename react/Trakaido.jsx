@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalSettings } from './useGlobalSettings.jsx';
-import { useFullscreen } from './useFullscreen.js';
+import { useFullscreen } from './Utilities/useFullscreen';
 import VocabularyListMode from './Modes/VocabularyListMode.jsx';
 import TypingMode from './Modes/TypingMode.jsx';
 

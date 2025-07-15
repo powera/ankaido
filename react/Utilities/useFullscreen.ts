@@ -1,9 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
+interface UseFullscreenReturn {
+  isFullscreen: boolean;
+  toggleFullscreen: () => Promise<void>;
+  containerRef: React.RefObject<HTMLElement>;
+}
+
 /**
  * Custom hook for fullscreen functionality
  * 
- * @returns {Object} Object containing:
+ * @returns {UseFullscreenReturn} Object containing:
  *   - isFullscreen: boolean indicating if currently in fullscreen
  *   - toggleFullscreen: function to toggle fullscreen mode
  *   - containerRef: ref to attach to the element that should go fullscreen
@@ -21,44 +27,45 @@ import { useState, useEffect, useRef, useCallback } from 'react';
  *   );
  * };
  */
-export const useFullscreen = () => {
+export const useFullscreen = (): UseFullscreenReturn => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef(null);
 
-  const toggleFullscreen = async () => {
+  const toggleFullscreen = useCallback(async (): Promise<void> => {
     try {
       if (!document.fullscreenElement) {
         // Enter fullscreen mode
         const element = containerRef.current || document.documentElement;
+        
         if (element.requestFullscreen) {
           await element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-          await element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) {
-          await element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) {
-          await element.msRequestFullscreen();
+        } else if ((element as any).mozRequestFullScreen) {
+          await (element as any).mozRequestFullScreen();
+        } else if ((element as any).webkitRequestFullscreen) {
+          await (element as any).webkitRequestFullscreen();
+        } else if ((element as any).msRequestFullscreen) {
+          await (element as any).msRequestFullscreen();
         }
       } else {
         // Exit fullscreen mode
         if (document.exitFullscreen) {
           await document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-          await document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-          await document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          await document.msExitFullscreen();
+        } else if ((document as any).mozCancelFullScreen) {
+          await (document as any).mozCancelFullScreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
         }
       }
     } catch (error) {
       console.error('Fullscreen toggle failed:', error);
     }
-  };
+  }, []);
 
   // Listen for fullscreen changes
   useEffect(() => {
-    const handleFullscreenChange = () => {
+    const handleFullscreenChange = (): void => {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
