@@ -103,12 +103,16 @@ const createActivityResult = (activityType, selectedWord, audioEnabled, tier = n
       if (!audioEnabled) return null;
       
       // Choose listening mode based on complexity and tier constraints
-      // Tier 1 should never have "hard" listening questions
       let listeningMode;
       if (tier === 1) {
+        // Tier 1: always easy
         listeningMode = 'easy';
+      } else if (tier === 2) {
+        // Tier 2: 60% easy / 40% hard
+        listeningMode = Math.random() < 0.6 ? 'easy' : 'hard';
       } else {
-        listeningMode = Math.random() < 0.5 ? 'easy' : 'hard';
+        // Tier 3: 30% easy / 70% hard
+        listeningMode = Math.random() < 0.3 ? 'easy' : 'hard';
       }
       
       return { 
