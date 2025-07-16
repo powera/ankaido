@@ -9,7 +9,7 @@
  * - Weighted random selection: O(log N)
  */
 
-import { Word } from './types';
+import { Word, WordStats } from './types';
 
 export class WeightedSelectionTree {
   private tree: number[];
@@ -154,4 +154,144 @@ export class WeightedSelectionTree {
   }
 }
 
-export default WeightedSelectionTree;
+class WordWeightCache {
+  private weights: Map<string, number>;
+  private lastUpdated: Map<string, number>;
+  private cacheValidityMs: number;
+  private selectionTree: WeightedSelectionTree;
+  private currentWordList: Word[] | null;
+  private treeNeedsRebuild: boolean;
+
+  constructor() {
+    this.weights = new Map();
+    this.lastUpdated = new Map();
+    this.cacheValidityMs = 5 * 60 * 1000;
+    this.selectionTree = new WeightedSelectionTree();
+    this.currentWordList = null;
+    this.treeNeedsRebuild = true;
+  }
+
+  getWordKey(word: Word): string {
+    return `${word.lithuanian}-${word.english}`;
+  }
+
+  isCacheValid(wordKey: string): boolean {
+    const lastUpdated = this.lastUpdated.get(wordKey);
+    if (!lastUpdated) return false;
+    return (Date.now() - lastUpdated) < this.cacheValidityMs;
+  }
+
+  getWordWeight(
+    word: Word,
+    getWeightForWord: (word: Word) => number
+  ): number {
+    const wordKey = this.getWordKey(word);
+
+    if (this.isCacheValid(wordKey)) {
+      return this.weights.get(wordKey) ?? 0;
+    }
+
+    const weight = getWeightForWord(word);
+
+    this.weights.set(wordKey, weight);
+    this.lastUpdated.set(wordKey, Date.now());
+
+    return weight;
+  }
+
+  buildSelectionTree(
+    words: Word[],
+    getWeightForWord: (word: Word) => number
+  ): void {
+    this.selectionTree.resize(words.length);
+
+    for (let i = 0; i < words.length; i++) {
+      const word = words[i];
+      const weight = this.getWordWeight(word, getWeightForWord);
+
+      this.selectionTree.setWord(i + 1, word);
+      this.selectionTree.updateWeight(i + 1, weight);
+    }
+
+    this.currentWordList = words;
+    this.treeNeedsRebuild = false;
+  }
+
+  updateWordInTree(
+    word: Word,
+    getWeightForWord: (word: Word) => number
+  ): void {
+    if (!this.currentWordList || this.treeNeedsRebuild) return;
+
+    const index = this.selectionTree.getWordIndex(word);
+    if (index) {
+      const newWeight = this.getWordWeight(word, getWeightForWord);
+      this.selectionTree.updateWeight(index, newWeight);
+    }
+  }
+
+  selectWordFromTree(): Word | null {
+    if (this.treeNeedsRebuild || !this.currentWordList) {
+      return null;
+    }
+
+    const totalWeight = this.selectionTree.getTotalWeight();
+    if (totalWeight === 0) {
+      const randomIndex = Math.floor(Math.random() * this.currentWordList.length);
+      return this.currentWordList[randomIndex];
+    }
+
+    const randomWeight = Math.random() * totalWeight;
+    const selectedIndex = this.selectionTree.selectByWeight(randomWeight);
+    const word = this.selectionTree.getWord(selectedIndex);
+    return word === undefined ? null : word;
+  }
+
+  needsRebuild(words: Word[]): boolean {
+    if (!this.currentWordList || this.treeNeedsRebuild) return true;
+    if (words.length !== this.currentWordList.length) return true;
+
+    if (words.length > 0) {
+      const firstMatch = this.getWordKey(words[0]) === this.getWordKey(this.currentWordList[0]);
+      const lastMatch = this.getWordKey(words[words.length - 1]) === this.getWordKey(this.currentWordList[this.currentWordList.length - 1]);
+      if (!firstMatch || !lastMatch) return true;
+    }
+
+    return false;
+  }
+
+  invalidateWord(word: Word): void {
+    const wordKey = this.getWordKey(word);
+    this.weights.delete(wordKey);
+    this.lastUpdated.delete(wordKey);
+
+    if (!this.treeNeedsRebuild && this.currentWordList) {
+      this.treeNeedsRebuild = true;
+    }
+  }
+
+  clearCache(): void {
+    this.weights.clear();
+    this.lastUpdated.clear();
+    this.treeNeedsRebuild = true;
+    this.currentWordList = null;
+  }
+
+  getCacheStats(): {
+    totalEntries: number;
+    validEntries: number;
+    treeSize: number;
+    treeNeedsRebuild: boolean;
+  } {
+    return {
+      totalEntries: this.weights.size,
+      validEntries: Array.from(this.lastUpdated.entries()).filter(
+        ([_, timestamp]) => (Date.now() - timestamp) < this.cacheValidityMs
+      ).length,
+      treeSize: this.selectionTree.getSize(),
+      treeNeedsRebuild: this.treeNeedsRebuild
+    };
+  }
+}
+
+export { WordWeightCache };

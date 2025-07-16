@@ -3,7 +3,7 @@
  * Activity selection utilities for Journey Mode and Drill Mode
  */
 
-import { WeightedSelectionTree } from './weightedSelectionTree';
+import { WordWeightCache } from './weightedSelectionTree';
 import { 
   ActivityType, 
   ActivityMode, 
@@ -14,68 +14,121 @@ import {
   DifficultyMapping
 } from './types';
 
-export const DIFFICULTY_MAPPINGS: Record<DifficultyLevel, DifficultyMapping> = {
-  easy: { exposureRange: [0, 3], tier: 1 },    // Similar to Tier 1 (exposures < 4)
-  medium: { exposureRange: [4, 8], tier: 2 },  // Similar to Tier 2 (exposures < 9)
-  hard: { exposureRange: [9, Infinity], tier: 3 } // Similar to Tier 3 (exposures >= 9)
-};
+interface TierConfig {
+  correctAnswersRange: [number, number];
+  activityProbabilities: Record<ActivityType, number>;
+  baseWeight: number;
+  hardListeningProbability: number;
+}
 
-export const ACTIVITY_PROBABILITIES: Record<number, Record<ActivityType, number>> = {
+export const TIER_CONFIGS: Record<number, TierConfig> = {
   1: {
-    'multiple-choice': 50,
-    'listening': 50,
-    'typing': 0
+    correctAnswersRange: [0, 3],
+    activityProbabilities: {
+      'multiple-choice': 50,
+      'listening': 50,
+      'typing': 0
+    },
+    baseWeight: 1.0,
+    hardListeningProbability: 0.0 // Always easy
   },
   2: {
-    'multiple-choice': 40,
-    'listening': 40,
-    'typing': 20
+    correctAnswersRange: [4, 7],
+    activityProbabilities: {
+      'multiple-choice': 40,
+      'listening': 40,
+      'typing': 20
+    },
+    baseWeight: 0.85,
+    hardListeningProbability: 0.4 // 40% hard, 60% easy
   },
   3: {
-    'multiple-choice': 20,
-    'listening': 20,
-    'typing': 60
+    correctAnswersRange: [8, 14],
+    activityProbabilities: {
+      'multiple-choice': 30,
+      'listening': 30,
+      'typing': 40
+    },
+    baseWeight: 0.6,
+    hardListeningProbability: 0.8 // 80% hard, 20% easy
+  },
+  4: {
+    correctAnswersRange: [15, Infinity],
+    activityProbabilities: {
+      'multiple-choice': 0,
+      'listening': 25,
+      'typing': 75
+    },
+    baseWeight: 0.25,
+    hardListeningProbability: 1.0 // Always hard
   }
+};
+
+/**
+ * Maps correct answers count to tier number
+ */
+export const getWordTier = (correctAnswers: number): number => {
+  if (correctAnswers < 4) {
+    return 1;
+  } else if (correctAnswers < 8) {
+    return 2;
+  } else if (correctAnswers < 15) {
+    return 3;
+  } else {
+    return 4;
+  }
+};
+
+export const DIFFICULTY_MAPPINGS: Record<DifficultyLevel, DifficultyMapping> = {
+  easy: { correctAnswersRange: [0, 3], tier: 1 },    // Tier 1 (correctAnswers < 4)
+  medium: { correctAnswersRange: [4, 14], tier: 3 },  // Tier 3 (correctAnswers < 15)
+  hard: { correctAnswersRange: [15, Infinity], tier: 4 } // Tier 4 (correctAnswers >= 15)
 };
 
 export const attemptActivitySelection = (
   selectedWord: Word,
-  exposures: number,
+  correctAnswers: number,
   audioEnabled: boolean,
   forcedTier: number | null = null
-): ActivityResult | null => {
+): ActivityResult => {
   const random = Math.random() * 100;
 
-  let tier: number;
-  if (forcedTier) {
-    tier = forcedTier;
-  } else if (exposures < 4) {
-    tier = 1;
-  } else if (exposures < 9) {
-    tier = 2;
-  } else {
-    tier = 3;
+  const tier = forcedTier ?? getWordTier(correctAnswers);
+
+  const tierConfig = TIER_CONFIGS[tier];
+  let probabilities = { ...tierConfig.activityProbabilities };
+
+  // Remove listening activities if audio is disabled
+  if (!audioEnabled) {
+    probabilities.listening = 0;
   }
 
-  const probabilities = ACTIVITY_PROBABILITIES[tier];
+  // Filter out activities with 0 probability and recalculate total
+  const validActivities = Object.entries(probabilities).filter(([_, prob]) => prob > 0);
+  const totalProb = validActivities.reduce((sum, [_, prob]) => sum + prob, 0);
 
+  // If no valid activities, fall back to multiple-choice
+  if (totalProb === 0) {
+    return createActivityResult('multiple-choice', selectedWord, audioEnabled, tier)!;
+  }
+
+  // Normalize probabilities to 100%
   let cumulativeProb = 0;
   const activities: { type: ActivityType; threshold: number }[] = [];
 
-  for (const [activityType, prob] of Object.entries(probabilities) as [ActivityType, number][]) {
-    if (prob > 0) {
-      cumulativeProb += prob;
-      activities.push({ type: activityType, threshold: cumulativeProb });
-    }
+  for (const [activityType, prob] of validActivities as [ActivityType, number][]) {
+    cumulativeProb += (prob / totalProb) * 100;
+    activities.push({ type: activityType, threshold: cumulativeProb });
   }
 
   for (const activity of activities) {
     if (random < activity.threshold) {
-      return createActivityResult(activity.type, selectedWord, audioEnabled, tier);
+      return createActivityResult(activity.type, selectedWord, audioEnabled, tier)!;
     }
   }
 
-  return createActivityResult('multiple-choice', selectedWord, audioEnabled, tier);
+  // Fallback (should never reach here, but just in case)
+  return createActivityResult('multiple-choice', selectedWord, audioEnabled, tier)!;
 };
 
 const createActivityResult = (
@@ -92,13 +145,15 @@ const createActivityResult = (
     case 'listening': {
       if (!audioEnabled) return null;
       let listeningMode: ActivityMode;
-      if (tier === 1) {
-        listeningMode = 'easy';
-      } else if (tier === 2) {
-        listeningMode = Math.random() < 0.6 ? 'easy' : 'hard';
+      
+      if (tier && TIER_CONFIGS[tier]) {
+        const hardProbability = TIER_CONFIGS[tier].hardListeningProbability;
+        listeningMode = Math.random() < hardProbability ? 'hard' : 'easy';
       } else {
-        listeningMode = Math.random() < 0.3 ? 'easy' : 'hard';
+        // Fallback to easy if tier is invalid
+        listeningMode = 'easy';
       }
+      
       return {
         type: 'listening',
         word: selectedWord,
@@ -120,7 +175,7 @@ export const selectDrillActivity = (
   audioEnabled: boolean,
   getTotalCorrectForWord: (word: Word) => number
 ): ActivityResult => {
-  const exposures = getTotalCorrectForWord ? getTotalCorrectForWord(selectedWord) : 0;
+  const correctAnswers = getTotalCorrectForWord ? getTotalCorrectForWord(selectedWord) : 0;
   const difficultyMapping = DIFFICULTY_MAPPINGS[difficulty];
 
   if (!difficultyMapping) {
@@ -129,21 +184,7 @@ export const selectDrillActivity = (
 
   const tier = difficultyMapping.tier;
 
-  let attempts = 0;
-  const maxAttempts = 10;
-
-  while (attempts < maxAttempts) {
-    const activityResult = attemptActivitySelection(selectedWord, exposures, audioEnabled, tier);
-
-    if (activityResult !== null) {
-      return activityResult;
-    }
-
-    attempts++;
-  }
-
-  const mcMode: ActivityMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-  return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
+  return attemptActivitySelection(selectedWord, correctAnswers, audioEnabled, tier);
 };
 
 const JOURNEY_PROBABILITIES = {
@@ -151,178 +192,35 @@ const JOURNEY_PROBABILITIES = {
   newWordIntroduction: 15
 };
 
-class WordWeightCache {
-  private weights: Map<string, number>;
-  private lastUpdated: Map<string, number>;
-  private cacheValidityMs: number;
-  private selectionTree: WeightedSelectionTree;
-  private currentWordList: Word[] | null;
-  private treeNeedsRebuild: boolean;
-
-  constructor() {
-    this.weights = new Map();
-    this.lastUpdated = new Map();
-    this.cacheValidityMs = 5 * 60 * 1000;
-    this.selectionTree = new WeightedSelectionTree();
-    this.currentWordList = null;
-    this.treeNeedsRebuild = true;
-  }
-
-  getWordKey(word: Word): string {
-    return `${word.lithuanian}-${word.english}`;
-  }
-
-  isCacheValid(wordKey: string): boolean {
-    const lastUpdated = this.lastUpdated.get(wordKey);
-    if (!lastUpdated) return false;
-    return (Date.now() - lastUpdated) < this.cacheValidityMs;
-  }
-
-  calculateWordWeight(
-    word: Word,
-    getTotalCorrectForWord: (word: Word) => number,
-    getWordStats: (word: Word) => WordStats
-  ): number {
-    const exposures = getTotalCorrectForWord(word);
-    const stats = getWordStats(word);
-
-    let baseWeight = 1.0;
-
-    if (exposures >= 15) {
-      baseWeight = 0.2;
-    } else if (exposures >= 8) {
-      baseWeight = 0.5;
-    }
-
-    const twoWeeksMs = 14 * 24 * 60 * 60 * 1000;
-    const now = Date.now();
-    const lastSeen = stats.lastSeen;
-
-    let timeMultiplier = 1.0;
-    if (lastSeen && (now - lastSeen) > twoWeeksMs) {
-      timeMultiplier = 3.0;
-    }
-
-    return baseWeight * timeMultiplier;
-  }
-
-  getWordWeight(
-    word: Word,
-    getTotalCorrectForWord: (word: Word) => number,
-    getWordStats: (word: Word) => WordStats
-  ): number {
-    const wordKey = this.getWordKey(word);
-
-    if (this.isCacheValid(wordKey)) {
-      return this.weights.get(wordKey) ?? 0;
-    }
-
-    const weight = this.calculateWordWeight(word, getTotalCorrectForWord, getWordStats);
-
-    this.weights.set(wordKey, weight);
-    this.lastUpdated.set(wordKey, Date.now());
-
-    return weight;
-  }
-
-  buildSelectionTree(
-    words: Word[],
-    getTotalCorrectForWord: (word: Word) => number,
-    getWordStats: (word: Word) => WordStats
-  ): void {
-    this.selectionTree.resize(words.length);
-
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      const weight = this.getWordWeight(word, getTotalCorrectForWord, getWordStats);
-
-      this.selectionTree.setWord(i + 1, word);
-      this.selectionTree.updateWeight(i + 1, weight);
-    }
-
-    this.currentWordList = words;
-    this.treeNeedsRebuild = false;
-  }
-
-  updateWordInTree(
-    word: Word,
-    getTotalCorrectForWord: (word: Word) => number,
-    getWordStats: (word: Word) => WordStats
-  ): void {
-    if (!this.currentWordList || this.treeNeedsRebuild) return;
-
-    const index = this.selectionTree.getWordIndex(word);
-    if (index) {
-      const newWeight = this.getWordWeight(word, getTotalCorrectForWord, getWordStats);
-      this.selectionTree.updateWeight(index, newWeight);
-    }
-  }
-
-  selectWordFromTree(): Word | null {
-    if (this.treeNeedsRebuild || !this.currentWordList) {
-      return null;
-    }
-
-    const totalWeight = this.selectionTree.getTotalWeight();
-    if (totalWeight === 0) {
-      const randomIndex = Math.floor(Math.random() * this.currentWordList.length);
-      return this.currentWordList[randomIndex];
-    }
-
-    const randomWeight = Math.random() * totalWeight;
-    const selectedIndex = this.selectionTree.selectByWeight(randomWeight);
-    const word = this.selectionTree.getWord(selectedIndex);
-    return word === undefined ? null : word;
-  }
-
-  needsRebuild(words: Word[]): boolean {
-    if (!this.currentWordList || this.treeNeedsRebuild) return true;
-    if (words.length !== this.currentWordList.length) return true;
-
-    if (words.length > 0) {
-      const firstMatch = this.getWordKey(words[0]) === this.getWordKey(this.currentWordList[0]);
-      const lastMatch = this.getWordKey(words[words.length - 1]) === this.getWordKey(this.currentWordList[this.currentWordList.length - 1]);
-      if (!firstMatch || !lastMatch) return true;
-    }
-
-    return false;
-  }
-
-  invalidateWord(word: Word): void {
-    const wordKey = this.getWordKey(word);
-    this.weights.delete(wordKey);
-    this.lastUpdated.delete(wordKey);
-
-    if (!this.treeNeedsRebuild && this.currentWordList) {
-      this.treeNeedsRebuild = true;
-    }
-  }
-
-  clearCache(): void {
-    this.weights.clear();
-    this.lastUpdated.clear();
-    this.treeNeedsRebuild = true;
-    this.currentWordList = null;
-  }
-
-  getCacheStats(): {
-    totalEntries: number;
-    validEntries: number;
-    treeSize: number;
-    treeNeedsRebuild: boolean;
-  } {
-    return {
-      totalEntries: this.weights.size,
-      validEntries: Array.from(this.lastUpdated.entries()).filter(
-        ([_, timestamp]) => (Date.now() - timestamp) < this.cacheValidityMs
-      ).length,
-      treeSize: this.selectionTree.getSize(),
-      treeNeedsRebuild: this.treeNeedsRebuild
-    };
-  }
-}
-
 const globalWordWeightCache = new WordWeightCache();
+
+/**
+ * Calculate the complete weight for a word including tier-based base weight and time multiplier
+ */
+const calculateCompleteWordWeight = (
+  word: Word,
+  getTotalCorrectForWord: (word: Word) => number,
+  getWordStats: (word: Word) => WordStats
+): number => {
+  const correctAnswers = getTotalCorrectForWord(word);
+  const stats = getWordStats(word);
+  
+  // Get tier-based base weight
+  const tier = getWordTier(correctAnswers);
+  const baseWeight = TIER_CONFIGS[tier]?.baseWeight ?? 1.0;
+  
+  // Apply time-based multiplier
+  const twoWeeksMs = 14 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const lastSeen = stats.lastSeen;
+
+  let timeMultiplier = 1.0;
+  if (lastSeen && (now - lastSeen) > twoWeeksMs) {
+    timeMultiplier = 3.0;
+  }
+
+  return baseWeight * timeMultiplier;
+};
 
 export const selectWordByWeight = (
   words: Word[],
@@ -332,36 +230,19 @@ export const selectWordByWeight = (
   if (words.length === 0) return null;
   if (words.length === 1) return words[0];
 
+  const getWeightForWord = (word: Word): number => {
+    return calculateCompleteWordWeight(word, getTotalCorrectForWord, getWordStats);
+  };
+
   if (globalWordWeightCache.needsRebuild(words)) {
-    globalWordWeightCache.buildSelectionTree(words, getTotalCorrectForWord, getWordStats);
+    globalWordWeightCache.buildSelectionTree(words, getWeightForWord);
   }
 
   const selectedWord = globalWordWeightCache.selectWordFromTree();
 
   if (!selectedWord) {
-    console.warn('Tree selection failed, falling back to O(N) method');
-
-    const wordWeights = words.map(word => ({
-      word,
-      weight: globalWordWeightCache.getWordWeight(word, getTotalCorrectForWord, getWordStats)
-    }));
-
-    const totalWeight = wordWeights.reduce((sum, item) => sum + item.weight, 0);
-
-    if (totalWeight === 0) {
-      return words[Math.floor(Math.random() * words.length)];
-    }
-
-    let random = Math.random() * totalWeight;
-
-    for (const item of wordWeights) {
-      random -= item.weight;
-      if (random <= 0) {
-        return item.word;
-      }
-    }
-
-    return words[words.length - 1];
+    console.warn('Tree selection failed, falling back to random selection');
+    return words[Math.floor(Math.random() * words.length)];
   }
 
   return selectedWord;
@@ -445,7 +326,7 @@ export const selectJourneyActivity = (
   getTotalCorrectForWord: (word: Word) => number,
   audioEnabled: boolean,
   journeyState?: JourneyModeState,
-  getWordWeights: ((word: Word) => WordStats) | null = null
+  getWordStats: ((word: Word) => WordStats) | null = null
 ): ActivityResult => {
   const exposedWords = getExposedWordsList();
   const newWords = getNewWordsList();
@@ -497,16 +378,8 @@ export const selectJourneyActivity = (
     return result;
   }
 
+  // If we reach here and have no exposed words, fall back to grammar break
   if (exposedWords.length === 0) {
-    if (newWords.length > 0 && (!journeyState || !journeyState.shouldBlockNewWords())) {
-      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-      const result: ActivityResult = { type: 'new-word', word: randomNewWord };
-      if (journeyState) {
-        journeyState.recordNewWordIntroduced(result.word!);
-        journeyState.updateAfterActivity();
-      }
-      return result;
-    }
     const result: ActivityResult = { type: 'grammar-break', word: null };
     if (journeyState) {
       journeyState.updateAfterActivity();
@@ -515,55 +388,24 @@ export const selectJourneyActivity = (
   }
 
   let selectedWord: Word;
+  // Some chance (18%) to select a recently introduced new word
   if (journeyState && journeyState.hasNewWordsFromSession() && Math.random() < 0.18) {
     selectedWord = journeyState.getAndRemoveOldestNewWord()!;
   } else {
-    if (getWordWeights) {
-      selectedWord = selectWordByWeight(exposedWords, getTotalCorrectForWord, getWordWeights)!;
+    // Always use weighted selection if getWordStats is available, otherwise fallback to random
+    if (getWordStats) {
+      selectedWord = selectWordByWeight(exposedWords, getTotalCorrectForWord, getWordStats)!;
     } else {
-      let filteredWords = [...exposedWords];
-
-      if (filteredWords.some(word => getTotalCorrectForWord(word) >= 10)) {
-        filteredWords = filteredWords.filter(word => {
-          const exposures = getTotalCorrectForWord(word);
-          if (exposures >= 15) {
-            return Math.random() > 0.8;
-          } else if (exposures >= 8) {
-            return Math.random() > 0.5;
-          }
-          return true;
-        });
-
-        if (filteredWords.length === 0) {
-          filteredWords = [...exposedWords];
-        }
-      }
-
-      selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+      // Simple fallback: random selection from exposed words
+      selectedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
     }
   }
-  const exposures = getTotalCorrectForWord(selectedWord);
+  const correctAnswers = getTotalCorrectForWord(selectedWord);
 
-  let attempts = 0;
-  const maxAttempts = 10;
-
-  while (attempts < maxAttempts) {
-    const activityResult = attemptActivitySelection(selectedWord, exposures, audioEnabled);
-
-    if (activityResult !== null) {
-      if (journeyState) {
-        journeyState.updateAfterActivity();
-      }
-      return activityResult;
-    }
-
-    attempts++;
-  }
-
-  const mcMode: ActivityMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-  const result: ActivityResult = { type: 'multiple-choice', word: selectedWord, mode: mcMode };
+  const activityResult = attemptActivitySelection(selectedWord, correctAnswers, audioEnabled);
+  
   if (journeyState) {
     journeyState.updateAfterActivity();
   }
-  return result;
+  return activityResult;
 };

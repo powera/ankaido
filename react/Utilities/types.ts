@@ -53,7 +53,7 @@ export interface ActivityState {
 
 // Difficulty mapping interface
 export interface DifficultyMapping {
-  exposureRange: [number, number];
+  correctAnswersRange: [number, number];
   tier: number;
 }
 
