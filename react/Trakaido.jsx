@@ -18,6 +18,7 @@ import DrillMode from './Modes/DrillMode.jsx';
 import DrillModeSelector from './Components/DrillModeSelector.jsx';
 import BlitzMode from './Modes/BlitzMode.jsx';
 import BlitzModeSelector from './Components/BlitzModeSelector.jsx';
+import MathGamesMode from './Modes/MathGamesMode.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import WordListManager from './Managers/wordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
@@ -449,6 +450,12 @@ const FlashCardApp = () => {
     setQuizMode('journey'); // Default back to journey mode
   };
 
+  const handleBackToBlitzSelector = () => {
+    setBlitzConfig(null);
+    setShowBlitzModeSelector(true);
+    // Keep quizMode as 'blitz' to stay in blitz mode
+  };
+
   const handleCancelBlitz = () => {
     setShowBlitzModeSelector(false);
     setQuizMode('journey'); // Reset back to journey mode when canceling
@@ -507,8 +514,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations/declensions/journey/drill/blitz mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
+  // Don't show this message in conjugations/declensions/journey/drill/blitz/math-games mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'math-games';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -535,7 +542,7 @@ const FlashCardApp = () => {
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && quizMode !== 'math-games' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -658,6 +665,7 @@ const FlashCardApp = () => {
             corporaData={corporaData}
             selectedGroups={selectedGroups}
             onExitBlitz={handleExitBlitz}
+            onBackToBlitzSelector={handleBackToBlitzSelector}
           />
         )
       ) : quizMode === 'multi-word-sequence' ? (
@@ -670,6 +678,8 @@ const FlashCardApp = () => {
           defaultDelay={defaultDelay}
           settings={settings}
         />
+      ) : quizMode === 'math-games' ? (
+        <MathGamesMode />
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>

@@ -15,7 +15,8 @@ const BlitzMode = ({
   blitzConfig, // { corpus, useSelectedGroupsOnly }
   corporaData,
   selectedGroups,
-  onExitBlitz
+  onExitBlitz,
+  onBackToBlitzSelector
 }) => {
   // Blitz-specific state
   const [blitzWords, setBlitzWords] = React.useState([]); // Current 8 words being displayed
@@ -253,6 +254,13 @@ const BlitzMode = ({
           </div>
           <button 
             className="w-button"
+            onClick={onBackToBlitzSelector}
+            style={{ marginTop: 'var(--spacing-medium)', marginRight: 'var(--spacing-small)' }}
+          >
+            ⚡ Choose Different Corpus
+          </button>
+          <button 
+            className="w-button"
             onClick={onExitBlitz}
             style={{ marginTop: 'var(--spacing-medium)' }}
           >
@@ -283,6 +291,9 @@ const BlitzMode = ({
             </div>
             <button className="w-button" onClick={handlePlayAgain} style={{ marginRight: 'var(--spacing-small)' }}>
               🔄 Play Again
+            </button>
+            <button className="w-button" onClick={onBackToBlitzSelector} style={{ marginRight: 'var(--spacing-small)' }}>
+              ⚡ Choose Different Corpus
             </button>
             <button className="w-button" onClick={handleReset} style={{ marginRight: 'var(--spacing-small)' }}>
               📊 Reset Stats
