@@ -16,6 +16,8 @@ import DeclensionsMode from './Modes/DeclensionsMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import DrillMode from './Modes/DrillMode.jsx';
 import DrillModeSelector from './Components/DrillModeSelector.jsx';
+import BlitzMode from './Modes/BlitzMode.jsx';
+import BlitzModeSelector from './Components/BlitzModeSelector.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import WordListManager from './Managers/wordListManager';
 import SplashScreen from './Components/SplashScreen.jsx';
@@ -31,8 +33,6 @@ import {
   fetchAvailableVoices,
   fetchLevels
 } from './Utilities/apiClient.js';
-
-// The CSS classes available are primarily in widget_tools.css .
 
 const FlashCardApp = () => {
   // Global settings integration
@@ -96,6 +96,10 @@ const FlashCardApp = () => {
   // Drill mode state
   const [showDrillModeSelector, setShowDrillModeSelector] = useState(false);
   const [drillConfig, setDrillConfig] = useState(null); // { corpus, group, difficulty }
+
+  // Blitz mode state
+  const [showBlitzModeSelector, setShowBlitzModeSelector] = useState(false);
+  const [blitzConfig, setBlitzConfig] = useState(null); // { corpus }
 
   // Use global settings for audio and auto-advance
   const audioEnabled = settings.audioEnabled;
@@ -424,12 +428,30 @@ const FlashCardApp = () => {
   const handleExitDrill = () => {
     setDrillConfig(null);
     setShowDrillModeSelector(false);
-    setQuizMode('flashcard'); // Default back to flashcard mode
+    setQuizMode('journey'); // Default back to journey mode
   };
 
   const handleCancelDrill = () => {
     setShowDrillModeSelector(false);
-    setQuizMode('flashcard'); // Reset back to flashcard mode when canceling
+    setQuizMode('journey'); // Reset back to journey mode when canceling
+  };
+
+  // Blitz mode handlers
+  const handleStartBlitz = (config) => {
+    setBlitzConfig(config);
+    setQuizMode('blitz');
+    setShowBlitzModeSelector(false);
+  };
+
+  const handleExitBlitz = () => {
+    setBlitzConfig(null);
+    setShowBlitzModeSelector(false);
+    setQuizMode('journey'); // Default back to journey mode
+  };
+
+  const handleCancelBlitz = () => {
+    setShowBlitzModeSelector(false);
+    setQuizMode('journey'); // Reset back to journey mode when canceling
   };
 
   const handleSplashContinue = () => {
@@ -485,8 +507,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations/declensions/journey/drill mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill';
+  // Don't show this message in conjugations/declensions/journey/drill/blitz mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -509,10 +531,11 @@ const FlashCardApp = () => {
         onOpenStudyMaterials={() => setShowStudyMaterialsModal(true)}
         onOpenActivityStats={() => setShowActivityStatsModal(true)}
         onOpenDrillMode={() => setShowDrillModeSelector(true)}
+        onOpenBlitzMode={() => setShowBlitzModeSelector(true)}
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'multi-word-sequence' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -613,6 +636,30 @@ const FlashCardApp = () => {
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
         />
+      ) : quizMode === 'blitz' ? (
+        showBlitzModeSelector || !blitzConfig ? (
+          <BlitzModeSelector
+            availableCorpora={availableCorpora}
+            corporaData={corporaData}
+            selectedGroups={selectedGroups}
+            onStartBlitz={handleStartBlitz}
+            onCancel={handleCancelBlitz}
+          />
+        ) : (
+          <BlitzMode 
+            wordListManager={wordListManager}
+            wordListState={wordListState}
+            studyMode={studyMode}
+            setStudyMode={setStudyMode}
+            audioEnabled={audioEnabled}
+            autoAdvance={autoAdvance}
+            defaultDelay={defaultDelay}
+            blitzConfig={blitzConfig}
+            corporaData={corporaData}
+            selectedGroups={selectedGroups}
+            onExitBlitz={handleExitBlitz}
+          />
+        )
       ) : quizMode === 'multi-word-sequence' ? (
         <MultiWordSequenceMode 
           wordListManager={wordListManager}

@@ -25,6 +25,7 @@ const StudyModeSelector = ({
   onOpenStudyMaterials,
   onOpenActivityStats,
   onOpenDrillMode,
+  onOpenBlitzMode,
   activityStats
 }) => {
   const [isServerStorage, setIsServerStorage] = React.useState(storageConfigManager.isRemoteStorage());
@@ -145,6 +146,11 @@ const StudyModeSelector = ({
               // Temporarily set the quiz mode to show the selector
               setQuizMode('drill');
               onOpenDrillMode();
+            } else if (selectedMode === 'blitz') {
+              // For blitz mode, we need to open the blitz mode selector
+              // Temporarily set the quiz mode to show the selector
+              setQuizMode('blitz');
+              onOpenBlitzMode();
             } else {
               setQuizMode(selectedMode);
             }
@@ -153,18 +159,19 @@ const StudyModeSelector = ({
         >
           <option value="journey">🚀 Journey Mode</option>
           <option value="drill">🎯 Drill Mode</option>
+          <option value="blitz">⚡ Blitz Mode</option>
           <option value="multi-word-sequence">🎵 Multi-Word Sequence</option>
-          <option value="multiple-choice">Multiple Choice</option>
+          <option value="multiple-choice">🎯 Multiple Choice</option>
           <option value="listening">🎧 Listening</option>
           <option value="typing">⌨️ Typing</option>
-          <option value="flashcard">Flash Cards</option>
+          <option value="flashcard">🃏 Flash Cards</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
-          <option value="grammar">Grammar</option>
+          <option value="grammar">📚 Grammar</option>
         </select>
       </div>
 
-      {/* Hide direction/grammar selector for Journey and Drill modes */}
-      {quizMode !== 'journey' && quizMode !== 'drill' && (
+      {/* Hide direction/grammar selector for Journey, Drill, and Blitz modes */}
+      {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && (
         (quizMode === 'conjugations' || quizMode === 'declensions') ? (
           <div className="w-dropdown-container">
             <label>
