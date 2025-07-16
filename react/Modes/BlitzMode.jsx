@@ -38,6 +38,14 @@ const BlitzMode = ({
     }
   }, [blitzConfig, corporaData, selectedGroups]);
 
+  // Reinitialize game when study mode changes
+  React.useEffect(() => {
+    if (blitzConfig && corporaData && corporaData[blitzConfig.corpus] && blitzWords.length > 0) {
+      // Only reinitialize if we have an active game
+      initializeBlitzGame();
+    }
+  }, [studyMode]);
+
   const initializeBlitzGame = () => {
     if (!blitzConfig || !corporaData[blitzConfig.corpus]) return;
 
@@ -150,14 +158,14 @@ const BlitzMode = ({
     }
 
     // Update journey stats
-    const currentTargetWord = blitzWords[targetWordIndex];
-    if (currentTargetWord && typeof isCorrect === 'boolean') {
-      try {
-        await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', isCorrect);
-      } catch (error) {
-        console.error('Error updating journey stats:', error);
-      }
-    }
+    //const currentTargetWord = blitzWords[targetWordIndex];
+    //if (currentTargetWord && typeof isCorrect === 'boolean') {
+    //  try {
+    //    await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', isCorrect);
+    //  } catch (error) {
+    //    console.error('Error updating journey stats:', error);
+    //  }
+    //}
 
     // Check if game should end
     const maxQuestions = Math.min(MAX_QUESTIONS, Math.floor(corpusWords.length / 2));
@@ -261,56 +269,6 @@ const BlitzMode = ({
 
   return (
     <>
-      {/* Language selector and exit button */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: 'var(--spacing-medium)',
-        padding: 'var(--spacing-small)',
-        backgroundColor: 'var(--color-card-bg)',
-        borderRadius: 'var(--border-radius)',
-        border: '1px solid var(--color-border)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-small)' }}>
-          <label style={{ fontWeight: 'bold', color: 'var(--color-text)' }}>
-            Direction:
-          </label>
-          <select 
-            value={studyMode}
-            onChange={(e) => {
-              if (setStudyMode) {
-                setStudyMode(e.target.value);
-                // Restart the game with new study mode
-                setTimeout(() => {
-                  initializeBlitzGame();
-                }, 100);
-              }
-            }}
-            style={{
-              padding: '0.5rem',
-              borderRadius: 'var(--border-radius)',
-              border: '1px solid var(--color-border)',
-              background: 'var(--color-card-bg)',
-              fontSize: '0.9rem'
-            }}
-            disabled={!isGameComplete && !showAnswer} // Allow changes when game is complete or showing answer
-          >
-            <option value="english-to-lithuanian">🇺🇸 → 🇱🇹</option>
-            <option value="lithuanian-to-english">🇱🇹 → 🇺🇸</option>
-          </select>
-        </div>
-        <button 
-          className="w-button"
-          onClick={onExitBlitz}
-          style={{ 
-            padding: '0.5rem 1rem',
-            fontSize: '0.9rem'
-          }}
-        >
-          ← Exit Blitz
-        </button>
-      </div>
 
       {isGameComplete ? (
         <div className="w-card">
@@ -349,6 +307,7 @@ const BlitzMode = ({
           score={score}
           isGameComplete={isGameComplete}
           targetWordIndex={targetWordIndex}
+          onExitBlitz={onExitBlitz}
         />
       )}
       

@@ -167,7 +167,7 @@ const BlitzModeSelector = ({
                     onChange={() => setUseSelectedGroupsOnly(false)}
                   />
                   <span>
-                    Use all groups from {selectedCorpus.replace(/_/g, ' ')} 
+                    Use all groups from Study Materials 
                     ({getAllGroupsWordCount(selectedCorpus)} words)
                   </span>
                 </label>

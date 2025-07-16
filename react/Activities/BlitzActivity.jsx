@@ -19,7 +19,8 @@ const BlitzActivity = ({
   totalQuestions,
   score,
   isGameComplete,
-  targetWordIndex
+  targetWordIndex,
+  onExitBlitz
 }) => {
   // Auto-play audio for LT->EN blitz (Lithuanian prompt, player chooses English answer)
   React.useEffect(() => {
@@ -73,21 +74,38 @@ const BlitzActivity = ({
 
   return (
     <div>
-      {/* Progress bar */}
+      {/* Progress bar and exit button */}
       <div className="w-blitz-progress" style={{ marginBottom: 'var(--spacing-medium)' }}>
-        <div className="w-blitz-progress-bar" style={{ 
-          width: '100%', 
-          height: '8px', 
-          backgroundColor: '#e0e0e0', 
-          borderRadius: '4px',
-          overflow: 'hidden'
-        }}>
-          <div style={{
-            width: `${progressPercentage}%`,
-            height: '100%',
-            backgroundColor: '#4CAF50',
-            transition: 'width 0.3s ease'
-          }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <div style={{ flex: 1 }}>
+            <div className="w-blitz-progress-bar" style={{ 
+              width: '100%', 
+              height: '8px', 
+              backgroundColor: '#e0e0e0', 
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                width: `${progressPercentage}%`,
+                height: '100%',
+                backgroundColor: '#4CAF50',
+                transition: 'width 0.3s ease'
+              }} />
+            </div>
+          </div>
+          {onExitBlitz && (
+            <button 
+              className="w-button"
+              onClick={onExitBlitz}
+              style={{ 
+                padding: '0.25rem 0.5rem',
+                fontSize: '0.8rem',
+                marginLeft: 'var(--spacing-small)'
+              }}
+            >
+              ← Exit
+            </button>
+          )}
         </div>
         <div style={{ 
           display: 'flex', 

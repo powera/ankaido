@@ -170,8 +170,8 @@ const StudyModeSelector = ({
         </select>
       </div>
 
-      {/* Hide direction/grammar selector for Journey, Drill, and Blitz modes */}
-      {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && (
+      {/* Hide direction/grammar selector for Journey and Drill modes */}
+      {quizMode !== 'journey' && quizMode !== 'drill' && (
         (quizMode === 'conjugations' || quizMode === 'declensions') ? (
           <div className="w-dropdown-container">
             <label>
