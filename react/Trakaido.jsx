@@ -58,7 +58,7 @@ const FlashCardApp = () => {
   });
 
   const [quizMode, setQuizMode] = useState(() => {
-    return safeStorage?.getItem('flashcard-quiz-mode') || 'flashcard';
+    return safeStorage?.getItem('flashcard-quiz-mode') || 'journey';
   });
   const [grammarMode, setGrammarMode] = useState('conjugations');
 
