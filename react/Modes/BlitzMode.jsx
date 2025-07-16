@@ -132,15 +132,14 @@ const BlitzMode = ({
     setSelectedAnswer(selectedOption);
     setShowAnswer(true);
 
-    // Play audio for correct answer in EN->LT mode
+    // Play audio for correct answer in EN->LT mode (non-blocking)
     if (isCorrect && audioEnabled && studyMode === 'english-to-lithuanian') {
       const currentTargetWord = blitzWords[targetWordIndex];
       if (currentTargetWord && currentTargetWord.lithuanian) {
-        try {
-          await audioManager.playAudio(currentTargetWord.lithuanian);
-        } catch (error) {
+        // Play audio without blocking the timing flow
+        audioManager.playAudio(currentTargetWord.lithuanian).catch(error => {
           console.error('Error playing audio:', error);
-        }
+        });
       }
     }
 
