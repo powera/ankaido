@@ -24,8 +24,15 @@ const MotivationalBreakActivity = ({ onContinue }) => {
     "Tip: Take breaks when you need them - your brain needs time to process!"
   ];
 
-  const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-  const randomTip = appUsageTips[Math.floor(Math.random() * appUsageTips.length)];
+  // Memoize the random selections so they don't change on re-renders
+  const randomMessage = React.useMemo(() => 
+    motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)], 
+    []
+  );
+  const randomTip = React.useMemo(() => 
+    appUsageTips[Math.floor(Math.random() * appUsageTips.length)], 
+    []
+  );
 
   return (
     <div className="w-card">
