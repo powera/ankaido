@@ -26,7 +26,7 @@ const ActivityStatsModal = ({
   const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', or 'daily'
   const [levelsData, setLevelsData] = useState({});
-  const [isJourneyModeActive, setIsJourneyModeActive] = useState(false);
+
   const [queueSize, setQueueSize] = useState(0);
   const [isQueueFull, setIsQueueFull] = useState(false);
 
@@ -111,10 +111,9 @@ const ActivityStatsModal = ({
     }
   }, [isOpen, corporaData, selectedGroups]);
 
-  // Monitor Journey Mode status
+  // Monitor Journey Mode queue status
   useEffect(() => {
     const updateJourneyModeStatus = () => {
-      setIsJourneyModeActive(journeyModeManager.isJourneyModeActive());
       setQueueSize(journeyModeManager.getQueueSize());
       setIsQueueFull(journeyModeManager.isQueueFull());
     };
@@ -137,9 +136,7 @@ const ActivityStatsModal = ({
     if (success) {
       console.log(`Added "${word.lithuanian}" to Journey Mode queue (${journeyModeManager.getQueueSize()}/10)`);
     } else {
-      if (!journeyModeManager.isJourneyModeActive()) {
-        console.warn('Journey Mode is not active');
-      } else if (journeyModeManager.isQueueFull()) {
+      if (journeyModeManager.isQueueFull()) {
         console.warn('Journey Mode queue is full (10/10)');
       } else if (journeyModeManager.isWordInQueue(word)) {
         console.warn(`"${word.lithuanian}" is already in the queue`);
@@ -149,9 +146,6 @@ const ActivityStatsModal = ({
 
   // Helper function to get button state for a word
   const getButtonState = (word) => {
-    if (!isJourneyModeActive) {
-      return { disabled: true, text: '🚀 Add to Queue', title: 'Journey Mode is not active' };
-    }
     if (isQueueFull) {
       return { disabled: true, text: '🚀 Queue Full', title: 'Queue is full (10/10). Study some words first!' };
     }
