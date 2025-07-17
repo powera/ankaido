@@ -136,3 +136,50 @@ export const getCorpusGroupsUpToLevel = (
   
   return result;
 };
+
+/**
+ * Filter words by their level, returning words grouped by level sorted from lowest to highest
+ * @param words - Array of words with corpus and group information
+ * @param levelsData - The levels data from the API
+ * @returns Object with level strings as keys (e.g., "Level 1", "Level 2") and arrays of words as values.
+ *          Only levels that contain words are included (no empty arrays).
+ *          Keys are processed in numerical order (Level 1, Level 2, etc.) but object key order isn't guaranteed.
+ *          Use Object.keys(result) and sort them if you need guaranteed order.
+ */
+export const filterWordsByLevel = <T extends { corpus?: string; group?: string; [key: string]: any }>(
+  words: T[], 
+  levelsData: LevelsData
+): Record<string, T[]> => {
+  if (words.length === 0 || !levelsData) return {};
+  
+  // Filter words that have both corpus and group properties
+  const wordsWithCorpusAndGroup = words.filter(word => 
+    word.corpus && word.group
+  ) as (T & { corpus: string; group: string })[];
+  
+  if (wordsWithCorpusAndGroup.length === 0) return {};
+  
+  // Add level information to words
+  const wordsWithLevels = addLevelToWords(wordsWithCorpusAndGroup, levelsData);
+  
+  // Group words by level
+  const wordsByLevel = groupWordsByLevel(wordsWithLevels);
+  
+  // Filter to only include levels that start with "Level " and have words, sorted by level number
+  const filteredLevels: Record<string, T[]> = {};
+  
+  const sortedLevels = Object.keys(wordsByLevel)
+    .filter(level => level.startsWith('Level ') && wordsByLevel[level].length > 0)
+    .sort((a, b) => {
+      const levelA = parseInt(a.replace('Level ', ''));
+      const levelB = parseInt(b.replace('Level ', ''));
+      return levelA - levelB;
+    });
+  
+  // Build result object in sorted order
+  sortedLevels.forEach(level => {
+    filteredLevels[level] = wordsByLevel[level];
+  });
+  
+  return filteredLevels;
+};
