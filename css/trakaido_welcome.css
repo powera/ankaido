@@ -538,6 +538,100 @@
     margin: 0;
 }
 
+/* Lithuanian Diacritics Screen Styles */
+.w-onboarding-diacritics-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.w-onboarding-device-section {
+    margin-bottom: 2.5rem;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.w-onboarding-method {
+    margin-bottom: 1.5rem;
+}
+
+.w-onboarding-method h4 {
+    color: #495057;
+    font-size: 1.1rem;
+    margin: 1rem 0 0.75rem 0;
+    font-weight: 600;
+}
+
+.w-onboarding-method-steps {
+    margin-top: 1rem;
+}
+
+.w-onboarding-alt-codes {
+    margin-top: 1rem;
+}
+
+.w-onboarding-alt-code-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.w-onboarding-alt-code-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.75rem;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.w-onboarding-char {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 0.25rem;
+}
+
+.w-onboarding-code {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.w-onboarding-character-reference {
+    background: #e8f4fd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.w-onboarding-character-reference h4 {
+    color: #2c3e50;
+    margin: 0 0 1rem 0;
+    font-size: 1.2rem;
+}
+
+.w-onboarding-char-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.w-onboarding-char-example {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+    font-family: 'Courier New', monospace;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .w-onboarding-card {
@@ -571,5 +665,19 @@
     .w-onboarding-feature-icon {
         margin-right: 0;
         margin-bottom: 1rem;
+    }
+    
+    .w-onboarding-alt-code-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .w-onboarding-char-list {
+        gap: 0.5rem;
+    }
+    
+    .w-onboarding-char-example {
+        padding: 0.4rem 0.8rem;
+        font-size: 1rem;
     }
 }

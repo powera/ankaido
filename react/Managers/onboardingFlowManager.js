@@ -10,7 +10,8 @@ import safeStorage from '../DataStorage/safeStorage';
 export const ONBOARDING_STEPS = {
   WELCOME: 'welcome',
   JOURNEY_MODE: 'journey_mode',
-  QUESTION_TYPES: 'question_types', 
+  QUESTION_TYPES: 'question_types',
+  LITHUANIAN_DIACRITICS: 'lithuanian_diacritics',
   OTHER_MODES: 'other_modes',
   COMPLETE: 'complete'
 };
@@ -93,6 +94,7 @@ class OnboardingFlowManager {
       ONBOARDING_STEPS.WELCOME,
       ONBOARDING_STEPS.JOURNEY_MODE,
       ONBOARDING_STEPS.QUESTION_TYPES,
+      ONBOARDING_STEPS.LITHUANIAN_DIACRITICS,
       ONBOARDING_STEPS.OTHER_MODES,
       ONBOARDING_STEPS.COMPLETE
     ];

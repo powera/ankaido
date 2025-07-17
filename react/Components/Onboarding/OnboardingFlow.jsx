@@ -3,6 +3,7 @@ import onboardingFlowManager, { ONBOARDING_STEPS } from '../../Managers/onboardi
 import WelcomeScreen from '../WelcomeScreen.jsx';
 import JourneyModeScreen from './JourneyModeScreen.jsx';
 import QuestionTypesScreen from './QuestionTypesScreen.jsx';
+import LithuanianDiacriticsScreen from './LithuanianDiacriticsScreen.jsx';
 import OtherModesScreen from './OtherModesScreen.jsx';
 
 /**
@@ -105,6 +106,14 @@ const OnboardingFlow = ({ onComplete }) => {
     case ONBOARDING_STEPS.QUESTION_TYPES:
       return (
         <QuestionTypesScreen 
+          onNext={handleNext}
+          onSkip={handleSkip}
+        />
+      );
+
+    case ONBOARDING_STEPS.LITHUANIAN_DIACRITICS:
+      return (
+        <LithuanianDiacriticsScreen 
           onNext={handleNext}
           onSkip={handleSkip}
         />

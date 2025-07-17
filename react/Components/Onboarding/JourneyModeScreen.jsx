@@ -12,7 +12,7 @@ const JourneyModeScreen = ({ onNext, onSkip }) => {
       onNext={onNext}
       onSkip={onSkip}
       currentStep={2}
-      totalSteps={4}
+      totalSteps={5}
       nextButtonText="Got it!"
     >
       <div className="w-onboarding-journey-content">

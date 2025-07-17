@@ -12,7 +12,7 @@ const QuestionTypesScreen = ({ onNext, onSkip }) => {
       onNext={onNext}
       onSkip={onSkip}
       currentStep={3}
-      totalSteps={4}
+      totalSteps={5}
       nextButtonText="Show me more!"
     >
       <div className="w-onboarding-question-types">

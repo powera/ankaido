@@ -11,8 +11,8 @@ const OtherModesScreen = ({ onNext, onSkip }) => {
       subtitle="Specialized tools for focused practice"
       onNext={onNext}
       onSkip={onSkip}
-      currentStep={4}
-      totalSteps={4}
+      currentStep={5}
+      totalSteps={5}
       nextButtonText="Start Learning!"
     >
       <div className="w-onboarding-other-modes">
