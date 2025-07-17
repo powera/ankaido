@@ -206,13 +206,42 @@ const JOURNEY_FOCUS_PROBABILITIES = {
 const globalWordWeightCache = new WordWeightCache();
 
 /**
+ * Determines the appropriate threshold for review-words mode based on available words
+ * Returns the highest threshold that provides sufficient words (at least 25% of total words or minimum 10 words)
+ */
+const getReviewModeThreshold = (
+  words: Word[],
+  getTotalCorrectForWord: (word: Word) => number
+): number => {
+  if (words.length === 0) return 0;
+  
+  const minWordsNeeded = Math.max(10, Math.floor(words.length * 0.25));
+  
+  // Try threshold 6 first (original)
+  const wordsWithSixPlus = words.filter(word => getTotalCorrectForWord(word) >= 6);
+  if (wordsWithSixPlus.length >= minWordsNeeded) {
+    return 6;
+  }
+  
+  // Try threshold 3
+  const wordsWithThreePlus = words.filter(word => getTotalCorrectForWord(word) >= 3);
+  if (wordsWithThreePlus.length >= minWordsNeeded) {
+    return 3;
+  }
+  
+  // Use all words (threshold 0)
+  return 0;
+};
+
+/**
  * Calculate the complete weight for a word including tier-based base weight and time multiplier
  */
 const calculateCompleteWordWeight = (
   word: Word,
   getTotalCorrectForWord: (word: Word) => number,
   getWordStats: (word: Word) => WordStats,
-  focusMode: JourneyFocusMode = 'normal'
+  focusMode: JourneyFocusMode = 'normal',
+  reviewModeThreshold?: number
 ): number => {
   const correctAnswers = getTotalCorrectForWord(word);
   const stats = getWordStats(word);
@@ -231,9 +260,10 @@ const calculateCompleteWordWeight = (
     }
     // Words with < 5 correct answers keep normal weight
   } else if (focusMode === 'review-words') {
-    // For review words focus: only include words with at least 6 correct answers
-    if (correctAnswers < 6) {
-      return 0; // Exclude words with fewer than 6 correct answers
+    // For review words focus: use dynamic threshold based on available words
+    const threshold = reviewModeThreshold ?? 6; // Default to 6 if not provided
+    if (correctAnswers < threshold) {
+      return 0; // Exclude words with fewer than threshold correct answers
     }
   }
   
@@ -259,8 +289,13 @@ export const selectWordByWeight = (
   if (words.length === 0) return null;
   if (words.length === 1) return words[0];
 
+  // Calculate dynamic threshold for review-words mode
+  const reviewModeThreshold = focusMode === 'review-words' 
+    ? getReviewModeThreshold(words, getTotalCorrectForWord)
+    : undefined;
+
   const getWeightForWord = (word: Word): number => {
-    return calculateCompleteWordWeight(word, getTotalCorrectForWord, getWordStats, focusMode);
+    return calculateCompleteWordWeight(word, getTotalCorrectForWord, getWordStats, focusMode, reviewModeThreshold);
   };
 
   // Filter out words with zero weight (for review-words mode)
@@ -448,10 +483,11 @@ export const selectJourneyActivity = (
       selectedWord = weightedWord;
     } else {
       // Simple fallback: random selection from exposed words
-      // For review-words mode, filter exposed words to only include those with 6+ correct answers
+      // For review-words mode, filter exposed words using dynamic threshold
       let eligibleWords = exposedWords;
       if (focusMode === 'review-words') {
-        eligibleWords = exposedWords.filter(word => getTotalCorrectForWord(word) >= 6);
+        const threshold = getReviewModeThreshold(exposedWords, getTotalCorrectForWord);
+        eligibleWords = exposedWords.filter(word => getTotalCorrectForWord(word) >= threshold);
       }
       
       if (eligibleWords.length === 0) {
