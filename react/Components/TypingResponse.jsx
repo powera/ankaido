@@ -76,6 +76,7 @@ const TypingResponse = ({
                   className="w-typing-input"
                   disabled={showAnswer}
                   autoFocus
+                  lang={studyMode === 'english-to-lithuanian' ? 'lt' : 'en'}
                 />
                 <button 
                   type="submit" 
