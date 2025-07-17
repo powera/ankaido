@@ -246,16 +246,14 @@ const StudyModeSelector = ({
           onClick={onOpenStudyMaterials}
           title="Select study materials and vocabulary groups"
         >
-          <span className="w-hide-mobile">📚 Study Materials</span>
-          <span className="w-show-mobile">📚 Materials</span>
+          <span>📚 Materials</span>
         </button>
         <button
           className="w-mode-option w-compact-button"
           onClick={onOpenActivityStats}
           title="View activity statistics for journey mode"
         >
-          <span className="w-hide-mobile">📊 Stats</span>
-          <span className="w-show-mobile">📊 Stats</span>
+          <span>📊 Stats</span>
         </button>
         <button 
           className="w-mode-option w-compact-button" 
