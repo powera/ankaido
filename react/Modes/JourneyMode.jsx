@@ -13,8 +13,9 @@ import {
   getTotalExposures
 } from '../Managers/activityStatsManager';
 
-import { selectJourneyActivity, createJourneyModeState, invalidateWordWeightCache } from '../Utilities/activitySelection';
+import { selectJourneyActivity, invalidateWordWeightCache } from '../Utilities/activitySelection';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
+import journeyModeManager from '../Managers/journeyModeManager';
 
 const JourneyMode = ({ 
   wordListManager, 
@@ -44,8 +45,7 @@ const JourneyMode = ({
 
   const [activityStats, setActivityStats] = React.useState({});
 
-  // Journey mode state for activity selection constraints (not persisted)
-  const [activitySelectorState, setActivitySelectorState] = React.useState(() => createJourneyModeState());
+  // Journey mode state is managed by the singleton journeyModeManager
 
   // Initialize wordListManager activityStats property
   React.useEffect(() => {
@@ -85,6 +85,8 @@ const JourneyMode = ({
     };
   }, [loadStatsFromStorage, wordListManager]);
 
+  // Journey mode manager is always active - no need to register/unregister
+
   // Helper functions for word categorization (using activityStatsManager)
   const getExposedWordsList = React.useCallback(() => {
     return getExposedWords(wordListState.allWords, activityStatsManager);
@@ -112,11 +114,11 @@ const JourneyMode = ({
       wordListManager,
       getTotalCorrectForWord,
       audioEnabled,
-      activitySelectorState,
+      journeyModeManager,
       getWordWeights,
       journeyFocusMode
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState, getWordWeights, journeyFocusMode]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, journeyFocusMode]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {

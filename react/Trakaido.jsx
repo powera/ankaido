@@ -33,7 +33,7 @@ import {
   fetchAvailableVoices,
   fetchLevels
 } from './Utilities/apiClient.js';
-import { getWordLevel, getCorpusGroupsByLevel } from './Utilities/levelUtils';
+import { getWordLevel, getCorpusGroupsUpToLevel } from './Utilities/levelUtils';
 
 const FlashCardApp = () => {
   // Audio settings - simple local state

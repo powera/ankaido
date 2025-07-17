@@ -16,6 +16,7 @@ import {
 } from './types';
 import { filterWordsByLevel } from './levelUtils';
 import { LevelsResponse } from './apiClient';
+import { JourneyModeState } from '../Managers/journeyModeManager';
 
 interface TierConfig {
   correctAnswersRange: [number, number];
@@ -337,58 +338,7 @@ export const getWordWeightCacheStats = (): {
   return globalWordWeightCache.getCacheStats();
 };
 
-export class JourneyModeState {
-  private consecutiveNewWordPrevention: number;
-  private motivationalBreakPrevention: number;
-  private newWordsIntroducedThisSession: Word[];
 
-  constructor() {
-    this.consecutiveNewWordPrevention = 0;
-    this.motivationalBreakPrevention = 0;
-    this.newWordsIntroducedThisSession = [];
-  }
-
-  shouldBlockNewWords(): boolean {
-    return this.consecutiveNewWordPrevention > 0;
-  }
-
-  shouldBlockMotivationalBreaks(): boolean {
-    return this.motivationalBreakPrevention > 0;
-  }
-
-  recordNewWordIntroduced(word: Word): void {
-    this.consecutiveNewWordPrevention = 2;
-    this.newWordsIntroducedThisSession.push(word);
-  }
-
-  recordMotivationalBreak(): void {
-    this.motivationalBreakPrevention = 5;
-  }
-
-  getAndRemoveOldestNewWord(): Word | null {
-    if (this.newWordsIntroducedThisSession.length === 0) {
-      return null;
-    }
-    return this.newWordsIntroducedThisSession.shift() ?? null;
-  }
-
-  hasNewWordsFromSession(): boolean {
-    return this.newWordsIntroducedThisSession.length > 0;
-  }
-
-  updateAfterActivity(): void {
-    if (this.consecutiveNewWordPrevention > 0) {
-      this.consecutiveNewWordPrevention--;
-    }
-    if (this.motivationalBreakPrevention > 0) {
-      this.motivationalBreakPrevention--;
-    }
-  }
-}
-
-export const createJourneyModeState = (): JourneyModeState => {
-  return new JourneyModeState();
-};
 
 /**
  * Select a new word with level-based probability
@@ -448,6 +398,17 @@ export const selectJourneyActivity = (
 ): ActivityResult => {
   const exposedWords = getExposedWordsList();
   const newWords = getNewWordsList();
+
+  // Check for manually added words first (highest priority)
+  if (journeyState && journeyState.hasManuallyAddedWords()) {
+    const manuallyAddedWord = journeyState.getNextManuallyAddedWord();
+    if (manuallyAddedWord) {
+      const result: ActivityResult = { type: 'new-word', word: manuallyAddedWord };
+      journeyState.recordNewWordIntroduced(manuallyAddedWord);
+      journeyState.updateAfterActivity();
+      return result;
+    }
+  }
 
   // Get focus-specific probabilities
   const focusProbabilities = JOURNEY_FOCUS_PROBABILITIES[focusMode];

@@ -9,6 +9,7 @@ import {
 import { fetchDailyStats, fetchLevels } from '../Utilities/apiClient';
 import { addLevelToWords } from '../Utilities/levelUtils';
 import safeStorage from '../DataStorage/safeStorage';
+import journeyModeManager from '../Managers/journeyModeManager';
 
 const ActivityStatsModal = ({
   isOpen,
@@ -25,6 +26,9 @@ const ActivityStatsModal = ({
   const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', or 'daily'
   const [levelsData, setLevelsData] = useState({});
+  const [isJourneyModeActive, setIsJourneyModeActive] = useState(false);
+  const [queueSize, setQueueSize] = useState(0);
+  const [isQueueFull, setIsQueueFull] = useState(false);
 
   // Helper function to get words from selected groups only
   const getAllWordsFromSelectedGroups = () => {
@@ -106,6 +110,56 @@ const ActivityStatsModal = ({
       loadStats();
     }
   }, [isOpen, corporaData, selectedGroups]);
+
+  // Monitor Journey Mode status
+  useEffect(() => {
+    const updateJourneyModeStatus = () => {
+      setIsJourneyModeActive(journeyModeManager.isJourneyModeActive());
+      setQueueSize(journeyModeManager.getQueueSize());
+      setIsQueueFull(journeyModeManager.isQueueFull());
+    };
+
+    // Initial check
+    updateJourneyModeStatus();
+
+    // Listen for changes
+    journeyModeManager.addListener(updateJourneyModeStatus);
+
+    // Cleanup
+    return () => {
+      journeyModeManager.removeListener(updateJourneyModeStatus);
+    };
+  }, []);
+
+  // Handler for adding word to Journey Mode queue
+  const handleAddToJourneyQueue = (word) => {
+    const success = journeyModeManager.addWordToQueue(word);
+    if (success) {
+      console.log(`Added "${word.lithuanian}" to Journey Mode queue (${journeyModeManager.getQueueSize()}/10)`);
+    } else {
+      if (!journeyModeManager.isJourneyModeActive()) {
+        console.warn('Journey Mode is not active');
+      } else if (journeyModeManager.isQueueFull()) {
+        console.warn('Journey Mode queue is full (10/10)');
+      } else if (journeyModeManager.isWordInQueue(word)) {
+        console.warn(`"${word.lithuanian}" is already in the queue`);
+      }
+    }
+  };
+
+  // Helper function to get button state for a word
+  const getButtonState = (word) => {
+    if (!isJourneyModeActive) {
+      return { disabled: true, text: '🚀 Add to Queue', title: 'Journey Mode is not active' };
+    }
+    if (isQueueFull) {
+      return { disabled: true, text: '🚀 Queue Full', title: 'Queue is full (10/10). Study some words first!' };
+    }
+    if (journeyModeManager.isWordInQueue(word)) {
+      return { disabled: true, text: '✓ In Queue', title: 'Word is already in the queue' };
+    }
+    return { disabled: false, text: '🚀 Add to Queue', title: 'Add to Journey Mode queue' };
+  };
 
   // Get current words based on view mode
   const currentWords = viewMode === 'exposed' ? exposedWords : 
@@ -400,7 +454,8 @@ const ActivityStatsModal = ({
             )}
           </div>
         ) : (
-          <DataTable
+          <>
+            <DataTable
             columns={viewMode === 'exposed' ? [
               {
                 header: 'Lithuanian',
@@ -485,6 +540,29 @@ const ActivityStatsModal = ({
                     {word.level}
                   </div>
                 )
+              },
+              {
+                header: 'Actions',
+                align: 'center',
+                render: (word) => {
+                  const buttonState = getButtonState(word);
+                  return (
+                    <button
+                      onClick={() => handleAddToJourneyQueue(word)}
+                      disabled={buttonState.disabled}
+                      className="w-settings-button w-settings-button-secondary"
+                      style={{ 
+                        fontSize: '0.8rem',
+                        padding: '0.25rem 0.5rem',
+                        opacity: buttonState.disabled ? 0.5 : 1,
+                        cursor: buttonState.disabled ? 'not-allowed' : 'pointer'
+                      }}
+                      title={buttonState.title}
+                    >
+                      {buttonState.text}
+                    </button>
+                  );
+                }
               }
             ]}
             data={sortedWords}
@@ -496,6 +574,7 @@ const ActivityStatsModal = ({
             stickyHeader={true}
             striped={true}
           />
+          </>
         )}
       </div>
 
