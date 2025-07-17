@@ -5,17 +5,12 @@
  * handling potential errors and providing fallbacks to localStorage.
  */
 
-import { WordStats } from '../Utilities/types';
+import { WordStats, Stats } from '../Utilities/types';
 
 // Interface for the word stats stored in IndexedDB
 interface WordStatsEntry {
   wordKey: string;
   stats: WordStats;
-}
-
-// Interface for journey stats (collection of word stats)
-interface JourneyStats {
-  [wordKey: string]: WordStats;
 }
 
 // Interface for the IndexedDB manager
@@ -24,8 +19,8 @@ interface IndexedDBManager {
   dbVersion: number;
   db: IDBDatabase | null;
   init(): Promise<IDBDatabase | null>;
-  loadJourneyStats(): Promise<JourneyStats>;
-  saveJourneyStats(stats: JourneyStats): Promise<boolean>;
+  loadJourneyStats(): Promise<Stats>;
+  saveJourneyStats(stats: Stats): Promise<boolean>;
   close(): void;
 }
 
@@ -76,9 +71,9 @@ const indexedDBManager: IndexedDBManager = {
 
   /**
    * Load all journey stats from IndexedDB
-   * @returns {Promise<JourneyStats>} The journey stats object
+   * @returns {Promise<Stats>} The journey stats object
    */
-  async loadJourneyStats(): Promise<JourneyStats> {
+  async loadJourneyStats(): Promise<Stats> {
     if (!this.db) {
       await this.init();
     }
@@ -88,14 +83,14 @@ const indexedDBManager: IndexedDBManager = {
       return {};
     }
 
-    return new Promise<JourneyStats>((resolve) => {
+    return new Promise<Stats>((resolve) => {
       try {
         const transaction: IDBTransaction = this.db!.transaction(['wordStats'], 'readonly');
         const store: IDBObjectStore = transaction.objectStore('wordStats');
         const request: IDBRequest<WordStatsEntry[]> = store.getAll();
         
         request.onsuccess = (): void => {
-          const stats: JourneyStats = {};
+          const stats: Stats = {};
           request.result.forEach((item: WordStatsEntry) => {
             stats[item.wordKey] = item.stats;
           });
@@ -116,10 +111,10 @@ const indexedDBManager: IndexedDBManager = {
 
   /**
    * Save journey stats to IndexedDB
-   * @param {JourneyStats} stats - The journey stats to save
+   * @param {Stats} stats - The journey stats to save
    * @returns {Promise<boolean>} Success status
    */
-  async saveJourneyStats(stats: JourneyStats): Promise<boolean> {
+  async saveJourneyStats(stats: Stats): Promise<boolean> {
     if (!this.db) {
       await this.init();
     }

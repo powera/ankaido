@@ -8,13 +8,39 @@ export interface Word {
   lithuanian: string;
   english: string;
   corpus?: string;
+  group?: string;
   [key: string]: any;
 }
 
-// Word statistics interface
+// Mode statistics for activity tracking
+export interface ModeStats {
+  correct: number;
+  incorrect: number;
+}
+
+// Stat modes for different activity types
+export type StatMode = 'multipleChoice' | 'listeningEasy' | 'listeningHard' | 'typing';
+
+// Word statistics interface for activity tracking
 export interface WordStats {
-  lastSeen?: number;
-  [key: string]: any;
+  exposed: boolean;
+  multipleChoice: ModeStats;
+  listeningEasy: ModeStats;
+  listeningHard: ModeStats;
+  typing: ModeStats;
+  lastSeen: number | null;
+  lastCorrectAnswer: number | null;
+  [key: string]: any; // For possible extra properties
+}
+
+// Collection of word statistics
+export type Stats = Record<string, WordStats>;
+
+// Session statistics for word list practice
+export interface SessionStats {
+  correct: number;
+  incorrect: number;
+  total: number;
 }
 
 // Activity types - core activity categories

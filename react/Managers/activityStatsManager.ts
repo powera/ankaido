@@ -7,37 +7,12 @@
 
 import indexedDBManager from '../DataStorage/indexedDBManager';
 import storageConfigManager from './storageConfigManager';
+import { Word, WordStats, Stats, StatMode, ModeStats } from '../Utilities/types';
 
 // API Configuration
 const API_BASE_URL = '/api/trakaido/journeystats';
 
 // --- Types ---
-
-export interface Word {
-  lithuanian: string;
-  english: string;
-  [key: string]: any; // For possible extra properties
-}
-
-export type StatMode = 'multipleChoice' | 'listeningEasy' | 'listeningHard' | 'typing';
-
-export interface ModeStats {
-  correct: number;
-  incorrect: number;
-}
-
-export interface WordStats {
-  exposed: boolean;
-  multipleChoice: ModeStats;
-  listeningEasy: ModeStats;
-  listeningHard: ModeStats;
-  typing: ModeStats;
-  lastSeen: number | null;
-  lastCorrectAnswer: number | null;
-  [key: string]: any; // For possible extra properties
-}
-
-export type Stats = Record<string, WordStats>;
 
 export type StatsListener = (stats: Stats) => void;
 

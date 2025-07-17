@@ -1,15 +1,13 @@
-type Word = {
-  [key: string]: any;
-  corpus?: string;
-  group?: string;
-};
+import { 
+  Word, 
+  SessionStats 
+} from '../Utilities/types';
 
-type GroupWords = Word[];
-
+// Types specific to word list management
 type CorporaData = {
   [corpus: string]: {
     groups: {
-      [group: string]: GroupWords;
+      [group: string]: Word[];
     };
   };
 };
@@ -18,12 +16,7 @@ type SelectedGroups = {
   [corpus: string]: string[];
 };
 
-type SessionStats = {
-  correct: number;
-  incorrect: number;
-  total: number;
-};
-
+// Word list state change callback - specific to this manager
 type StateChangeCallback = (state: {
   allWords: Word[];
   currentCard: number;
