@@ -33,6 +33,7 @@ import {
   fetchAvailableVoices,
   fetchLevels
 } from './Utilities/apiClient.js';
+import { getWordLevel, getCorpusGroupsByLevel } from './Utilities/levelUtils';
 
 const FlashCardApp = () => {
   // Audio settings - simple local state
@@ -318,21 +319,9 @@ const FlashCardApp = () => {
               throw new Error('Level 1 data not available');
             }
             
-            // Group Level 1 items by corpus
-            const level1GroupsByCorpus = {};
-            levelsData.level_1.forEach(item => {
-              if (!level1GroupsByCorpus[item.corpus]) {
-                level1GroupsByCorpus[item.corpus] = [];
-              }
-              level1GroupsByCorpus[item.corpus].push(item.group);
-            });
-            
-            // Only include corpuses that exist in corporaData
-            Object.entries(level1GroupsByCorpus).forEach(([corpus, groups]) => {
-              if (corporaData[corpus]) {
-                initialSelectedGroups[corpus] = groups;
-              }
-            });
+            // Use levelUtils to get Level 1 groups by corpus
+            const level1GroupsByCorpus = getCorpusGroupsUpToLevel(levelsData, corporaData, 1);
+            Object.assign(initialSelectedGroups, level1GroupsByCorpus);
           } catch (error) {
             console.error('Failed to fetch levels data for beginner setup:', error);
             // Fallback to nouns_one
@@ -348,27 +337,9 @@ const FlashCardApp = () => {
               throw new Error('Levels data not available');
             }
             
-            const intermediateLevelsByCorpus = {};
-            
-            // Collect groups from levels 1-8
-            for (let level = 1; level <= 8; level++) {
-              const levelKey = `level_${level}`;
-              if (levelsData[levelKey]) {
-                levelsData[levelKey].forEach(item => {
-                  if (!intermediateLevelsByCorpus[item.corpus]) {
-                    intermediateLevelsByCorpus[item.corpus] = new Set();
-                  }
-                  intermediateLevelsByCorpus[item.corpus].add(item.group);
-                });
-              }
-            }
-            
-            // Convert Sets to arrays and only include corpuses that exist in corporaData
-            Object.entries(intermediateLevelsByCorpus).forEach(([corpus, groupsSet]) => {
-              if (corporaData[corpus]) {
-                initialSelectedGroups[corpus] = Array.from(groupsSet);
-              }
-            });
+            // Use levelUtils to get levels 1-8 groups by corpus
+            const intermediateLevelsByCorpus = getCorpusGroupsUpToLevel(levelsData, corporaData, 8);
+            Object.assign(initialSelectedGroups, intermediateLevelsByCorpus);
           } catch (error) {
             console.error('Failed to fetch levels data for intermediate setup:', error);
             // Fallback to original intermediate selection

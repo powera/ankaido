@@ -120,14 +120,20 @@ const StudyMaterialsModal = ({
       
       // Group by corpus, collecting only the groups that belong to this level
       const corpusGroupsMap = {};
-      levelsData[levelKey].forEach(item => {
-        if (availableCorpora.includes(item.corpus)) {
-          if (!corpusGroupsMap[item.corpus]) {
-            corpusGroupsMap[item.corpus] = [];
+      const levelItems = levelsData[levelKey];
+      
+      if (levelItems && Array.isArray(levelItems)) {
+        levelItems.forEach(item => {
+          if (availableCorpora.includes(item.corpus)) {
+            if (!corpusGroupsMap[item.corpus]) {
+              corpusGroupsMap[item.corpus] = [];
+            }
+            corpusGroupsMap[item.corpus].push(item.group);
           }
-          corpusGroupsMap[item.corpus].push(item.group);
-        }
-      });
+        });
+      } else if (levelItems) {
+        console.warn(`Level data for ${levelKey} is not an array:`, levelItems);
+      }
       
       const corpusGroups = Object.entries(corpusGroupsMap).map(([corpus, groups]) => ({
         corpus,
@@ -143,11 +149,13 @@ const StudyMaterialsModal = ({
     // Add any groups that aren't in the levels data
     const groupsInLevels = new Set();
     Object.values(levelsData).forEach(levelItems => {
-      levelItems.forEach(item => {
-        if (availableCorpora.includes(item.corpus)) {
-          groupsInLevels.add(`${item.corpus}:${item.group}`);
-        }
-      });
+      if (Array.isArray(levelItems)) {
+        levelItems.forEach(item => {
+          if (availableCorpora.includes(item.corpus)) {
+            groupsInLevels.add(`${item.corpus}:${item.group}`);
+          }
+        });
+      }
     });
     
     const uncategorizedCorpusGroups = [];

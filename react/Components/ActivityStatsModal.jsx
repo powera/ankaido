@@ -6,7 +6,8 @@ import {
   convertStatsToDisplayArray, 
   formatDate 
 } from '../Managers/activityStatsManager';
-import { fetchDailyStats } from '../Utilities/apiClient';
+import { fetchDailyStats, fetchLevels } from '../Utilities/apiClient';
+import { addLevelToWords } from '../Utilities/levelUtils';
 import safeStorage from '../DataStorage/safeStorage';
 
 const ActivityStatsModal = ({
@@ -23,6 +24,7 @@ const ActivityStatsModal = ({
   const [loading, setLoading] = useState(false);
   const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', or 'daily'
+  const [levelsData, setLevelsData] = useState({});
 
   // Helper function to get words from selected groups only
   const getAllWordsFromSelectedGroups = () => {
@@ -50,6 +52,11 @@ const ActivityStatsModal = ({
       const loadStats = async () => {
         setLoading(true);
         try {
+          // Load levels data first
+          const levelsDataResult = await fetchLevels();
+          console.log('ActivityStatsModal received levels data:', levelsDataResult);
+          setLevelsData(levelsDataResult);
+
           // Load activity stats
           await activityStatsManager.initialize();
           const stats = activityStatsManager.getAllStats();
@@ -69,15 +76,15 @@ const ActivityStatsModal = ({
             return !wordStats || !wordStats.exposed;
           });
 
-          // Group unexposed words by corpus
-          const unexposedWithCorpus = unexposed.map(word => ({
+          // Add level information to unexposed words
+          const unexposedWithLevel = addLevelToWords(unexposed.map(word => ({
             lithuanian: word.lithuanian,
             english: word.english,
             corpus: word.corpus,
             group: word.group
-          }));
+          })), levelsDataResult);
 
-          setUnexposedWords(unexposedWithCorpus);
+          setUnexposedWords(unexposedWithLevel);
 
           // Load daily stats
           const dailyStatsData = await fetchDailyStats();
@@ -122,6 +129,10 @@ const ActivityStatsModal = ({
       case 'corpus':
         aValue = a.corpus?.toLowerCase() || '';
         bValue = b.corpus?.toLowerCase() || '';
+        break;
+      case 'level':
+        aValue = a.level?.toLowerCase() || '';
+        bValue = b.level?.toLowerCase() || '';
         break;
       case 'totalCorrect':
         aValue = a.totalCorrect || 0;
@@ -459,6 +470,19 @@ const ActivityStatsModal = ({
                     <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
                       {word.group}
                     </div>
+                  </div>
+                )
+              },
+              {
+                header: 'Level',
+                sortKey: 'level',
+                align: 'center',
+                render: (word) => (
+                  <div style={{ 
+                    fontWeight: 'bold',
+                    color: word.level === 'Other' ? 'var(--color-text-muted)' : 'var(--color-primary)'
+                  }}>
+                    {word.level}
                   </div>
                 )
               }
