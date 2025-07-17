@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useGlobalSettings } from './useGlobalSettings.jsx';
 import { useFullscreen } from './Utilities/useFullscreen';
 import VocabularyListMode from './Modes/VocabularyListMode.jsx';
 import TypingMode from './Modes/TypingMode.jsx';
@@ -36,13 +35,10 @@ import {
 } from './Utilities/apiClient.js';
 
 const FlashCardApp = () => {
-  // Global settings integration
-  const { 
-    settings, 
-    SettingsModal, 
-    SettingsToggle 
-  } = useGlobalSettings({
-    usedSettings: ['audioEnabled', 'soundVolume', 'autoAdvance', 'defaultDelay', 'difficulty']
+  // Audio settings - simple local state
+  const [audioEnabled, setAudioEnabled] = useState(() => {
+    const stored = localStorage.getItem('trakaido_audio_enabled');
+    return stored !== null ? JSON.parse(stored) : true;
   });
 
   // Fullscreen functionality
@@ -75,7 +71,7 @@ const FlashCardApp = () => {
     autoAdvanceTimer: null
   });
 
-  const [wordListManager] = useState(() => new WordListManager(safeStorage, settings));
+  const [wordListManager] = useState(() => new WordListManager(safeStorage, {}));
   const [availableVoices, setAvailableVoices] = useState([]);
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -102,10 +98,15 @@ const FlashCardApp = () => {
   const [showBlitzModeSelector, setShowBlitzModeSelector] = useState(false);
   const [blitzConfig, setBlitzConfig] = useState(null); // { corpus }
 
-  // Use global settings for audio and auto-advance
-  const audioEnabled = settings.audioEnabled;
-  const autoAdvance = settings.autoAdvance;
-  const defaultDelay = settings.defaultDelay;
+  // Save audio setting to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('trakaido_audio_enabled', JSON.stringify(audioEnabled));
+  }, [audioEnabled]);
+
+  // Toggle audio function
+  const toggleAudio = () => {
+    setAudioEnabled(prev => !prev);
+  };
 
   // Handle splash screen timing
   useEffect(() => {
@@ -187,14 +188,14 @@ const FlashCardApp = () => {
     // Initialize callback if not already set
     wordListManager.setStateChangeCallback(setWordListState);
     
-    // Update settings reference
-    wordListManager.settings = settings;
+    // Update settings reference (empty object since we removed global settings)
+    wordListManager.settings = {};
     
     // Generate words list when data is available and not loading
     if (!loading && Object.keys(selectedGroups).length > 0 && Object.keys(corporaData).length > 0) {
       wordListManager.generateWordsList(selectedGroups, corporaData);
     }
-  }, [wordListManager, settings, selectedGroups, loading, corporaData]);
+  }, [wordListManager, selectedGroups, loading, corporaData]);
 
   // Load journey stats using activityStatsManager
   useEffect(() => {
@@ -530,8 +531,8 @@ const FlashCardApp = () => {
         studyMode={studyMode}
         setStudyMode={setStudyMode}
         safeStorage={safeStorage}
-        SettingsToggle={SettingsToggle}
         audioEnabled={audioEnabled}
+        toggleAudio={toggleAudio}
         isFullscreen={isFullscreen}
         toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
@@ -580,8 +581,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          autoAdvance={true}
+          defaultDelay={3}
           safeStorage={safeStorage}
           setActivityStats={setActivityStats}
         />
@@ -599,8 +600,8 @@ const FlashCardApp = () => {
             wordListState={wordListState}
             studyMode={studyMode}
             audioEnabled={audioEnabled}
-            autoAdvance={autoAdvance}
-            defaultDelay={defaultDelay}
+            autoAdvance={true}
+            defaultDelay={2}
             safeStorage={safeStorage}
             drillConfig={drillConfig}
             corporaData={corporaData}
@@ -622,8 +623,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          autoAdvance={false}
+          defaultDelay={5}
         />
       ) : quizMode === 'listening' && currentWord ? (
         <ListeningMode 
@@ -631,8 +632,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          autoAdvance={false}
+          defaultDelay={5}
         />
       ) : quizMode === 'multiple-choice' && currentWord ? (
         <MultipleChoiceMode 
@@ -640,8 +641,8 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
+          autoAdvance={false}
+          defaultDelay={5}
         />
       ) : quizMode === 'blitz' ? (
         showBlitzModeSelector || !blitzConfig ? (
@@ -659,8 +660,6 @@ const FlashCardApp = () => {
             studyMode={studyMode}
             setStudyMode={setStudyMode}
             audioEnabled={audioEnabled}
-            autoAdvance={autoAdvance}
-            defaultDelay={defaultDelay}
             blitzConfig={blitzConfig}
             corporaData={corporaData}
             selectedGroups={selectedGroups}
@@ -674,9 +673,9 @@ const FlashCardApp = () => {
           wordListState={wordListState}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
-          autoAdvance={autoAdvance}
-          defaultDelay={defaultDelay}
-          settings={settings}
+          autoAdvance={true}
+          defaultDelay={5}
+          settings={{}}
         />
       ) : quizMode === 'math-games' ? (
         <MathGamesMode />
@@ -689,7 +688,7 @@ const FlashCardApp = () => {
       )}
 
 
-      <SettingsModal />
+
       <StudyMaterialsModal
         isOpen={showStudyMaterialsModal}
         onClose={() => setShowStudyMaterialsModal(false)}

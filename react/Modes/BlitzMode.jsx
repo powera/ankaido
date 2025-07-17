@@ -10,8 +10,6 @@ const BlitzMode = ({
   studyMode,
   setStudyMode,
   audioEnabled,
-  autoAdvance,
-  defaultDelay,
   blitzConfig, // { corpus, useSelectedGroupsOnly }
   corporaData,
   selectedGroups,

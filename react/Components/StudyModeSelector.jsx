@@ -15,8 +15,8 @@ const StudyModeSelector = ({
   studyMode,
   setStudyMode,
   safeStorage,
-  SettingsToggle,
   audioEnabled,
+  toggleAudio,
   selectedVoice,
   setSelectedVoice,
   isFullscreen,
@@ -234,10 +234,14 @@ const StudyModeSelector = ({
           <span className="w-hide-mobile">📊 Stats</span>
           <span className="w-show-mobile">📊 Stats</span>
         </button>
-        <SettingsToggle className="w-mode-option w-compact-button" title="Settings">
-          <span className="w-hide-mobile">Settings</span>
-          <span className="w-show-mobile">⚙️</span>
-        </SettingsToggle>
+        <button 
+          className="w-mode-option w-compact-button" 
+          onClick={toggleAudio}
+          title={audioEnabled ? "Disable audio" : "Enable audio"}
+        >
+          <span className="w-hide-mobile">{audioEnabled ? "🔊 Audio On" : "🔇 Audio Off"}</span>
+          <span className="w-show-mobile">{audioEnabled ? "🔊" : "🔇"}</span>
+        </button>
         <button className="w-hide-mobile w-mode-option w-compact-button" onClick={toggleFullscreen}>
           {isFullscreen ? '🗗 Close Fullscreen' : '⛶ Fullscreen'}
         </button>
