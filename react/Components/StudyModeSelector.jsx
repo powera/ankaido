@@ -14,6 +14,8 @@ const StudyModeSelector = ({
   setGrammarMode,
   studyMode,
   setStudyMode,
+  journeyFocusMode,
+  setJourneyFocusMode,
   safeStorage,
   audioEnabled,
   toggleAudio,
@@ -170,6 +172,27 @@ const StudyModeSelector = ({
           <option value="math-games">🔢 Math Games</option>
         </select>
       </div>
+
+      {/* Journey Focus Mode selector - only show for Journey Mode */}
+      {quizMode === 'journey' && (
+        <div className="w-dropdown-container">
+          <label>
+            <span className="w-hide-mobile">Focus:</span>
+            <span className="w-show-mobile">Focus:</span>
+          </label>
+          <select 
+            value={journeyFocusMode}
+            onChange={(e) => {
+              setJourneyFocusMode(e.target.value);
+              safeStorage.setItem('flashcard-journey-focus-mode', e.target.value);
+            }}
+          >
+            <option value="normal">🎯 Normal</option>
+            <option value="new-words">🌱 New Words</option>
+            <option value="review-words">📚 Review Words</option>
+          </select>
+        </div>
+      )}
 
       {/* Hide direction/grammar selector for Journey, Drill, and Math Games modes */}
       {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'math-games' && (

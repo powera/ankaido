@@ -23,7 +23,8 @@ const JourneyMode = ({
   audioEnabled, 
   autoAdvance, 
   defaultDelay, 
-  safeStorage
+  safeStorage,
+  journeyFocusMode = 'normal'
 }) => {
   const [journeyState, setJourneyState] = React.useState({
     isInitialized: false,
@@ -112,9 +113,10 @@ const JourneyMode = ({
       getTotalCorrectForWord,
       audioEnabled,
       activitySelectorState,
-      getWordWeights
+      getWordWeights,
+      journeyFocusMode
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState, getWordWeights]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, activitySelectorState, getWordWeights, journeyFocusMode]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {

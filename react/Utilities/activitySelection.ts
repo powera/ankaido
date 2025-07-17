@@ -11,7 +11,8 @@ import {
   WordStats, 
   ActivityResult,
   DifficultyLevel,
-  DifficultyMapping
+  DifficultyMapping,
+  JourneyFocusMode
 } from './types';
 
 interface TierConfig {
@@ -187,9 +188,19 @@ export const selectDrillActivity = (
   return attemptActivitySelection(selectedWord, correctAnswers, audioEnabled, tier);
 };
 
-const JOURNEY_PROBABILITIES = {
-  motivationalBreak: 3,
-  newWordIntroduction: 15
+const JOURNEY_FOCUS_PROBABILITIES = {
+  'normal': {
+    motivationalBreak: 3,
+    newWordIntroduction: 15
+  },
+  'new-words': {
+    motivationalBreak: 1.5,
+    newWordIntroduction: 25 // Increased from 15% to 25%
+  },
+  'review-words': {
+    motivationalBreak: 5,
+    newWordIntroduction: 0 // No new words for review mode
+  }
 };
 
 const globalWordWeightCache = new WordWeightCache();
@@ -200,14 +211,31 @@ const globalWordWeightCache = new WordWeightCache();
 const calculateCompleteWordWeight = (
   word: Word,
   getTotalCorrectForWord: (word: Word) => number,
-  getWordStats: (word: Word) => WordStats
+  getWordStats: (word: Word) => WordStats,
+  focusMode: JourneyFocusMode = 'normal'
 ): number => {
   const correctAnswers = getTotalCorrectForWord(word);
   const stats = getWordStats(word);
   
   // Get tier-based base weight
   const tier = getWordTier(correctAnswers);
-  const baseWeight = TIER_CONFIGS[tier]?.baseWeight ?? 1.0;
+  let baseWeight = TIER_CONFIGS[tier]?.baseWeight ?? 1.0;
+  
+  // Apply focus mode adjustments
+  if (focusMode === 'new-words') {
+    // For new words focus: reduce weight for words with many correct answers
+    if (correctAnswers >= 10) {
+      baseWeight *= 0.1; // 10% as likely for words with 10+ correct answers
+    } else if (correctAnswers >= 5) {
+      baseWeight *= 0.4; // 40% as likely for words with 5-9 correct answers
+    }
+    // Words with < 5 correct answers keep normal weight
+  } else if (focusMode === 'review-words') {
+    // For review words focus: only include words with at least 6 correct answers
+    if (correctAnswers < 6) {
+      return 0; // Exclude words with fewer than 6 correct answers
+    }
+  }
   
   // Apply time-based multiplier
   const twoWeeksMs = 14 * 24 * 60 * 60 * 1000;
@@ -225,24 +253,31 @@ const calculateCompleteWordWeight = (
 export const selectWordByWeight = (
   words: Word[],
   getTotalCorrectForWord: (word: Word) => number,
-  getWordStats: (word: Word) => WordStats
+  getWordStats: (word: Word) => WordStats,
+  focusMode: JourneyFocusMode = 'normal'
 ): Word | null => {
   if (words.length === 0) return null;
   if (words.length === 1) return words[0];
 
   const getWeightForWord = (word: Word): number => {
-    return calculateCompleteWordWeight(word, getTotalCorrectForWord, getWordStats);
+    return calculateCompleteWordWeight(word, getTotalCorrectForWord, getWordStats, focusMode);
   };
 
-  if (globalWordWeightCache.needsRebuild(words)) {
-    globalWordWeightCache.buildSelectionTree(words, getWeightForWord);
+  // Filter out words with zero weight (for review-words mode)
+  const eligibleWords = words.filter(word => getWeightForWord(word) > 0);
+  
+  if (eligibleWords.length === 0) return null;
+  if (eligibleWords.length === 1) return eligibleWords[0];
+
+  if (globalWordWeightCache.needsRebuild(eligibleWords)) {
+    globalWordWeightCache.buildSelectionTree(eligibleWords, getWeightForWord);
   }
 
   const selectedWord = globalWordWeightCache.selectWordFromTree();
 
   if (!selectedWord) {
     console.warn('Tree selection failed, falling back to random selection');
-    return words[Math.floor(Math.random() * words.length)];
+    return eligibleWords[Math.floor(Math.random() * eligibleWords.length)];
   }
 
   return selectedWord;
@@ -326,10 +361,14 @@ export const selectJourneyActivity = (
   getTotalCorrectForWord: (word: Word) => number,
   audioEnabled: boolean,
   journeyState?: JourneyModeState,
-  getWordStats: ((word: Word) => WordStats) | null = null
+  getWordStats: ((word: Word) => WordStats) | null = null,
+  focusMode: JourneyFocusMode = 'normal'
 ): ActivityResult => {
   const exposedWords = getExposedWordsList();
   const newWords = getNewWordsList();
+
+  // Get focus-specific probabilities
+  const focusProbabilities = JOURNEY_FOCUS_PROBABILITIES[focusMode];
 
   if (allWords.length === 0) {
     const result: ActivityResult = { type: 'new-word', word: wordListManager.getCurrentWord() };
@@ -340,7 +379,10 @@ export const selectJourneyActivity = (
     return result;
   }
 
-  if (exposedWords.length < 10 && newWords.length > 0) {
+  // For review-words mode, skip new word introduction if we have no new words to introduce
+  if (focusMode === 'review-words' && exposedWords.length < 10 && newWords.length > 0) {
+    // Skip new word introduction for review-words mode
+  } else if (exposedWords.length < 10 && newWords.length > 0) {
     const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
     const result: ActivityResult = { type: 'new-word', word: randomNewWord };
     if (journeyState) {
@@ -352,7 +394,7 @@ export const selectJourneyActivity = (
 
   let random = Math.random() * 100;
   if (
-    random < JOURNEY_PROBABILITIES.motivationalBreak &&
+    random < focusProbabilities.motivationalBreak &&
     (!journeyState || !journeyState.shouldBlockMotivationalBreaks())
   ) {
     const result: ActivityResult = { type: 'motivational-break', word: null };
@@ -365,7 +407,7 @@ export const selectJourneyActivity = (
 
   random = Math.random() * 100;
   if (
-    random < JOURNEY_PROBABILITIES.newWordIntroduction &&
+    random < focusProbabilities.newWordIntroduction &&
     newWords.length > 0 &&
     (!journeyState || !journeyState.shouldBlockNewWords())
   ) {
@@ -394,10 +436,34 @@ export const selectJourneyActivity = (
   } else {
     // Always use weighted selection if getWordStats is available, otherwise fallback to random
     if (getWordStats) {
-      selectedWord = selectWordByWeight(exposedWords, getTotalCorrectForWord, getWordStats)!;
+      const weightedWord = selectWordByWeight(exposedWords, getTotalCorrectForWord, getWordStats, focusMode);
+      if (!weightedWord) {
+        // No eligible words found, fallback to grammar break
+        const result: ActivityResult = { type: 'grammar-break', word: null };
+        if (journeyState) {
+          journeyState.updateAfterActivity();
+        }
+        return result;
+      }
+      selectedWord = weightedWord;
     } else {
       // Simple fallback: random selection from exposed words
-      selectedWord = exposedWords[Math.floor(Math.random() * exposedWords.length)];
+      // For review-words mode, filter exposed words to only include those with 6+ correct answers
+      let eligibleWords = exposedWords;
+      if (focusMode === 'review-words') {
+        eligibleWords = exposedWords.filter(word => getTotalCorrectForWord(word) >= 6);
+      }
+      
+      if (eligibleWords.length === 0) {
+        // Fallback to grammar break if no eligible words
+        const result: ActivityResult = { type: 'grammar-break', word: null };
+        if (journeyState) {
+          journeyState.updateAfterActivity();
+        }
+        return result;
+      }
+      
+      selectedWord = eligibleWords[Math.floor(Math.random() * eligibleWords.length)];
     }
   }
   const correctAnswers = getTotalCorrectForWord(selectedWord);

@@ -59,6 +59,11 @@ const FlashCardApp = () => {
   });
   const [grammarMode, setGrammarMode] = useState('conjugations');
 
+  // Journey focus mode state
+  const [journeyFocusMode, setJourneyFocusMode] = useState(() => {
+    return safeStorage?.getItem('flashcard-journey-focus-mode') || 'normal';
+  });
+
   // WordListManager state
   const [wordListState, setWordListState] = useState({
     allWords: [],
@@ -530,6 +535,8 @@ const FlashCardApp = () => {
         setGrammarMode={setGrammarMode}
         studyMode={studyMode}
         setStudyMode={setStudyMode}
+        journeyFocusMode={journeyFocusMode}
+        setJourneyFocusMode={setJourneyFocusMode}
         safeStorage={safeStorage}
         audioEnabled={audioEnabled}
         toggleAudio={toggleAudio}
@@ -585,6 +592,7 @@ const FlashCardApp = () => {
           defaultDelay={3}
           safeStorage={safeStorage}
           setActivityStats={setActivityStats}
+          journeyFocusMode={journeyFocusMode}
         />
       ) : quizMode === 'drill' ? (
         showDrillModeSelector || !drillConfig ? (

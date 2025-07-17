@@ -35,6 +35,9 @@ export type ActivityMode = 'en-to-lt' | 'lt-to-en' | 'easy' | 'hard';
 // Difficulty levels
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 
+// Journey focus modes
+export type JourneyFocusMode = 'normal' | 'new-words' | 'review-words';
+
 // Activity result interface
 export interface ActivityResult {
   type: ExtendedActivityType;
