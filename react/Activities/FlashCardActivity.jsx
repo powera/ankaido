@@ -20,7 +20,7 @@ const FlashCardActivity = ({
   isNewWord = false
 }) => {
 
-  // Mark new words as exposed when they are first shown
+  // Mark new words as exposed when they are first shown and auto-play audio
   React.useEffect(() => {
     if (isNewWord && currentWord) {
       const markAsExposed = async () => {
@@ -33,8 +33,18 @@ const FlashCardActivity = ({
         }
       };
       markAsExposed();
+
+      // Auto-play audio for new words if audio is enabled
+      if (audioEnabled) {
+        // Small delay to ensure the component is fully rendered
+        setTimeout(() => {
+          audioManager.playAudio(currentWord.lithuanian).catch(error => {
+            console.warn('Failed to auto-play audio for new word:', error);
+          });
+        }, 100);
+      }
     }
-  }, [isNewWord, currentWord]);
+  }, [isNewWord, currentWord, audioEnabled]);
 
   // Early return after all hooks
   if (!currentWord) return null;
