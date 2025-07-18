@@ -6,7 +6,7 @@ import {
   convertStatsToDisplayArray, 
   formatDate 
 } from '../Managers/activityStatsManager';
-import { fetchDailyStats, fetchLevels } from '../Utilities/apiClient';
+import { fetchDailyStats, fetchWeeklyStats, fetchLevels } from '../Utilities/apiClient';
 import { addLevelToWords } from '../Utilities/levelUtils';
 import safeStorage from '../DataStorage/safeStorage';
 import journeyModeManager from '../Managers/journeyModeManager';
@@ -22,9 +22,10 @@ const ActivityStatsModal = ({
   const [exposedWords, setExposedWords] = useState([]);
   const [unexposedWords, setUnexposedWords] = useState([]);
   const [dailyStats, setDailyStats] = useState(null);
+  const [weeklyStats, setWeeklyStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activityStats, setActivityStats] = useState({});
-  const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', or 'daily'
+  const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', 'daily', or 'weekly'
   const [levelsData, setLevelsData] = useState({});
 
   const [queueSize, setQueueSize] = useState(0);
@@ -48,6 +49,16 @@ const ActivityStatsModal = ({
       }
     });
     return allWords;
+  };
+
+  // Helper function to check if a progress entry is an activity progress (has correct/incorrect)
+  const isActivityProgress = (stats) => {
+    return stats && typeof stats.correct === 'number' && typeof stats.incorrect === 'number';
+  };
+
+  // Helper function to check if a progress entry is an exposed progress (has new/total)
+  const isExposedProgress = (stats) => {
+    return stats && typeof stats.new === 'number' && typeof stats.total === 'number';
   };
 
   // Load journey stats, unexposed words, and daily stats when modal opens
@@ -94,6 +105,10 @@ const ActivityStatsModal = ({
           const dailyStatsData = await fetchDailyStats();
           setDailyStats(dailyStatsData);
 
+          // Load weekly stats
+          const weeklyStatsData = await fetchWeeklyStats();
+          setWeeklyStats(weeklyStatsData);
+
           if (wordsArray.length === 0) {
             console.warn('No activity stats available or empty object');
           }
@@ -102,6 +117,7 @@ const ActivityStatsModal = ({
           setExposedWords([]);
           setUnexposedWords([]);
           setDailyStats(null);
+          setWeeklyStats(null);
         } finally {
           setLoading(false);
         }
@@ -158,7 +174,7 @@ const ActivityStatsModal = ({
   // Get current words based on view mode
   const currentWords = viewMode === 'exposed' ? exposedWords : 
                       viewMode === 'unexposed' ? unexposedWords : 
-                      []; // Daily stats doesn't use the words array
+                      []; // Daily and weekly stats don't use the words array
 
   // Sort the current words based on current sort settings
   const sortedWords = [...currentWords].sort((a, b) => {
@@ -228,7 +244,7 @@ const ActivityStatsModal = ({
       setSortField('corpus');
       setSortDirection('asc');
     }
-    // Daily stats doesn't need sorting
+    // Daily and weekly stats don't need sorting
   };
 
   // Get modal title based on current mode
@@ -237,9 +253,12 @@ const ActivityStatsModal = ({
       return `Exposed Words (${exposedWords.length} words)`;
     } else if (viewMode === 'unexposed') {
       return `Unexposed Words (${unexposedWords.length} words)`;
-    } else {
-      return `Daily Stats${dailyStats ? ` - ${dailyStats.day}` : ''}`;
+    } else if (viewMode === 'daily') {
+      return `Daily Stats${dailyStats ? ` - ${dailyStats.currentDay}` : ''}`;
+    } else if (viewMode === 'weekly') {
+      return `Weekly Stats${weeklyStats ? ` - ${weeklyStats.currentDay}` : ''}`;
     }
+    return 'Activity Stats';
   };
 
   return (
@@ -281,25 +300,121 @@ const ActivityStatsModal = ({
           >
             Daily Stats
           </button>
+          <button
+            onClick={() => handleViewModeChange('weekly')}
+            className={`w-settings-button ${viewMode === 'weekly' ? 'w-settings-button-primary' : 'w-settings-button-secondary'}`}
+            style={{ minWidth: '120px' }}
+          >
+            Weekly Stats
+          </button>
         </div>
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
             <div>Loading activity statistics...</div>
           </div>
-        ) : viewMode === 'daily' ? (
-          // Daily Stats View
+        ) : viewMode === 'daily' || viewMode === 'weekly' ? (
+          // Daily/Weekly Stats View
           <div style={{ padding: '1rem' }}>
-            {dailyStats ? (
-              <div>
+            {(() => {
+              const currentStats = viewMode === 'daily' ? dailyStats : weeklyStats;
+              return currentStats ? (
+                <div>
                 <div style={{ 
                   textAlign: 'center', 
                   marginBottom: '2rem',
                   fontSize: '1.2rem',
                   fontWeight: 'bold'
                 }}>
-                  Today's Progress - {dailyStats.day}
+                  {viewMode === 'daily' ? 'Today\'s' : 'This Week\'s'} Progress - {currentStats.currentDay}
                 </div>
+
+                {/* Overall Summary - moved before detailed stats */}
+                {Object.keys(currentStats.progress).length > 0 && (
+                  <div style={{
+                    border: '2px solid var(--color-primary)',
+                    borderRadius: '8px',
+                    padding: '1rem',
+                    backgroundColor: 'var(--color-background-secondary)',
+                    textAlign: 'center',
+                    marginBottom: '2rem'
+                  }}>
+                    <div style={{ 
+                      fontWeight: 'bold', 
+                      marginBottom: '1rem',
+                      fontSize: '1.1rem',
+                      color: 'var(--color-primary)'
+                    }}>
+                      📊 {viewMode === 'daily' ? 'Daily' : 'Weekly'} Summary
+                    </div>
+                    
+                    {(() => {
+                      // Only include activity progress entries in the summary (not exposed progress)
+                      const activityEntries = Object.values(currentStats.progress).filter(isActivityProgress);
+                      const totalCorrect = activityEntries.reduce((sum, stats) => sum + stats.correct, 0);
+                      const totalIncorrect = activityEntries.reduce((sum, stats) => sum + stats.incorrect, 0);
+                      const grandTotal = totalCorrect + totalIncorrect;
+                      const overallAccuracy = grandTotal > 0 ? ((totalCorrect / grandTotal) * 100).toFixed(1) : 0;
+                      
+                      const exposedStats = currentStats.progress.exposed;
+                      
+                      return (
+                        <div>
+                          {/* Activity Summary */}
+                          {grandTotal > 0 && (
+                            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1rem', marginBottom: exposedStats ? '1.5rem' : '0' }}>
+                              <div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4CAF50' }}>{totalCorrect}</div>
+                                <div>Correct</div>
+                              </div>
+                              <div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f44336' }}>{totalIncorrect}</div>
+                                <div>Incorrect</div>
+                              </div>
+                              <div>
+                                <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{grandTotal}</div>
+                                <div>Total</div>
+                              </div>
+                              <div>
+                                <div style={{ 
+                                  fontSize: '2rem', 
+                                  fontWeight: 'bold',
+                                  color: overallAccuracy >= 80 ? '#4CAF50' : overallAccuracy >= 60 ? '#FF9800' : '#f44336'
+                                }}>
+                                  {overallAccuracy}%
+                                </div>
+                                <div>Accuracy</div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Exposed Words Summary */}
+                          {exposedStats && (
+                            <div style={{ 
+                              borderTop: grandTotal > 0 ? '1px solid var(--color-border)' : 'none',
+                              paddingTop: grandTotal > 0 ? '1rem' : '0',
+                              textAlign: 'center'
+                            }}>
+                              <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#4CAF50', marginBottom: '0.5rem' }}>
+                                📚 {exposedStats.new} New Word{exposedStats.new !== 1 ? 's' : ''} Exposed {viewMode === 'daily' ? 'Today' : 'This Week'}
+                              </div>
+                              <div style={{ fontSize: '1rem', color: 'var(--color-text-muted)' }}>
+                                Total vocabulary: {exposedStats.total} words
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* No activity message */}
+                          {grandTotal === 0 && !exposedStats && (
+                            <div style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                              No activity recorded {viewMode === 'daily' ? 'today' : 'this week'}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                )}
                 
                 <div style={{ 
                   display: 'grid', 
@@ -307,12 +422,18 @@ const ActivityStatsModal = ({
                   gap: '1rem',
                   marginBottom: '2rem'
                 }}>
-                  {Object.entries(dailyStats.progress).map(([activityType, stats]) => {
-                    const total = stats.correct + stats.incorrect;
-                    const accuracy = total > 0 ? ((stats.correct / total) * 100).toFixed(1) : 0;
-                    
+                  {Object.entries(currentStats.progress)
+                    .sort(([a], [b]) => {
+                      // Always put 'exposed' first
+                      if (a === 'exposed') return -1;
+                      if (b === 'exposed') return 1;
+                      return a.localeCompare(b);
+                    })
+                    .map(([activityType, stats]) => {
                     // Activity type display names and colors
                     const activityConfig = {
+                      'exposed': { name: '📚 Words Exposed', color: '#4CAF50' },
+                      'blitz': { name: '⚡ Blitz Mode', color: '#FF5722' },
                       'listeningEasy': { name: '🎧 Listening (Easy)', color: '#9C27B0' },
                       'listeningHard': { name: '🎧 Listening (Hard)', color: '#7B1FA2' },
                       'multipleChoice': { name: '🎯 Multiple Choice', color: '#2196F3' },
@@ -321,113 +442,116 @@ const ActivityStatsModal = ({
                     
                     const config = activityConfig[activityType] || { name: activityType, color: '#666' };
                     
-                    return (
-                      <div key={activityType} style={{
-                        border: '1px solid var(--color-border)',
-                        borderRadius: '8px',
-                        padding: '1rem',
-                        backgroundColor: 'var(--color-background-secondary)',
-                        borderLeft: `4px solid ${config.color}`
-                      }}>
-                        <div style={{ 
-                          fontWeight: 'bold', 
-                          marginBottom: '0.5rem',
-                          color: config.color
-                        }}>
-                          {config.name}
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span>Correct:</span>
-                          <span style={{ fontWeight: 'bold', color: '#4CAF50' }}>{stats.correct}</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span>Incorrect:</span>
-                          <span style={{ fontWeight: 'bold', color: '#f44336' }}>{stats.incorrect}</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                          <span>Total:</span>
-                          <span style={{ fontWeight: 'bold' }}>{total}</span>
-                        </div>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                          <span>Accuracy:</span>
-                          <span style={{ 
-                            fontWeight: 'bold',
-                            color: accuracy >= 80 ? '#4CAF50' : accuracy >= 60 ? '#FF9800' : '#f44336'
-                          }}>
-                            {accuracy}%
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                {/* Overall Summary */}
-                {Object.keys(dailyStats.progress).length > 0 && (
-                  <div style={{
-                    border: '2px solid var(--color-primary)',
-                    borderRadius: '8px',
-                    padding: '1rem',
-                    backgroundColor: 'var(--color-background-secondary)',
-                    textAlign: 'center'
-                  }}>
-                    <div style={{ 
-                      fontWeight: 'bold', 
-                      marginBottom: '1rem',
-                      fontSize: '1.1rem',
-                      color: 'var(--color-primary)'
-                    }}>
-                      📊 Daily Summary
-                    </div>
-                    
-                    {(() => {
-                      const totalCorrect = Object.values(dailyStats.progress).reduce((sum, stats) => sum + stats.correct, 0);
-                      const totalIncorrect = Object.values(dailyStats.progress).reduce((sum, stats) => sum + stats.incorrect, 0);
-                      const grandTotal = totalCorrect + totalIncorrect;
-                      const overallAccuracy = grandTotal > 0 ? ((totalCorrect / grandTotal) * 100).toFixed(1) : 0;
-                      
+                    // Handle different types of progress data
+                    if (isExposedProgress(stats)) {
                       return (
-                        <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: '1rem' }}>
-                          <div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4CAF50' }}>{totalCorrect}</div>
-                            <div>Correct</div>
+                        <div key={activityType} style={{
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          backgroundColor: 'var(--color-background-secondary)',
+                          borderLeft: `4px solid ${config.color}`
+                        }}>
+                          <div style={{ 
+                            fontWeight: 'bold', 
+                            marginBottom: '0.5rem',
+                            color: config.color
+                          }}>
+                            {config.name}
                           </div>
-                          <div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f44336' }}>{totalIncorrect}</div>
-                            <div>Incorrect</div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <span>New {viewMode === 'daily' ? 'Today' : 'This Week'}:</span>
+                            <span style={{ fontWeight: 'bold', color: '#4CAF50' }}>{stats.new}</span>
                           </div>
-                          <div>
-                            <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>{grandTotal}</div>
-                            <div>Total</div>
-                          </div>
-                          <div>
-                            <div style={{ 
-                              fontSize: '2rem', 
-                              fontWeight: 'bold',
-                              color: overallAccuracy >= 80 ? '#4CAF50' : overallAccuracy >= 60 ? '#FF9800' : '#f44336'
-                            }}>
-                              {overallAccuracy}%
-                            </div>
-                            <div>Accuracy</div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Total Exposed:</span>
+                            <span style={{ fontWeight: 'bold', color: config.color }}>{stats.total}</span>
                           </div>
                         </div>
                       );
-                    })()}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '2rem' }}>
-                <div>No daily statistics available for today.</div>
-                <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                  Start practicing in Journey Mode to see your daily progress here!
+                    } else if (isActivityProgress(stats)) {
+                      const total = stats.correct + stats.incorrect;
+                      const accuracy = total > 0 ? ((stats.correct / total) * 100).toFixed(1) : 0;
+                      
+                      return (
+                        <div key={activityType} style={{
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          backgroundColor: 'var(--color-background-secondary)',
+                          borderLeft: `4px solid ${config.color}`
+                        }}>
+                          <div style={{ 
+                            fontWeight: 'bold', 
+                            marginBottom: '0.5rem',
+                            color: config.color
+                          }}>
+                            {config.name}
+                          </div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <span>Correct:</span>
+                            <span style={{ fontWeight: 'bold', color: '#4CAF50' }}>{stats.correct}</span>
+                          </div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <span>Incorrect:</span>
+                            <span style={{ fontWeight: 'bold', color: '#f44336' }}>{stats.incorrect}</span>
+                          </div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                            <span>Total:</span>
+                            <span style={{ fontWeight: 'bold' }}>{total}</span>
+                          </div>
+                          
+                          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <span>Accuracy:</span>
+                            <span style={{ 
+                              fontWeight: 'bold',
+                              color: accuracy >= 80 ? '#4CAF50' : accuracy >= 60 ? '#FF9800' : '#f44336'
+                            }}>
+                              {accuracy}%
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    } else {
+                      // Fallback for unknown data structure
+                      return (
+                        <div key={activityType} style={{
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '8px',
+                          padding: '1rem',
+                          backgroundColor: 'var(--color-background-secondary)',
+                          borderLeft: `4px solid ${config.color}`
+                        }}>
+                          <div style={{ 
+                            fontWeight: 'bold', 
+                            marginBottom: '0.5rem',
+                            color: config.color
+                          }}>
+                            {config.name}
+                          </div>
+                          <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                            Unknown data format
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
                 </div>
               </div>
-            )}
+              ) : (
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                  <div>No {viewMode} statistics available.</div>
+                  <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+                    Start practicing in Journey Mode to see your {viewMode} progress here!
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         ) : sortedWords.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>

@@ -41,9 +41,29 @@ export interface LevelsResponse {
   };
 }
 
+export interface ActivityProgress {
+  correct: number;
+  incorrect: number;
+}
+
+export interface ExposedProgress {
+  new: number;
+  total: number;
+}
+
 export interface DailyStatsResponse {
-  // Define structure as needed
-  [key: string]: any;
+  actualBaselineDay?: string;
+  currentDay: string;
+  targetBaselineDay?: string;
+  progress: {
+    exposed?: ExposedProgress;
+    blitz?: ActivityProgress;
+    listeningEasy?: ActivityProgress;
+    listeningHard?: ActivityProgress;
+    multipleChoice?: ActivityProgress;
+    typing?: ActivityProgress;
+    [key: string]: ActivityProgress | ExposedProgress | undefined;
+  };
 }
 
 // --- API Functions ---
@@ -132,6 +152,18 @@ export const fetchDailyStats = async (): Promise<DailyStatsResponse | null> => {
     return data;
   } catch (error) {
     console.warn('Failed to fetch daily stats:', error);
+    return null;
+  }
+};
+
+export const fetchWeeklyStats = async (): Promise<DailyStatsResponse | null> => {
+  try {
+    const response = await fetch('/api/trakaido/journeystats/weekly');
+    if (!response.ok) throw new Error('Failed to fetch weekly stats');
+    const data: DailyStatsResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.warn('Failed to fetch weekly stats:', error);
     return null;
   }
 };
