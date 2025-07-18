@@ -409,6 +409,12 @@ const FlashCardApp = () => {
     setQuizMode('journey'); // Default back to journey mode
   };
 
+  const handleBackToDrillSelector = () => {
+    setDrillConfig(null);
+    setShowDrillModeSelector(true);
+    // Keep quizMode as 'drill' to stay in drill mode
+  };
+
   const handleCancelDrill = () => {
     setShowDrillModeSelector(false);
     setQuizMode('journey'); // Reset back to journey mode when canceling
@@ -585,6 +591,7 @@ const FlashCardApp = () => {
             drillConfig={drillConfig}
             corporaData={corporaData}
             onExitDrill={handleExitDrill}
+            onBackToDrillSelector={handleBackToDrillSelector}
           />
         )
       ) : quizMode === 'flashcard' ? (

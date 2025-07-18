@@ -21,7 +21,8 @@ const DrillMode = ({
   defaultDelay,
   drillConfig, // { corpus, group, difficulty }
   corporaData,
-  onExitDrill
+  onExitDrill,
+  onBackToDrillSelector
 }) => {
   const [drillState, setDrillState] = React.useState({
     isInitialized: false,
@@ -432,7 +433,7 @@ const DrillMode = ({
               }}
             />
           </div>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button 
               className="w-button"
               onClick={() => {
@@ -452,6 +453,14 @@ const DrillMode = ({
             >
               🔄 Drill Again
             </button>
+            {onBackToDrillSelector && (
+              <button 
+                className="w-button"
+                onClick={onBackToDrillSelector}
+              >
+                📖 Choose Different Corpus
+              </button>
+            )}
             <button 
               className="w-button"
               onClick={onExitDrill}
