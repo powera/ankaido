@@ -30,6 +30,7 @@ export interface WordStats {
   typing: ModeStats;
   lastSeen: number | null;
   lastCorrectAnswer: number | null;
+  lastIncorrectAnswer: number | null;
   [key: string]: any; // For possible extra properties
 }
 

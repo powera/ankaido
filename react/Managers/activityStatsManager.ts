@@ -167,7 +167,8 @@ export const DEFAULT_WORD_STATS: WordStats = {
   listeningHard: { correct: 0, incorrect: 0 },
   typing: { correct: 0, incorrect: 0 },
   lastSeen: null,
-  lastCorrectAnswer: null
+  lastCorrectAnswer: null,
+  lastIncorrectAnswer: null
 };
 
 // Create a unique key for a word
@@ -343,7 +344,8 @@ export class ActivityStatsManager {
         [isCorrect ? 'correct' : 'incorrect']: currentModeStats[isCorrect ? 'correct' : 'incorrect'] + 1
       },
       lastSeen: now,
-      lastCorrectAnswer: isCorrect ? now : currentStats.lastCorrectAnswer
+      lastCorrectAnswer: isCorrect ? now : currentStats.lastCorrectAnswer,
+      lastIncorrectAnswer: !isCorrect ? now : currentStats.lastIncorrectAnswer
     };
 
     // Update in memory
@@ -437,6 +439,11 @@ export class ActivityStatsManager {
     // If lastCorrectAnswer is not explicitly set in updates, preserve the current value
     if (!updates.hasOwnProperty('lastCorrectAnswer')) {
       updatedStats.lastCorrectAnswer = currentStats.lastCorrectAnswer;
+    }
+    
+    // If lastIncorrectAnswer is not explicitly set in updates, preserve the current value
+    if (!updates.hasOwnProperty('lastIncorrectAnswer')) {
+      updatedStats.lastIncorrectAnswer = currentStats.lastIncorrectAnswer;
     }
     
     // Update in memory
