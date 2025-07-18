@@ -467,6 +467,7 @@ const JourneyMode = ({
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           autoAdvanceTimer={null}
+          allWords={wordListState.allWords}
         />
         <NavigationControls />
       </div>

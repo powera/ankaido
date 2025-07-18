@@ -536,6 +536,7 @@ const DrillMode = ({
             autoAdvance={autoAdvance}
             defaultDelay={defaultDelay}
             autoAdvanceTimer={null}
+            allWords={wordListState.allWords}
           />
           {!autoAdvance && (
             <div className="w-nav-controls">

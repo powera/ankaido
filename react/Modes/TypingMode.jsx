@@ -81,6 +81,7 @@ const TypingMode = ({
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
         autoAdvanceTimer={autoAdvanceTimer}
+        allWords={wordListState.allWords}
       />
       {currentWord && (
         <div className="w-nav-controls">

@@ -18,7 +18,8 @@ const TypingActivity = ({
   audioEnabled,
   autoAdvance,
   defaultDelay,
-  autoAdvanceTimer
+  autoAdvanceTimer,
+  allWords
 }) => {
   const [activityState, setActivityState] = React.useState(() =>
     createInitialActivityState(false, null, '', '')
@@ -57,6 +58,33 @@ const TypingActivity = ({
       .toLowerCase();
   };
 
+  // Helper function to find if typed answer matches a different word's translation
+  const findMatchingWord = React.useCallback((typedAnswer, currentWord, studyMode, allWords) => {
+    if (!allWords || !Array.isArray(allWords)) return null;
+    
+    const normalizedTyped = normalizeForComparison(typedAnswer);
+    
+    // Determine what field to check based on study mode
+    const targetField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
+    
+    // Find a word where the typed answer matches the target translation
+    const matchingWord = allWords.find(word => {
+      // Skip the current word
+      if (word === currentWord || 
+          (word.lithuanian === currentWord?.lithuanian && word.english === currentWord?.english)) {
+        return false;
+      }
+      
+      // Check if typed answer matches this word's translation
+      const wordTranslation = word[targetField];
+      const normalizedTranslation = normalizeForComparison(wordTranslation);
+      
+      return normalizedTyped === normalizedTranslation;
+    });
+    
+    return matchingWord;
+  }, [normalizeForComparison]);
+
   // Handle typed answer submission
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);
@@ -67,7 +95,23 @@ const TypingActivity = ({
     const isCorrect = normalizedTyped === normalizedCorrect;
 
     // Generate feedback message
-    const feedback = isCorrect ? '✅ Correct!' : `❌ Incorrect. Correct answer: ${correctAnswer}`;
+    let feedback;
+    if (isCorrect) {
+      feedback = '✅ Correct!';
+    } else {
+      // Check if the typed answer matches a different word's translation
+      const matchingWord = findMatchingWord(typedAnswer, word, studyMode, allWords);
+      
+      if (matchingWord) {
+        // Determine which word field to show based on study mode
+        const sourceField = studyMode === 'english-to-lithuanian' ? 'english' : 'lithuanian';
+        const sourceWord = matchingWord[sourceField];
+        
+        feedback = `❌ Incorrect. That's the translation for "${sourceWord}". Correct answer: ${correctAnswer}`;
+      } else {
+        feedback = `❌ Incorrect. Correct answer: ${correctAnswer}`;
+      }
+    }
     
     // Update local state with feedback
     setActivityState(prev => ({
@@ -80,7 +124,7 @@ const TypingActivity = ({
     if (onSubmit) {
       onSubmit(typedAnswer, isCorrect);
     }
-  }, [word, studyMode, onSubmit]);
+  }, [word, studyMode, onSubmit, findMatchingWord, allWords, normalizeForComparison]);
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value) => {
