@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseFullscreenReturn {
   isFullscreen: boolean;
   toggleFullscreen: () => Promise<void>;
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef: React.RefObject<HTMLElement | null>;
 }
 
 /**
@@ -29,7 +29,7 @@ interface UseFullscreenReturn {
  */
 export const useFullscreen = (): UseFullscreenReturn => {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   const toggleFullscreen = useCallback(async (): Promise<void> => {
     try {
