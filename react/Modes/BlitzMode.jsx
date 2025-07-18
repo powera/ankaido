@@ -156,14 +156,14 @@ const BlitzMode = ({
     }
 
     // Update journey stats
-    //const currentTargetWord = blitzWords[targetWordIndex];
-    //if (currentTargetWord && typeof isCorrect === 'boolean') {
-    //  try {
-    //    await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', isCorrect);
-    //  } catch (error) {
-    //    console.error('Error updating journey stats:', error);
-    //  }
-    //}
+    const currentTargetWord = blitzWords[targetWordIndex];
+    if (currentTargetWord && typeof isCorrect === 'boolean') {
+      try {
+        await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', isCorrect);
+      } catch (error) {
+        console.error('Error updating journey stats:', error);
+      }
+    }
 
     // Check if game should end
     const maxQuestions = Math.min(MAX_QUESTIONS, Math.floor(corpusWords.length / 2));
