@@ -1,8 +1,8 @@
 import React from 'react';
 import { activityStatsManager } from '../Managers/activityStatsManager';
-import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
-import { storageConfigManager, STORAGE_MODES } from '../Managers/storageConfigManager';
 import audioManager from '../Managers/audioManager';
+import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
+import { STORAGE_MODES, storageConfigManager } from '../Managers/storageConfigManager';
 
 // API Configuration - using Vite proxy
 const API_BASE_URL = '/api/trakaido/journeystats';
@@ -240,6 +240,27 @@ const StudyModeSelector = ({
         
       )}
 
+      {/* Voice selector - only show when audio is enabled and voices are available */}
+      {audioEnabled && audioManager.getAvailableVoices().length > 0 && (
+        <div className="w-dropdown-container">
+          <label>
+            <span className="w-hide-mobile">Voice:</span>
+            <span className="w-show-mobile" style={{ display: 'none' }}>Voice:</span>
+          </label>
+          <select 
+            value={selectedVoice || ''} 
+            onChange={(e) => setSelectedVoice(e.target.value)}
+          >
+            <option value="random">🎲 Random Voice</option>
+            {audioManager.getAvailableVoices().map(voice => (
+              <option key={voice} value={voice}>
+                🎤 {voice}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className="w-button-group-mobile">
         <button
           className="w-mode-option w-compact-button"
@@ -267,22 +288,7 @@ const StudyModeSelector = ({
           {isFullscreen ? '🗗 Close Fullscreen' : '⛶ Fullscreen'}
         </button>
       </div>
-      {audioEnabled && audioManager.getAvailableVoices().length > 0 && (
-        <div className="w-hide-mobile w-voice-selector">
-          <select 
-            value={selectedVoice || ''} 
-            onChange={(e) => setSelectedVoice(e.target.value)}
-            className="w-mode-option"
-          >
-            <option value="random">🎲 Random Voice</option>
-            {audioManager.getAvailableVoices().map(voice => (
-              <option key={voice} value={voice}>
-                🎤 {voice}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+
     </div>
   );
 };

@@ -1,39 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { useFullscreen } from './Utilities/useFullscreen';
-import VocabularyListMode from './Modes/VocabularyListMode.jsx';
+import { useEffect, useState } from 'react';
 import TypingMode from './Modes/TypingMode.jsx';
+import VocabularyListMode from './Modes/VocabularyListMode.jsx';
+import { useFullscreen } from './Utilities/useFullscreen';
 
-import FlashCardMode from './Modes/FlashCardMode.jsx';
-import ListeningMode from './Modes/ListeningMode.jsx';
-import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
-import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
+import ActivityStatsModal from './Components/ActivityStatsModal.jsx';
+import BlitzModeSelector from './Components/BlitzModeSelector.jsx';
+import DrillModeSelector from './Components/DrillModeSelector.jsx';
+import OnboardingFlow from './Components/Onboarding/OnboardingFlow.jsx';
+import SplashScreen from './Components/SplashScreen.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import StudyModeSelector from './Components/StudyModeSelector.jsx';
-import ActivityStatsModal from './Components/ActivityStatsModal.jsx';
+import safeStorage from './DataStorage/safeStorage';
+import activityStatsManager from './Managers/activityStatsManager';
+import audioManager from './Managers/audioManager';
+import corpusChoicesManager from './Managers/corpusChoicesManager';
+import storageConfigManager from './Managers/storageConfigManager';
+import WordListManager from './Managers/wordListManager';
+import BlitzMode from './Modes/BlitzMode.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
 import DeclensionsMode from './Modes/DeclensionsMode.jsx';
-import JourneyMode from './Modes/JourneyMode.jsx';
 import DrillMode from './Modes/DrillMode.jsx';
-import DrillModeSelector from './Components/DrillModeSelector.jsx';
-import BlitzMode from './Modes/BlitzMode.jsx';
-import BlitzModeSelector from './Components/BlitzModeSelector.jsx';
+import FlashCardMode from './Modes/FlashCardMode.jsx';
+import JourneyMode from './Modes/JourneyMode.jsx';
+import ListeningMode from './Modes/ListeningMode.jsx';
 import MathGamesMode from './Modes/MathGamesMode.jsx';
-import safeStorage from './DataStorage/safeStorage';
-import WordListManager from './Managers/wordListManager';
-import SplashScreen from './Components/SplashScreen.jsx';
-import OnboardingFlow from './Components/Onboarding/OnboardingFlow.jsx';
-import storageConfigManager from './Managers/storageConfigManager';
-import activityStatsManager from './Managers/activityStatsManager';
-import corpusChoicesManager from './Managers/corpusChoicesManager';
-import onboardingFlowManager from './Managers/onboardingFlowManager.js';
-import audioManager from './Managers/audioManager';
-import { 
-  fetchCorpora, 
-  fetchCorpusStructure, 
-  fetchAvailableVoices,
-  fetchLevels
+import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
+import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
+import {
+    fetchAvailableVoices,
+    fetchCorpora,
+    fetchCorpusStructure,
+    fetchLevels
 } from './Utilities/apiClient.js';
-import { getWordLevel, getCorpusGroupsUpToLevel } from './Utilities/levelUtils';
+import { getCorpusGroupsUpToLevel } from './Utilities/levelUtils';
 
 const FlashCardApp = () => {
   // Audio settings - simple local state
@@ -79,6 +78,9 @@ const FlashCardApp = () => {
 
   const [wordListManager] = useState(() => new WordListManager(safeStorage, {}));
   const [availableVoices, setAvailableVoices] = useState([]);
+  const [selectedVoice, setSelectedVoice] = useState(() => {
+    return safeStorage?.getItem('flashcard-selected-voice') || 'random';
+  });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
     // Check both intro and storage configuration
@@ -108,6 +110,13 @@ const FlashCardApp = () => {
   useEffect(() => {
     localStorage.setItem('trakaido_audio_enabled', JSON.stringify(audioEnabled));
   }, [audioEnabled]);
+
+  // Save selected voice to storage when it changes
+  useEffect(() => {
+    if (selectedVoice) {
+      safeStorage?.setItem('flashcard-selected-voice', selectedVoice);
+    }
+  }, [selectedVoice]);
 
   // Toggle audio function
   const toggleAudio = () => {
@@ -517,6 +526,8 @@ const FlashCardApp = () => {
         safeStorage={safeStorage}
         audioEnabled={audioEnabled}
         toggleAudio={toggleAudio}
+        selectedVoice={selectedVoice}
+        setSelectedVoice={setSelectedVoice}
         isFullscreen={isFullscreen}
         toggleFullscreen={toggleFullscreen}
         totalSelectedWords={totalSelectedWords}
