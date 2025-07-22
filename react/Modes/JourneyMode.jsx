@@ -1,21 +1,22 @@
 import React from 'react';
 import FlashCardActivity from '../Activities/FlashCardActivity';
-import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
-import TypingActivity from '../Activities/TypingActivity';
 import MotivationalBreakActivity from '../Activities/MotivationalBreakActivity';
+import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
+import TypingActivity from '../Activities/TypingActivity';
+import JourneyFocusModeInterstitial from '../Components/JourneyFocusModeInterstitial';
 
-import { 
-  activityStatsManager, 
-  getExposedWords, 
-  getNewWords, 
-  getTotalCorrectExposures,
-  getTotalExposures
+import {
+    activityStatsManager,
+    getExposedWords,
+    getNewWords,
+    getTotalCorrectExposures,
+    getTotalExposures
 } from '../Managers/activityStatsManager';
 
-import { selectJourneyActivity, invalidateWordWeightCache } from '../Utilities/activitySelection';
-import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import journeyModeManager from '../Managers/journeyModeManager';
+import { invalidateWordWeightCache, selectJourneyActivity } from '../Utilities/activitySelection';
+import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({ 
   wordListManager, 
@@ -25,7 +26,8 @@ const JourneyMode = ({
   autoAdvance, 
   defaultDelay, 
   safeStorage,
-  journeyFocusMode = 'normal'
+  journeyFocusMode = 'normal',
+  setJourneyFocusMode
 }) => {
   const [journeyState, setJourneyState] = React.useState({
     isInitialized: false,
@@ -45,7 +47,26 @@ const JourneyMode = ({
 
   const [activityStats, setActivityStats] = React.useState({});
 
+  // Journey focus mode interstitial state
+  const [showFocusInterstitial, setShowFocusInterstitial] = React.useState(false);
+  const [pendingFocusMode, setPendingFocusMode] = React.useState(null);
+  const [currentFocusMode, setCurrentFocusMode] = React.useState('normal');
+
   // Journey mode state is managed by the singleton journeyModeManager
+
+  // Handle journey focus mode changes with interstitial
+  React.useEffect(() => {
+    if (journeyFocusMode !== currentFocusMode) {
+      if (journeyFocusMode === 'new-words' || journeyFocusMode === 'review-words') {
+        // Show interstitial for non-normal modes
+        setPendingFocusMode(journeyFocusMode);
+        setShowFocusInterstitial(true);
+      } else {
+        // Directly set normal mode
+        setCurrentFocusMode(journeyFocusMode);
+      }
+    }
+  }, [journeyFocusMode, currentFocusMode]);
 
   // Initialize wordListManager activityStats property
   React.useEffect(() => {
@@ -105,6 +126,23 @@ const JourneyMode = ({
     return activityStatsManager.getWordStats(word);
   }, []);
 
+  // Interstitial handlers
+  const handleInterstitialContinue = () => {
+    setCurrentFocusMode(pendingFocusMode);
+    setShowFocusInterstitial(false);
+    setPendingFocusMode(null);
+  };
+
+  const handleInterstitialReturnToNormal = () => {
+    setCurrentFocusMode('normal');
+    setShowFocusInterstitial(false);
+    setPendingFocusMode(null);
+    // Update the parent's state to sync with the dropdown
+    if (setJourneyFocusMode) {
+      setJourneyFocusMode('normal');
+    }
+  };
+
   // Activity selection using centralized utility
   const selectNextActivity = React.useCallback(() => {
     return selectJourneyActivity(
@@ -116,9 +154,9 @@ const JourneyMode = ({
       audioEnabled,
       journeyModeManager,
       getWordWeights,
-      journeyFocusMode
+      currentFocusMode
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, journeyFocusMode]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, currentFocusMode]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
@@ -317,6 +355,17 @@ const JourneyMode = ({
           <div>Loading your learning journey...</div>
         </div>
       </div>
+    );
+  }
+
+  // Show focus mode interstitial if needed
+  if (showFocusInterstitial) {
+    return (
+      <JourneyFocusModeInterstitial
+        focusMode={pendingFocusMode}
+        onContinue={handleInterstitialContinue}
+        onReturnToNormal={handleInterstitialReturnToNormal}
+      />
     );
   }
 

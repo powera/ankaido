@@ -3,20 +3,20 @@
  * Activity selection utilities for Journey Mode and Drill Mode
  */
 
-import { WordWeightCache } from './weightedSelectionTree';
-import { 
-  ActivityType, 
-  ActivityMode, 
-  Word, 
-  WordStats, 
+import { JourneyModeState } from '../Managers/journeyModeManager';
+import { LevelsResponse } from './apiClient';
+import { filterWordsByLevel } from './levelUtils';
+import {
+  ActivityMode,
   ActivityResult,
+  ActivityType,
   DifficultyLevel,
   DifficultyMapping,
-  JourneyFocusMode
+  JourneyFocusMode,
+  Word,
+  WordStats
 } from './types';
-import { filterWordsByLevel } from './levelUtils';
-import { LevelsResponse } from './apiClient';
-import { JourneyModeState } from '../Managers/journeyModeManager';
+import { WordWeightCache } from './weightedSelectionTree';
 
 interface TierConfig {
   correctAnswersRange: [number, number];
@@ -191,7 +191,7 @@ export const selectDrillActivity = (
   return attemptActivitySelection(selectedWord, correctAnswers, audioEnabled, tier);
 };
 
-const JOURNEY_FOCUS_PROBABILITIES = {
+export const JOURNEY_FOCUS_PROBABILITIES = {
   'normal': {
     motivationalBreak: 3,
     newWordIntroduction: 15

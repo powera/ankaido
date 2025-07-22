@@ -184,7 +184,6 @@ const StudyModeSelector = ({
             value={journeyFocusMode}
             onChange={(e) => {
               setJourneyFocusMode(e.target.value);
-              safeStorage.setItem('flashcard-journey-focus-mode', e.target.value);
             }}
           >
             <option value="normal">🎯 Normal</option>
