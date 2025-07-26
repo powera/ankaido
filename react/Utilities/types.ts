@@ -7,8 +7,20 @@
 export interface Word {
   lithuanian: string;
   english: string;
-  corpus?: string;
-  group?: string;
+  corpus: string;
+  group: string;
+  guid: string;
+  levels: string[];
+  alternatives: {
+    english: string[];
+    lithuanian: string[];
+  };
+  metadata: {
+    difficulty_level: number | null;
+    frequency_rank: number;
+    notes: string;
+    tags: string[];
+  };
   [key: string]: any;
 }
 

@@ -1,6 +1,6 @@
-import { 
-  Word, 
-  SessionStats 
+import {
+  SessionStats,
+  Word
 } from '../Utilities/types';
 
 // Types specific to word list management
@@ -67,11 +67,8 @@ class WordListManager {
       if (corporaData[corpus] && groups.length > 0) {
         groups.forEach(group => {
           if (corporaData[corpus].groups[group]) {
-            const groupWords = corporaData[corpus].groups[group].map(word => ({
-              ...word,
-              corpus,
-              group
-            }));
+            // Words already have corpus and group fields from the API
+            const groupWords = corporaData[corpus].groups[group];
             words.push(...groupWords);
           }
         });

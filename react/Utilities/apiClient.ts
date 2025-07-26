@@ -4,13 +4,33 @@ const API_BASE = '/api/lithuanian';
 
 // --- Type Definitions ---
 
+export interface Word {
+  lithuanian: string;
+  english: string;
+  corpus: string;
+  group: string;
+  guid: string;
+  levels: string[];
+  alternatives: {
+    english: string[];
+    lithuanian: string[];
+  };
+  metadata: {
+    difficulty_level: number | null;
+    frequency_rank: number;
+    notes: string;
+    tags: string[];
+  };
+}
+
 export interface CorporaResponse {
   corpora: string[];
 }
 
 export interface CorpusStructure {
-  // Define structure as needed
-  [key: string]: any;
+  groups: {
+    [group: string]: Word[];
+  };
 }
 
 export interface VoicesResponse {
@@ -68,18 +88,52 @@ export interface DailyStatsResponse {
 
 // --- API Functions ---
 
+export const fetchAllWordlists = async (): Promise<Word[]> => {
+  const response = await fetch('/api/trakaido/lithuanian/wordlists');
+  if (!response.ok) throw new Error('Failed to fetch wordlists');
+  const data = await response.json();
+  
+  // Handle different response formats after API conversion
+  if (Array.isArray(data)) {
+    return data as Word[];
+  } else if (data && Array.isArray(data.words)) {
+    return data.words as Word[];
+  } else if (data && Array.isArray(data.wordlists)) {
+    return data.wordlists as Word[];
+  } else if (data && typeof data === 'object') {
+    // If it's an object, try to extract words from common property names
+    const possibleArrays = [data.data, data.results, data.items];
+    for (const arr of possibleArrays) {
+      if (Array.isArray(arr)) {
+        return arr as Word[];
+      }
+    }
+  }
+  
+  // If we can't find an array, throw an error with more context
+  console.error('Unexpected API response format:', data);
+  throw new Error(`API returned unexpected format. Expected array or object with words array, got: ${typeof data}`);
+};
+
 export const fetchCorpora = async (): Promise<string[]> => {
-  const response = await fetch(`${API_BASE}/wordlists`);
-  if (!response.ok) throw new Error('Failed to fetch corpora');
-  const data: CorporaResponse = await response.json();
-  return data.corpora;
+  const words = await fetchAllWordlists();
+  const corpora = [...new Set(words.map(word => word.corpus))];
+  return corpora.sort();
 };
 
 export const fetchCorpusStructure = async (corpus: string): Promise<CorpusStructure> => {
-  const response = await fetch(`${API_BASE}/wordlists/${encodeURIComponent(corpus)}`);
-  if (!response.ok) throw new Error(`Failed to fetch structure for corpus: ${corpus}`);
-  const data: CorpusStructure = await response.json();
-  return data;
+  const words = await fetchAllWordlists();
+  const corpusWords = words.filter(word => word.corpus === corpus);
+  
+  const groups: { [group: string]: Word[] } = {};
+  corpusWords.forEach(word => {
+    if (!groups[word.group]) {
+      groups[word.group] = [];
+    }
+    groups[word.group].push(word);
+  });
+  
+  return { groups };
 };
 
 export const fetchAvailableVoices = async (): Promise<string[]> => {

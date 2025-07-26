@@ -1,15 +1,12 @@
 import React from 'react';
-import FlashCardActivity from '../Activities/FlashCardActivity';
-import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
+import MultipleChoiceActivity from '../Activities/MultipleChoiceActivity';
 import TypingActivity from '../Activities/TypingActivity';
 import StatsDisplay from '../Components/StatsDisplay';
 
-import { 
-  activityStatsManager, 
-  getExposedWords, 
-  getNewWords, 
-  getTotalCorrectExposures 
+import {
+    activityStatsManager,
+    getTotalCorrectExposures
 } from '../Managers/activityStatsManager';
 
 import { selectDrillActivity } from '../Utilities/activitySelection';
@@ -99,12 +96,7 @@ const DrillMode = ({
       let drillWords = [];
 
       if (corporaData[drillConfig.corpus] && corporaData[drillConfig.corpus].groups[drillConfig.group]) {
-        const groupWords = corporaData[drillConfig.corpus].groups[drillConfig.group];
-        drillWords = groupWords.map(word => ({
-          ...word,
-          corpus: drillConfig.corpus,
-          group: drillConfig.group
-        }));
+        drillWords = corporaData[drillConfig.corpus].groups[drillConfig.group];
       }
 
       console.log(`Drill mode: Found ${drillWords.length} words for ${drillConfig.corpus}/${drillConfig.group}`);

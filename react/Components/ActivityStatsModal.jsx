@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+    activityStatsManager,
+    convertStatsToDisplayArray,
+    formatDate
+} from '../Managers/activityStatsManager';
+import journeyModeManager from '../Managers/journeyModeManager';
+import { fetchDailyStats, fetchWeeklyStats } from '../Utilities/apiClient';
 import BaseModal from './shared/BaseModal';
 import DataTable from './shared/DataTable';
-import { 
-  activityStatsManager, 
-  convertStatsToDisplayArray, 
-  formatDate 
-} from '../Managers/activityStatsManager';
-import { fetchDailyStats, fetchWeeklyStats, fetchLevels } from '../Utilities/apiClient';
-import { addLevelToWords } from '../Utilities/levelUtils';
-import safeStorage from '../DataStorage/safeStorage';
-import journeyModeManager from '../Managers/journeyModeManager';
 
 const ActivityStatsModal = ({
   isOpen,
@@ -26,10 +24,22 @@ const ActivityStatsModal = ({
   const [loading, setLoading] = useState(false);
   const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', 'daily', or 'weekly'
-  const [levelsData, setLevelsData] = useState({});
+
 
   const [queueSize, setQueueSize] = useState(0);
   const [isQueueFull, setIsQueueFull] = useState(false);
+
+  // Helper function to convert levels array to display string
+  const formatLevelsForDisplay = (levels) => {
+    if (!levels || levels.length === 0) return 'Other';
+    if (levels.length === 1) {
+      const levelNum = levels[0].replace('level_', '');
+      return `Level ${levelNum}`;
+    }
+    // For multiple levels, show the range or list
+    const levelNums = levels.map(level => level.replace('level_', '')).sort((a, b) => parseInt(a) - parseInt(b));
+    return `Levels ${levelNums.join(', ')}`;
+  };
 
   // Helper function to get words from selected groups only
   const getAllWordsFromSelectedGroups = () => {
@@ -40,8 +50,7 @@ const ActivityStatsModal = ({
           if (corporaData[corpus].groups[group]) {
             const groupWords = corporaData[corpus].groups[group].map(word => ({
               ...word,
-              corpus,
-              group
+              level: formatLevelsForDisplay(word.levels)
             }));
             allWords.push(...groupWords);
           }
@@ -67,11 +76,6 @@ const ActivityStatsModal = ({
       const loadStats = async () => {
         setLoading(true);
         try {
-          // Load levels data first
-          const levelsDataResult = await fetchLevels();
-          console.log('ActivityStatsModal received levels data:', levelsDataResult);
-          setLevelsData(levelsDataResult);
-
           // Load activity stats
           await activityStatsManager.initialize();
           const stats = activityStatsManager.getAllStats();
@@ -91,15 +95,12 @@ const ActivityStatsModal = ({
             return !wordStats || !wordStats.exposed;
           });
 
-          // Add level information to unexposed words
-          const unexposedWithLevel = addLevelToWords(unexposed.map(word => ({
-            lithuanian: word.lithuanian,
-            english: word.english,
-            corpus: word.corpus,
-            group: word.group
-          })), levelsDataResult);
-
-          setUnexposedWords(unexposedWithLevel);
+          // Format levels for display
+          const unexposedWithFormattedLevels = unexposed.map(word => ({
+            ...word,
+            level: formatLevelsForDisplay(word.levels)
+          }));
+          setUnexposedWords(unexposedWithFormattedLevels);
 
           // Load daily stats
           const dailyStatsData = await fetchDailyStats();

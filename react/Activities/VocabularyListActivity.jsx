@@ -1,4 +1,3 @@
-import React from 'react';
 import DataTable from '../Components/shared/DataTable';
 
 const VocabularyListActivity = ({ 
@@ -25,11 +24,7 @@ const VocabularyListActivity = ({
     setSelectedVocabGroup(optionValue);
 
     // Get words for this specific group
-    const words = corporaData[corpus].groups[group].map(word => ({
-      ...word,
-      corpus,
-      group
-    }));
+    const words = corporaData[corpus].groups[group];
 
     // Sort alphabetically by Lithuanian word
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));

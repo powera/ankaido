@@ -27,9 +27,8 @@ import MathGamesMode from './Modes/MathGamesMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import {
-  fetchAvailableVoices,
-  fetchCorpora,
-  fetchCorpusStructure
+  fetchAllWordlists,
+  fetchAvailableVoices
 } from './Utilities/apiClient.js';
 import { handleOnboardingSetup } from './Utilities/onboardingSetup';
 
@@ -143,26 +142,32 @@ const FlashCardApp = () => {
       setLoading(true);
       setError(null);
       try {
-        const [corpora, voices] = await Promise.all([
-          fetchCorpora(),
+        const [allWords, voices] = await Promise.all([
+          fetchAllWordlists(),
           fetchAvailableVoices()
         ]);
+        
+        // Extract corpora from words
+        const corpora = [...new Set(allWords.map(word => word.corpus))].sort();
         setAvailableCorpora(corpora);
         setAvailableVoices(voices);
         
         // Initialize audioManager with available voices
         await audioManager.initialize(voices);
         
+        // Build corpus structures from all words
         const corporaStructures = {};
-        // Load corpus structures
-        for (const corpus of corpora) {
-          try {
-            const structure = await fetchCorpusStructure(corpus);
-            corporaStructures[corpus] = structure;
-          } catch (err) {
-            console.warn(`Failed to load structure for corpus: ${corpus}`, err);
-          }
-        }
+        corpora.forEach(corpus => {
+          const corpusWords = allWords.filter(word => word.corpus === corpus);
+          const groups = {};
+          corpusWords.forEach(word => {
+            if (!groups[word.group]) {
+              groups[word.group] = [];
+            }
+            groups[word.group].push(word);
+          });
+          corporaStructures[corpus] = { groups };
+        });
         setCorporaData(corporaStructures);
 
         // Initialize corpus choices manager - this will handle defaults

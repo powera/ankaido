@@ -1,6 +1,5 @@
 import React from 'react';
 import BlitzActivity from '../Activities/BlitzActivity';
-import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import { activityStatsManager } from '../Managers/activityStatsManager';
 import audioManager from '../Managers/audioManager';
 
@@ -63,23 +62,13 @@ const BlitzMode = ({
         const selectedCorpusGroups = selectedGroups[blitzConfig.corpus];
         selectedCorpusGroups.forEach(groupName => {
           if (corpusData.groups[groupName]) {
-            const wordsWithMetadata = corpusData.groups[groupName].map(word => ({
-              ...word,
-              corpus: blitzConfig.corpus,
-              group: groupName
-            }));
-            allWords = allWords.concat(wordsWithMetadata);
+            allWords = allWords.concat(corpusData.groups[groupName]);
           }
         });
       } else {
         // Use all groups from the selected corpus (original behavior or when all groups are selected)
         Object.entries(corpusData.groups).forEach(([groupName, groupWords]) => {
-          const wordsWithMetadata = groupWords.map(word => ({
-            ...word,
-            corpus: blitzConfig.corpus,
-            group: groupName
-          }));
-          allWords = allWords.concat(wordsWithMetadata);
+          allWords = allWords.concat(groupWords);
         });
       }
     }
