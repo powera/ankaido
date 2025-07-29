@@ -2,7 +2,7 @@
  * Shared utility functions for activity components
  */
 
-import { Word, StudyMode, ActivityState, ActivityStatsManager } from './types';
+import { ActivityState, ActivityStatsManager, StudyMode, Word } from './types';
 
 /**
  * Creates initial activity state object
@@ -35,6 +35,38 @@ export const getCorrectAnswer = (word: Word, studyMode: StudyMode): string => {
       console.warn(`Unknown study mode in getCorrectAnswer: ${studyMode}`);
       return word.lithuanian; // Default fallback
   }
+};
+
+/**
+ * Gets all valid answers for a word including alternatives
+ */
+export const getAllValidAnswers = (word: Word, studyMode: StudyMode): string[] => {
+  const primaryAnswer = getCorrectAnswer(word, studyMode);
+  const validAnswers = [primaryAnswer];
+  
+  // Add alternatives based on study mode
+  if (word.alternatives) {
+    switch (studyMode) {
+      case 'english-to-lithuanian':
+        if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
+          validAnswers.push(...word.alternatives.lithuanian);
+        }
+        break;
+      case 'lithuanian-to-english':
+        if (word.alternatives.english && Array.isArray(word.alternatives.english)) {
+          validAnswers.push(...word.alternatives.english);
+        }
+        break;
+      case 'lithuanian-to-lithuanian':
+        if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
+          validAnswers.push(...word.alternatives.lithuanian);
+        }
+        break;
+    }
+  }
+  
+  // Remove duplicates and empty strings
+  return [...new Set(validAnswers.filter(answer => answer && answer.trim()))];
 };
 
 /**

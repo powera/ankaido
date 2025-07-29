@@ -1,9 +1,9 @@
 
 import React from 'react';
-import WordDisplayCard from '../Components/WordDisplayCard';
 import TypingResponse from '../Components/TypingResponse';
+import WordDisplayCard from '../Components/WordDisplayCard';
 import audioManager from '../Managers/audioManager';
-import { createInitialActivityState, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
+import { createInitialActivityState, getAllValidAnswers, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 
 /**
  * Typing Activity Component
@@ -64,10 +64,7 @@ const TypingActivity = ({
     
     const normalizedTyped = normalizeForComparison(typedAnswer);
     
-    // Determine what field to check based on study mode
-    const targetField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
-    
-    // Find a word where the typed answer matches the target translation
+    // Find a word where the typed answer matches any of its valid translations
     const matchingWord = allWords.find(word => {
       // Skip the current word
       if (word === currentWord || 
@@ -75,24 +72,28 @@ const TypingActivity = ({
         return false;
       }
       
-      // Check if typed answer matches this word's translation
-      const wordTranslation = word[targetField];
-      const normalizedTranslation = normalizeForComparison(wordTranslation);
-      
-      return normalizedTyped === normalizedTranslation;
+      // Get all valid answers for this word and check if any match
+      const wordValidAnswers = getAllValidAnswers(word, studyMode);
+      return wordValidAnswers.some(validAnswer => 
+        normalizeForComparison(validAnswer) === normalizedTyped
+      );
     });
     
     return matchingWord;
-  }, [normalizeForComparison]);
+  }, [normalizeForComparison, getAllValidAnswers]);
 
   // Handle typed answer submission
   const handleSubmit = React.useCallback(async (typedAnswer) => {
     const correctAnswer = getCorrectAnswer(word, studyMode);
+    const allValidAnswers = getAllValidAnswers(word, studyMode);
     
-    // Normalize both answers for comparison
+    // Normalize typed answer for comparison
     const normalizedTyped = normalizeForComparison(typedAnswer);
-    const normalizedCorrect = normalizeForComparison(correctAnswer);
-    const isCorrect = normalizedTyped === normalizedCorrect;
+    
+    // Check if typed answer matches any of the valid answers
+    const isCorrect = allValidAnswers.some(validAnswer => 
+      normalizeForComparison(validAnswer) === normalizedTyped
+    );
 
     // Generate feedback message
     let feedback;
@@ -107,9 +108,19 @@ const TypingActivity = ({
         const sourceField = studyMode === 'english-to-lithuanian' ? 'english' : 'lithuanian';
         const sourceWord = matchingWord[sourceField];
         
-        feedback = `❌ Incorrect. That's the translation for "${sourceWord}". Correct answer: ${correctAnswer}`;
+        // Show all valid answers
+        const validAnswersText = allValidAnswers.length > 1 
+          ? `Correct answers: ${allValidAnswers.join(', ')}`
+          : `Correct answer: ${correctAnswer}`;
+        
+        feedback = `❌ Incorrect. That's the translation for "${sourceWord}". ${validAnswersText}`;
       } else {
-        feedback = `❌ Incorrect. Correct answer: ${correctAnswer}`;
+        // Show all valid answers
+        const validAnswersText = allValidAnswers.length > 1 
+          ? `Correct answers: ${allValidAnswers.join(', ')}`
+          : `Correct answer: ${correctAnswer}`;
+        
+        feedback = `❌ Incorrect. ${validAnswersText}`;
       }
     }
     
@@ -124,7 +135,7 @@ const TypingActivity = ({
     if (onSubmit) {
       onSubmit(typedAnswer, isCorrect);
     }
-  }, [word, studyMode, onSubmit, findMatchingWord, allWords, normalizeForComparison]);
+  }, [word, studyMode, onSubmit, findMatchingWord, allWords, normalizeForComparison, getAllValidAnswers]);
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value) => {
