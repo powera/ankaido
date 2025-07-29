@@ -97,7 +97,6 @@ const StudyMaterialsModal = ({
   };
 
 
-
   // Toggle entire level
   const toggleLevel = async (levelKey) => {
     const levelItems = levelsData[levelKey];
@@ -141,11 +140,6 @@ const StudyMaterialsModal = ({
       await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
     }
   };
-
-
-
-
-
 
 
   return (
