@@ -1,7 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import BaseModal from './shared/BaseModal';
+import { useEffect, useState } from 'react';
 import corpusChoicesManager from '../Managers/corpusChoicesManager';
 import { fetchLevels } from '../Utilities/apiClient';
+import {
+  calculateTotalSelectedWords,
+  isLevelSelected,
+  organizeCorpusByLevel,
+  organizeLevelsForDisplay
+} from '../Utilities/studyMaterialsUtils';
+import BaseModal from './shared/BaseModal';
 
 const StudyMaterialsModal = ({
   isOpen,
@@ -17,6 +23,7 @@ const StudyMaterialsModal = ({
   const [localSelectedGroups, setLocalSelectedGroups] = useState({});
   const [levelsData, setLevelsData] = useState({});
   const [levelsLoading, setLevelsLoading] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Sync local state with props when they change
   useEffect(() => {
@@ -41,14 +48,7 @@ const StudyMaterialsModal = ({
   }, [isOpen]);
 
   // Calculate total selected words based on local state for immediate updates
-  const localTotalSelectedWords = Object.entries(localSelectedGroups).reduce((total, [corpus, groups]) => {
-    const corporaStructure = corporaData[corpus];
-    if (!corporaStructure) return total;
-
-    return total + groups.reduce((corpusTotal, group) => {
-      return corpusTotal + (corporaStructure.groups[group]?.length || 0);
-    }, 0);
-  }, 0);
+  const localTotalSelectedWords = calculateTotalSelectedWords(localSelectedGroups, corporaData);
 
   const toggleGroup = async (corpus, group) => {
     const currentGroups = localSelectedGroups[corpus] || [];
@@ -96,92 +96,57 @@ const StudyMaterialsModal = ({
     await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
   };
 
-  // Organize corpuses by level
-  const organizeCorpusByLevel = () => {
-    if (Object.keys(levelsData).length === 0) {
-      // Fallback to original behavior if levels data is not available
-      return [{ 
-        level: 'All Materials', 
-        corpusGroups: availableCorpora.map(corpus => ({
-          corpus,
-          groups: Object.keys(corporaData[corpus]?.groups || {})
-        }))
-      }];
-    }
 
-    const levelOrder = Object.keys(levelsData).sort((a, b) => {
-      const levelA = parseInt(a.replace('level_', ''));
-      const levelB = parseInt(b.replace('level_', ''));
-      return levelA - levelB;
+
+  // Toggle entire level
+  const toggleLevel = async (levelKey) => {
+    const levelItems = levelsData[levelKey];
+    if (!levelItems || !Array.isArray(levelItems)) return;
+
+    // Group items by corpus
+    const corpusGroupsMap = {};
+    levelItems.forEach(item => {
+      if (availableCorpora.includes(item.corpus)) {
+        if (!corpusGroupsMap[item.corpus]) {
+          corpusGroupsMap[item.corpus] = [];
+        }
+        corpusGroupsMap[item.corpus].push(item.group);
+      }
     });
 
-    const organizedLevels = levelOrder.map(levelKey => {
-      const levelNum = levelKey.replace('level_', '');
+    // Check if all groups in this level are currently selected
+    const allLevelGroups = Object.entries(corpusGroupsMap);
+    const allSelected = isLevelSelected(levelKey, levelsData, availableCorpora, localSelectedGroups);
+
+    // Update each corpus
+    for (const [corpus, groups] of allLevelGroups) {
+      const currentGroups = localSelectedGroups[corpus] || [];
+      let newGroups;
       
-      // Group by corpus, collecting only the groups that belong to this level
-      const corpusGroupsMap = {};
-      const levelItems = levelsData[levelKey];
-      
-      if (levelItems && Array.isArray(levelItems)) {
-        levelItems.forEach(item => {
-          if (availableCorpora.includes(item.corpus)) {
-            if (!corpusGroupsMap[item.corpus]) {
-              corpusGroupsMap[item.corpus] = [];
-            }
-            corpusGroupsMap[item.corpus].push(item.group);
-          }
-        });
-      } else if (levelItems) {
-        console.warn(`Level data for ${levelKey} is not an array:`, levelItems);
+      if (allSelected) {
+        // Remove level groups
+        newGroups = currentGroups.filter(g => !groups.includes(g));
+      } else {
+        // Add level groups
+        newGroups = [...new Set([...currentGroups, ...groups])];
       }
-      
-      const corpusGroups = Object.entries(corpusGroupsMap).map(([corpus, groups]) => ({
-        corpus,
-        groups
+
+      // Update local state immediately
+      setLocalSelectedGroups(prev => ({
+        ...prev,
+        [corpus]: newGroups
       }));
-      
-      return {
-        level: `Level ${levelNum}`,
-        corpusGroups
-      };
-    });
 
-    // Add any groups that aren't in the levels data
-    const groupsInLevels = new Set();
-    Object.values(levelsData).forEach(levelItems => {
-      if (Array.isArray(levelItems)) {
-        levelItems.forEach(item => {
-          if (availableCorpora.includes(item.corpus)) {
-            groupsInLevels.add(`${item.corpus}:${item.group}`);
-          }
-        });
-      }
-    });
-    
-    const uncategorizedCorpusGroups = [];
-    availableCorpora.forEach(corpus => {
-      const allGroups = Object.keys(corporaData[corpus]?.groups || {});
-      const uncategorizedGroups = allGroups.filter(group => 
-        !groupsInLevels.has(`${corpus}:${group}`)
-      );
-      
-      if (uncategorizedGroups.length > 0) {
-        uncategorizedCorpusGroups.push({
-          corpus,
-          groups: uncategorizedGroups
-        });
-      }
-    });
-    
-    if (uncategorizedCorpusGroups.length > 0) {
-      organizedLevels.push({
-        level: 'Other Materials',
-        corpusGroups: uncategorizedCorpusGroups
-      });
+      // Update using corpus choices manager
+      await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
     }
-
-    return organizedLevels.filter(level => level.corpusGroups.length > 0);
   };
+
+
+
+
+
+
 
   return (
     <BaseModal
@@ -196,62 +161,202 @@ const StudyMaterialsModal = ({
             Loading levels...
           </div>
         ) : (
-          organizeCorpusByLevel().map(({ level, corpusGroups }) => (
-            <div key={level} className="trakaido-level-section">
-              <h3 style={{ 
-                margin: '20px 0 10px 0', 
-                fontSize: '1.1rem', 
-                fontWeight: 'bold',
-                color: '#333',
-                borderBottom: '2px solid #ddd',
-                paddingBottom: '5px'
+          <div className="trakaido-levels-container">
+            {organizeLevelsForDisplay(levelsData, availableCorpora, corporaData, localSelectedGroups).map(({ levelKey, level, description, preview, selectedWords, totalWords, isSelected }) => (
+              <div key={levelKey} className="trakaido-level-item" style={{
+                border: '1px solid #ddd',
+                borderRadius: '8px',
+                margin: '10px 0',
+                padding: '15px',
+                backgroundColor: isSelected ? '#f0f8ff' : '#fff',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
               }}>
-                {level}
-              </h3>
-              {corpusGroups.map(({ corpus, groups }) => {
-                const corporaStructure = corporaData[corpus];
-                if (!corporaStructure) return null;
-                const selectedCorpusGroups = localSelectedGroups[corpus] || [];
-                const levelSelectedGroups = groups.filter(g => selectedCorpusGroups.includes(g));
-                const allSelected = groups.length > 0 && groups.every(g => selectedCorpusGroups.includes(g));
-                const wordCount = levelSelectedGroups.reduce((total, g) => {
-                  return total + (corporaStructure.groups[g]?.length || 0);
-                }, 0);
-                return (
-                  <div key={corpus} className="trakaido-corpus-section">
-                    <div className="trakaido-corpus-header" onClick={() => toggleCorpus(corpus, groups)}>
-                      <div>
-                        📚 {corpus} ({wordCount} words from {levelSelectedGroups.length}/{groups.length} groups)
-                      </div>
-                      <button className="trakaido-corpus-toggle">
-                        {allSelected ? 'Deselect All' : 'Select All'}
-                      </button>
+                <div 
+                  onClick={() => levelKey !== 'all' && levelKey !== 'other' ? toggleLevel(levelKey) : null}
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-start', 
+                    gap: '12px',
+                    cursor: levelKey !== 'all' && levelKey !== 'other' ? 'pointer' : 'default'
+                  }}
+                >
+                  {levelKey !== 'all' && levelKey !== 'other' && (
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => toggleLevel(levelKey)}
+                      style={{ 
+                        marginTop: '2px',
+                        transform: 'scale(1.2)'
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  )}
+                  <div style={{ flex: 1 }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      marginBottom: '8px'
+                    }}>
+                      <h3 style={{ 
+                        margin: 0, 
+                        fontSize: '1.1rem', 
+                        fontWeight: 'bold',
+                        color: '#333'
+                      }}>
+                        {level}
+                      </h3>
+                      <span style={{ 
+                        fontSize: '0.9rem', 
+                        color: '#666',
+                        fontWeight: 'bold'
+                      }}>
+                        {selectedWords}/{totalWords} words
+                      </span>
                     </div>
-                    <div className="trakaido-group-grid">
-                      {groups.map(group => {
-                        const groupWordCount = corporaStructure.groups[group]?.length || 0;
-                        const isSelected = selectedCorpusGroups.includes(group);
-                        return (
-                          <div key={group} className="trakaido-group-item">
-                            <input
-                              type="checkbox"
-                              id={`${corpus}-${group}`}
-                              checked={isSelected}
-                              onChange={() => toggleGroup(corpus, group)}
-                            />
-                            <label htmlFor={`${corpus}-${group}`} style={{ fontSize: '0.9rem' }}>
-                              {group} ({groupWordCount} words)
-                            </label>
-                          </div>
-                        );
-                      })}
+                    
+                    <div style={{ 
+                      fontSize: '0.95rem', 
+                      color: '#555',
+                      marginBottom: '6px',
+                      fontWeight: '500'
+                    }}>
+                      {description}
+                    </div>
+                    
+                    <div style={{ 
+                      fontSize: '0.85rem', 
+                      color: '#777',
+                      fontStyle: 'italic'
+                    }}>
+                      {preview}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          ))
+                </div>
+              </div>
+            ))}
+          </div>
         )}
+
+        {/* Advanced Section */}
+        <div style={{ marginTop: '20px', borderTop: '1px solid #ddd', paddingTop: '15px' }}>
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#666',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '5px 0'
+            }}
+          >
+            <span style={{ transform: showAdvanced ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+              ▶
+            </span>
+            Advanced: Individual Group Selection
+          </button>
+          
+          {showAdvanced && (
+            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#f9f9f9', borderRadius: '5px' }}>
+              <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '15px' }}>
+                Select individual vocabulary groups within each level for precise control.
+              </div>
+              {organizeCorpusByLevel(levelsData, availableCorpora, corporaData).map(({ level, corpusGroups }) => (
+                <div key={level} className="trakaido-level-section">
+                  <h4 style={{ 
+                    margin: '15px 0 8px 0', 
+                    fontSize: '1rem', 
+                    fontWeight: 'bold',
+                    color: '#444',
+                    borderBottom: '1px solid #ccc',
+                    paddingBottom: '3px'
+                  }}>
+                    {level}
+                  </h4>
+                  {corpusGroups.map(({ corpus, groups }) => {
+                    const corporaStructure = corporaData[corpus];
+                    if (!corporaStructure) return null;
+                    const selectedCorpusGroups = localSelectedGroups[corpus] || [];
+                    const levelSelectedGroups = groups.filter(g => selectedCorpusGroups.includes(g));
+                    const allSelected = groups.length > 0 && groups.every(g => selectedCorpusGroups.includes(g));
+                    const wordCount = levelSelectedGroups.reduce((total, g) => {
+                      return total + (corporaStructure.groups[g]?.length || 0);
+                    }, 0);
+                    return (
+                      <div key={corpus} className="trakaido-corpus-section" style={{ marginBottom: '10px' }}>
+                        <div 
+                          className="trakaido-corpus-header" 
+                          onClick={() => toggleCorpus(corpus, groups)}
+                          style={{
+                            cursor: 'pointer',
+                            padding: '8px',
+                            backgroundColor: '#fff',
+                            border: '1px solid #ddd',
+                            borderRadius: '4px',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <div style={{ fontSize: '0.9rem' }}>
+                            📚 {corpus} ({wordCount} words from {levelSelectedGroups.length}/{groups.length} groups)
+                          </div>
+                          <button 
+                            className="trakaido-corpus-toggle"
+                            style={{
+                              background: 'none',
+                              border: '1px solid #ccc',
+                              borderRadius: '3px',
+                              padding: '4px 8px',
+                              fontSize: '0.8rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {allSelected ? 'Deselect All' : 'Select All'}
+                          </button>
+                        </div>
+                        <div 
+                          className="trakaido-group-grid"
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+                            gap: '8px',
+                            marginTop: '8px',
+                            padding: '8px'
+                          }}
+                        >
+                          {groups.map(group => {
+                            const groupWordCount = corporaStructure.groups[group]?.length || 0;
+                            const isSelected = selectedCorpusGroups.includes(group);
+                            return (
+                              <div key={group} className="trakaido-group-item" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <input
+                                  type="checkbox"
+                                  id={`${corpus}-${group}`}
+                                  checked={isSelected}
+                                  onChange={() => toggleGroup(corpus, group)}
+                                />
+                                <label htmlFor={`${corpus}-${group}`} style={{ fontSize: '0.8rem', cursor: 'pointer' }}>
+                                  {group} ({groupWordCount} words)
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
         <button
           className="w-mode-option w-compact-button"
