@@ -1,7 +1,6 @@
 
-import React from 'react';
-import AudioButton from './AudioButton';
 import audioManager from '../Managers/audioManager';
+import AudioButton from './AudioButton';
 
 const WordDisplayCard = ({
   currentWord,
@@ -36,6 +35,11 @@ const WordDisplayCard = ({
     (studyMode === 'listening')
   );
 
+  // Helper function to pretty-print level names
+  const formatLevel = (level) => {
+    return level.replace(/level_(\d+)/i, 'Level $1').replace(/_/g, ' ');
+  };
+
   const cardClasses = `w-card ${isClickable ? 'w-card-interactive' : ''} ${className}`;
 
   return (
@@ -46,7 +50,13 @@ const WordDisplayCard = ({
     >
       {showBadge && (
         <div className="w-badge w-hide-mobile">
-          {currentWord.corpus} → {currentWord.group}
+          {currentWord.levels && currentWord.levels.length > 0 ? (
+            // Show only levels if they exist
+            currentWord.levels.map(formatLevel).join(', ')
+          ) : (
+            // Show corpus and group if no levels
+            `${currentWord.corpus} → ${currentWord.group}`
+          )}
         </div>
       )}
       
