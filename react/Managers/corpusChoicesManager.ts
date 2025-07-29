@@ -306,7 +306,8 @@ class CorpusChoicesManager {
   notifyListeners(): void {
     this.listeners.forEach(callback => {
       try {
-        callback(this.choices);
+        // Create a new object reference to ensure React detects the change
+        callback({ ...this.choices });
       } catch (error) {
         console.error('Error in corpus choices listener:', error);
       }

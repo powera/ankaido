@@ -82,16 +82,15 @@ const ActivityStatsModal = ({
           console.log('ActivityStatsModal loaded activityStats:', stats);
           setActivityStats(stats);
 
-          const wordsArray = convertStatsToDisplayArray(stats);
-          setExposedWords(wordsArray);
-
           // Get all words from selected study materials
           const allWords = getAllWordsFromSelectedGroups();
+
+          const wordsArray = convertStatsToDisplayArray(stats, allWords);
+          setExposedWords(wordsArray);
           
           // Filter unexposed words (words that exist in study materials but aren't exposed)
           const unexposed = allWords.filter(word => {
-            const wordKey = `${word.lithuanian}-${word.english}`;
-            const wordStats = stats[wordKey];
+            const wordStats = activityStatsManager.getWordStats(word);
             return !wordStats || !wordStats.exposed;
           });
 

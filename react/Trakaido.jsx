@@ -216,6 +216,8 @@ const FlashCardApp = () => {
 
   // Load journey stats using activityStatsManager
   useEffect(() => {
+    let handleStatsChange = null;
+
     const loadActivityStats = async () => {
       try {
         const stats = await activityStatsManager.initialize();
@@ -224,14 +226,11 @@ const FlashCardApp = () => {
         // Journey stats are now managed separately by activityStatsManager
 
         // Listen for stats changes
-        const handleStatsChange = (updatedStats) => {
+        handleStatsChange = (updatedStats) => {
           setActivityStats(updatedStats);
         };
 
         activityStatsManager.addListener(handleStatsChange);
-
-        // Cleanup listener on unmount
-        return () => activityStatsManager.removeListener(handleStatsChange);
       } catch (error) {
         console.error('Error loading journey stats:', error);
         setActivityStats({});
@@ -239,24 +238,30 @@ const FlashCardApp = () => {
     };
 
     loadActivityStats();
+
+    // Cleanup listener on unmount
+    return () => {
+      if (handleStatsChange) {
+        activityStatsManager.removeListener(handleStatsChange);
+      }
+    };
   }, [wordListManager]);
 
   // Load corpus choices using corpusChoicesManager
   useEffect(() => {
+    let handleChoicesChange = null;
+
     const loadCorpusChoices = async () => {
       try {
         const choices = await corpusChoicesManager.initialize();
         setSelectedGroups(choices);
 
         // Listen for choices changes
-        const handleChoicesChange = (updatedChoices) => {
+        handleChoicesChange = (updatedChoices) => {
           setSelectedGroups(updatedChoices);
         };
 
         corpusChoicesManager.addListener(handleChoicesChange);
-
-        // Cleanup listener on unmount
-        return () => corpusChoicesManager.removeListener(handleChoicesChange);
       } catch (error) {
         console.error('Error loading corpus choices:', error);
         setSelectedGroups({});
@@ -264,6 +269,13 @@ const FlashCardApp = () => {
     };
 
     loadCorpusChoices();
+
+    // Cleanup listener on unmount
+    return () => {
+      if (handleChoicesChange) {
+        corpusChoicesManager.removeListener(handleChoicesChange);
+      }
+    };
   }, []);
 
   // Combined localStorage persistence

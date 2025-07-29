@@ -6,8 +6,13 @@
  */
 
 import indexedDBManager from '../DataStorage/indexedDBManager';
+import { StatMode, Stats, Word, WordStats } from '../Utilities/types';
 import storageConfigManager from './storageConfigManager';
-import { Word, WordStats, Stats, StatMode, ModeStats } from '../Utilities/types';
+
+// Feature flag for GUID usage
+// Set to true to enable GUID keys in development (requires word list updates to be complete)
+// Set to false to use legacy lithuanian-english keys (current production behavior)
+const USE_GUID_KEYS = false;
 
 // API Configuration
 const API_BASE_URL = '/api/trakaido/journeystats';
@@ -171,8 +176,18 @@ export const DEFAULT_WORD_STATS: WordStats = {
   lastIncorrectAnswer: null
 };
 
-// Create a unique key for a word
-export const createWordKey = (word: Word): string => `${word.lithuanian}-${word.english}`;
+// Create a unique key for a word using GUID (if enabled) or legacy format
+export const createWordKey = (word: Word): string => {
+  // Use GUID if feature flag is enabled and GUID is available
+  if (USE_GUID_KEYS && word.guid) {
+    return word.guid;
+  }
+  // Otherwise use legacy format
+  return `${word.lithuanian}-${word.english}`;
+};
+
+// Create the old format key for migration purposes
+export const createLegacyWordKey = (word: Word): string => `${word.lithuanian}-${word.english}`;
 
 // WordListManager no longer stores activity stats - they are managed separately by activityStatsManager
 
@@ -207,13 +222,47 @@ export interface DisplayWordStats extends WordStats {
   totalIncorrect: number;
 }
 
-export const convertStatsToDisplayArray = (stats: Stats): DisplayWordStats[] => {
+export const convertStatsToDisplayArray = (stats: Stats, allWords: Word[] = []): DisplayWordStats[] => {
   if (!stats || Object.keys(stats).length === 0) {
     return [];
   }
 
+  // Create a lookup map for words by GUID and legacy key
+  const wordByGuid = new Map<string, Word>();
+  const wordByLegacyKey = new Map<string, Word>();
+  
+  allWords.forEach(word => {
+    if (word.guid) {
+      wordByGuid.set(word.guid, word);
+    }
+    wordByLegacyKey.set(`${word.lithuanian}-${word.english}`, word);
+  });
+
   return Object.entries(stats).map(([key, wordStats]) => {
-    const [lithuanian, english] = key.split('-');
+    let lithuanian = 'Unknown';
+    let english = 'Unknown';
+    
+    // Try to find word by GUID first, then by legacy key format
+    const wordByGuidLookup = wordByGuid.get(key);
+    if (wordByGuidLookup) {
+      lithuanian = wordByGuidLookup.lithuanian;
+      english = wordByGuidLookup.english;
+    } else {
+      // Check if it's a legacy key format
+      const wordByLegacyLookup = wordByLegacyKey.get(key);
+      if (wordByLegacyLookup) {
+        lithuanian = wordByLegacyLookup.lithuanian;
+        english = wordByLegacyLookup.english;
+      } else {
+        // Fallback: try to parse as legacy format
+        const keyParts = key.split('-');
+        if (keyParts.length >= 2) {
+          lithuanian = keyParts[0];
+          english = keyParts.slice(1).join('-'); // Handle cases where english might contain dashes
+        }
+      }
+    }
+    
     return {
       lithuanian,
       english,
@@ -303,10 +352,36 @@ export class ActivityStatsManager {
 
   /**
    * Get stats for a specific word
+   * Handles migration from legacy keys to GUID keys when GUID feature is enabled
    */
   getWordStats(word: Word): WordStats {
     const wordKey = createWordKey(word);
-    return this.stats[wordKey] || { ...DEFAULT_WORD_STATS };
+    
+    // First try to get stats with the current key
+    if (this.stats[wordKey]) {
+      return this.stats[wordKey];
+    }
+    
+    // If GUID feature is enabled and word has GUID, try legacy key for migration
+    if (USE_GUID_KEYS && word.guid) {
+      const legacyKey = createLegacyWordKey(word);
+      if (this.stats[legacyKey]) {
+        // Found stats with legacy key, migrate to GUID key
+        const legacyStats = this.stats[legacyKey];
+        this.stats[wordKey] = legacyStats;
+        delete this.stats[legacyKey];
+        
+        // Save the migrated stats (async, but don't wait for it)
+        this.saveMigratedStats().catch(error => {
+          console.error('Error saving migrated stats:', error);
+        });
+        
+        return legacyStats;
+      }
+    }
+    
+    // Return default stats if no existing stats found
+    return { ...DEFAULT_WORD_STATS };
   }
 
   /**
@@ -493,6 +568,25 @@ export class ActivityStatsManager {
    */
   getCurrentStorageMode(): 'server' | 'indexedDB' {
     return storageConfigManager.isRemoteStorage() ? 'server' : 'indexedDB';
+  }
+
+  /**
+   * Save migrated stats to storage
+   * Private helper method for migration
+   */
+  private async saveMigratedStats(): Promise<void> {
+    try {
+      if (storageConfigManager.isRemoteStorage()) {
+        await apiClient.saveAllStats(this.stats);
+        console.log('Migrated stats saved to server');
+      } else {
+        await indexedDBManager.saveJourneyStats(this.stats);
+        console.log('Migrated stats saved to indexedDB');
+      }
+    } catch (error) {
+      console.error('Error saving migrated stats:', error);
+      throw error;
+    }
   }
 }
 

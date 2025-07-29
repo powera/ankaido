@@ -12,20 +12,32 @@ jest.mock('../Managers/storageConfigManager', () => ({
   isRemoteStorage: jest.fn(() => false)
 }));
 
-import activityStatsManager, { 
-  createWordKey, 
-  calculateTotalCorrect, 
-  calculateTotalIncorrect,
-  DEFAULT_WORD_STATS,
-  convertStatsToDisplayArray
+import activityStatsManager, {
+    calculateTotalCorrect,
+    calculateTotalIncorrect,
+    convertStatsToDisplayArray,
+    createWordKey,
+    DEFAULT_WORD_STATS
 } from '../Managers/activityStatsManager';
 
 describe('activityStatsManager utility functions', () => {
   describe('createWordKey', () => {
-    it('should create correct word key', () => {
+    it('should create correct word key using legacy format when GUID feature is disabled', () => {
+      const word = { guid: 'guid-123', lithuanian: 'labas', english: 'hello' };
+      const key = createWordKey(word);
+      expect(key).toBe('labas-hello'); // Should use legacy format since USE_GUID_KEYS is false
+    });
+
+    it('should use legacy format for words without GUID', () => {
       const word = { lithuanian: 'labas', english: 'hello' };
       const key = createWordKey(word);
       expect(key).toBe('labas-hello');
+    });
+
+    it('should handle words with special characters', () => {
+      const word = { lithuanian: 'ačiū', english: 'thank you' };
+      const key = createWordKey(word);
+      expect(key).toBe('ačiū-thank you');
     });
   });
 
@@ -67,7 +79,38 @@ describe('activityStatsManager utility functions', () => {
   });
 
   describe('convertStatsToDisplayArray', () => {
-    it('should convert stats object to display array', () => {
+    it('should convert stats object to display array with GUID keys', () => {
+      const allWords = [
+        { guid: 'guid-123', lithuanian: 'labas', english: 'hello' }
+      ];
+      const stats = {
+        'guid-123': {
+          exposed: true,
+          multipleChoice: { correct: 3, incorrect: 1 },
+          listeningEasy: { correct: 2, incorrect: 0 },
+          lastSeen: 1640995200000
+        }
+      };
+      
+      const result = convertStatsToDisplayArray(stats, allWords);
+      
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        lithuanian: 'labas',
+        english: 'hello',
+        exposed: true,
+        multipleChoice: { correct: 3, incorrect: 1 },
+        listeningEasy: { correct: 2, incorrect: 0 },
+        lastSeen: 1640995200000,
+        totalCorrect: 5,
+        totalIncorrect: 1
+      });
+    });
+
+    it('should convert stats object to display array with legacy keys', () => {
+      const allWords = [
+        { guid: 'guid-123', lithuanian: 'labas', english: 'hello' }
+      ];
       const stats = {
         'labas-hello': {
           exposed: true,
@@ -77,7 +120,32 @@ describe('activityStatsManager utility functions', () => {
         }
       };
       
-      const result = convertStatsToDisplayArray(stats);
+      const result = convertStatsToDisplayArray(stats, allWords);
+      
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        lithuanian: 'labas',
+        english: 'hello',
+        exposed: true,
+        multipleChoice: { correct: 3, incorrect: 1 },
+        listeningEasy: { correct: 2, incorrect: 0 },
+        lastSeen: 1640995200000,
+        totalCorrect: 5,
+        totalIncorrect: 1
+      });
+    });
+
+    it('should fallback to parsing legacy key format when word not found', () => {
+      const stats = {
+        'labas-hello': {
+          exposed: true,
+          multipleChoice: { correct: 3, incorrect: 1 },
+          listeningEasy: { correct: 2, incorrect: 0 },
+          lastSeen: 1640995200000
+        }
+      };
+      
+      const result = convertStatsToDisplayArray(stats, []);
       
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
