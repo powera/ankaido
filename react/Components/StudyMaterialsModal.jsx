@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import corpusChoicesManager from '../Managers/corpusChoicesManager';
-import { fetchLevels } from '../Utilities/apiClient';
 import {
   calculateTotalSelectedWords,
   isLevelSelected,
@@ -16,36 +15,18 @@ const StudyMaterialsModal = ({
   availableCorpora,
   corporaData,
   selectedGroups,
+  levelsData,
   resetAllSettings,
   safeStorage
 }) => {
   // Local state for immediate UI updates
   const [localSelectedGroups, setLocalSelectedGroups] = useState({});
-  const [levelsData, setLevelsData] = useState({});
-  const [levelsLoading, setLevelsLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   // Sync local state with props when they change
   useEffect(() => {
     setLocalSelectedGroups(selectedGroups);
   }, [selectedGroups]);
-
-  // Fetch levels data when modal opens
-  useEffect(() => {
-    if (isOpen && Object.keys(levelsData).length === 0 && !levelsLoading) {
-      setLevelsLoading(true);
-      fetchLevels()
-        .then(levels => {
-          setLevelsData(levels);
-        })
-        .catch(error => {
-          console.error('Failed to fetch levels:', error);
-        })
-        .finally(() => {
-          setLevelsLoading(false);
-        });
-    }
-  }, [isOpen]);
 
   // Calculate total selected words based on local state for immediate updates
   const localTotalSelectedWords = calculateTotalSelectedWords(localSelectedGroups, corporaData);
@@ -150,7 +131,7 @@ const StudyMaterialsModal = ({
       ariaLabel="Study materials selection"
     >
       <div className="w-settings-form" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
-        {levelsLoading ? (
+        {!levelsData || Object.keys(levelsData).length === 0 ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             Loading levels...
           </div>

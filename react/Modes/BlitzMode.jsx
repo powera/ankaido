@@ -9,9 +9,10 @@ const BlitzMode = ({
   studyMode,
   setStudyMode,
   audioEnabled,
-  blitzConfig, // { corpus, useSelectedGroupsOnly }
+  blitzConfig, // { corpus, useSelectedGroupsOnly } or { levelKey, contentFilter, mode }
   corporaData,
   selectedGroups,
+  levelsData,
   onExitBlitz,
   onBackToBlitzSelector
 }) => {
@@ -29,53 +30,104 @@ const BlitzMode = ({
   
   const MAX_QUESTIONS = 25;
 
+  // Helper function to determine if a corpus contains verbs or words
+  const getCorpusType = (corpus) => {
+    if (corpus.includes('verbs_')) return 'verbs';
+    if (corpus.includes('phrases_')) return 'phrases';
+    return 'words';
+  };
+
+  // Generate words from level configuration
+  const generateWordsFromLevel = (levelKey, contentFilter = 'all') => {
+    if (!levelsData || !levelsData[levelKey]) return [];
+    
+    const levelItems = levelsData[levelKey];
+    let allWords = [];
+    
+    levelItems.forEach(item => {
+      if (corporaData[item.corpus] && corporaData[item.corpus].groups[item.group]) {
+        const corpusType = getCorpusType(item.corpus);
+        
+        // Apply content filter
+        if (contentFilter === 'words' && corpusType !== 'words') return;
+        if (contentFilter === 'verbs' && corpusType !== 'verbs' && corpusType !== 'phrases') return;
+        
+        const groupWords = corporaData[item.corpus].groups[item.group];
+        allWords = allWords.concat(groupWords);
+      }
+    });
+    
+    return allWords;
+  };
+
   // Initialize blitz game when blitz config changes
   React.useEffect(() => {
-    if (blitzConfig && corporaData && corporaData[blitzConfig.corpus]) {
-      initializeBlitzGame();
+    if (blitzConfig && corporaData) {
+      if (blitzConfig.mode === 'level' && levelsData) {
+        initializeBlitzGame();
+      } else if (blitzConfig.mode === 'corpus' && corporaData[blitzConfig.corpus]) {
+        initializeBlitzGame();
+      } else if (!blitzConfig.mode && corporaData[blitzConfig.corpus]) {
+        // Backward compatibility for old corpus-only configs
+        initializeBlitzGame();
+      }
     }
-  }, [blitzConfig, corporaData, selectedGroups]);
+  }, [blitzConfig, corporaData, selectedGroups, levelsData]);
 
   // Reinitialize game when study mode changes
   React.useEffect(() => {
-    if (blitzConfig && corporaData && corporaData[blitzConfig.corpus] && blitzWords.length > 0) {
+    if (blitzConfig && corporaData && blitzWords.length > 0) {
       // Only reinitialize if we have an active game
-      initializeBlitzGame();
+      const hasValidConfig = (blitzConfig.mode === 'level' && levelsData) || 
+                            (blitzConfig.mode === 'corpus' && corporaData[blitzConfig.corpus]) ||
+                            (!blitzConfig.mode && corporaData[blitzConfig.corpus]);
+      if (hasValidConfig) {
+        initializeBlitzGame();
+      }
     }
   }, [studyMode]);
 
   const initializeBlitzGame = () => {
-    if (!blitzConfig || !corporaData[blitzConfig.corpus]) return;
+    if (!blitzConfig) return;
 
-    // Generate words directly from corporaData for the selected corpus
     let allWords = [];
-    const corpusData = corporaData[blitzConfig.corpus];
-    
-    if (corpusData && corpusData.groups) {
-      // Check if all groups are selected - if so, treat as "use all groups"
-      const allGroupsCount = Object.keys(corpusData.groups).length;
-      const selectedGroupsCount = selectedGroups && selectedGroups[blitzConfig.corpus] ? selectedGroups[blitzConfig.corpus].length : 0;
-      const allGroupsSelected = selectedGroupsCount === allGroupsCount;
+
+    if (blitzConfig.mode === 'level') {
+      // Level-based mode
+      if (!levelsData || !blitzConfig.levelKey) return;
+      allWords = generateWordsFromLevel(blitzConfig.levelKey, blitzConfig.contentFilter);
+    } else {
+      // Corpus-based mode (original behavior)
+      if (!corporaData[blitzConfig.corpus]) return;
       
-      if (blitzConfig.useSelectedGroupsOnly && selectedGroups && selectedGroups[blitzConfig.corpus] && !allGroupsSelected) {
-        // Use only selected groups from Study Materials (when not all groups are selected)
-        const selectedCorpusGroups = selectedGroups[blitzConfig.corpus];
-        selectedCorpusGroups.forEach(groupName => {
-          if (corpusData.groups[groupName]) {
-            allWords = allWords.concat(corpusData.groups[groupName]);
-          }
-        });
-      } else {
-        // Use all groups from the selected corpus (original behavior or when all groups are selected)
-        Object.entries(corpusData.groups).forEach(([groupName, groupWords]) => {
-          allWords = allWords.concat(groupWords);
-        });
+      const corpusData = corporaData[blitzConfig.corpus];
+      
+      if (corpusData && corpusData.groups) {
+        // Check if all groups are selected - if so, treat as "use all groups"
+        const allGroupsCount = Object.keys(corpusData.groups).length;
+        const selectedGroupsCount = selectedGroups && selectedGroups[blitzConfig.corpus] ? selectedGroups[blitzConfig.corpus].length : 0;
+        const allGroupsSelected = selectedGroupsCount === allGroupsCount;
+        
+        if (blitzConfig.useSelectedGroupsOnly && selectedGroups && selectedGroups[blitzConfig.corpus] && !allGroupsSelected) {
+          // Use only selected groups from Study Materials (when not all groups are selected)
+          const selectedCorpusGroups = selectedGroups[blitzConfig.corpus];
+          selectedCorpusGroups.forEach(groupName => {
+            if (corpusData.groups[groupName]) {
+              allWords = allWords.concat(corpusData.groups[groupName]);
+            }
+          });
+        } else {
+          // Use all groups from the selected corpus (original behavior or when all groups are selected)
+          Object.entries(corpusData.groups).forEach(([groupName, groupWords]) => {
+            allWords = allWords.concat(groupWords);
+          });
+        }
       }
     }
 
     if (allWords.length === 0) return;
     
-    // Use all words from the selected corpus
+    // Use all words from the selection
     const sameCorpusWords = allWords;
     
     // Calculate max questions (up to 25, but not more than half the corpus)
@@ -227,7 +279,16 @@ const BlitzMode = ({
           <div className="w-question w-mb-large">⚡ Blitz Mode</div>
           <div>Not enough words available for Blitz mode. Need at least 20 words.</div>
           <div style={{ marginTop: 'var(--spacing-medium)', fontSize: '0.9em', color: '#666' }}>
-            {blitzConfig?.useSelectedGroupsOnly ? (
+            {blitzConfig?.mode === 'level' ? (
+              <>
+                Current level selection has {corpusWords.length} words available.
+                <br />
+                {blitzConfig.contentFilter !== 'all' ? 
+                  'Try selecting "All content types" or choose a different level.' :
+                  'Try choosing a different level with more vocabulary.'
+                }
+              </>
+            ) : blitzConfig?.useSelectedGroupsOnly ? (
               <>
                 Currently using only selected groups from Study Materials ({corpusWords.length} words available).
                 <br />
@@ -244,7 +305,7 @@ const BlitzMode = ({
             onClick={onBackToBlitzSelector}
             style={{ marginTop: 'var(--spacing-medium)', marginRight: 'var(--spacing-small)' }}
           >
-            ⚡ Choose Different Corpus
+            ⚡ Choose Different {blitzConfig?.mode === 'level' ? 'Level' : 'Corpus'}
           </button>
           <button 
             className="w-button"

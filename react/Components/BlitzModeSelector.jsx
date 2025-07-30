@@ -1,14 +1,75 @@
 import React from 'react';
+import { organizeLevelsForDisplay } from '../Utilities/studyMaterialsUtils';
 
 const BlitzModeSelector = ({
   availableCorpora,
   corporaData,
   selectedGroups,
+  levelsData,
   onStartBlitz,
   onCancel
 }) => {
   const [selectedCorpus, setSelectedCorpus] = React.useState('');
+  const [selectedLevel, setSelectedLevel] = React.useState('');
   const [useSelectedGroupsOnly, setUseSelectedGroupsOnly] = React.useState(false);
+  const [selectionMode, setSelectionMode] = React.useState('level'); // 'corpus' or 'level'
+  const [contentFilter, setContentFilter] = React.useState('all'); // 'all', 'words', 'verbs'
+
+  // Helper function to determine if a corpus contains verbs or words
+  const getCorpusType = (corpus) => {
+    if (corpus.includes('verbs_')) return 'verbs';
+    if (corpus.includes('phrases_')) return 'phrases';
+    return 'words';
+  };
+
+  // Get word count for a specific level with content filtering
+  const getLevelWordCount = (levelKey, filter = 'all') => {
+    if (!levelsData || !levelsData[levelKey]) return 0;
+    
+    const levelItems = levelsData[levelKey];
+    let totalWords = 0;
+    
+    levelItems.forEach(item => {
+      if (availableCorpora.includes(item.corpus)) {
+        const corpusType = getCorpusType(item.corpus);
+        
+        // Apply content filter
+        if (filter === 'words' && corpusType !== 'words') return;
+        if (filter === 'verbs' && corpusType !== 'verbs' && corpusType !== 'phrases') return;
+        
+        const corporaStructure = corporaData[item.corpus];
+        if (corporaStructure && corporaStructure.groups[item.group]) {
+          // Check if this group is selected (if using selected groups only)
+          if (useSelectedGroupsOnly && selectedGroups && selectedGroups[item.corpus]) {
+            const selectedCorpusGroups = selectedGroups[item.corpus];
+            if (selectedCorpusGroups.includes(item.group)) {
+              totalWords += corporaStructure.groups[item.group].length;
+            }
+          } else {
+            totalWords += corporaStructure.groups[item.group].length;
+          }
+        }
+      }
+    });
+    
+    return totalWords;
+  };
+
+  // Check if a level has mixed content types
+  const levelHasMixedContent = (levelKey) => {
+    if (!levelsData || !levelsData[levelKey]) return false;
+    
+    const levelItems = levelsData[levelKey];
+    const contentTypes = new Set();
+    
+    levelItems.forEach(item => {
+      if (availableCorpora.includes(item.corpus)) {
+        contentTypes.add(getCorpusType(item.corpus));
+      }
+    });
+    
+    return contentTypes.size > 1;
+  };
 
   // Get word count for all groups in corpus
   const getAllGroupsWordCount = (corpus) => {
@@ -35,15 +96,33 @@ const BlitzModeSelector = ({
   }, [selectedCorpus, selectedGroups, useSelectedGroupsOnly]);
 
   const handleStartBlitz = () => {
-    if (selectedCorpus) {
+    if (selectionMode === 'corpus' && selectedCorpus) {
       onStartBlitz({
         corpus: selectedCorpus,
-        useSelectedGroupsOnly
+        useSelectedGroupsOnly,
+        mode: 'corpus'
+      });
+    } else if (selectionMode === 'level' && selectedLevel) {
+      onStartBlitz({
+        levelKey: selectedLevel,
+        contentFilter,
+        mode: 'level'
       });
     }
   };
 
-  const isStartEnabled = selectedCorpus;
+  const isStartEnabled = (selectionMode === 'corpus' && selectedCorpus) || 
+                        (selectionMode === 'level' && selectedLevel);
+
+  // Get current word count based on selection mode
+  const getCurrentWordCount = () => {
+    if (selectionMode === 'corpus' && selectedCorpus) {
+      return getCorpusWordCount(selectedCorpus);
+    } else if (selectionMode === 'level' && selectedLevel) {
+      return getLevelWordCount(selectedLevel, contentFilter);
+    }
+    return 0;
+  };
 
   // Get word count for selected corpus based on current settings
   const getCorpusWordCount = (corpus) => {
@@ -75,7 +154,7 @@ const BlitzModeSelector = ({
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {/* Corpus Selection */}
+        {/* Selection Mode Toggle */}
         <div>
           <label style={{ 
             display: 'block', 
@@ -83,148 +162,352 @@ const BlitzModeSelector = ({
             fontWeight: 'bold',
             color: 'var(--color-text)'
           }}>
-            📚 Vocabulary Source:
+            🎯 Selection Mode:
           </label>
-          <select 
-            value={selectedCorpus}
-            onChange={(e) => setSelectedCorpus(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              cursor: 'pointer',
+              padding: '0.5rem 1rem',
               borderRadius: 'var(--border-radius)',
               border: '1px solid var(--color-border)',
-              background: 'var(--color-card-bg)',
-              fontSize: '1rem',
-              cursor: 'pointer'
-            }}
-          >
-            <option value="">Select a vocabulary source...</option>
-            {availableCorpora.map(corpus => {
-              const wordCount = getCorpusWordCount(corpus);
-              const displayName = corpus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              return (
-                <option key={corpus} value={corpus}>
-                  {displayName} ({wordCount} words)
-                </option>
-              );
-            })}
-          </select>
-          {selectedCorpus && (
-            <div style={{ 
-              marginTop: '0.5rem', 
-              fontSize: '0.85rem', 
-              color: 'var(--color-text-secondary)' 
+              background: selectionMode === 'corpus' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
+              flex: 1,
+              justifyContent: 'center'
             }}>
-              {getCorpusWordCount(selectedCorpus) >= 20 ? 
-                `✓ Ready for Blitz mode (${getCorpusWordCount(selectedCorpus)} words available)` :
-                `⚠️ Need at least 20 words for Blitz mode (only ${getCorpusWordCount(selectedCorpus)} available)`
-              }
-            </div>
-          )}
+              <input
+                type="radio"
+                name="selectionMode"
+                checked={selectionMode === 'corpus'}
+                onChange={() => {
+                  setSelectionMode('corpus');
+                  setSelectedLevel('');
+                }}
+              />
+              <span>📚 By Corpus</span>
+            </label>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '0.5rem',
+              cursor: levelsData && Object.keys(levelsData).length > 0 ? 'pointer' : 'not-allowed',
+              padding: '0.5rem 1rem',
+              borderRadius: 'var(--border-radius)',
+              border: '1px solid var(--color-border)',
+              background: selectionMode === 'level' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
+              opacity: levelsData && Object.keys(levelsData).length > 0 ? 1 : 0.6,
+              flex: 1,
+              justifyContent: 'center'
+            }}>
+              <input
+                type="radio"
+                name="selectionMode"
+                checked={selectionMode === 'level'}
+                disabled={!levelsData || Object.keys(levelsData).length === 0}
+                onChange={() => {
+                  setSelectionMode('level');
+                  setSelectedCorpus('');
+                }}
+              />
+              <span>🎚️ By Level</span>
+            </label>
+          </div>
         </div>
 
-        {/* Group Selection Option */}
-        {selectedCorpus && (
-          <div>
-            <label style={{ 
-              display: 'block', 
-              marginBottom: '0.5rem', 
-              fontWeight: 'bold',
-              color: 'var(--color-text)'
-            }}>
-              📝 Word Selection:
-            </label>
-            {selectedGroups && selectedGroups[selectedCorpus] && selectedGroups[selectedCorpus].length > 0 ? (
-              // Check if all groups are selected - if so, both options are the same
-              selectedGroups[selectedCorpus].length === Object.keys(corporaData[selectedCorpus]?.groups || {}).length ? (
-                <div style={{ 
+        {/* Corpus Selection Mode */}
+        {selectionMode === 'corpus' && (
+          <>
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem', 
+                fontWeight: 'bold',
+                color: 'var(--color-text)'
+              }}>
+                📚 Vocabulary Source:
+              </label>
+              <select 
+                value={selectedCorpus}
+                onChange={(e) => setSelectedCorpus(e.target.value)}
+                style={{
+                  width: '100%',
                   padding: '0.75rem',
                   borderRadius: 'var(--border-radius)',
                   border: '1px solid var(--color-border)',
                   background: 'var(--color-card-bg)',
-                  fontSize: '0.9rem',
-                  color: 'var(--color-text-secondary)'
+                  fontSize: '1rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="">Select a vocabulary source...</option>
+                {availableCorpora.map(corpus => {
+                  const wordCount = getCorpusWordCount(corpus);
+                  const displayName = corpus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                  return (
+                    <option key={corpus} value={corpus}>
+                      {displayName} ({wordCount} words)
+                    </option>
+                  );
+                })}
+              </select>
+              {selectedCorpus && (
+                <div style={{ 
+                  marginTop: '0.5rem', 
+                  fontSize: '0.85rem', 
+                  color: 'var(--color-text-secondary)' 
                 }}>
-                  All groups from this corpus are selected in Study Materials. Will use all available groups 
-                  ({getAllGroupsWordCount(selectedCorpus)} words).
+                  {getCorpusWordCount(selectedCorpus) >= 20 ? 
+                    `✓ Ready for Blitz mode (${getCorpusWordCount(selectedCorpus)} words available)` :
+                    `⚠️ Need at least 20 words for Blitz mode (only ${getCorpusWordCount(selectedCorpus)} available)`
+                  }
                 </div>
-              ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              )}
+            </div>
+
+            {/* Group Selection Option for Corpus Mode */}
+            {selectedCorpus && (
+              <div>
                 <label style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.5rem',
-                  cursor: 'pointer',
-                  padding: '0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-border)',
-                  background: !useSelectedGroupsOnly ? 'var(--color-primary-light)' : 'var(--color-card-bg)'
+                  display: 'block', 
+                  marginBottom: '0.5rem', 
+                  fontWeight: 'bold',
+                  color: 'var(--color-text)'
                 }}>
-                  <input
-                    type="radio"
-                    name="groupSelection"
-                    checked={!useSelectedGroupsOnly}
-                    onChange={() => setUseSelectedGroupsOnly(false)}
-                  />
-                  <span>
-                    Use all groups from Study Materials 
-                    ({getAllGroupsWordCount(selectedCorpus)} words)
-                  </span>
+                  📝 Word Selection:
                 </label>
-                <label style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.5rem',
-                  cursor: getSelectedGroupsWordCount(selectedCorpus) >= 20 ? 'pointer' : 'not-allowed',
-                  padding: '0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-border)',
-                  background: useSelectedGroupsOnly ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
-                  opacity: getSelectedGroupsWordCount(selectedCorpus) >= 20 ? 1 : 0.6
-                }}>
-                  <input
-                    type="radio"
-                    name="groupSelection"
-                    checked={useSelectedGroupsOnly}
-                    disabled={getSelectedGroupsWordCount(selectedCorpus) < 20}
-                    onChange={() => setUseSelectedGroupsOnly(true)}
-                  />
-                  <span>
-                    Use only selected groups from Study Materials 
-                    ({getSelectedGroupsWordCount(selectedCorpus)} words)
-                    {getSelectedGroupsWordCount(selectedCorpus) < 20 && (
-                      <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
-                        (Need at least 20 words)
+                {selectedGroups && selectedGroups[selectedCorpus] && selectedGroups[selectedCorpus].length > 0 ? (
+                  selectedGroups[selectedCorpus].length === Object.keys(corporaData[selectedCorpus]?.groups || {}).length ? (
+                    <div style={{ 
+                      padding: '0.75rem',
+                      borderRadius: 'var(--border-radius)',
+                      border: '1px solid var(--color-border)',
+                      background: 'var(--color-card-bg)',
+                      fontSize: '0.9rem',
+                      color: 'var(--color-text-secondary)'
+                    }}>
+                      All groups from this corpus are selected in Study Materials. Will use all available groups 
+                      ({getAllGroupsWordCount(selectedCorpus)} words).
+                    </div>
+                  ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.5rem',
+                      cursor: 'pointer',
+                      padding: '0.5rem',
+                      borderRadius: 'var(--border-radius)',
+                      border: '1px solid var(--color-border)',
+                      background: !useSelectedGroupsOnly ? 'var(--color-primary-light)' : 'var(--color-card-bg)'
+                    }}>
+                      <input
+                        type="radio"
+                        name="groupSelection"
+                        checked={!useSelectedGroupsOnly}
+                        onChange={() => setUseSelectedGroupsOnly(false)}
+                      />
+                      <span>
+                        Use all groups from Study Materials 
+                        ({getAllGroupsWordCount(selectedCorpus)} words)
                       </span>
-                    )}
-                  </span>
+                    </label>
+                    <label style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.5rem',
+                      cursor: getSelectedGroupsWordCount(selectedCorpus) >= 20 ? 'pointer' : 'not-allowed',
+                      padding: '0.5rem',
+                      borderRadius: 'var(--border-radius)',
+                      border: '1px solid var(--color-border)',
+                      background: useSelectedGroupsOnly ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
+                      opacity: getSelectedGroupsWordCount(selectedCorpus) >= 20 ? 1 : 0.6
+                    }}>
+                      <input
+                        type="radio"
+                        name="groupSelection"
+                        checked={useSelectedGroupsOnly}
+                        disabled={getSelectedGroupsWordCount(selectedCorpus) < 20}
+                        onChange={() => setUseSelectedGroupsOnly(true)}
+                      />
+                      <span>
+                        Use only selected groups from Study Materials 
+                        ({getSelectedGroupsWordCount(selectedCorpus)} words)
+                        {getSelectedGroupsWordCount(selectedCorpus) < 20 && (
+                          <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
+                            (Need at least 20 words)
+                          </span>
+                        )}
+                      </span>
+                    </label>
+                  </div>
+                  )
+                ) : (
+                  <div style={{ 
+                    padding: '0.75rem',
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid var(--color-border)',
+                    background: 'var(--color-card-bg)',
+                    fontSize: '0.9rem',
+                    color: 'var(--color-text-secondary)'
+                  }}>
+                    No groups selected in Study Materials for this corpus. Will use all available groups by default 
+                    ({getAllGroupsWordCount(selectedCorpus)} words).
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Level Selection Mode */}
+        {selectionMode === 'level' && levelsData && Object.keys(levelsData).length > 0 && (
+          <>
+            <div>
+              <label style={{ 
+                display: 'block', 
+                marginBottom: '0.5rem', 
+                fontWeight: 'bold',
+                color: 'var(--color-text)'
+              }}>
+                🎚️ Study Level:
+              </label>
+              <select 
+                value={selectedLevel}
+                onChange={(e) => setSelectedLevel(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  borderRadius: 'var(--border-radius)',
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-card-bg)',
+                  fontSize: '1rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="">Select a level...</option>
+                {organizeLevelsForDisplay(levelsData, availableCorpora, corporaData, selectedGroups).map(({ levelKey, level, description, totalWords }) => (
+                  <option key={levelKey} value={levelKey}>
+                    {level}: {description} ({totalWords} words)
+                  </option>
+                ))}
+              </select>
+              {selectedLevel && (
+                <div style={{ 
+                  marginTop: '0.5rem', 
+                  fontSize: '0.85rem', 
+                  color: 'var(--color-text-secondary)' 
+                }}>
+                  {getCurrentWordCount() >= 20 ? 
+                    `✓ Ready for Blitz mode (${getCurrentWordCount()} words available)` :
+                    `⚠️ Need at least 20 words for Blitz mode (only ${getCurrentWordCount()} available)`
+                  }
+                </div>
+              )}
+            </div>
+
+            {/* Content Filter for Level Mode */}
+            {selectedLevel && levelHasMixedContent(selectedLevel) && (
+              <div>
+                <label style={{ 
+                  display: 'block', 
+                  marginBottom: '0.5rem', 
+                  fontWeight: 'bold',
+                  color: 'var(--color-text)'
+                }}>
+                  📝 Content Type:
                 </label>
-              </div>
-              )
-            ) : (
-              <div style={{ 
-                padding: '0.75rem',
-                borderRadius: 'var(--border-radius)',
-                border: '1px solid var(--color-border)',
-                background: 'var(--color-card-bg)',
-                fontSize: '0.9rem',
-                color: 'var(--color-text-secondary)'
-              }}>
-                No groups selected in Study Materials for this corpus. Will use all available groups by default 
-                ({getAllGroupsWordCount(selectedCorpus)} words).
+                <div style={{ 
+                  padding: '0.5rem',
+                  borderRadius: 'var(--border-radius)',
+                  border: '1px solid var(--color-warning)',
+                  background: 'var(--color-warning-light)',
+                  fontSize: '0.85rem',
+                  color: 'var(--color-text)',
+                  marginBottom: '0.5rem'
+                }}>
+                  ⚠️ This level contains mixed content types (individual words and verb phrases). Choose what to practice:
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem',
+                    cursor: 'pointer',
+                    padding: '0.5rem',
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid var(--color-border)',
+                    background: contentFilter === 'all' ? 'var(--color-primary-light)' : 'var(--color-card-bg)'
+                  }}>
+                    <input
+                      type="radio"
+                      name="contentFilter"
+                      checked={contentFilter === 'all'}
+                      onChange={() => setContentFilter('all')}
+                    />
+                    <span>
+                      All content types ({getLevelWordCount(selectedLevel, 'all')} words)
+                    </span>
+                  </label>
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem',
+                    cursor: getLevelWordCount(selectedLevel, 'words') >= 20 ? 'pointer' : 'not-allowed',
+                    padding: '0.5rem',
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid var(--color-border)',
+                    background: contentFilter === 'words' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
+                    opacity: getLevelWordCount(selectedLevel, 'words') >= 20 ? 1 : 0.6
+                  }}>
+                    <input
+                      type="radio"
+                      name="contentFilter"
+                      checked={contentFilter === 'words'}
+                      disabled={getLevelWordCount(selectedLevel, 'words') < 20}
+                      onChange={() => setContentFilter('words')}
+                    />
+                    <span>
+                      Individual words only ({getLevelWordCount(selectedLevel, 'words')} words)
+                      {getLevelWordCount(selectedLevel, 'words') < 20 && (
+                        <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
+                          (Need at least 20)
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                  <label style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '0.5rem',
+                    cursor: getLevelWordCount(selectedLevel, 'verbs') >= 20 ? 'pointer' : 'not-allowed',
+                    padding: '0.5rem',
+                    borderRadius: 'var(--border-radius)',
+                    border: '1px solid var(--color-border)',
+                    background: contentFilter === 'verbs' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
+                    opacity: getLevelWordCount(selectedLevel, 'verbs') >= 20 ? 1 : 0.6
+                  }}>
+                    <input
+                      type="radio"
+                      name="contentFilter"
+                      checked={contentFilter === 'verbs'}
+                      disabled={getLevelWordCount(selectedLevel, 'verbs') < 20}
+                      onChange={() => setContentFilter('verbs')}
+                    />
+                    <span>
+                      Verb phrases only ({getLevelWordCount(selectedLevel, 'verbs')} words)
+                      {getLevelWordCount(selectedLevel, 'verbs') < 20 && (
+                        <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
+                          (Need at least 20)
+                        </span>
+                      )}
+                    </span>
+                  </label>
+                </div>
               </div>
             )}
-            {useSelectedGroupsOnly && selectedGroups && selectedGroups[selectedCorpus] && selectedGroups[selectedCorpus].length > 0 && 
-             selectedGroups[selectedCorpus].length < Object.keys(corporaData[selectedCorpus]?.groups || {}).length && (
-              <div style={{ 
-                marginTop: '0.5rem', 
-                fontSize: '0.85rem', 
-                color: 'var(--color-text-secondary)' 
-              }}>
-                Selected groups: {selectedGroups[selectedCorpus]?.join(', ') || 'None'}
-              </div>
-            )}
-          </div>
+          </>
         )}
 
         {/* Info Box */}
@@ -248,7 +531,7 @@ const BlitzModeSelector = ({
             <li>You'll be asked about one word at a time</li>
             <li>Choose the correct answer from the 8 options</li>
             <li>Words are replaced as you progress through the game</li>
-            <li>Up to 25 questions or half the corpus size, whichever is smaller</li>
+            <li>Up to 25 questions or half the available words, whichever is smaller</li>
           </ul>
         </div>
 
@@ -282,25 +565,25 @@ const BlitzModeSelector = ({
           </button>
           <button
             onClick={handleStartBlitz}
-            disabled={!isStartEnabled || (selectedCorpus && getCorpusWordCount(selectedCorpus) < 20)}
+            disabled={!isStartEnabled || getCurrentWordCount() < 20}
             style={{
               padding: '0.75rem 2rem',
               borderRadius: 'var(--border-radius)',
               border: 'none',
-              background: (isStartEnabled && getCorpusWordCount(selectedCorpus) >= 20) ? 'var(--color-primary)' : 'var(--color-border)',
-              color: (isStartEnabled && getCorpusWordCount(selectedCorpus) >= 20) ? 'white' : 'var(--color-text-secondary)',
+              background: (isStartEnabled && getCurrentWordCount() >= 20) ? 'var(--color-primary)' : 'var(--color-border)',
+              color: (isStartEnabled && getCurrentWordCount() >= 20) ? 'white' : 'var(--color-text-secondary)',
               fontSize: '1rem',
               fontWeight: 'bold',
-              cursor: (isStartEnabled && getCorpusWordCount(selectedCorpus) >= 20) ? 'pointer' : 'not-allowed',
+              cursor: (isStartEnabled && getCurrentWordCount() >= 20) ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s ease'
             }}
             onMouseOver={(e) => {
-              if (isStartEnabled && getCorpusWordCount(selectedCorpus) >= 20) {
+              if (isStartEnabled && getCurrentWordCount() >= 20) {
                 e.target.style.background = 'var(--color-primary-dark)';
               }
             }}
             onMouseOut={(e) => {
-              if (isStartEnabled && getCorpusWordCount(selectedCorpus) >= 20) {
+              if (isStartEnabled && getCurrentWordCount() >= 20) {
                 e.target.style.background = 'var(--color-primary)';
               }
             }}
