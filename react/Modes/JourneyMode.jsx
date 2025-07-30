@@ -1,4 +1,5 @@
 import React from 'react';
+import ConjugationTable from '../Activities/ConjugationTable';
 import FlashCardActivity from '../Activities/FlashCardActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
 import MotivationalBreakActivity from '../Activities/MotivationalBreakActivity';
@@ -16,6 +17,7 @@ import {
 
 import journeyModeManager from '../Managers/journeyModeManager';
 import { invalidateWordWeightCache, selectJourneyActivity } from '../Utilities/activitySelection';
+import { fetchConjugations } from '../Utilities/apiClient';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 
 const JourneyMode = ({ 
@@ -37,7 +39,10 @@ const JourneyMode = ({
     listeningMode: null,
     multipleChoiceMode: null,
     typingMode: null,
-    multipleChoiceOptions: []
+    multipleChoiceOptions: [],
+    conjugationData: null,
+    selectedVerb: null,
+    verbCorpus: null
   });
 
   const [activityAnswerState, setActivityAnswerState] = React.useState({
@@ -171,7 +176,7 @@ const JourneyMode = ({
   }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, currentFocusMode, isFirstActivityOrModeChange]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
-  const advanceToNextActivity = React.useCallback(() => {
+  const advanceToNextActivity = React.useCallback(async () => {
     const nextActivity = selectNextActivity();
     
     // Reset the first activity or mode change flag after selecting an activity
@@ -208,6 +213,46 @@ const JourneyMode = ({
       );
     }
 
+    // Handle conjugation table activity
+    let conjugationData = null;
+    let selectedVerb = null;
+    let verbCorpus = null;
+    
+    if (nextActivity.type === 'conjugation-table') {
+      // Determine corpus based on available verb corpuses
+      const availableCorpuses = ['verbs_present', 'verbs_past', 'verbs_future'];
+      verbCorpus = availableCorpuses[Math.floor(Math.random() * availableCorpuses.length)];
+      
+      // Fetch conjugation data
+      try {
+        const conjugationResponse = await fetchConjugations(verbCorpus);
+        conjugationData = conjugationResponse.conjugations;
+        const availableVerbs = conjugationResponse.verbs;
+        
+        if (availableVerbs.length > 0) {
+          selectedVerb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
+        }
+      } catch (error) {
+        console.error('Failed to fetch conjugation data:', error);
+        // Fall back to a regular activity if conjugation data fails
+        const fallbackActivity = selectNextActivity();
+        setJourneyState({
+          isInitialized: true,
+          currentActivity: fallbackActivity.type,
+          currentWord: fallbackActivity.word,
+          showNewWordIndicator: fallbackActivity.type === 'new-word',
+          listeningMode: fallbackActivity.type === 'listening' ? fallbackActivity.mode : null,
+          multipleChoiceMode: fallbackActivity.type === 'multiple-choice' ? fallbackActivity.mode : null,
+          typingMode: fallbackActivity.type === 'typing' ? fallbackActivity.mode : null,
+          multipleChoiceOptions: [],
+          conjugationData: null,
+          selectedVerb: null,
+          verbCorpus: null
+        });
+        return;
+      }
+    }
+
     // Update journey state in one place
     setJourneyState({
       isInitialized: true,
@@ -217,7 +262,10 @@ const JourneyMode = ({
       listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null, // Store the listening mode (easy/hard)
       multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null, // Store the multiple-choice mode (en-to-lt/lt-to-en)
       typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null, // Store the typing mode (en-to-lt/lt-to-en)
-      multipleChoiceOptions: multipleChoiceOptions
+      multipleChoiceOptions: multipleChoiceOptions,
+      conjugationData: conjugationData,
+      selectedVerb: selectedVerb,
+      verbCorpus: verbCorpus
     });
 
     // Reset answer state for new activity
@@ -554,6 +602,38 @@ const JourneyMode = ({
           allWords={wordListState.allWords}
         />
         <NavigationControls />
+      </div>
+    );
+  }
+
+  if (journeyState.currentActivity === 'conjugation-table') {
+    // Determine tense display name
+    let tenseDisplayName = 'Present Tense';
+    if (journeyState.verbCorpus === 'verbs_past') {
+      tenseDisplayName = 'Past Tense';
+    } else if (journeyState.verbCorpus === 'verbs_future') {
+      tenseDisplayName = 'Future Tense';
+    }
+
+    return (
+      <div>
+        <ActivityHeader 
+          title={`📚 Verb Conjugation - ${tenseDisplayName}`}
+          subtitle={journeyState.selectedVerb ? `Conjugating "${journeyState.selectedVerb}"` : 'Loading...'}
+          background="linear-gradient(135deg, #8BC34A, #689F38)"
+        />
+        {journeyState.conjugationData && journeyState.selectedVerb && (
+          <ConjugationTable 
+            verb={journeyState.selectedVerb}
+            conjugations={journeyState.conjugationData}
+            audioEnabled={audioEnabled}
+            compact={true}
+            hideHeader={true}
+          />
+        )}
+        <div className="w-nav-controls">
+          <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
+        </div>
       </div>
     );
   }

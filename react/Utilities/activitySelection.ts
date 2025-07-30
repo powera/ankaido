@@ -484,6 +484,16 @@ export const selectJourneyActivity = (
       }
       return result;
     }
+
+    // 3% chance to show a conjugation table
+    random = Math.random() * 100;
+    if (random < 3) {
+      const result: ActivityResult = { type: 'conjugation-table', word: null };
+      if (journeyState) {
+        journeyState.updateAfterActivity();
+      }
+      return result;
+    }
   }
 
   // If we reach here and have no exposed words, fall back to grammar break

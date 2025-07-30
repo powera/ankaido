@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ConjugationTable from '../Activities/ConjugationTable';
-import { fetchVerbCorpuses, fetchConjugations } from '../Utilities/apiClient.js';
+import { fetchConjugations, fetchVerbCorpuses } from '../Utilities/apiClient.js';
 
 const ConjugationsMode = ({
   audioEnabled
@@ -14,6 +14,7 @@ const ConjugationsMode = ({
   const [conjugations, setConjugations] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [grammarMode, setGrammarMode] = useState('full');
 
   // Load initial data when component mounts
   useEffect(() => {
@@ -128,11 +129,29 @@ const ConjugationsMode = ({
         </select>
       </div>
 
+      {/* Grammar mode selector */}
+      <div style={{ marginBottom: 'var(--spacing-base)' }}>
+        <label htmlFor="grammar-mode-select" style={{ marginRight: 'var(--spacing-small)' }}>
+          Table format:
+        </label>
+        <select 
+          id="grammar-mode-select"
+          value={grammarMode} 
+          onChange={(e) => setGrammarMode(e.target.value)}
+          className="w-mode-option"
+          style={{ minWidth: '150px' }}
+        >
+          <option value="full">Full Table</option>
+          <option value="compact">Compact Table</option>
+        </select>
+      </div>
+
       {selectedVerb && (
         <ConjugationTable 
           verb={selectedVerb}
           conjugations={conjugations}
           audioEnabled={audioEnabled}
+          compact={grammarMode === 'compact'}
         />
       )}
     </div>

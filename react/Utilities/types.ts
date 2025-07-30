@@ -60,7 +60,7 @@ export interface SessionStats {
 export type ActivityType = 'multiple-choice' | 'listening' | 'typing';
 
 // Extended activity types including special activities
-export type ExtendedActivityType = ActivityType | 'motivational-break' | 'new-word' | 'grammar-break' | 'multi-word-sequence' | 'welcome-interstitial';
+export type ExtendedActivityType = ActivityType | 'motivational-break' | 'new-word' | 'grammar-break' | 'multi-word-sequence' | 'welcome-interstitial' | 'conjugation-table';
 
 // Study modes - unified naming convention
 export type StudyMode = 
