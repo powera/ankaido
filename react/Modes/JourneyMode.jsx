@@ -7,11 +7,11 @@ import TypingActivity from '../Activities/TypingActivity';
 import JourneyFocusModeInterstitial from '../Components/JourneyFocusModeInterstitial';
 
 import {
-    activityStatsManager,
-    getExposedWords,
-    getNewWords,
-    getTotalCorrectExposures,
-    getTotalExposures
+  activityStatsManager,
+  getExposedWords,
+  getNewWords,
+  getTotalCorrectExposures,
+  getTotalExposures
 } from '../Managers/activityStatsManager';
 
 import journeyModeManager from '../Managers/journeyModeManager';
@@ -51,12 +51,18 @@ const JourneyMode = ({
   const [showFocusInterstitial, setShowFocusInterstitial] = React.useState(false);
   const [pendingFocusMode, setPendingFocusMode] = React.useState(null);
   const [currentFocusMode, setCurrentFocusMode] = React.useState('normal');
+  
+  // Track when it's the first activity or after a mode change
+  const [isFirstActivityOrModeChange, setIsFirstActivityOrModeChange] = React.useState(true);
 
   // Journey mode state is managed by the singleton journeyModeManager
 
   // Handle journey focus mode changes with interstitial
   React.useEffect(() => {
     if (journeyFocusMode !== currentFocusMode) {
+      // Mark that the next activity should be after a mode change
+      setIsFirstActivityOrModeChange(true);
+      
       if (journeyFocusMode === 'new-words' || journeyFocusMode === 'review-words') {
         // Show interstitial for non-normal modes
         setPendingFocusMode(journeyFocusMode);
@@ -131,6 +137,8 @@ const JourneyMode = ({
     setCurrentFocusMode(pendingFocusMode);
     setShowFocusInterstitial(false);
     setPendingFocusMode(null);
+    // Mark that the next activity should be after a mode change
+    setIsFirstActivityOrModeChange(true);
   };
 
   const handleInterstitialReturnToNormal = () => {
@@ -141,6 +149,8 @@ const JourneyMode = ({
     if (setJourneyFocusMode) {
       setJourneyFocusMode('normal');
     }
+    // Mark that the next activity should be after a mode change
+    setIsFirstActivityOrModeChange(true);
   };
 
   // Activity selection using centralized utility
@@ -154,13 +164,18 @@ const JourneyMode = ({
       audioEnabled,
       journeyModeManager,
       getWordWeights,
-      currentFocusMode
+      currentFocusMode,
+      null, // levelsData - not used in this context
+      isFirstActivityOrModeChange
     );
-  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, currentFocusMode]);
+  }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, currentFocusMode, isFirstActivityOrModeChange]);
 
   // Single function to advance to next activity - SINGLE SOURCE OF TRUTH
   const advanceToNextActivity = React.useCallback(() => {
     const nextActivity = selectNextActivity();
+    
+    // Reset the first activity or mode change flag after selecting an activity
+    setIsFirstActivityOrModeChange(false);
 
     // Note: Answer state reset is now handled by individual activity components
 
@@ -372,6 +387,26 @@ const JourneyMode = ({
   if (journeyState.currentActivity === 'motivational-break') {
     return (
       <MotivationalBreakActivity onContinue={advanceToNextActivity} />
+    );
+  }
+
+  if (journeyState.currentActivity === 'welcome-interstitial') {
+    return (
+      <div className="w-card">
+        <div className="w-text-center w-mb-large">
+          <div className="w-question w-mb-large">🚀 Welcome to Journey Mode!</div>
+          <div className="w-mb-base">
+            Your personalized learning journey is about to begin. 
+            We'll guide you through activities tailored to your progress.
+          </div>
+          <div className="w-mb-large">
+            Let's start by introducing some new words to expand your vocabulary!
+          </div>
+          <button className="w-button" onClick={advanceToNextActivity}>
+            Begin Journey →
+          </button>
+        </div>
+      </div>
     );
   }
 

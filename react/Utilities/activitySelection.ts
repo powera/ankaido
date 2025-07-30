@@ -394,7 +394,8 @@ export const selectJourneyActivity = (
   journeyState?: JourneyModeState,
   getWordStats: ((word: Word) => WordStats) | null = null,
   focusMode: JourneyFocusMode = 'normal',
-  levelsData: LevelsResponse['levels'] | null = null
+  levelsData: LevelsResponse['levels'] | null = null,
+  isFirstActivityOrModeChange: boolean = false
 ): ActivityResult => {
   const exposedWords = getExposedWordsList();
   const newWords = getNewWordsList();
@@ -414,6 +415,15 @@ export const selectJourneyActivity = (
   const focusProbabilities = JOURNEY_FOCUS_PROBABILITIES[focusMode];
 
   if (allWords.length === 0) {
+    // For the very first activity with no words, show welcome interstitial
+    if (isFirstActivityOrModeChange) {
+      const result: ActivityResult = { type: 'welcome-interstitial', word: null };
+      if (journeyState) {
+        journeyState.updateAfterActivity();
+      }
+      return result;
+    }
+    
     const result: ActivityResult = { type: 'new-word', word: wordListManager.getCurrentWord() };
     if (journeyState) {
       journeyState.recordNewWordIntroduced(result.word!);
@@ -422,45 +432,58 @@ export const selectJourneyActivity = (
     return result;
   }
 
-  // For review-words mode, skip new word introduction if we have no new words to introduce
-  if (focusMode === 'review-words' && exposedWords.length < 10 && newWords.length > 0) {
-    // Skip new word introduction for review-words mode
-  } else if (exposedWords.length < 10 && newWords.length > 0) {
-    const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
-    const result: ActivityResult = { type: 'new-word', word: randomNewWord };
+  // Handle the case where we have few exposed words but it's the first activity or after mode change
+  if (isFirstActivityOrModeChange && exposedWords.length < 10 && newWords.length > 0) {
+    // Show welcome interstitial first, then new words will follow
+    const result: ActivityResult = { type: 'welcome-interstitial', word: null };
     if (journeyState) {
-      journeyState.recordNewWordIntroduced(result.word!);
       journeyState.updateAfterActivity();
     }
     return result;
   }
 
-  let random = Math.random() * 100;
-  if (
-    random < focusProbabilities.motivationalBreak &&
-    (!journeyState || !journeyState.shouldBlockMotivationalBreaks())
-  ) {
-    const result: ActivityResult = { type: 'motivational-break', word: null };
-    if (journeyState) {
-      journeyState.recordMotivationalBreak();
-      journeyState.updateAfterActivity();
+  // Skip New Word and Motivational Break activities for first activity or after mode change
+  if (!isFirstActivityOrModeChange) {
+    // For review-words mode, skip new word introduction if we have no new words to introduce
+    if (focusMode === 'review-words' && exposedWords.length < 10 && newWords.length > 0) {
+      // Skip new word introduction for review-words mode
+    } else if (exposedWords.length < 10 && newWords.length > 0) {
+      const randomNewWord = newWords[Math.floor(Math.random() * newWords.length)];
+      const result: ActivityResult = { type: 'new-word', word: randomNewWord };
+      if (journeyState) {
+        journeyState.recordNewWordIntroduced(result.word!);
+        journeyState.updateAfterActivity();
+      }
+      return result;
     }
-    return result;
-  }
 
-  random = Math.random() * 100;
-  if (
-    random < focusProbabilities.newWordIntroduction &&
-    newWords.length > 0 &&
-    (!journeyState || !journeyState.shouldBlockNewWords())
-  ) {
-    const selectedNewWord = selectNewWordWithLevelProbability(newWords, levelsData);
-    const result: ActivityResult = { type: 'new-word', word: selectedNewWord };
-    if (journeyState) {
-      journeyState.recordNewWordIntroduced(result.word!);
-      journeyState.updateAfterActivity();
+    let random = Math.random() * 100;
+    if (
+      random < focusProbabilities.motivationalBreak &&
+      (!journeyState || !journeyState.shouldBlockMotivationalBreaks())
+    ) {
+      const result: ActivityResult = { type: 'motivational-break', word: null };
+      if (journeyState) {
+        journeyState.recordMotivationalBreak();
+        journeyState.updateAfterActivity();
+      }
+      return result;
     }
-    return result;
+
+    random = Math.random() * 100;
+    if (
+      random < focusProbabilities.newWordIntroduction &&
+      newWords.length > 0 &&
+      (!journeyState || !journeyState.shouldBlockNewWords())
+    ) {
+      const selectedNewWord = selectNewWordWithLevelProbability(newWords, levelsData);
+      const result: ActivityResult = { type: 'new-word', word: selectedNewWord };
+      if (journeyState) {
+        journeyState.recordNewWordIntroduced(result.word!);
+        journeyState.updateAfterActivity();
+      }
+      return result;
+    }
   }
 
   // If we reach here and have no exposed words, fall back to grammar break
