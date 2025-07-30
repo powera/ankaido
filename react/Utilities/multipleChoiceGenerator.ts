@@ -2,7 +2,7 @@
  * Utility for generating multiple choice options across different activities
  */
 
-import { Word, WordListState, MultipleChoiceSettings } from './types';
+import { MultipleChoiceSettings, Word, WordListState } from './types';
 
 export const generateMultipleChoiceOptions = (
   word: Word | undefined,
@@ -72,7 +72,20 @@ export const generateMultipleChoiceOptions = (
 
   // Sort alphabetically for 6+ options, otherwise shuffle
   if (numOptions >= 6) {
-    options = options.sort();
+    // Use Lithuanian locale for proper alphabetical sorting when sorting Lithuanian words
+    const isLithuanianTarget = answerField === 'lithuanian';
+    
+    if (isLithuanianTarget) {
+      const lithuanianCollator = new Intl.Collator('lt', { 
+        sensitivity: 'base',
+        numeric: true 
+      });
+      options = options.sort(lithuanianCollator.compare);
+    } else {
+      // Use default English sorting for English words
+      options = options.sort();
+    }
+    
     // Rearrange to fill columns first
     const rearranged: string[] = [];
     const half = Math.ceil(options.length / 2);
