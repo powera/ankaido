@@ -1,8 +1,55 @@
-
 import React from 'react';
 import AudioButton from '../AudioButton';
 
-const DataTable = ({ 
+// Type for individual row data - flexible to allow any properties
+export interface TableRowData {
+  id?: string | number;
+  [key: string]: any;
+}
+
+// Type for column configuration
+export interface TableColumn {
+  key?: string;
+  header: string;
+  accessor?: string;
+  render?: (rowData: TableRowData, rowIndex: number) => React.ReactNode;
+  
+  // Styling properties
+  align?: 'left' | 'center' | 'right';
+  width?: string;
+  bold?: boolean;
+  fontSize?: string;
+  italic?: boolean;
+  color?: string;
+  textTransform?: 'none' | 'capitalize' | 'uppercase' | 'lowercase';
+  
+  // Sorting properties
+  sortable?: boolean;
+  sortKey?: string;
+  
+  // Audio column specific properties
+  type?: 'audio' | string;
+  audioWord?: string;
+  audioSize?: 'small' | 'normal' | 'large';
+}
+
+// Props interface for DataTable component
+export interface DataTableProps {
+  columns: TableColumn[];
+  data: TableRowData[];
+  sortable?: boolean;
+  sortField?: string;
+  sortDirection?: 'asc' | 'desc';
+  onSort?: (field: string) => void;
+  audioEnabled?: boolean;
+  playAudio?: (word: string) => Promise<void>;
+  maxHeight?: string;
+  stickyHeader?: boolean;
+  striped?: boolean;
+  className?: string;
+}
+
+const DataTable: React.FC<DataTableProps> = ({ 
   columns, 
   data, 
   sortable = false, 
@@ -17,8 +64,7 @@ const DataTable = ({
   className = ''
 }) => {
 
-
-  const renderCell = (column, rowData, rowIndex) => {
+  const renderCell = (column: TableColumn, rowData: TableRowData, rowIndex: number): React.ReactNode => {
     // Handle audio column type first
     if (column.type === 'audio') {
       return (
@@ -31,25 +77,25 @@ const DataTable = ({
       );
     }
     
-    const value = column.accessor ? rowData[column.accessor] : column.render(rowData, rowIndex);
+    const value = column.accessor ? rowData[column.accessor] : column.render?.(rowData, rowIndex);
     
     return value;
   };
 
-  const tableStyle = {
+  const tableStyle: React.CSSProperties = {
     width: '100%',
     borderCollapse: 'collapse',
     border: '1px solid var(--color-border)'
   };
 
-  const containerStyle = {
+  const containerStyle: React.CSSProperties = {
     maxHeight,
     overflowY: 'auto',
     border: '1px solid var(--color-border)',
     borderRadius: 'var(--border-radius)'
   };
 
-  const headerCellStyle = {
+  const headerCellStyle: React.CSSProperties = {
     padding: 'var(--spacing-small)',
     border: '1px solid var(--color-border)',
     background: 'var(--color-annotation-bg)',
@@ -61,7 +107,7 @@ const DataTable = ({
     })
   };
 
-  const bodyCellStyle = {
+  const bodyCellStyle: React.CSSProperties = {
     padding: 'var(--spacing-small)',
     border: '1px solid var(--color-border)'
   };
@@ -81,7 +127,7 @@ const DataTable = ({
                   cursor: sortable && column.sortable !== false ? 'pointer' : 'default'
                 }}
                 onClick={sortable && column.sortable !== false && onSort ? 
-                  () => onSort(column.sortKey || column.accessor) : undefined}
+                  () => onSort(column.sortKey || column.accessor || '') : undefined}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span>{column.header}</span>
