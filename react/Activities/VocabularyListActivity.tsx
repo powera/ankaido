@@ -1,6 +1,29 @@
+import React from 'react';
 import DataTable from '../Components/shared/DataTable';
+import { CorporaData } from '../Utilities/studyMaterialsUtils';
+import { Word } from '../Utilities/types';
 
-const VocabularyListActivity = ({ 
+// Interface for vocabulary group options
+interface VocabGroupOption {
+  corpus: string;
+  group: string;
+  displayName: string;
+  wordCount: number;
+}
+
+// Props interface for VocabularyListActivity
+interface VocabularyListActivityProps {
+  selectedVocabGroup: string | null;
+  setSelectedVocabGroup: (group: string | null) => void;
+  vocabGroupOptions: VocabGroupOption[];
+  vocabListWords: Word[];
+  setVocabListWords: (words: Word[]) => void;
+  corporaData: CorporaData;
+  audioEnabled: boolean;
+  playAudio: (word: string) => Promise<void>;
+}
+
+const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({ 
   selectedVocabGroup,
   setSelectedVocabGroup,
   vocabGroupOptions,
@@ -10,7 +33,7 @@ const VocabularyListActivity = ({
   audioEnabled,
   playAudio
 }) => {
-  const loadVocabListForGroup = (optionValue) => {
+  const loadVocabListForGroup = (optionValue: string) => {
     if (!optionValue) {
       setSelectedVocabGroup(null);
       setVocabListWords([]);
@@ -24,7 +47,7 @@ const VocabularyListActivity = ({
     setSelectedVocabGroup(optionValue);
 
     // Get words for this specific group
-    const words = corporaData[corpus].groups[group];
+    const words: Word[] = corporaData[corpus].groups[group];
 
     // Sort alphabetically by Lithuanian word
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
@@ -46,7 +69,7 @@ const VocabularyListActivity = ({
           style={{ minWidth: '250px' }}
         >
           <option value="">-- Select Group --</option>
-          {vocabGroupOptions.map(option => (
+          {vocabGroupOptions.map((option: VocabGroupOption) => (
             <option key={`${option.corpus}|${option.group}`} value={`${option.corpus}|${option.group}`}>
               {option.displayName} ({option.wordCount} words)
             </option>

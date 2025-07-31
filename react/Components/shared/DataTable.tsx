@@ -43,7 +43,7 @@ export interface DataTableProps {
   sortDirection?: SortDirection;
   onSort?: (field: string) => void;
   audioEnabled?: boolean;
-  playAudio?: (word: string) => Promise<void>;
+  playAudio?: (word: string) => Promise<boolean>;
   maxHeight?: string;
   stickyHeader?: boolean;
   striped?: boolean;

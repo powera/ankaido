@@ -1,6 +1,10 @@
 import React from 'react';
 
-const MotivationalBreakActivity = ({ onContinue }) => {
+interface MotivationalBreakActivityProps {
+  onContinue: () => void;
+}
+
+const MotivationalBreakActivity: React.FC<MotivationalBreakActivityProps> = ({ onContinue }) => {
   const motivationalMessages = [
     "Keep going, you're doing great! 🌟",
     "Your progress is impressive! 💪",
