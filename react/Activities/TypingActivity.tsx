@@ -4,12 +4,33 @@ import TypingResponse from '../Components/TypingResponse';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import audioManager from '../Managers/audioManager';
 import { createInitialActivityState, getAllValidAnswers, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
+import { StudyMode, Word, WordListState } from '../Utilities/types';
+
+// WordListManager interface - based on the actual implementation
+interface WordListManager {
+  getCurrentWord(): Word | undefined;
+  [key: string]: any;
+}
+
+// Props interface for TypingActivity component
+export interface TypingActivityProps {
+  wordListManager?: WordListManager;
+  wordListState?: WordListState;
+  currentWord?: Word | null;
+  studyMode: StudyMode;
+  onSubmit?: (typedAnswer: string, isCorrect: boolean) => void;
+  audioEnabled: boolean;
+  autoAdvance?: boolean;
+  defaultDelay?: number;
+  autoAdvanceTimer?: NodeJS.Timeout | null;
+  allWords?: Word[];
+}
 
 /**
  * Typing Activity Component
  * Presents a word and requires user to type the translation
  */
-const TypingActivity = ({ 
+const TypingActivity: React.FC<TypingActivityProps> = ({ 
   wordListManager,
   wordListState,
   currentWord,
@@ -26,7 +47,7 @@ const TypingActivity = ({
   );
 
   // Use currentWord from props, fallback to wordListManager if available
-  const word = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null);
+  const word: Word | null = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null) || null;
 
   // Reset state when word changes
   React.useEffect(() => {
@@ -50,7 +71,7 @@ const TypingActivity = ({
   }, [word, studyMode, audioEnabled, audioManager]);
 
   // Helper function to normalize text for comparison
-  const normalizeForComparison = (text) => {
+  const normalizeForComparison = (text: string): string => {
     return text
       .replace(/\([^)]*\)/g, '') // Remove text in parentheses
       .replace(/[^\w\s]/g, '') // Remove punctuation
@@ -59,7 +80,12 @@ const TypingActivity = ({
   };
 
   // Helper function to find if typed answer matches a different word's translation
-  const findMatchingWord = React.useCallback((typedAnswer, currentWord, studyMode, allWords) => {
+  const findMatchingWord = React.useCallback((
+    typedAnswer: string, 
+    currentWord: Word | null, 
+    studyMode: StudyMode, 
+    allWords?: Word[]
+  ): Word | null => {
     if (!allWords || !Array.isArray(allWords)) return null;
     
     const normalizedTyped = normalizeForComparison(typedAnswer);
@@ -79,11 +105,13 @@ const TypingActivity = ({
       );
     });
     
-    return matchingWord;
+    return matchingWord || null;
   }, [normalizeForComparison, getAllValidAnswers]);
 
   // Handle typed answer submission
-  const handleSubmit = React.useCallback(async (typedAnswer) => {
+  const handleSubmit = React.useCallback(async (typedAnswer: string): Promise<void> => {
+    if (!word) return;
+    
     const correctAnswer = getCorrectAnswer(word, studyMode);
     const allValidAnswers = getAllValidAnswers(word, studyMode);
     
@@ -96,7 +124,7 @@ const TypingActivity = ({
     );
 
     // Generate feedback message
-    let feedback;
+    let feedback: string;
     if (isCorrect) {
       feedback = '✅ Correct!';
     } else {
@@ -138,7 +166,7 @@ const TypingActivity = ({
   }, [word, studyMode, onSubmit, findMatchingWord, allWords, normalizeForComparison, getAllValidAnswers]);
 
   // Handle typed answer changes
-  const handleTypedAnswerChange = React.useCallback((value) => {
+  const handleTypedAnswerChange = React.useCallback((value: string): void => {
     setActivityState(prev => ({ ...prev, typedAnswer: value }));
   }, []);
 
@@ -153,11 +181,12 @@ const TypingActivity = ({
     );
   }
 
-  const question = getQuestionText(word, studyMode);
-  const answer = getCorrectAnswer(word, studyMode);
+  const question: string = getQuestionText(word, studyMode);
+  const answer: string = getCorrectAnswer(word, studyMode);
   
   // Generate prompt text based on study mode
-  const promptText = studyMode === 'english-to-lithuanian' ? 
+  // TODO: re-display this or remove it
+  const promptText: string = studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
     'Type the English word';
 
@@ -170,7 +199,6 @@ const TypingActivity = ({
         questionText={question}
         answerText={answer}
         showAnswer={activityState.showAnswer}
-        promptText={promptText}
         isClickable={false}
       />
 
@@ -178,7 +206,7 @@ const TypingActivity = ({
         currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
-        playAudio={audioManager.playAudio.bind(audioManager)}
+        audioManager={audioManager}
         onSubmit={handleSubmit}
         showAnswer={activityState.showAnswer}
         feedback={activityState.typingFeedback}

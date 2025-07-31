@@ -43,7 +43,6 @@ export interface DataTableProps {
   sortDirection?: SortDirection;
   onSort?: (field: string) => void;
   audioEnabled?: boolean;
-  playAudio?: (word: string) => Promise<boolean>;
   audioManager?: AudioManager;
   maxHeight?: string;
   stickyHeader?: boolean;
@@ -59,7 +58,6 @@ const DataTable: React.FC<DataTableProps> = ({
   sortDirection, 
   onSort,
   audioEnabled = false,
-  playAudio,
   audioManager,
   maxHeight = '60vh',
   stickyHeader = true,
@@ -75,7 +73,6 @@ const DataTable: React.FC<DataTableProps> = ({
           word={column.audioWord ? rowData[column.audioWord] : ''}
           size={column.audioSize || 'small'}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
           audioManager={audioManager}
         />
       );

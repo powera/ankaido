@@ -1,5 +1,5 @@
 import React from 'react';
-import { StudyMode, Word } from '../Utilities/types';
+import { AudioManager, StudyMode, Word } from '../Utilities/types';
 import AudioButton from './AudioButton';
 
 // Props interface for MultipleChoiceOptions component
@@ -9,7 +9,7 @@ export interface MultipleChoiceOptionsProps {
   quizMode: 'multiple-choice' | 'listening';
   handleMultipleChoiceAnswer: (answer: string) => void;
   audioEnabled: boolean;
-  playAudio: (word: string) => Promise<boolean>;
+  audioManager: AudioManager;
   preventAutoPlay?: boolean;
   selectedVoice?: string;
   multipleChoiceOptions: string[];
@@ -24,7 +24,7 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
   quizMode,
   handleMultipleChoiceAnswer,
   audioEnabled,
-  playAudio,
+  audioManager,
   preventAutoPlay,
   selectedVoice,
   // Direct state props
@@ -112,7 +112,7 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
 
           // Play audio immediately for correct answers in EN->LT mode
           if (audioEnabled && studyMode === 'english-to-lithuanian' && quizMode !== 'listening' && isCorrect) {
-            playAudio(option); // option is the Lithuanian word in EN->LT mode
+            audioManager.playAudio(option); // option is the Lithuanian word in EN->LT mode
           }
 
           handleMultipleChoiceAnswer(option);
@@ -140,7 +140,7 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
                   <AudioButton 
                     word={studyMode === 'english-to-lithuanian' ? option : word.lithuanian}
                     audioEnabled={audioEnabled}
-                    playAudio={playAudio}
+                    audioManager={audioManager}
                     size="small"
                     asSpan={true}
                   />

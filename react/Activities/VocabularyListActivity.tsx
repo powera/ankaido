@@ -1,7 +1,7 @@
 import React from 'react';
 import DataTable from '../Components/shared/DataTable';
 import { CorporaData } from '../Utilities/studyMaterialsUtils';
-import { Word } from '../Utilities/types';
+import { AudioManager, Word } from '../Utilities/types';
 
 // Interface for vocabulary group options
 interface VocabGroupOption {
@@ -20,7 +20,7 @@ interface VocabularyListActivityProps {
   setVocabListWords: (words: Word[]) => void;
   corporaData: CorporaData;
   audioEnabled: boolean;
-  playAudio: (word: string) => Promise<void>;
+  audioManager: AudioManager;
 }
 
 const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({ 
@@ -31,7 +31,7 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
   setVocabListWords,
   corporaData,
   audioEnabled,
-  playAudio
+  audioManager
 }) => {
   const loadVocabListForGroup = (optionValue: string) => {
     if (!optionValue) {
@@ -100,7 +100,7 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
             ]}
             data={vocabListWords}
             audioEnabled={audioEnabled}
-            playAudio={playAudio}
+            audioManager={audioManager}
             maxHeight="60vh"
             stickyHeader={true}
             striped={true}

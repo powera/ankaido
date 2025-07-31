@@ -1,15 +1,46 @@
 
-import DataTable from '../Components/shared/DataTable';
+import DataTable, { TableColumn, TableRowData } from '../Components/shared/DataTable';
 import audioManager from '../Managers/audioManager';
 
-const DeclensionTable = ({ noun, declensions, audioEnabled }) => {
+interface CaseData {
+  question: string;
+  form: string;
+  sentence_lithuanian: string;
+  sentence_english: string;
+}
+
+interface NounData {
+  english: string;
+  gender: string;
+  declension_type: string;
+  cases: {
+    [caseName: string]: CaseData;
+  };
+}
+
+interface DeclensionTableProps {
+  noun: string;
+  declensions: {
+    [noun: string]: NounData;
+  };
+  audioEnabled: boolean;
+}
+
+interface TableRow extends TableRowData {
+  caseName: string;
+  question: string;
+  form: string;
+  example: React.JSX.Element;
+}
+
+const DeclensionTable = ({ noun, declensions, audioEnabled }: DeclensionTableProps) => {
   const nounData = declensions[noun];
   if (!nounData) return null;
 
-  const cases = ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'locative', 'vocative'];
+  const cases: string[] = ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'locative', 'vocative'];
 
   // Convert to data array
-  const tableData = cases
+  const tableData: TableRow[] = cases
     .filter(caseName => nounData.cases[caseName])
     .map(caseName => {
       const caseData = nounData.cases[caseName];
@@ -30,7 +61,7 @@ const DeclensionTable = ({ noun, declensions, audioEnabled }) => {
       };
     });
 
-  const columns = [
+  const columns: TableColumn[] = [
     {
       header: 'Case',
       accessor: 'caseName',
@@ -57,7 +88,7 @@ const DeclensionTable = ({ noun, declensions, audioEnabled }) => {
       header: 'Audio',
       type: 'audio',
       audioWord: 'form',
-      audioSize: 'small',
+      audioSize: 'small' as const,
       align: 'center'
     }
   ];

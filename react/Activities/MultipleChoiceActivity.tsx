@@ -61,17 +61,6 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
     }
   }, [onAnswerClick, currentWord, studyMode]);
 
-  // Create a wrapper for playAudio to match expected signature
-  const playAudioWrapper = React.useCallback(async (word: string): Promise<boolean> => {
-    try {
-      await audioManager.playAudio(word);
-      return true;
-    } catch (error) {
-      console.error('Audio playback failed:', error);
-      return false;
-    }
-  }, []);
-
   // Early return after all hooks
   if (!currentWord) return null;
 
@@ -114,7 +103,7 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        playAudio={playAudioWrapper}
+        audioManager={audioManager}
         multipleChoiceOptions={multipleChoiceOptions}
         selectedAnswer={selectedAnswer}
         showAnswer={showAnswer}

@@ -511,7 +511,7 @@ const FlashCardApp = () => {
           setVocabListWords={setVocabListWords}
           corporaData={corporaData}
           audioEnabled={audioEnabled}
-          playAudio={audioManager.playAudio.bind(audioManager)}
+          audioManager={audioManager}
         />
       ) : quizMode === 'journey' ? (
         <JourneyMode 

@@ -5,24 +5,22 @@ interface TypingResponseProps {
   currentWord: Word | null;
   studyMode: StudyMode;
   audioEnabled: boolean;
-  playAudio?: () => void;
   audioManager?: AudioManager;
   onSubmit: (answer: string) => void;
   showAnswer: boolean;
-  feedback: string | null;
+  feedback: string;
   typedAnswer: string;
   onTypedAnswerChange: (value: string) => void;
-  autoAdvance: boolean;
-  defaultDelay: number;
-  onNext: () => void;
-  autoAdvanceTimer: boolean;
+  autoAdvance?: boolean;
+  defaultDelay?: number;
+  onNext?: () => void;
+  autoAdvanceTimer?: NodeJS.Timeout | null;
 }
 
 const TypingResponse: React.FC<TypingResponseProps> = ({
   currentWord,
   studyMode,
   audioEnabled,
-  playAudio,
   audioManager,
   onSubmit,
   showAnswer,
@@ -67,7 +65,7 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
             color: feedback.includes('✅') ? 'green' : 'red' 
           }}>
             {feedback}
-            {feedback.includes('✅') && autoAdvance && autoAdvanceTimer && (
+            {feedback.includes('✅') && autoAdvance && autoAdvanceTimer && defaultDelay && (
               <span style={{ marginLeft: '1rem', fontSize: '0.9rem', fontWeight: 'normal' }}>
                 (Next card in {defaultDelay}s...)
               </span>

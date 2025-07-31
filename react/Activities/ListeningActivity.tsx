@@ -3,12 +3,27 @@ import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import audioManager from '../Managers/audioManager';
+import { StudyMode, Word } from '../Utilities/types';
+
+interface ListeningActivityProps {
+  currentWord: Word;
+  showAnswer: boolean;
+  selectedAnswer: string | null;
+  multipleChoiceOptions: string[];
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  onAnswerClick?: (selectedOption: string, isCorrect: boolean) => void;
+  settings?: any;
+  allWords: Word[];
+  autoAdvance: boolean;
+  defaultDelay: number;
+}
 
 /**
  * Listening Activity Component
  * Plays audio of a word and asks user to select the correct translation or matching word
  */
-const ListeningActivity = ({ 
+const ListeningActivity: React.FC<ListeningActivityProps> = ({ 
   currentWord,
   showAnswer,
   selectedAnswer,
@@ -44,12 +59,12 @@ const ListeningActivity = ({
   }, [currentWord, audioEnabled, preventAutoPlay]);
 
   // Handle answer click
-  const handleAnswerClick = React.useCallback((selectedOption) => {
+  const handleAnswerClick = React.useCallback((selectedOption: string) => {
     // Prevent auto-play when an answer is selected
     setPreventAutoPlay(true);
     
     // Determine correct answer based on study mode
-    let correctAnswer;
+    let correctAnswer: string;
     if (studyMode === 'lithuanian-to-lithuanian') {
       correctAnswer = currentWord.lithuanian;
     } else if (studyMode === 'lithuanian-to-english') {
@@ -58,7 +73,7 @@ const ListeningActivity = ({
       correctAnswer = currentWord.lithuanian; // Default fallback
     }
 
-    const isCorrect = selectedOption === correctAnswer;
+    const isCorrect: boolean = selectedOption === correctAnswer;
     
     // Call the onAnswerClick callback with correctness information
     if (onAnswerClick) {
@@ -70,7 +85,7 @@ const ListeningActivity = ({
   if (!currentWord || !multipleChoiceOptions?.length) return null;
 
   // Generate instruction text based on study mode
-  const getInstructionText = () => {
+  const getInstructionText = (): string => {
     switch (studyMode) {
       case 'lithuanian-to-english':
         return 'Choose the English translation:';
@@ -82,13 +97,13 @@ const ListeningActivity = ({
   };
 
   // Generate hint text based on answer state
-  const getHintText = () => {
+  const getHintText = (): string => {
     if (!showAnswer) {
       return getInstructionText();
     }
     
     // Determine if the selected answer was correct
-    let correctAnswer;
+    let correctAnswer: string;
     if (studyMode === 'lithuanian-to-lithuanian') {
       correctAnswer = currentWord.lithuanian;
     } else if (studyMode === 'lithuanian-to-english') {
@@ -97,9 +112,9 @@ const ListeningActivity = ({
       correctAnswer = currentWord.lithuanian; // Default fallback
     }
     
-    const isCorrect = selectedAnswer === correctAnswer;
+    const isCorrect: boolean = selectedAnswer === correctAnswer;
     
-    let hintText = isCorrect ? "Correct" : "Incorrect";
+    let hintText: string = isCorrect ? "Correct" : "Incorrect";
     
     // Add auto-advance information if enabled
     if (autoAdvance && defaultDelay) {
@@ -127,7 +142,7 @@ const ListeningActivity = ({
         quizMode="listening"
         handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        playAudio={audioManager.playAudio.bind(audioManager)}
+        audioManager={audioManager}
         multipleChoiceOptions={multipleChoiceOptions}
         selectedAnswer={selectedAnswer}
         showAnswer={showAnswer}
