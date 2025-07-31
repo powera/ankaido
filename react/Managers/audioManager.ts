@@ -1,4 +1,5 @@
 import safeStorage from '../DataStorage/safeStorage';
+import { AudioManager as IAudioManager } from '../Utilities/types';
 
 const API_BASE = '/api/lithuanian';
 
@@ -21,7 +22,7 @@ type PlaybackRequest = {
   timestamp: number;
 };
 
-class AudioManager {
+class AudioManager implements IAudioManager {
   private static instance: AudioManager;
   private audioCache: AudioCache = {};
   private audioContext: AudioContext | null = null;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SortDirection } from '../../Utilities/types';
+import { AudioManager, SortDirection } from '../../Utilities/types';
 import AudioButton from '../AudioButton';
 
 // Type for individual row data - flexible to allow any properties
@@ -44,6 +44,7 @@ export interface DataTableProps {
   onSort?: (field: string) => void;
   audioEnabled?: boolean;
   playAudio?: (word: string) => Promise<boolean>;
+  audioManager?: AudioManager;
   maxHeight?: string;
   stickyHeader?: boolean;
   striped?: boolean;
@@ -59,6 +60,7 @@ const DataTable: React.FC<DataTableProps> = ({
   onSort,
   audioEnabled = false,
   playAudio,
+  audioManager,
   maxHeight = '60vh',
   stickyHeader = true,
   striped = true,
@@ -74,6 +76,7 @@ const DataTable: React.FC<DataTableProps> = ({
           size={column.audioSize || 'small'}
           audioEnabled={audioEnabled}
           playAudio={playAudio}
+          audioManager={audioManager}
         />
       );
     }

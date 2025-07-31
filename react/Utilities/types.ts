@@ -145,3 +145,16 @@ export interface MultiWordSequenceStats {
 export interface ActivityStatsManager {
   updateWordStats: (word: Word, statsMode: StudyMode, isCorrect: boolean) => Promise<void>;
 }
+
+// Audio manager interface for audio playback functionality
+export interface AudioManager {
+  playAudio: (word: string, onlyCached?: boolean, sequential?: boolean) => Promise<void>;
+  stopCurrentAudio: () => Promise<void>;
+  stopAllAudio: () => Promise<void>;
+  preloadAudio: (word: string) => Promise<boolean>;
+  hasInCache: (word: string) => boolean;
+  initialize: (voices?: string[]) => Promise<AudioManager>;
+  setAvailableVoices: (voices: string[]) => void;
+  getAvailableVoices: () => string[];
+  getSelectedVoice: () => string | null;
+}

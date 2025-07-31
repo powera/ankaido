@@ -34,16 +34,7 @@ const ConjugationTable: React.FC<ConjugationTableProps> = ({
   const conjugationList = conjugations[verb];
   if (!conjugationList) return null;
 
-  // Create a wrapper function that returns a boolean for AudioButton compatibility
-  const playAudioWrapper = async (word: string): Promise<boolean> => {
-    try {
-      await audioManager.playAudio(word);
-      return true;
-    } catch (error) {
-      console.warn('Audio playback failed:', error);
-      return false;
-    }
-  };
+
 
   if (compact) {
     return <CompactConjugationTable verb={verb} conjugationList={conjugationList} audioEnabled={audioEnabled} hideHeader={hideHeader} />;
@@ -101,7 +92,7 @@ const ConjugationTable: React.FC<ConjugationTableProps> = ({
           columns={columns}
           data={tableData}
           audioEnabled={audioEnabled}
-          playAudio={playAudioWrapper}
+          audioManager={audioManager}
           maxHeight="none"
           stickyHeader={false}
         />
@@ -124,16 +115,7 @@ const CompactConjugationTable: React.FC<CompactConjugationTableProps> = ({
   audioEnabled, 
   hideHeader = false 
 }) => {
-  // Create a wrapper function that returns a boolean for AudioButton compatibility
-  const playAudioWrapper = async (word: string): Promise<boolean> => {
-    try {
-      await audioManager.playAudio(word);
-      return true;
-    } catch (error) {
-      console.warn('Audio playback failed:', error);
-      return false;
-    }
-  };
+
 
   // Create a mapping from the conjugation keys to the data
   const conjugationMap: Record<string, ConjugationEntry> = {};
@@ -195,7 +177,7 @@ const CompactConjugationTable: React.FC<CompactConjugationTableProps> = ({
                     word={singular.lithuanian}
                     size="small"
                     audioEnabled={audioEnabled}
-                    playAudio={playAudioWrapper}
+                    audioManager={audioManager}
                   />
                 </div>
               )}
@@ -219,7 +201,7 @@ const CompactConjugationTable: React.FC<CompactConjugationTableProps> = ({
                     word={plural.lithuanian}
                     size="small"
                     audioEnabled={audioEnabled}
-                    playAudio={playAudioWrapper}
+                    audioManager={audioManager}
                   />
                 </div>
               )}

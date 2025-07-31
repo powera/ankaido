@@ -1,13 +1,10 @@
 
-import React from 'react';
 import DataTable from '../Components/shared/DataTable';
 import audioManager from '../Managers/audioManager';
 
 const DeclensionTable = ({ noun, declensions, audioEnabled }) => {
   const nounData = declensions[noun];
   if (!nounData) return null;
-
-  // Use the global audio manager instance (already imported as singleton)
 
   const cases = ['nominative', 'genitive', 'dative', 'accusative', 'instrumental', 'locative', 'vocative'];
 
@@ -80,7 +77,7 @@ const DeclensionTable = ({ noun, declensions, audioEnabled }) => {
           columns={columns}
           data={tableData}
           audioEnabled={audioEnabled}
-          playAudio={audioManager.playAudio.bind(audioManager)}
+          audioManager={audioManager}
           maxHeight="none"
           stickyHeader={false}
         />

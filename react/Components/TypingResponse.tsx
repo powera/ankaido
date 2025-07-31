@@ -1,17 +1,12 @@
 import React from 'react';
-
-interface Word {
-  english: string;
-  lithuanian: string;
-}
-
-type StudyMode = 'english-to-lithuanian' | 'lithuanian-to-english';
+import { AudioManager, StudyMode, Word } from '../Utilities/types';
 
 interface TypingResponseProps {
   currentWord: Word | null;
   studyMode: StudyMode;
   audioEnabled: boolean;
-  playAudio: () => void;
+  playAudio?: () => void;
+  audioManager?: AudioManager;
   onSubmit: (answer: string) => void;
   showAnswer: boolean;
   feedback: string | null;
@@ -28,6 +23,7 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
   studyMode,
   audioEnabled,
   playAudio,
+  audioManager,
   onSubmit,
   showAnswer,
   feedback,

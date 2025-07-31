@@ -1,11 +1,13 @@
 import React from 'react';
+import { AudioManager } from '../Utilities/types';
 
 // Props interface for AudioButton component
 export interface AudioButtonProps {
   word: string;
   size?: 'small' | 'normal' | 'large';
   audioEnabled: boolean;
-  playAudio: (word: string) => Promise<boolean>;
+  playAudio?: (word: string) => Promise<boolean>;
+  audioManager?: AudioManager;
   asSpan?: boolean;
 }
 
@@ -14,6 +16,7 @@ const AudioButton: React.FC<AudioButtonProps> = ({
   size = 'normal', 
   audioEnabled, 
   playAudio, 
+  audioManager,
   asSpan = false 
 }) => {
   // Define styles based on size
@@ -45,8 +48,23 @@ const AudioButton: React.FC<AudioButtonProps> = ({
     e.stopPropagation();
     e.preventDefault(); // Prevent any default behavior
     
+    // Validate that either playAudio or audioManager is provided
+    if (!playAudio && !audioManager) {
+      console.warn('AudioButton: Neither playAudio nor audioManager provided');
+      return;
+    }
+    
     try {
-      const success = await playAudio(word);
+      let success = true;
+      
+      if (audioManager) {
+        // Use audioManager.playAudio (returns Promise<void>)
+        await audioManager.playAudio(word);
+      } else if (playAudio) {
+        // Use playAudio function (returns Promise<boolean>)
+        success = await playAudio(word);
+      }
+      
       if (!success) {
         // Visual feedback for failed audio
         const target = e.target as HTMLElement;

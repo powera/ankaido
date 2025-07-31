@@ -49,16 +49,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
   // Determine which word to use for audio
   const audioWord = currentWord.lithuanian;
 
-  // Create a wrapper function to match AudioButton's expected signature
-  const playAudioWrapper = async (word: string): Promise<boolean> => {
-    try {
-      await audioManager.playAudio(word);
-      return true;
-    } catch (error) {
-      console.warn('Audio playback failed:', error);
-      return false;
-    }
-  };
+
 
   // Determine if we should show the audio button based on study mode and showAudioButton prop
   const shouldShowAudioButton = showAudioButton && audioEnabled && (
@@ -105,7 +96,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
-              playAudio={playAudioWrapper}
+              audioManager={audioManager}
             />
           )}
         </div>
@@ -119,7 +110,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
               <AudioButton 
                 word={audioWord}
                 audioEnabled={audioEnabled}
-                playAudio={playAudioWrapper}
+                audioManager={audioManager}
               />
             )}
           </div>
