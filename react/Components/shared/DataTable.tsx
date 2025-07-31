@@ -1,4 +1,5 @@
 import React from 'react';
+import { SortDirection } from '../../Utilities/types';
 import AudioButton from '../AudioButton';
 
 // Type for individual row data - flexible to allow any properties
@@ -39,7 +40,7 @@ export interface DataTableProps {
   data: TableRowData[];
   sortable?: boolean;
   sortField?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: SortDirection;
   onSort?: (field: string) => void;
   audioEnabled?: boolean;
   playAudio?: (word: string) => Promise<void>;

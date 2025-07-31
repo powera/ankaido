@@ -74,6 +74,9 @@ export type ActivityMode = 'en-to-lt' | 'lt-to-en' | 'easy' | 'hard';
 // Difficulty levels
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 
+// Sort direction for tables and lists
+export type SortDirection = 'asc' | 'desc';
+
 // Journey focus modes
 export type JourneyFocusMode = 'normal' | 'new-words' | 'review-words';
 
