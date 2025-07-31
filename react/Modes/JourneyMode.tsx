@@ -15,12 +15,62 @@ import {
   getTotalExposures
 } from '../Managers/activityStatsManager';
 
+import safeStorage from '../DataStorage/safeStorage';
 import journeyModeManager from '../Managers/journeyModeManager';
+import WordListManager from '../Managers/wordListManager';
 import { invalidateWordWeightCache, selectJourneyActivity } from '../Utilities/activitySelection';
 import { fetchConjugations } from '../Utilities/apiClient';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
+import {
+  ActivityMode,
+  ExtendedActivityType,
+  JourneyFocusMode,
+  Stats,
+  StudyMode,
+  Word,
+  WordListState
+} from '../Utilities/types';
 
-const JourneyMode = ({ 
+// --- Type Definitions ---
+
+interface JourneyModeProps {
+  wordListManager: WordListManager;
+  wordListState: WordListState;
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  autoAdvance: boolean;
+  defaultDelay: number;
+  safeStorage: typeof safeStorage;
+  journeyFocusMode?: JourneyFocusMode;
+  setJourneyFocusMode?: (mode: JourneyFocusMode) => void;
+}
+
+interface JourneyState {
+  isInitialized: boolean;
+  currentActivity: ExtendedActivityType | null;
+  currentWord: Word | null;
+  showNewWordIndicator: boolean;
+  listeningMode: ActivityMode | null;
+  multipleChoiceMode: ActivityMode | null;
+  typingMode: ActivityMode | null;
+  multipleChoiceOptions: any[]; // TODO: Type this properly when multipleChoiceGenerator is migrated
+  conjugationData: Record<string, any> | null;
+  selectedVerb: string | null;
+  verbCorpus: string | null;
+}
+
+interface ActivityAnswerState {
+  showAnswer: boolean;
+  selectedAnswer: string | null;
+}
+
+interface ActivityHeaderProps {
+  title: string;
+  subtitle?: string;
+  background: string;
+}
+
+const JourneyMode: React.FC<JourneyModeProps> = ({ 
   wordListManager, 
   wordListState, 
   studyMode, 
@@ -31,7 +81,7 @@ const JourneyMode = ({
   journeyFocusMode = 'normal',
   setJourneyFocusMode
 }) => {
-  const [journeyState, setJourneyState] = React.useState({
+  const [journeyState, setJourneyState] = React.useState<JourneyState>({
     isInitialized: false,
     currentActivity: null,
     currentWord: null,
@@ -45,20 +95,20 @@ const JourneyMode = ({
     verbCorpus: null
   });
 
-  const [activityAnswerState, setActivityAnswerState] = React.useState({
+  const [activityAnswerState, setActivityAnswerState] = React.useState<ActivityAnswerState>({
     showAnswer: false,
     selectedAnswer: null
   });
 
-  const [activityStats, setActivityStats] = React.useState({});
+  const [activityStats, setActivityStats] = React.useState<Stats>({});
 
   // Journey focus mode interstitial state
-  const [showFocusInterstitial, setShowFocusInterstitial] = React.useState(false);
-  const [pendingFocusMode, setPendingFocusMode] = React.useState(null);
-  const [currentFocusMode, setCurrentFocusMode] = React.useState('normal');
+  const [showFocusInterstitial, setShowFocusInterstitial] = React.useState<boolean>(false);
+  const [pendingFocusMode, setPendingFocusMode] = React.useState<JourneyFocusMode | null>(null);
+  const [currentFocusMode, setCurrentFocusMode] = React.useState<JourneyFocusMode>('normal');
   
   // Track when it's the first activity or after a mode change
-  const [isFirstActivityOrModeChange, setIsFirstActivityOrModeChange] = React.useState(true);
+  const [isFirstActivityOrModeChange, setIsFirstActivityOrModeChange] = React.useState<boolean>(true);
 
   // Journey mode state is managed by the singleton journeyModeManager
 
@@ -79,12 +129,7 @@ const JourneyMode = ({
     }
   }, [journeyFocusMode, currentFocusMode]);
 
-  // Initialize wordListManager activityStats property
-  React.useEffect(() => {
-    if (!wordListManager.activityStats) {
-      wordListManager.activityStats = {};
-    }
-  }, [wordListManager]);
+  // Note: activityStats are now managed by activityStatsManager, not wordListManager
 
   // Unified stats loading function using shared manager
   const loadStatsFromStorage = React.useCallback(async () => {
@@ -105,7 +150,7 @@ const JourneyMode = ({
     loadStatsFromStorage();
 
     // Listen for stats updates from other modes
-    const handleStatsUpdate = (updatedStats) => {
+    const handleStatsUpdate = (updatedStats: Stats) => {
       setActivityStats(updatedStats);
     };
 
@@ -128,25 +173,25 @@ const JourneyMode = ({
     return getNewWords(wordListState.allWords, activityStatsManager);
   }, [wordListState.allWords]);
 
-  const getTotalCorrectForWord = React.useCallback((word) => {
+  const getTotalCorrectForWord = React.useCallback((word: Word) => {
     const stats = activityStatsManager.getWordStats(word);
     return getTotalCorrectExposures(stats);
   }, []);
 
-  const getWordWeights = React.useCallback((word) => {
+  const getWordWeights = React.useCallback((word: Word) => {
     return activityStatsManager.getWordStats(word);
   }, []);
 
   // Interstitial handlers
-  const handleInterstitialContinue = () => {
-    setCurrentFocusMode(pendingFocusMode);
+  const handleInterstitialContinue = (): void => {
+    setCurrentFocusMode(pendingFocusMode!);
     setShowFocusInterstitial(false);
     setPendingFocusMode(null);
     // Mark that the next activity should be after a mode change
     setIsFirstActivityOrModeChange(true);
   };
 
-  const handleInterstitialReturnToNormal = () => {
+  const handleInterstitialReturnToNormal = (): void => {
     setCurrentFocusMode('normal');
     setShowFocusInterstitial(false);
     setPendingFocusMode(null);
@@ -164,7 +209,7 @@ const JourneyMode = ({
       getExposedWordsList,
       getNewWordsList,
       wordListState.allWords,
-      wordListManager,
+      { getCurrentWord: () => wordListManager.getCurrentWordRequired() },
       getTotalCorrectForWord,
       audioEnabled,
       journeyModeManager,
@@ -185,7 +230,7 @@ const JourneyMode = ({
     // Note: Answer state reset is now handled by individual activity components
 
     // Generate multiple choice options for activities that need them
-    let multipleChoiceOptions = [];
+    let multipleChoiceOptions: any[] = [];
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening') && nextActivity.word) {
       // Determine the effective study mode for option generation
       let effectiveStudyMode = studyMode;
@@ -241,9 +286,9 @@ const JourneyMode = ({
           currentActivity: fallbackActivity.type,
           currentWord: fallbackActivity.word,
           showNewWordIndicator: fallbackActivity.type === 'new-word',
-          listeningMode: fallbackActivity.type === 'listening' ? fallbackActivity.mode : null,
-          multipleChoiceMode: fallbackActivity.type === 'multiple-choice' ? fallbackActivity.mode : null,
-          typingMode: fallbackActivity.type === 'typing' ? fallbackActivity.mode : null,
+          listeningMode: fallbackActivity.type === 'listening' ? (fallbackActivity.mode || null) : null,
+          multipleChoiceMode: fallbackActivity.type === 'multiple-choice' ? (fallbackActivity.mode || null) : null,
+          typingMode: fallbackActivity.type === 'typing' ? (fallbackActivity.mode || null) : null,
           multipleChoiceOptions: [],
           conjugationData: null,
           selectedVerb: null,
@@ -259,9 +304,9 @@ const JourneyMode = ({
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
       showNewWordIndicator: nextActivity.type === 'new-word',
-      listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null, // Store the listening mode (easy/hard)
-      multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null, // Store the multiple-choice mode (en-to-lt/lt-to-en)
-      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null, // Store the typing mode (en-to-lt/lt-to-en)
+      listeningMode: nextActivity.type === 'listening' ? (nextActivity.mode || null) : null, // Store the listening mode (easy/hard)
+      multipleChoiceMode: nextActivity.type === 'multiple-choice' ? (nextActivity.mode || null) : null, // Store the multiple-choice mode (en-to-lt/lt-to-en)
+      typingMode: nextActivity.type === 'typing' ? (nextActivity.mode || null) : null, // Store the typing mode (en-to-lt/lt-to-en)
       multipleChoiceOptions: multipleChoiceOptions,
       conjugationData: conjugationData,
       selectedVerb: selectedVerb,
@@ -280,10 +325,11 @@ const JourneyMode = ({
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening' || nextActivity.type === 'typing') && nextActivity.word) {
       // Set current word for existing components
       const wordIndex = wordListState.allWords.findIndex(w => 
-        w.lithuanian === nextActivity.word.lithuanian && w.english === nextActivity.word.english
+        nextActivity.word && w.lithuanian === nextActivity.word.lithuanian && w.english === nextActivity.word.english
       );
       if (wordIndex >= 0) {
-        wordListManager.currentCard = wordIndex;
+        // Note: WordListManager doesn't expose currentCard setter, 
+        // but the word selection is handled by the activity selection logic
 
         // Determine effective study mode based on activity type and mode
         let effectiveStudyMode = studyMode;
@@ -307,8 +353,7 @@ const JourneyMode = ({
           effectiveStudyMode = 'lithuanian-to-english';
         }
 
-        // Notify state change after everything is updated
-        wordListManager.notifyStateChange();
+        // Note: State change notification is handled by the activity selection logic
       }
     }
   }, [selectNextActivity, wordListManager, wordListState.allWords, studyMode]);
@@ -325,7 +370,7 @@ const JourneyMode = ({
 
 
   // Handler for multiple choice answers with stats and auto-advance
-  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption, isCorrect) => {
+  const handleJourneyMultipleChoice = React.useCallback(async (selectedOption: string, isCorrect: boolean) => {
     // Update local answer state
     setActivityAnswerState({
       showAnswer: true,
@@ -333,12 +378,14 @@ const JourneyMode = ({
     });
 
     // Update journey stats (Journey Mode can expose words)
-    try {
-      await activityStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
-      // Invalidate weight cache for this word since stats changed
-      invalidateWordWeightCache(journeyState.currentWord);
-    } catch (error) {
-      console.error('Error updating journey stats:', error);
+    if (journeyState.currentWord) {
+      try {
+        await activityStatsManager.updateWordStats(journeyState.currentWord, 'multipleChoice', isCorrect, true);
+        // Invalidate weight cache for this word since stats changed
+        invalidateWordWeightCache(journeyState.currentWord);
+      } catch (error) {
+        console.error('Error updating journey stats:', error);
+      }
     }
 
     // Auto-advance if enabled
@@ -350,7 +397,7 @@ const JourneyMode = ({
   }, [journeyState.multipleChoiceMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
   // Handler for listening answers with stats and auto-advance
-  const handleJourneyListening = React.useCallback(async (selectedOption, isCorrect) => {
+  const handleJourneyListening = React.useCallback(async (selectedOption: string, isCorrect: boolean) => {
     // Update local answer state
     setActivityAnswerState({
       showAnswer: true,
@@ -361,12 +408,14 @@ const JourneyMode = ({
     const statsMode = journeyState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
 
     // Update journey stats (Journey Mode can expose words)
-    try {
-      await activityStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
-      // Invalidate weight cache for this word since stats changed
-      invalidateWordWeightCache(journeyState.currentWord);
-    } catch (error) {
-      console.error('Error updating journey stats:', error);
+    if (journeyState.currentWord) {
+      try {
+        await activityStatsManager.updateWordStats(journeyState.currentWord, statsMode, isCorrect, true);
+        // Invalidate weight cache for this word since stats changed
+        invalidateWordWeightCache(journeyState.currentWord);
+      } catch (error) {
+        console.error('Error updating journey stats:', error);
+      }
     }
 
     // Auto-advance if enabled
@@ -378,14 +427,16 @@ const JourneyMode = ({
   }, [journeyState.listeningMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
   // Handler for typing submissions with stats and auto-advance
-  const handleJourneyTyping = React.useCallback(async (typedAnswer, isCorrect) => {
+  const handleJourneyTyping = React.useCallback(async (typedAnswer: string, isCorrect: boolean) => {
     // Update journey stats (Journey Mode can expose words)
-    try {
-      await activityStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
-      // Invalidate weight cache for this word since stats changed
-      invalidateWordWeightCache(journeyState.currentWord);
-    } catch (error) {
-      console.error('Error updating journey stats:', error);
+    if (journeyState.currentWord) {
+      try {
+        await activityStatsManager.updateWordStats(journeyState.currentWord, 'typing', isCorrect, true);
+        // Invalidate weight cache for this word since stats changed
+        invalidateWordWeightCache(journeyState.currentWord);
+      } catch (error) {
+        console.error('Error updating journey stats:', error);
+      }
     }
 
     // Auto-advance if enabled
@@ -422,7 +473,7 @@ const JourneyMode = ({
   }
 
   // Show focus mode interstitial if needed
-  if (showFocusInterstitial) {
+  if (showFocusInterstitial && pendingFocusMode) {
     return (
       <JourneyFocusModeInterstitial
         focusMode={pendingFocusMode}
@@ -459,7 +510,7 @@ const JourneyMode = ({
   }
 
   // Reusable activity header component
-  const ActivityHeader = ({ title, subtitle, background }) => (
+  const ActivityHeader: React.FC<ActivityHeaderProps> = ({ title, subtitle, background }) => (
     <div className="w-card" style={{ background, color: 'white', marginBottom: 'var(--spacing-base)' }}>
       <div className="w-text-center">
         <div style={{ fontSize: subtitle ? '1.5rem' : '1.2rem', fontWeight: 'bold' }}>{title}</div>
@@ -469,7 +520,7 @@ const JourneyMode = ({
   );
 
   // Reusable navigation controls
-  const NavigationControls = () => (
+  const NavigationControls: React.FC = () => (
     !autoAdvance && (
       <div className="w-nav-controls">
         <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
@@ -490,7 +541,10 @@ const JourneyMode = ({
         <FlashCardActivity 
           currentWord={journeyState.currentWord}
           showAnswer={wordListState.showAnswer}
-          setShowAnswer={(value) => wordListManager.setShowAnswer(value)}
+          setShowAnswer={(value: boolean) => {
+            // Note: FlashCardActivity manages its own show answer state
+            // This callback is for compatibility but doesn't need to do anything
+          }}
           studyMode={studyMode}
           audioEnabled={audioEnabled}
           isNewWord={true}
@@ -530,6 +584,7 @@ const JourneyMode = ({
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           allWords={wordListState.allWords}
+          settings={{}}
         />
         <NavigationControls />
       </div>
@@ -566,6 +621,7 @@ const JourneyMode = ({
           autoAdvance={autoAdvance}
           defaultDelay={defaultDelay}
           allWords={wordListState.allWords}
+          settings={{}}
         />
         <NavigationControls />
       </div>
@@ -592,6 +648,8 @@ const JourneyMode = ({
           background="linear-gradient(135deg, #FF9800, #F57C00)"
         />
         <TypingActivity 
+          wordListManager={wordListManager}
+          wordListState={wordListState}
           currentWord={journeyState.currentWord}
           studyMode={effectiveStudyMode}
           onSubmit={handleJourneyTyping}

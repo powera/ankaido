@@ -107,6 +107,14 @@ class WordListManager {
     return this.allWords[this.currentCard];
   }
 
+  getCurrentWordRequired(): Word {
+    const word = this.allWords[this.currentCard];
+    if (!word) {
+      throw new Error('No current word available');
+    }
+    return word;
+  }
+
   getTotalWords(): number {
     return this.allWords.length;
   }
