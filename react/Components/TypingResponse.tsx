@@ -1,8 +1,29 @@
-
 import React from 'react';
-import AudioButton from './AudioButton';
 
-const TypingResponse = ({
+interface Word {
+  english: string;
+  lithuanian: string;
+}
+
+type StudyMode = 'english-to-lithuanian' | 'lithuanian-to-english';
+
+interface TypingResponseProps {
+  currentWord: Word | null;
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  playAudio: () => void;
+  onSubmit: (answer: string) => void;
+  showAnswer: boolean;
+  feedback: string | null;
+  typedAnswer: string;
+  onTypedAnswerChange: (value: string) => void;
+  autoAdvance: boolean;
+  defaultDelay: number;
+  onNext: () => void;
+  autoAdvanceTimer: boolean;
+}
+
+const TypingResponse: React.FC<TypingResponseProps> = ({
   currentWord,
   studyMode,
   audioEnabled,
@@ -17,14 +38,14 @@ const TypingResponse = ({
   onNext,
   autoAdvanceTimer
 }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!currentWord || showAnswer) return;
     onSubmit(typedAnswer);
   };
 
   const correctAnswer = studyMode === 'english-to-lithuanian' ? 
-    currentWord.lithuanian : currentWord.english;
+    currentWord?.lithuanian : currentWord?.english;
 
   const promptText = studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
@@ -95,7 +116,7 @@ const TypingResponse = ({
                   Special characters:
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map(char => (
+                  {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map((char: string) => (
                     <button
                       key={char}
                       className="w-special-char"

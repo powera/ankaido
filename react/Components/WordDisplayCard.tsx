@@ -1,8 +1,29 @@
 
+import React from 'react';
 import audioManager from '../Managers/audioManager';
+import { StudyMode, Word } from '../Utilities/types';
 import AudioButton from './AudioButton';
 
-const WordDisplayCard = ({
+// Props interface for WordDisplayCard component
+export interface WordDisplayCardProps {
+  currentWord: Word | null;
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  showAnswer?: boolean;
+  questionText?: string | null;
+  answerText?: string | null;
+  children?: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+  showBadge?: boolean;
+  showAudioButton?: boolean;
+  isClickable?: boolean;
+  onClick?: () => void;
+  showHints?: boolean;
+  hintText?: string | null;
+}
+
+const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
   currentWord,
   studyMode,
   audioEnabled,
@@ -15,7 +36,7 @@ const WordDisplayCard = ({
   showBadge = true,
   showAudioButton = true,
   isClickable = false,
-  onClick = null,
+  onClick,
   showHints = false,
   hintText = null
 }) => {
@@ -28,15 +49,26 @@ const WordDisplayCard = ({
   // Determine which word to use for audio
   const audioWord = currentWord.lithuanian;
 
+  // Create a wrapper function to match AudioButton's expected signature
+  const playAudioWrapper = async (word: string): Promise<boolean> => {
+    try {
+      await audioManager.playAudio(word);
+      return true;
+    } catch (error) {
+      console.warn('Audio playback failed:', error);
+      return false;
+    }
+  };
+
   // Determine if we should show the audio button based on study mode and showAudioButton prop
   const shouldShowAudioButton = showAudioButton && audioEnabled && (
     (studyMode === 'lithuanian-to-english') ||
     (studyMode === 'english-to-lithuanian' && showAnswer) ||
-    (studyMode === 'listening')
+    (questionText?.includes('🎧')) // For listening activities
   );
 
   // Helper function to pretty-print level names
-  const formatLevel = (level) => {
+  const formatLevel = (level: string): string => {
     return level.replace(/level_(\d+)/i, 'Level $1').replace(/_/g, ' ');
   };
 
@@ -69,11 +101,11 @@ const WordDisplayCard = ({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
           <span>{question}</span>
-          {shouldShowAudioButton && (studyMode === 'lithuanian-to-english' || studyMode === 'listening') && (
+          {shouldShowAudioButton && (studyMode === 'lithuanian-to-english' || questionText?.includes('🎧')) && (
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
-              playAudio={audioManager.playAudio.bind(audioManager)}
+              playAudio={playAudioWrapper}
             />
           )}
         </div>
@@ -87,7 +119,7 @@ const WordDisplayCard = ({
               <AudioButton 
                 word={audioWord}
                 audioEnabled={audioEnabled}
-                playAudio={audioManager.playAudio.bind(audioManager)}
+                playAudio={playAudioWrapper}
               />
             )}
           </div>

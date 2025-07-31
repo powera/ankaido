@@ -1,6 +1,11 @@
 import React from 'react';
 
-const SplashScreen = ({ requiresInteraction = false, onContinue = null }) => {
+interface SplashScreenProps {
+  requiresInteraction?: boolean;
+  onContinue?: (() => void) | null;
+}
+
+const SplashScreen: React.FC<SplashScreenProps> = ({ requiresInteraction = false, onContinue = null }) => {
   const handleClick = () => {
     if (requiresInteraction && onContinue) {
       onContinue();

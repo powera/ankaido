@@ -1,9 +1,23 @@
-
 import React from 'react';
 
-const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = false }) => {
+// Props interface for AudioButton component
+export interface AudioButtonProps {
+  word: string;
+  size?: 'small' | 'normal' | 'large';
+  audioEnabled: boolean;
+  playAudio: (word: string) => Promise<boolean>;
+  asSpan?: boolean;
+}
+
+const AudioButton: React.FC<AudioButtonProps> = ({ 
+  word, 
+  size = 'normal', 
+  audioEnabled, 
+  playAudio, 
+  asSpan = false 
+}) => {
   // Define styles based on size
-  const buttonStyle = {
+  const buttonStyle: React.CSSProperties = {
     fontSize: size === 'small' ? '0.8rem' : size === 'large' ? '1.5rem' : '1rem',
     cursor: 'pointer',
     display: 'inline-flex',
@@ -27,7 +41,7 @@ const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = 
     );
   }
   
-  const handleAudioClick = async (e) => {
+  const handleAudioClick = async (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     e.preventDefault(); // Prevent any default behavior
     
@@ -35,17 +49,19 @@ const AudioButton = ({ word, size = 'normal', audioEnabled, playAudio, asSpan = 
       const success = await playAudio(word);
       if (!success) {
         // Visual feedback for failed audio
-        e.target.style.opacity = '0.5';
+        const target = e.target as HTMLElement;
+        target.style.opacity = '0.5';
         setTimeout(() => {
-          if (e.target) e.target.style.opacity = '1';
+          if (target) target.style.opacity = '1';
         }, 1000);
       }
     } catch (error) {
       console.warn('Audio button click failed:', error);
       // Visual feedback for error
-      e.target.style.opacity = '0.5';
+      const target = e.target as HTMLElement;
+      target.style.opacity = '0.5';
       setTimeout(() => {
-        if (e.target) e.target.style.opacity = '1';
+        if (target) target.style.opacity = '1';
       }, 1000);
     }
   };

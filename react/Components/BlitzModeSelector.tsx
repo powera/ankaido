@@ -1,7 +1,38 @@
 import React from 'react';
+import type { CorporaData, LevelsData, SelectedGroups } from '../Utilities/studyMaterialsUtils';
 import { organizeLevelsForDisplay } from '../Utilities/studyMaterialsUtils';
 
-const BlitzModeSelector = ({
+// Types for content filtering
+type ContentFilter = 'all' | 'words' | 'verbs';
+type SelectionMode = 'corpus' | 'level';
+type CorpusType = 'words' | 'verbs' | 'phrases';
+
+// Types for Blitz mode configuration
+interface BlitzCorpusConfig {
+  corpus: string;
+  useSelectedGroupsOnly: boolean;
+  mode: 'corpus';
+}
+
+interface BlitzLevelConfig {
+  levelKey: string;
+  contentFilter: ContentFilter;
+  mode: 'level';
+}
+
+type BlitzConfig = BlitzCorpusConfig | BlitzLevelConfig;
+
+// Props interface
+interface BlitzModeSelectorProps {
+  availableCorpora: string[];
+  corporaData: CorporaData;
+  selectedGroups: SelectedGroups | null;
+  levelsData: LevelsData | null;
+  onStartBlitz: (config: BlitzConfig) => void;
+  onCancel: () => void;
+}
+
+const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
   availableCorpora,
   corporaData,
   selectedGroups,
@@ -9,21 +40,21 @@ const BlitzModeSelector = ({
   onStartBlitz,
   onCancel
 }) => {
-  const [selectedCorpus, setSelectedCorpus] = React.useState('');
-  const [selectedLevel, setSelectedLevel] = React.useState('');
-  const [useSelectedGroupsOnly, setUseSelectedGroupsOnly] = React.useState(false);
-  const [selectionMode, setSelectionMode] = React.useState('level'); // 'corpus' or 'level'
-  const [contentFilter, setContentFilter] = React.useState('all'); // 'all', 'words', 'verbs'
+  const [selectedCorpus, setSelectedCorpus] = React.useState<string>('');
+  const [selectedLevel, setSelectedLevel] = React.useState<string>('');
+  const [useSelectedGroupsOnly, setUseSelectedGroupsOnly] = React.useState<boolean>(false);
+  const [selectionMode, setSelectionMode] = React.useState<SelectionMode>('level'); // 'corpus' or 'level'
+  const [contentFilter, setContentFilter] = React.useState<ContentFilter>('all'); // 'all', 'words', 'verbs'
 
   // Helper function to determine if a corpus contains verbs or words
-  const getCorpusType = (corpus) => {
+  const getCorpusType = (corpus: string): CorpusType => {
     if (corpus.includes('verbs_')) return 'verbs';
     if (corpus.includes('phrases_')) return 'phrases';
     return 'words';
   };
 
   // Get word count for a specific level with content filtering
-  const getLevelWordCount = (levelKey, filter = 'all') => {
+  const getLevelWordCount = (levelKey: string, filter: ContentFilter = 'all'): number => {
     if (!levelsData || !levelsData[levelKey]) return 0;
     
     const levelItems = levelsData[levelKey];
@@ -56,11 +87,11 @@ const BlitzModeSelector = ({
   };
 
   // Check if a level has mixed content types
-  const levelHasMixedContent = (levelKey) => {
+  const levelHasMixedContent = (levelKey: string): boolean => {
     if (!levelsData || !levelsData[levelKey]) return false;
     
     const levelItems = levelsData[levelKey];
-    const contentTypes = new Set();
+    const contentTypes = new Set<CorpusType>();
     
     levelItems.forEach(item => {
       if (availableCorpora.includes(item.corpus)) {
@@ -72,14 +103,14 @@ const BlitzModeSelector = ({
   };
 
   // Get word count for all groups in corpus
-  const getAllGroupsWordCount = (corpus) => {
+  const getAllGroupsWordCount = (corpus: string): number => {
     if (!corporaData[corpus]) return 0;
     const groups = corporaData[corpus].groups || {};
     return Object.values(groups).reduce((total, groupWords) => total + groupWords.length, 0);
   };
 
   // Get word count for selected groups only
-  const getSelectedGroupsWordCount = (corpus) => {
+  const getSelectedGroupsWordCount = (corpus: string): number => {
     if (!corporaData[corpus] || !selectedGroups || !selectedGroups[corpus]) return 0;
     const groups = corporaData[corpus].groups || {};
     const selectedCorpusGroups = selectedGroups[corpus];
@@ -95,7 +126,7 @@ const BlitzModeSelector = ({
     }
   }, [selectedCorpus, selectedGroups, useSelectedGroupsOnly]);
 
-  const handleStartBlitz = () => {
+  const handleStartBlitz = (): void => {
     if (selectionMode === 'corpus' && selectedCorpus) {
       onStartBlitz({
         corpus: selectedCorpus,
@@ -111,11 +142,11 @@ const BlitzModeSelector = ({
     }
   };
 
-  const isStartEnabled = (selectionMode === 'corpus' && selectedCorpus) || 
-                        (selectionMode === 'level' && selectedLevel);
+  const isStartEnabled: boolean = (selectionMode === 'corpus' && selectedCorpus !== '') || 
+                        (selectionMode === 'level' && selectedLevel !== '');
 
   // Get current word count based on selection mode
-  const getCurrentWordCount = () => {
+  const getCurrentWordCount = (): number => {
     if (selectionMode === 'corpus' && selectedCorpus) {
       return getCorpusWordCount(selectedCorpus);
     } else if (selectionMode === 'level' && selectedLevel) {
@@ -125,7 +156,7 @@ const BlitzModeSelector = ({
   };
 
   // Get word count for selected corpus based on current settings
-  const getCorpusWordCount = (corpus) => {
+  const getCorpusWordCount = (corpus: string): number => {
     if (!corporaData[corpus]) return 0;
     const groups = corporaData[corpus].groups || {};
     
@@ -555,10 +586,10 @@ const BlitzModeSelector = ({
               transition: 'all 0.2s ease'
             }}
             onMouseOver={(e) => {
-              e.target.style.background = 'var(--color-background)';
+              (e.target as HTMLButtonElement).style.background = 'var(--color-background)';
             }}
             onMouseOut={(e) => {
-              e.target.style.background = 'var(--color-card-bg)';
+              (e.target as HTMLButtonElement).style.background = 'var(--color-card-bg)';
             }}
           >
             Cancel
@@ -579,12 +610,12 @@ const BlitzModeSelector = ({
             }}
             onMouseOver={(e) => {
               if (isStartEnabled && getCurrentWordCount() >= 20) {
-                e.target.style.background = 'var(--color-primary-dark)';
+                (e.target as HTMLButtonElement).style.background = 'var(--color-primary-dark)';
               }
             }}
             onMouseOut={(e) => {
               if (isStartEnabled && getCurrentWordCount() >= 20) {
-                e.target.style.background = 'var(--color-primary)';
+                (e.target as HTMLButtonElement).style.background = 'var(--color-primary)';
               }
             }}
           >

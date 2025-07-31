@@ -1,7 +1,26 @@
+import React from 'react';
 import { JOURNEY_FOCUS_PROBABILITIES } from '../Utilities/activitySelection';
+import { JourneyFocusMode } from '../Utilities/types';
 
-const JourneyFocusModeInterstitial = ({ focusMode, onContinue, onReturnToNormal }) => {
-  const getModeInfo = () => {
+interface JourneyFocusModeInterstitialProps {
+  focusMode: JourneyFocusMode;
+  onContinue: () => void;
+  onReturnToNormal: () => void;
+}
+
+interface ModeInfo {
+  title: string;
+  description: string;
+  features: string[];
+  tip: string;
+}
+
+const JourneyFocusModeInterstitial: React.FC<JourneyFocusModeInterstitialProps> = ({ 
+  focusMode, 
+  onContinue, 
+  onReturnToNormal 
+}) => {
+  const getModeInfo = (): ModeInfo | null => {
     const normalProbs = JOURNEY_FOCUS_PROBABILITIES.normal;
     const focusProbs = JOURNEY_FOCUS_PROBABILITIES[focusMode];
     

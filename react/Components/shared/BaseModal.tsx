@@ -1,7 +1,22 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 
-const BaseModal = ({
+interface BaseModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title?: string;
+  children: ReactNode;
+  className?: string;
+  width?: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  showCloseButton?: boolean;
+  closeOnEscape?: boolean;
+  closeOnBackdrop?: boolean;
+  ariaLabel?: string;
+}
+
+const BaseModal: React.FC<BaseModalProps> = ({
   isOpen,
   onClose,
   title,
@@ -15,18 +30,18 @@ const BaseModal = ({
   closeOnBackdrop = true,
   ariaLabel
 }) => {
-  const modalRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Handle escape key and outside clicks
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isOpen && closeOnEscape) {
         onClose();
       }
     };
 
-    const handleClickOutside = (event) => {
-      if (closeOnBackdrop && modalRef.current && event.target && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (closeOnBackdrop && modalRef.current && event.target && !modalRef.current.contains(event.target as Node)) {
         onClose();
       }
     };

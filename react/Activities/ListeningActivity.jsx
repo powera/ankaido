@@ -113,7 +113,7 @@ const ListeningActivity = ({
     <div>
       <WordDisplayCard
         currentWord={currentWord}
-        studyMode="listening"
+        studyMode={studyMode}
         audioEnabled={audioEnabled}
         questionText="🎧 Listen and choose the correct answer:"
         showAudioButton={true}

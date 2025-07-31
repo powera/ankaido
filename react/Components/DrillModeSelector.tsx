@@ -1,17 +1,48 @@
 import React from 'react';
 
-const DrillModeSelector = ({
+// Type definitions
+interface DrillConfig {
+  corpus: string;
+  group: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
+
+interface CorporaGroup {
+  [key: string]: any; // You can make this more specific based on your group data structure
+}
+
+interface CorporaData {
+  [corpusName: string]: {
+    groups?: CorporaGroup;
+    [key: string]: any; // Additional corpus properties
+  };
+}
+
+interface DifficultyOption {
+  value: 'easy' | 'medium' | 'hard';
+  label: string;
+  description: string;
+}
+
+interface DrillModeSelectorProps {
+  availableCorpora: string[];
+  corporaData: CorporaData;
+  onStartDrill: (config: DrillConfig) => void;
+  onCancel: () => void;
+}
+
+const DrillModeSelector: React.FC<DrillModeSelectorProps> = ({
   availableCorpora,
   corporaData,
   onStartDrill,
   onCancel
 }) => {
-  const [selectedCorpus, setSelectedCorpus] = React.useState('');
-  const [selectedGroup, setSelectedGroup] = React.useState('');
-  const [selectedDifficulty, setSelectedDifficulty] = React.useState('easy');
+  const [selectedCorpus, setSelectedCorpus] = React.useState<string>('');
+  const [selectedGroup, setSelectedGroup] = React.useState<string>('');
+  const [selectedDifficulty, setSelectedDifficulty] = React.useState<'easy' | 'medium' | 'hard'>('easy');
 
   // Get available groups for selected corpus
-  const availableGroups = React.useMemo(() => {
+  const availableGroups = React.useMemo((): string[] => {
     if (!selectedCorpus || !corporaData[selectedCorpus]) {
       return [];
     }
@@ -23,7 +54,7 @@ const DrillModeSelector = ({
     setSelectedGroup('');
   }, [selectedCorpus]);
 
-  const handleStartDrill = () => {
+  const handleStartDrill = (): void => {
     if (selectedCorpus && selectedGroup && selectedDifficulty) {
       onStartDrill({
         corpus: selectedCorpus,
@@ -33,7 +64,13 @@ const DrillModeSelector = ({
     }
   };
 
-  const isStartEnabled = selectedCorpus && selectedGroup && selectedDifficulty;
+  const isStartEnabled: boolean = Boolean(selectedCorpus && selectedGroup && selectedDifficulty);
+
+  const difficultyOptions: DifficultyOption[] = [
+    { value: 'easy', label: '🟢 Easy', description: 'Multiple choice & easy listening' },
+    { value: 'medium', label: '🟡 Medium', description: 'Mixed activities with some typing' },
+    { value: 'hard', label: '🔴 Hard', description: 'Mostly typing with advanced listening' }
+  ];
 
   return (
     <div className="w-card" style={{ maxWidth: '600px', margin: '2rem auto' }}>
@@ -59,7 +96,7 @@ const DrillModeSelector = ({
           </label>
           <select 
             value={selectedCorpus}
-            onChange={(e) => setSelectedCorpus(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCorpus(e.target.value)}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -71,7 +108,7 @@ const DrillModeSelector = ({
             }}
           >
             <option value="">Select a vocabulary source...</option>
-            {availableCorpora.map(corpus => (
+            {availableCorpora.map((corpus: string) => (
               <option key={corpus} value={corpus}>
                 {corpus.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </option>
@@ -91,7 +128,7 @@ const DrillModeSelector = ({
           </label>
           <select 
             value={selectedGroup}
-            onChange={(e) => setSelectedGroup(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedGroup(e.target.value)}
             disabled={!selectedCorpus}
             style={{
               width: '100%',
@@ -107,7 +144,7 @@ const DrillModeSelector = ({
             <option value="">
               {selectedCorpus ? 'Select a vocabulary group...' : 'First select a vocabulary source'}
             </option>
-            {availableGroups.map(group => (
+            {availableGroups.map((group: string) => (
               <option key={group} value={group}>
                 {group.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
               </option>
@@ -126,11 +163,7 @@ const DrillModeSelector = ({
             🎚️ Difficulty Level:
           </label>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            {[
-              { value: 'easy', label: '🟢 Easy', description: 'Multiple choice & easy listening' },
-              { value: 'medium', label: '🟡 Medium', description: 'Mixed activities with some typing' },
-              { value: 'hard', label: '🔴 Hard', description: 'Mostly typing with advanced listening' }
-            ].map(difficulty => (
+            {difficultyOptions.map((difficulty: DifficultyOption) => (
               <label key={difficulty.value} style={{ 
                 flex: '1', 
                 minWidth: '150px',
@@ -149,7 +182,7 @@ const DrillModeSelector = ({
                   name="difficulty"
                   value={difficulty.value}
                   checked={selectedDifficulty === difficulty.value}
-                  onChange={(e) => setSelectedDifficulty(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedDifficulty(e.target.value as 'easy' | 'medium' | 'hard')}
                   style={{ display: 'none' }}
                 />
                 <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
@@ -187,11 +220,11 @@ const DrillModeSelector = ({
               cursor: 'pointer',
               transition: 'all 0.2s ease'
             }}
-            onMouseOver={(e) => {
-              e.target.style.background = 'var(--color-background)';
+            onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => {
+              (e.target as HTMLButtonElement).style.background = 'var(--color-background)';
             }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'var(--color-card-bg)';
+            onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
+              (e.target as HTMLButtonElement).style.background = 'var(--color-card-bg)';
             }}
           >
             Cancel
@@ -210,14 +243,14 @@ const DrillModeSelector = ({
               cursor: isStartEnabled ? 'pointer' : 'not-allowed',
               transition: 'all 0.2s ease'
             }}
-            onMouseOver={(e) => {
+            onMouseOver={(e: React.MouseEvent<HTMLButtonElement>) => {
               if (isStartEnabled) {
-                e.target.style.background = 'var(--color-primary-dark)';
+                (e.target as HTMLButtonElement).style.background = 'var(--color-primary-dark)';
               }
             }}
-            onMouseOut={(e) => {
+            onMouseOut={(e: React.MouseEvent<HTMLButtonElement>) => {
               if (isStartEnabled) {
-                e.target.style.background = 'var(--color-primary)';
+                (e.target as HTMLButtonElement).style.background = 'var(--color-primary)';
               }
             }}
           >
