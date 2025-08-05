@@ -79,7 +79,7 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
             <li className="w-welcome-feature-item">✏️ <strong>Multiple Choice:</strong> Test your knowledge with quizzes</li>
             <li className="w-welcome-feature-item">⌨️ <strong>Typing Practice:</strong> Improve spelling and recall</li>
             <li className="w-welcome-feature-item">🎧 <strong>Listening Mode:</strong> Train your ear with audio</li>
-            <li className="w-welcome-feature-item">📖 <strong>Grammar:</strong> Study verb conjugations and noun declensions</li>
+            <li className="w-welcome-feature-item">📖 <strong>Grammar:</strong> Study verb conjugations</li>
             <li className="w-welcome-feature-item">📑 <strong>Vocabulary Lists:</strong> Browse and study word collections</li>
           </ul>
         </div>

@@ -47,10 +47,7 @@ export interface ConjugationsResponse {
   corpus: string;
 }
 
-export interface DeclensionsResponse {
-  declensions: Record<string, any>;
-  available_nouns: string[];
-}
+
 
 export interface LevelsResponse {
   levels: {
@@ -174,17 +171,7 @@ export const fetchConjugations = async (
   }
 };
 
-export const fetchDeclensions = async (): Promise<DeclensionsResponse> => {
-  try {
-    const response = await fetch(`${API_BASE}/declensions`);
-    if (!response.ok) throw new Error('Failed to fetch declensions');
-    const data: DeclensionsResponse = await response.json();
-    return data;
-  } catch (error) {
-    console.warn('Failed to fetch declensions:', error);
-    return { declensions: {}, available_nouns: [] };
-  }
-};
+
 
 export const fetchLevels = async (): Promise<LevelsResponse['levels']> => {
   try {

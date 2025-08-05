@@ -10,8 +10,6 @@ const API_BASE_URL = '/api/trakaido/journeystats';
 const StudyModeSelector = ({
   quizMode,
   setQuizMode,
-  grammarMode,
-  setGrammarMode,
   studyMode,
   setStudyMode,
   journeyFocusMode,
@@ -138,11 +136,11 @@ const StudyModeSelector = ({
       <div className="w-dropdown-container">
         <label className="w-hide-mobile">Mode:</label>
         <select 
-          value={quizMode === 'conjugations' || quizMode === 'declensions' ? 'grammar' : quizMode}
+          value={quizMode === 'conjugations' ? 'grammar' : quizMode}
           onChange={(e) => {
             const selectedMode = e.target.value;
             if (selectedMode === 'grammar') {
-              setQuizMode(grammarMode);
+              setQuizMode('conjugations');
             } else if (selectedMode === 'drill') {
               // For drill mode, we need to open the drill mode selector
               // Temporarily set the quiz mode to show the selector
@@ -156,7 +154,7 @@ const StudyModeSelector = ({
             } else {
               setQuizMode(selectedMode);
             }
-            safeStorage.setItem('ankaido-quiz-mode', selectedMode === 'grammar' ? grammarMode : selectedMode);
+            safeStorage.setItem('ankaido-quiz-mode', selectedMode === 'grammar' ? 'conjugations' : selectedMode);
           }}
         >
           <option value="journey">🚀 Journey Mode</option>
@@ -192,28 +190,8 @@ const StudyModeSelector = ({
         </div>
       )}
 
-      {/* Hide direction/grammar selector for Journey and Drill modes */}
-      {quizMode !== 'journey' && quizMode !== 'drill' && (
-        (quizMode === 'conjugations' || quizMode === 'declensions') ? (
-          <div className="w-dropdown-container">
-            <label>
-              <span className="w-hide-mobile">Grammar Type:</span>
-              <span className="w-show-mobile">Grammar:</span>
-            </label>
-            <select 
-              value={quizMode}
-              onChange={(e) => {
-                const selectedGrammarMode = e.target.value;
-                setQuizMode(selectedGrammarMode);
-                setGrammarMode(selectedGrammarMode);
-                safeStorage.setItem('ankaido-quiz-mode', selectedGrammarMode);
-              }}
-            >
-              <option value="conjugations">📖 Conjugations</option>
-              <option value="declensions">📋 Declensions</option>
-            </select>
-          </div>
-        ) : (
+      {/* Hide direction selector for Journey, Drill, and Grammar modes */}
+      {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'conjugations' && (
           <div className="w-dropdown-container">
             <label>
               <span className="w-hide-mobile">Direction:</span>
@@ -234,8 +212,6 @@ const StudyModeSelector = ({
               </option>
             </select>
           </div>
-        )
-        
       )}
 
       {/* Voice selector - only show when audio is enabled and voices are available */}

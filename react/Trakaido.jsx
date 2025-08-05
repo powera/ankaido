@@ -18,7 +18,6 @@ import storageConfigManager from './Managers/storageConfigManager';
 import WordListManager from './Managers/wordListManager';
 import BlitzMode from './Modes/BlitzMode.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
-import DeclensionsMode from './Modes/DeclensionsMode.jsx';
 import DrillMode from './Modes/DrillMode.jsx';
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
@@ -56,7 +55,7 @@ const FlashCardApp = () => {
   const [quizMode, setQuizMode] = useState(() => {
     return safeStorage?.getItem('ankaido-quiz-mode') || 'journey';
   });
-  const [grammarMode, setGrammarMode] = useState('conjugations');
+
 
   // Journey focus mode state - always defaults to normal, no persistence
   const [journeyFocusMode, setJourneyFocusMode] = useState('normal');
@@ -449,8 +448,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations/declensions/journey/drill/blitz mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
+  // Don't show this message in conjugations/journey/drill/blitz mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -460,8 +459,6 @@ const FlashCardApp = () => {
       <StudyModeSelector
         quizMode={quizMode}
         setQuizMode={setQuizMode}
-        grammarMode={grammarMode}
-        setGrammarMode={setGrammarMode}
         studyMode={studyMode}
         setStudyMode={setStudyMode}
         journeyFocusMode={journeyFocusMode}
@@ -481,7 +478,7 @@ const FlashCardApp = () => {
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -496,10 +493,6 @@ const FlashCardApp = () => {
         </div>
       ) : quizMode === 'conjugations' ? (
         <ConjugationsMode 
-          audioEnabled={audioEnabled}
-        />
-      ) : quizMode === 'declensions' ? (
-        <DeclensionsMode 
           audioEnabled={audioEnabled}
         />
       ) : quizMode === 'vocabulary-list' ? (
