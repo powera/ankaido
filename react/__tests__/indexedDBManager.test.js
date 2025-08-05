@@ -65,7 +65,7 @@ describe('indexedDBManager', () => {
       
       const result = await initPromise;
       
-      expect(global.indexedDB.open).toHaveBeenCalledWith('LithuanianLearning', 1);
+      expect(global.indexedDB.open).toHaveBeenCalledWith('Ankaido', 1);
       expect(result).toBe(mockDB);
       expect(indexedDBManager.db).toBe(mockDB);
     });

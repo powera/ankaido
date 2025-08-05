@@ -35,7 +35,7 @@ import { handleOnboardingSetup } from './Utilities/onboardingSetup';
 const FlashCardApp = () => {
   // Audio settings - simple local state
   const [audioEnabled, setAudioEnabled] = useState(() => {
-    const stored = localStorage.getItem('trakaido_audio_enabled');
+    const stored = localStorage.getItem('ankaido_audio_enabled');
     return stored !== null ? JSON.parse(stored) : true;
   });
 
@@ -50,11 +50,11 @@ const FlashCardApp = () => {
 
   // Initialize local settings from localStorage where available
   const [studyMode, setStudyMode] = useState(() => {
-    return safeStorage?.getItem('flashcard-study-mode') || 'english-to-lithuanian';
+    return safeStorage?.getItem('ankaido-study-mode') || 'english-to-lithuanian';
   });
 
   const [quizMode, setQuizMode] = useState(() => {
-    return safeStorage?.getItem('flashcard-quiz-mode') || 'journey';
+    return safeStorage?.getItem('ankaido-quiz-mode') || 'journey';
   });
   const [grammarMode, setGrammarMode] = useState('conjugations');
 
@@ -76,12 +76,12 @@ const FlashCardApp = () => {
   const [wordListManager] = useState(() => new WordListManager(safeStorage, {}));
   const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(() => {
-    return safeStorage?.getItem('flashcard-selected-voice') || 'random';
+    return safeStorage?.getItem('ankaido-selected-voice') || 'random';
   });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
     // Check both intro and storage configuration
-    const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
+    const hasSeenIntro = safeStorage?.getItem('ankaido-has-seen-intro');
     const storageConfigured = storageConfigManager.isConfigured();
     return !hasSeenIntro || !storageConfigured;
   });
@@ -105,13 +105,13 @@ const FlashCardApp = () => {
 
   // Save audio setting to localStorage when it changes
   useEffect(() => {
-    localStorage.setItem('trakaido_audio_enabled', JSON.stringify(audioEnabled));
+    localStorage.setItem('ankaido_audio_enabled', JSON.stringify(audioEnabled));
   }, [audioEnabled]);
 
   // Save selected voice to storage when it changes
   useEffect(() => {
     if (selectedVoice) {
-      safeStorage?.setItem('flashcard-selected-voice', selectedVoice);
+      safeStorage?.setItem('ankaido-selected-voice', selectedVoice);
     }
   }, [selectedVoice]);
 
@@ -179,7 +179,7 @@ const FlashCardApp = () => {
           const currentChoices = corpusChoicesManager.getAllChoices();
 
           // Only set defaults if user has seen intro but has no choices
-          const hasSeenIntro = safeStorage?.getItem('trakaido-has-seen-intro');
+          const hasSeenIntro = safeStorage?.getItem('ankaido-has-seen-intro');
           const shouldSetDefaults = Object.keys(currentChoices).length === 0 && hasSeenIntro;
 
           if (shouldSetDefaults) {
@@ -284,8 +284,8 @@ const FlashCardApp = () => {
   // Combined localStorage persistence
   useEffect(() => {
     const persistenceUpdates = {
-      'flashcard-study-mode': studyMode,
-      'flashcard-quiz-mode': quizMode
+      'ankaido-study-mode': studyMode,
+      'ankaido-quiz-mode': quizMode
     };
 
     Object.entries(persistenceUpdates).forEach(([key, value]) => {
@@ -324,10 +324,10 @@ const FlashCardApp = () => {
   const resetAllSettings = async () => {
     try {
       // Clear localStorage items
-      safeStorage.removeItem('flashcard-study-mode');
-      safeStorage.removeItem('flashcard-quiz-mode');
-      safeStorage.removeItem('flashcard-selected-voice');
-      safeStorage.removeItem('trakaido-has-seen-intro');
+      safeStorage.removeItem('ankaido-study-mode');
+      safeStorage.removeItem('ankaido-quiz-mode');
+      safeStorage.removeItem('ankaido-selected-voice');
+      safeStorage.removeItem('ankaido-has-seen-intro');
 
       // Reset storage configuration
       storageConfigManager.reset();

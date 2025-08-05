@@ -25,7 +25,7 @@ interface IndexedDBManager {
 }
 
 const indexedDBManager: IndexedDBManager = {
-  dbName: 'LithuanianLearning',
+  dbName: 'Ankaido',
   dbVersion: 1,
   db: null,
 

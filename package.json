@@ -1,7 +1,7 @@
 {
-  "name": "trakaido-react-compiler",
+  "name": "ankaido-react-compiler",
   "version": "1.0.0",
-  "description": "Compilation tools for Trakaido React app",
+  "description": "Compilation tools for Ankaido React app",
   "devDependencies": {
     "@babel/cli": "^7.23.0",
     "@babel/core": "^7.23.0",

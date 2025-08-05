@@ -156,7 +156,7 @@ const StudyModeSelector = ({
             } else {
               setQuizMode(selectedMode);
             }
-            safeStorage.setItem('flashcard-quiz-mode', selectedMode === 'grammar' ? grammarMode : selectedMode);
+            safeStorage.setItem('ankaido-quiz-mode', selectedMode === 'grammar' ? grammarMode : selectedMode);
           }}
         >
           <option value="journey">🚀 Journey Mode</option>
@@ -206,7 +206,7 @@ const StudyModeSelector = ({
                 const selectedGrammarMode = e.target.value;
                 setQuizMode(selectedGrammarMode);
                 setGrammarMode(selectedGrammarMode);
-                safeStorage.setItem('flashcard-quiz-mode', selectedGrammarMode);
+                safeStorage.setItem('ankaido-quiz-mode', selectedGrammarMode);
               }}
             >
               <option value="conjugations">📖 Conjugations</option>
@@ -223,7 +223,7 @@ const StudyModeSelector = ({
               value={studyMode}
               onChange={(e) => {
                 setStudyMode(e.target.value);
-                safeStorage.setItem('flashcard-study-mode', e.target.value);
+                safeStorage.setItem('ankaido-study-mode', e.target.value);
               }}
             >
               <option value="english-to-lithuanian">

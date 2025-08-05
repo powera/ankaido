@@ -126,7 +126,7 @@ class CorpusChoicesAPIClient {
 const apiClient = new CorpusChoicesAPIClient();
 
 // Storage key for localStorage
-const STORAGE_KEY = 'flashcard-selected-groups';
+const STORAGE_KEY = 'ankaido-selected-groups';
 
 /**
  * Corpus Choices Manager

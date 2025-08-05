@@ -29,7 +29,7 @@ const MultiWordSequenceActivity = ({
   // Select a random voice for this question when currentWord changes
   useEffect(() => {
     if (currentWord?.sequence) {
-      const selectedVoiceSetting = safeStorage?.getItem('flashcard-selected-voice') || 'random';
+      const selectedVoiceSetting = safeStorage?.getItem('ankaido-selected-voice') || 'random';
       
       if (selectedVoiceSetting === 'random') {
         // For random voice, select one and stick with it for this question

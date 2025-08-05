@@ -8,7 +8,7 @@
 import safeStorage from '../DataStorage/safeStorage';
 
 // Configuration key for localStorage
-const STORAGE_CONFIG_KEY = 'trakaido-storage-config';
+const STORAGE_CONFIG_KEY = 'ankaido-storage-config';
 
 // Storage modes
 export enum STORAGE_MODES {

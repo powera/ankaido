@@ -84,7 +84,7 @@ class AudioManager {
   }
 
   public getSelectedVoice(): string | null {
-    const selectedVoice = safeStorage?.getItem('flashcard-selected-voice') || 'random';
+    const selectedVoice = safeStorage?.getItem('ankaido-selected-voice') || 'random';
     if (selectedVoice === 'random') {
       if (this.availableVoices.length === 0) return null;
       const randomIndex = Math.floor(Math.random() * this.availableVoices.length);

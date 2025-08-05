@@ -33,14 +33,14 @@ class OnboardingFlowManager {
 
     try {
       // Check if user has completed onboarding
-      const hasCompletedOnboarding = safeStorage?.getItem('trakaido-onboarding-complete');
+      const hasCompletedOnboarding = safeStorage?.getItem('ankaido-onboarding-complete');
       
       if (hasCompletedOnboarding === 'true') {
         this.currentStep = ONBOARDING_STEPS.COMPLETE;
         this.completedSteps = new Set(Object.values(ONBOARDING_STEPS));
       } else {
         // Load any partial progress
-        const savedProgress = safeStorage?.getItem('trakaido-onboarding-progress');
+        const savedProgress = safeStorage?.getItem('ankaido-onboarding-progress');
         if (savedProgress) {
           try {
             const progress = JSON.parse(savedProgress);
@@ -161,11 +161,11 @@ class OnboardingFlowManager {
       this.currentStep = ONBOARDING_STEPS.COMPLETE;
       
       // Set completion flags
-      safeStorage?.setItem('trakaido-onboarding-complete', 'true');
-      safeStorage?.setItem('trakaido-has-seen-intro', 'true');
+      safeStorage?.setItem('ankaido-onboarding-complete', 'true');
+      safeStorage?.setItem('ankaido-has-seen-intro', 'true');
       
       // Clear progress tracking since we're done
-      safeStorage?.removeItem('trakaido-onboarding-progress');
+      safeStorage?.removeItem('ankaido-onboarding-progress');
       
       this.notifyListeners();
     } catch (error) {
@@ -181,9 +181,9 @@ class OnboardingFlowManager {
       this.currentStep = ONBOARDING_STEPS.WELCOME;
       this.completedSteps = new Set();
       
-      safeStorage?.removeItem('trakaido-onboarding-complete');
-      safeStorage?.removeItem('trakaido-has-seen-intro');
-      safeStorage?.removeItem('trakaido-onboarding-progress');
+      safeStorage?.removeItem('ankaido-onboarding-complete');
+      safeStorage?.removeItem('ankaido-has-seen-intro');
+      safeStorage?.removeItem('ankaido-onboarding-progress');
       
       this.notifyListeners();
     } catch (error) {
@@ -202,7 +202,7 @@ class OnboardingFlowManager {
         timestamp: Date.now()
       };
       
-      safeStorage?.setItem('trakaido-onboarding-progress', JSON.stringify(progress));
+      safeStorage?.setItem('ankaido-onboarding-progress', JSON.stringify(progress));
     } catch (error) {
       console.error('Error saving onboarding progress:', error);
     }

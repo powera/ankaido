@@ -58,7 +58,7 @@ describe('CorpusChoicesManager', () => {
 
         expect(choices).toEqual({});
         expect(corpusChoicesManager.isInitialized).toBe(true);
-        expect(safeStorage.getItem).toHaveBeenCalledWith('flashcard-selected-groups');
+        expect(safeStorage.getItem).toHaveBeenCalledWith('ankaido-selected-groups');
       });
 
       it('should initialize with saved choices from localStorage', async () => {
@@ -100,7 +100,7 @@ describe('CorpusChoicesManager', () => {
         expect(result).toEqual(['group1', 'group2']);
         expect(corpusChoicesManager.choices.corpus1).toEqual(['group1', 'group2']);
         expect(safeStorage.setItem).toHaveBeenCalledWith(
-          'flashcard-selected-groups',
+          'ankaido-selected-groups',
           JSON.stringify({ corpus1: ['group1', 'group2'] })
         );
       });
@@ -128,7 +128,7 @@ describe('CorpusChoicesManager', () => {
         expect(result).toEqual(newChoices);
         expect(corpusChoicesManager.choices).toEqual(newChoices);
         expect(safeStorage.setItem).toHaveBeenCalledWith(
-          'flashcard-selected-groups',
+          'ankaido-selected-groups',
           JSON.stringify(newChoices)
         );
       });
@@ -143,7 +143,7 @@ describe('CorpusChoicesManager', () => {
 
         expect(result).toEqual({});
         expect(corpusChoicesManager.choices).toEqual({});
-        expect(safeStorage.removeItem).toHaveBeenCalledWith('flashcard-selected-groups');
+        expect(safeStorage.removeItem).toHaveBeenCalledWith('ankaido-selected-groups');
       });
     });
   });
