@@ -23,7 +23,6 @@ import DrillMode from './Modes/DrillMode.jsx';
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
-import MathGamesMode from './Modes/MathGamesMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import {
@@ -450,8 +449,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in conjugations/declensions/journey/drill/blitz/math-games mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'math-games';
+  // Don't show this message in conjugations/declensions/journey/drill/blitz mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -482,7 +481,7 @@ const FlashCardApp = () => {
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && quizMode !== 'math-games' && (
+      {!showNoGroupsMessage && quizMode !== 'conjugations' && quizMode !== 'declensions' && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -621,8 +620,6 @@ const FlashCardApp = () => {
           defaultDelay={10}
           settings={{}}
         />
-      ) : quizMode === 'math-games' ? (
-        <MathGamesMode />
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>

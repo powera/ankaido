@@ -169,7 +169,6 @@ const StudyModeSelector = ({
           <option value="flashcard">🃏 Flash Cards</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
           <option value="grammar">📚 Grammar</option>
-          <option value="math-games">🔢 Math Games</option>
         </select>
       </div>
 
@@ -193,8 +192,8 @@ const StudyModeSelector = ({
         </div>
       )}
 
-      {/* Hide direction/grammar selector for Journey, Drill, and Math Games modes */}
-      {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'math-games' && (
+      {/* Hide direction/grammar selector for Journey and Drill modes */}
+      {quizMode !== 'journey' && quizMode !== 'drill' && (
         (quizMode === 'conjugations' || quizMode === 'declensions') ? (
           <div className="w-dropdown-container">
             <label>
