@@ -1,7 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import AudioButton from '../Components/AudioButton';
-import audioManager from '../Managers/audioManager';
+import React, { useCallback, useEffect, useState } from 'react';
 import safeStorage from '../DataStorage/safeStorage';
+import audioManager from '../Managers/audioManager';
+
+// Type definitions
+interface Word {
+  lithuanian: string;
+  english: string;
+}
+
+interface SequenceData {
+  sequence: Word[];
+}
+
+interface MultiWordSequenceActivityProps {
+  currentWord: SequenceData; // This will contain the sequence data
+  showAnswer: boolean;
+  selectedAnswers: number[]; // Array of selected word indices
+  sequenceOptions: Word[]; // Array of options (sequence words + equal number of distractors)
+  audioEnabled: boolean;
+  onAnswerClick: (optionIndex: number, isCorrectForPosition: boolean, option: Word) => void;
+  onResetAnswers: () => void; // New prop for resetting answers
+  allWords: Word[];
+  autoAdvance: boolean;
+  defaultDelay: number;
+}
 
 /**
  * Multi Word Sequence Activity Component
@@ -9,7 +31,7 @@ import safeStorage from '../DataStorage/safeStorage';
  * User must identify the words from multiple options (sequence length + equal number of distractors).
  * All words must be from the same corpus with at least 20 enabled words.
  */
-const MultiWordSequenceActivity = ({
+const MultiWordSequenceActivity: React.FC<MultiWordSequenceActivityProps> = ({
   currentWord, // This will contain the sequence data
   showAnswer,
   selectedAnswers, // Array of selected word indices
@@ -17,14 +39,47 @@ const MultiWordSequenceActivity = ({
   audioEnabled,
   onAnswerClick,
   onResetAnswers, // New prop for resetting answers
-  settings,
   allWords,
   autoAdvance,
   defaultDelay
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [hasPlayedInitial, setHasPlayedInitial] = useState(false);
-  const [questionVoice, setQuestionVoice] = useState(null); // Voice for this specific question
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [hasPlayedInitial, setHasPlayedInitial] = useState<boolean>(false);
+  const [questionVoice, setQuestionVoice] = useState<string | null>(null); // Voice for this specific question
+
+  // Play the multi-word sequence with 0.2s pauses using the selected voice for this question
+  const playSequence = useCallback(async () => {
+    if (!audioEnabled || !currentWord?.sequence || isPlaying || !questionVoice) return;
+
+    setIsPlaying(true);
+    
+    // Temporarily set the voice for this sequence
+    const originalVoiceSetting = safeStorage?.getItem('flashcard-selected-voice');
+    if (questionVoice && originalVoiceSetting === 'random') {
+      safeStorage?.setItem('flashcard-selected-voice', questionVoice);
+    }
+
+    try {
+      for (let i = 0; i < currentWord.sequence.length; i++) {
+        const word = currentWord.sequence[i];
+        // Use sequential=true to allow multiple audio files to play in sequence
+        await audioManager.playAudio(word.lithuanian, false, true);
+        
+        // Add 0.2s pause between words (except after the last word)
+        if (i < currentWord.sequence.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, 200));
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to play sequence:', error);
+    } finally {
+      // Restore the original voice setting
+      if (originalVoiceSetting === 'random') {
+        safeStorage?.setItem('flashcard-selected-voice', 'random');
+      }
+      setIsPlaying(false);
+    }
+  }, [audioEnabled, currentWord, isPlaying, questionVoice]);
 
   // Select a random voice for this question when currentWord changes
   useEffect(() => {
@@ -55,7 +110,7 @@ const MultiWordSequenceActivity = ({
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [currentWord, audioEnabled, hasPlayedInitial, questionVoice]);
+  }, [currentWord, audioEnabled, hasPlayedInitial, questionVoice, playSequence]);
 
   // Reset hasPlayedInitial when word changes and stop any playing audio
   useEffect(() => {
@@ -73,36 +128,8 @@ const MultiWordSequenceActivity = ({
     };
   }, []);
 
-  // Play the multi-word sequence with 0.2s pauses using the selected voice for this question
-  const playSequence = useCallback(async () => {
-    if (!audioEnabled || !currentWord?.sequence || isPlaying || !questionVoice) return;
-
-    setIsPlaying(true);
-    try {
-      // Ensure audio context is initialized on first interaction
-      if (!audioManager.isInitialized) {
-        await audioManager.initializeAudioContext();
-      }
-
-      for (let i = 0; i < currentWord.sequence.length; i++) {
-        const word = currentWord.sequence[i];
-        // Use the specific voice selected for this question
-        await audioManager.playAudio(word.lithuanian, false, true);
-        
-        // Add 0.2s pause between words (except after the last word)
-        if (i < currentWord.sequence.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 200));
-        }
-      }
-    } catch (error) {
-      console.warn('Failed to play sequence:', error);
-    } finally {
-      setIsPlaying(false);
-    }
-  }, [audioEnabled, currentWord, isPlaying, questionVoice]);
-
   // Handle option click - check for correct sequence order
-  const handleOptionClick = useCallback((optionIndex) => {
+  const handleOptionClick = useCallback((optionIndex: number) => {
     if (showAnswer) return;
 
     const option = sequenceOptions[optionIndex];
@@ -120,7 +147,7 @@ const MultiWordSequenceActivity = ({
   }, [showAnswer, sequenceOptions, currentWord, selectedAnswers, onAnswerClick]);
 
   // Generate hint text based on answer state
-  const getHintText = () => {
+  const getHintText = (): string => {
     const sequenceLength = currentWord?.sequence?.length || 0;
     const currentPosition = selectedAnswers.length + 1;
     
@@ -187,23 +214,23 @@ const MultiWordSequenceActivity = ({
 
       {/* Word options grid */}
       <div className="sequence-options-grid">
-        {sequenceOptions.map((option, index) => {
-          const isSelected = selectedAnswers?.includes(index);
-          const selectionPosition = selectedAnswers?.indexOf(index) + 1; // 1-based position
+        {sequenceOptions.map((option: Word, index: number) => {
+          const isSelected: boolean = selectedAnswers?.includes(index);
+          const selectionPosition: number = selectedAnswers?.indexOf(index) + 1; // 1-based position
           
           // Check if this option is correct for any position in the sequence
-          const isCorrectOption = currentWord.sequence.some(seqWord => 
+          const isCorrectOption: boolean = currentWord.sequence.some((seqWord: Word) => 
             seqWord.lithuanian === option.lithuanian && seqWord.english === option.english
           );
           
           // Check if this option was selected in the correct position
-          const isCorrectPosition = isSelected && selectedAnswers && 
-            selectedAnswers.findIndex(answerIndex => answerIndex === index) !== -1 &&
+          const isCorrectPosition: boolean = isSelected && selectedAnswers && 
+            selectedAnswers.findIndex((answerIndex: number) => answerIndex === index) !== -1 &&
             currentWord.sequence[selectedAnswers.indexOf(index)] &&
             currentWord.sequence[selectedAnswers.indexOf(index)].lithuanian === option.lithuanian &&
             currentWord.sequence[selectedAnswers.indexOf(index)].english === option.english;
           
-          let className = 'sequence-option';
+          let className: string = 'sequence-option';
           
           if (showAnswer) {
             if (isCorrectPosition) {
@@ -220,7 +247,7 @@ const MultiWordSequenceActivity = ({
           }
 
           // Disable options that are already selected or if we're showing answers
-          const isDisabled = showAnswer || isSelected;
+          const isDisabled: boolean = showAnswer || isSelected;
 
           return (
             <button
@@ -248,7 +275,7 @@ const MultiWordSequenceActivity = ({
         <div className="sequence-answer-reveal">
           <h4>The correct sequence was:</h4>
           <div className="sequence-correct-order">
-            {currentWord.sequence.map((word, index) => (
+            {currentWord.sequence.map((word: Word, index: number) => (
               <div key={index} className="sequence-correct-word">
                 <span className="sequence-word-number">{index + 1}.</span>
                 <span className="sequence-word-text">

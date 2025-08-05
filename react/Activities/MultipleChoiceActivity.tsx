@@ -2,13 +2,29 @@ import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import audioManager from '../Managers/audioManager';
-import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
+import { getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
+import { MultipleChoiceSettings, StudyMode, Word } from '../Utilities/types';
+
+// Props interface for MultipleChoiceActivity component
+export interface MultipleChoiceActivityProps {
+  currentWord: Word | null;
+  showAnswer: boolean;
+  selectedAnswer: string | null;
+  multipleChoiceOptions: string[];
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  onAnswerClick?: (selectedOption: string, isCorrect: boolean) => void;
+  settings?: MultipleChoiceSettings;
+  allWords: Word[];
+  autoAdvance?: boolean;
+  defaultDelay?: number;
+}
 
 /**
  * Multiple Choice Activity Component
  * Presents a word in one language and provides multiple choice options in another language
  */
-const MultipleChoiceActivity = ({ 
+const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({ 
   currentWord,
   showAnswer,
   selectedAnswer,
@@ -33,7 +49,9 @@ const MultipleChoiceActivity = ({
   }, [currentWord, studyMode, audioEnabled, audioManager]);
 
   // Handle answer click with correctness determination
-  const handleAnswerClick = React.useCallback((selectedOption) => {
+  const handleAnswerClick = React.useCallback((selectedOption: string) => {
+    if (!currentWord) return;
+    
     const correctAnswer = getCorrectAnswer(currentWord, studyMode);
     const isCorrect = selectedOption === correctAnswer;
     
@@ -85,7 +103,7 @@ const MultipleChoiceActivity = ({
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        playAudio={audioManager.playAudio.bind(audioManager)}
+        audioManager={audioManager}
         multipleChoiceOptions={multipleChoiceOptions}
         selectedAnswer={selectedAnswer}
         showAnswer={showAnswer}

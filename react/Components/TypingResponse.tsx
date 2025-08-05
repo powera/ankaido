@@ -1,12 +1,27 @@
-
 import React from 'react';
-import AudioButton from './AudioButton';
+import { AudioManager, StudyMode, Word } from '../Utilities/types';
 
-const TypingResponse = ({
+interface TypingResponseProps {
+  currentWord: Word | null;
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  audioManager?: AudioManager;
+  onSubmit: (answer: string) => void;
+  showAnswer: boolean;
+  feedback: string;
+  typedAnswer: string;
+  onTypedAnswerChange: (value: string) => void;
+  autoAdvance?: boolean;
+  defaultDelay?: number;
+  onNext?: () => void;
+  autoAdvanceTimer?: NodeJS.Timeout | null;
+}
+
+const TypingResponse: React.FC<TypingResponseProps> = ({
   currentWord,
   studyMode,
   audioEnabled,
-  playAudio,
+  audioManager,
   onSubmit,
   showAnswer,
   feedback,
@@ -17,14 +32,14 @@ const TypingResponse = ({
   onNext,
   autoAdvanceTimer
 }) => {
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!currentWord || showAnswer) return;
     onSubmit(typedAnswer);
   };
 
   const correctAnswer = studyMode === 'english-to-lithuanian' ? 
-    currentWord.lithuanian : currentWord.english;
+    currentWord?.lithuanian : currentWord?.english;
 
   const promptText = studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
@@ -50,7 +65,7 @@ const TypingResponse = ({
             color: feedback.includes('✅') ? 'green' : 'red' 
           }}>
             {feedback}
-            {feedback.includes('✅') && autoAdvance && autoAdvanceTimer && (
+            {feedback.includes('✅') && autoAdvance && autoAdvanceTimer && defaultDelay && (
               <span style={{ marginLeft: '1rem', fontSize: '0.9rem', fontWeight: 'normal' }}>
                 (Next card in {defaultDelay}s...)
               </span>
@@ -95,7 +110,7 @@ const TypingResponse = ({
                   Special characters:
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map(char => (
+                  {['ą', 'č', 'ę', 'ė', 'į', 'š', 'ų', 'ū', 'ž'].map((char: string) => (
                     <button
                       key={char}
                       className="w-special-char"

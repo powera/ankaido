@@ -1,13 +1,23 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { STORAGE_MODES } from '../Managers/storageConfigManager';
 
-const WelcomeScreen = ({ onComplete }) => {
-  const [selectedLevel, setSelectedLevel] = useState('');
-  const [selectedStorage, setSelectedStorage] = useState('');
-  const [userInfo, setUserInfo] = useState(null);
-  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
-  const [hasExistingData, setHasExistingData] = useState(false);
+interface UserInfo {
+  authenticated: boolean;
+  can_save_journey_stats: boolean;
+  has_corpus_choice_file?: boolean;
+}
+
+interface WelcomeScreenProps {
+  onComplete: (level: string | null, storage: string) => void;
+}
+
+const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
+  const [selectedLevel, setSelectedLevel] = useState<string>('');
+  const [selectedStorage, setSelectedStorage] = useState<string>('');
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loadingUserInfo, setLoadingUserInfo] = useState<boolean>(true);
+  const [hasExistingData, setHasExistingData] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -84,7 +94,7 @@ const WelcomeScreen = ({ onComplete }) => {
                   name="level"
                   value="beginner"
                   checked={selectedLevel === 'beginner'}
-                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
                   className="w-welcome-radio"
                 />
                 <span>🌱 <strong>Completely new to Lithuanian</strong></span>
@@ -96,7 +106,7 @@ const WelcomeScreen = ({ onComplete }) => {
                   name="level"
                   value="intermediate"
                   checked={selectedLevel === 'intermediate'}
-                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
                   className="w-welcome-radio"
                 />
                 <span>📚 <strong>Have some skill</strong></span>
@@ -108,7 +118,7 @@ const WelcomeScreen = ({ onComplete }) => {
                   name="level"
                   value="expert"
                   checked={selectedLevel === 'expert'}
-                  onChange={(e) => setSelectedLevel(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
                   className="w-welcome-radio"
                 />
                 <span>🎓 <strong>Expert</strong></span>
@@ -142,7 +152,7 @@ const WelcomeScreen = ({ onComplete }) => {
                 name="storage"
                 value={STORAGE_MODES.LOCAL}
                 checked={selectedStorage === STORAGE_MODES.LOCAL}
-                onChange={(e) => setSelectedStorage(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedStorage(e.target.value)}
                 className="w-welcome-radio"
               />
               <div className="w-welcome-storage-content">
@@ -161,7 +171,7 @@ const WelcomeScreen = ({ onComplete }) => {
                 name="storage"
                 value={STORAGE_MODES.REMOTE}
                 checked={selectedStorage === STORAGE_MODES.REMOTE}
-                onChange={(e) => canUseRemoteStorage && setSelectedStorage(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => canUseRemoteStorage && setSelectedStorage(e.target.value)}
                 className="w-welcome-radio"
                 disabled={!canUseRemoteStorage}
               />

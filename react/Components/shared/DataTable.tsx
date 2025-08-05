@@ -1,4 +1,5 @@
 import React from 'react';
+import { AudioManager, SortDirection } from '../../Utilities/types';
 import AudioButton from '../AudioButton';
 
 // Type for individual row data - flexible to allow any properties
@@ -39,10 +40,10 @@ export interface DataTableProps {
   data: TableRowData[];
   sortable?: boolean;
   sortField?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: SortDirection;
   onSort?: (field: string) => void;
   audioEnabled?: boolean;
-  playAudio?: (word: string) => Promise<void>;
+  audioManager?: AudioManager;
   maxHeight?: string;
   stickyHeader?: boolean;
   striped?: boolean;
@@ -57,7 +58,7 @@ const DataTable: React.FC<DataTableProps> = ({
   sortDirection, 
   onSort,
   audioEnabled = false,
-  playAudio,
+  audioManager,
   maxHeight = '60vh',
   stickyHeader = true,
   striped = true,
@@ -72,7 +73,7 @@ const DataTable: React.FC<DataTableProps> = ({
           word={column.audioWord ? rowData[column.audioWord] : ''}
           size={column.audioSize || 'small'}
           audioEnabled={audioEnabled}
-          playAudio={playAudio}
+          audioManager={audioManager}
         />
       );
     }

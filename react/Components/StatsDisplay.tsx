@@ -1,7 +1,17 @@
-
 import React from 'react';
 
-const StatsDisplay = ({ stats, onReset }) => {
+interface Stats {
+  correct: number;
+  incorrect: number;
+  total: number;
+}
+
+interface StatsDisplayProps {
+  stats: Stats;
+  onReset: () => void;
+}
+
+const StatsDisplay: React.FC<StatsDisplayProps> = ({ stats, onReset }) => {
   return (
     <div className="w-stats">
       <div className="w-stat-item">

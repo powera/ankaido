@@ -1,4 +1,3 @@
-import React from 'react';
 import VocabularyListActivity from '../Activities/VocabularyListActivity';
 
 const VocabularyListMode = ({ 
@@ -9,7 +8,7 @@ const VocabularyListMode = ({
   setVocabListWords,
   corporaData,
   audioEnabled,
-  playAudio
+  audioManager
 }) => {
   return (
     <VocabularyListActivity
@@ -20,7 +19,7 @@ const VocabularyListMode = ({
       setVocabListWords={setVocabListWords}
       corporaData={corporaData}
       audioEnabled={audioEnabled}
-      playAudio={playAudio}
+      audioManager={audioManager}
     />
   );
 };

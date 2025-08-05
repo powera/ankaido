@@ -1,40 +1,67 @@
 
+import React from 'react';
 import AudioButton from '../Components/AudioButton';
-import DataTable from '../Components/shared/DataTable';
+import DataTable, { TableColumn, TableRowData } from '../Components/shared/DataTable';
 import audioManager from '../Managers/audioManager';
 
-const ConjugationTable = ({ verb, conjugations, audioEnabled, compact = false, hideHeader = false }) => {
+// Interface for individual conjugation entry
+export interface ConjugationEntry {
+  english: string;
+  lithuanian: string;
+}
+
+// Interface for conjugations data structure
+export interface ConjugationsData {
+  [verb: string]: ConjugationEntry[];
+}
+
+// Props interface for ConjugationTable component
+export interface ConjugationTableProps {
+  verb: string;
+  conjugations: ConjugationsData;
+  audioEnabled: boolean;
+  compact?: boolean;
+  hideHeader?: boolean;
+}
+
+const ConjugationTable: React.FC<ConjugationTableProps> = ({ 
+  verb, 
+  conjugations, 
+  audioEnabled, 
+  compact = false, 
+  hideHeader = false 
+}) => {
   const conjugationList = conjugations[verb];
   if (!conjugationList) return null;
 
-  // Use the global audio manager instance (already imported as singleton)
+
 
   if (compact) {
     return <CompactConjugationTable verb={verb} conjugationList={conjugationList} audioEnabled={audioEnabled} hideHeader={hideHeader} />;
   }
 
   // Create a 3x3 grid for conjugations
-  const conjugationGrid = {
+  const conjugationGrid: Record<string, ConjugationEntry | null> = {
     'I': null, 'you(s.)': null, 'he': null,
     'she': null, 'it': null, 'we': null,
     'you(pl.)': null, 'they(m.)': null, 'they(f.)': null
   };
 
-  conjugationList.forEach(conj => {
+  conjugationList.forEach((conj: ConjugationEntry) => {
     const pronoun = conj.english.split(' ')[0];
     conjugationGrid[pronoun] = conj;
   });
 
   // Convert to data array, filtering out null entries
-  const tableData = Object.entries(conjugationGrid)
+  const tableData: TableRowData[] = Object.entries(conjugationGrid)
     .filter(([_, conj]) => conj !== null)
     .map(([pronoun, conj]) => ({
       pronoun,
-      english: conj.english,
-      lithuanian: conj.lithuanian
+      english: (conj as ConjugationEntry).english,
+      lithuanian: (conj as ConjugationEntry).lithuanian
     }));
 
-  const columns = [
+  const columns: TableColumn[] = [
     {
       header: 'Person',
       accessor: 'pronoun',
@@ -65,7 +92,7 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled, compact = false, h
           columns={columns}
           data={tableData}
           audioEnabled={audioEnabled}
-          playAudio={audioManager.playAudio.bind(audioManager)}
+          audioManager={audioManager}
           maxHeight="none"
           stickyHeader={false}
         />
@@ -74,10 +101,25 @@ const ConjugationTable = ({ verb, conjugations, audioEnabled, compact = false, h
   );
 };
 
-const CompactConjugationTable = ({ verb, conjugationList, audioEnabled, hideHeader = false }) => {
+// Props interface for CompactConjugationTable component
+interface CompactConjugationTableProps {
+  verb: string;
+  conjugationList: ConjugationEntry[];
+  audioEnabled: boolean;
+  hideHeader?: boolean;
+}
+
+const CompactConjugationTable: React.FC<CompactConjugationTableProps> = ({ 
+  verb, 
+  conjugationList, 
+  audioEnabled, 
+  hideHeader = false 
+}) => {
+
+
   // Create a mapping from the conjugation keys to the data
-  const conjugationMap = {};
-  conjugationList.forEach(conj => {
+  const conjugationMap: Record<string, ConjugationEntry> = {};
+  conjugationList.forEach((conj: ConjugationEntry) => {
     // Extract the pronoun from the english text, similar to non-compact version
     const pronoun = conj.english.split(' ')[0];
     if (pronoun === 'I') conjugationMap['1s'] = conj;
@@ -91,7 +133,7 @@ const CompactConjugationTable = ({ verb, conjugationList, audioEnabled, hideHead
     else if (pronoun === 'they(f.)') conjugationMap['3p-f'] = conj;
   });
 
-  const cellStyle = {
+  const cellStyle: React.CSSProperties = {
     border: '1px solid var(--color-border)',
     padding: 'var(--spacing-small)',
     textAlign: 'center',
@@ -99,19 +141,19 @@ const CompactConjugationTable = ({ verb, conjugationList, audioEnabled, hideHead
     minWidth: '120px'
   };
 
-  const headerStyle = {
+  const headerStyle: React.CSSProperties = {
     ...cellStyle,
     background: 'var(--color-annotation-bg)',
     fontWeight: 'bold'
   };
 
-  const tableStyle = {
+  const tableStyle: React.CSSProperties = {
     borderCollapse: 'collapse',
     margin: '0 auto',
     border: '1px solid var(--color-border)'
   };
 
-  const renderCell = (singularKey, pluralKey) => {
+  const renderCell = (singularKey: string, pluralKey: string): React.ReactNode => {
     const singular = conjugationMap[singularKey];
     const plural = conjugationMap[pluralKey];
     
@@ -135,7 +177,7 @@ const CompactConjugationTable = ({ verb, conjugationList, audioEnabled, hideHead
                     word={singular.lithuanian}
                     size="small"
                     audioEnabled={audioEnabled}
-                    playAudio={audioManager.playAudio.bind(audioManager)}
+                    audioManager={audioManager}
                   />
                 </div>
               )}
@@ -159,7 +201,7 @@ const CompactConjugationTable = ({ verb, conjugationList, audioEnabled, hideHead
                     word={plural.lithuanian}
                     size="small"
                     audioEnabled={audioEnabled}
-                    playAudio={audioManager.playAudio.bind(audioManager)}
+                    audioManager={audioManager}
                   />
                 </div>
               )}

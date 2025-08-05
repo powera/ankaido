@@ -1,13 +1,32 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import audioManager from '../Managers/audioManager';
-import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
+import { getQuestionText } from '../Utilities/activityHelpers';
+import { StudyMode, Word } from '../Utilities/types';
+
+// Type definitions
+
+interface BlitzActivityProps {
+  currentWord: Word | null;
+  showAnswer: boolean;
+  selectedAnswer: string | null;
+  multipleChoiceOptions: string[];
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  onAnswerClick?: (selectedOption: string, isCorrect: boolean) => void;
+  questionsAnswered: number;
+  totalQuestions: number;
+  score: number;
+  isGameComplete: boolean;
+  targetWordIndex: number;
+  onExitBlitz?: () => void;
+}
 
 /**
  * Blitz Activity Component
  * Presents a word and 8 multiple choice options in a fast-paced format
  */
-const BlitzActivity = ({ 
+const BlitzActivity: React.FC<BlitzActivityProps> = ({ 
   currentWord,
   showAnswer,
   selectedAnswer,
@@ -34,12 +53,12 @@ const BlitzActivity = ({
   }, [currentWord, studyMode, audioEnabled]);
 
   // Handle answer click with correctness determination
-  const handleAnswerClick = React.useCallback((selectedOption) => {
+  const handleAnswerClick = React.useCallback((selectedOption: string) => {
     if (showAnswer || isGameComplete) return; // Prevent clicking during feedback or when game is complete
     
     // Find which index was clicked
-    const selectedIndex = multipleChoiceOptions.indexOf(selectedOption);
-    const isCorrect = selectedIndex === targetWordIndex;
+    const selectedIndex: number = multipleChoiceOptions.indexOf(selectedOption);
+    const isCorrect: boolean = selectedIndex === targetWordIndex;
     
     // Call the onAnswerClick callback with correctness information
     if (onAnswerClick) {
@@ -50,10 +69,10 @@ const BlitzActivity = ({
   // Early return after all hooks
   if (!currentWord) return null;
 
-  const question = getQuestionText(currentWord, studyMode);
+  const question: string = getQuestionText(currentWord, studyMode);
 
   // Generate hint text based on answer state
-  const getHintText = () => {
+  const getHintText = (): string => {
     if (isGameComplete) {
       return `Game Complete! Final Score: ${score}/${totalQuestions}`;
     }
@@ -63,14 +82,14 @@ const BlitzActivity = ({
     }
     
     // Determine if the selected answer was correct
-    const selectedIndex = multipleChoiceOptions.indexOf(selectedAnswer);
-    const isCorrect = selectedIndex === targetWordIndex;
+    const selectedIndex: number = selectedAnswer ? multipleChoiceOptions.indexOf(selectedAnswer) : -1;
+    const isCorrect: boolean = selectedIndex === targetWordIndex;
     
     return isCorrect ? "Correct! ✓" : "Incorrect ✗";
   };
 
   // Generate progress bar
-  const progressPercentage = (questionsAnswered / totalQuestions) * 100;
+  const progressPercentage: number = (questionsAnswered / totalQuestions) * 100;
 
   return (
     <div>
@@ -136,12 +155,12 @@ const BlitzActivity = ({
         gap: 'var(--spacing-small)',
         marginTop: 'var(--spacing-medium)'
       }}>
-        {multipleChoiceOptions.map((option, index) => {
-          const isCorrect = index === targetWordIndex;
-          const isSelected = selectedAnswer === option;
+        {multipleChoiceOptions.map((option: string, index: number) => {
+          const isCorrect: boolean = index === targetWordIndex;
+          const isSelected: boolean = selectedAnswer === option;
           
-          let buttonClass = 'w-button w-blitz-option';
-          let buttonStyle = {
+          let buttonClass: string = 'w-button w-blitz-option';
+          let buttonStyle: React.CSSProperties = {
             padding: 'var(--spacing-small)',
             fontSize: '0.9em',
             minHeight: '60px',

@@ -3,15 +3,28 @@ import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import activityStatsManager from '../Managers/activityStatsManager';
 import audioManager from '../Managers/audioManager';
-import { getQuestionText, getCorrectAnswer } from '../Utilities/activityHelpers';
+import { getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 import { invalidateWordWeightCache } from '../Utilities/activitySelection';
+import { StudyMode, Word } from '../Utilities/types';
+
+/**
+ * Props interface for FlashCardActivity component
+ */
+interface FlashCardActivityProps {
+  currentWord: Word | null;
+  showAnswer: boolean;
+  setShowAnswer: (show: boolean) => void;
+  studyMode: StudyMode;
+  audioEnabled: boolean;
+  isNewWord?: boolean;
+}
 
 /**
  * Flash Card Activity Component
  * Displays a word with clickable reveal functionality
  * Optionally marks new words as exposed for tracking purposes
  */
-const FlashCardActivity = ({ 
+const FlashCardActivity: React.FC<FlashCardActivityProps> = ({ 
   currentWord, 
   showAnswer, 
   setShowAnswer, 
@@ -28,7 +41,7 @@ const FlashCardActivity = ({
           await activityStatsManager.updateWordStatsDirectly(currentWord, { exposed: true });
           // Invalidate weight cache for this word since stats changed
           invalidateWordWeightCache(currentWord);
-        } catch (error) {
+        } catch (error: unknown) {
           console.error('Error marking word as exposed in FlashCardActivity:', error);
         }
       };
@@ -38,7 +51,7 @@ const FlashCardActivity = ({
       if (audioEnabled) {
         // Small delay to ensure the component is fully rendered
         setTimeout(() => {
-          audioManager.playAudio(currentWord.lithuanian).catch(error => {
+          audioManager.playAudio(currentWord.lithuanian).catch((error: unknown) => {
             console.warn('Failed to auto-play audio for new word:', error);
           });
         }, 100);
@@ -49,11 +62,11 @@ const FlashCardActivity = ({
   // Early return after all hooks
   if (!currentWord) return null;
 
-  const question = getQuestionText(currentWord, studyMode);
-  const answer = getCorrectAnswer(currentWord, studyMode);
+  const question: string = getQuestionText(currentWord, studyMode);
+  const answer: string = getCorrectAnswer(currentWord, studyMode);
   
   // Determine whether to show the answer based on showAnswer state or isNewWord prop
-  const shouldShowAnswer = showAnswer || isNewWord;
+  const shouldShowAnswer: boolean = showAnswer || isNewWord;
 
   return (
     <WordDisplayCard
