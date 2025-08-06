@@ -400,10 +400,8 @@ export class ActivityStatsManager {
     const wordKey = createWordKey(word);
     const currentStats = this.getWordStats(word);
     
-    // Early exit: if word is not exposed and we shouldn't expose it, don't update stats
-    if (!currentStats.exposed && !shouldExposeWord) {
-      return currentStats;
-    }
+    // Always record stats regardless of exposed status
+    // The exposed flag is managed separately from stats recording
     
     // Ensure the mode exists with default values
     const currentModeStats = currentStats[mode] || { correct: 0, incorrect: 0 };

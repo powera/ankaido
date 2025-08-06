@@ -127,12 +127,9 @@ const FlashCardApp = () => {
     // For returning users, splash will remain until user clicks
   }, [showWelcome]);
 
-  // Load initial data
+  // Load initial data - start immediately in background while splash is showing
   useEffect(() => {
     const loadInitialData = async () => {
-      // Don't start loading until splash is done
-      if (showSplash) return;
-
       setLoading(true);
       setError(null);
       try {
@@ -191,7 +188,7 @@ const FlashCardApp = () => {
       }
     };
     loadInitialData();
-  }, [showSplash]);
+  }, []); // Run once on mount
 
   // Comprehensive WordListManager update handler
   useEffect(() => {
