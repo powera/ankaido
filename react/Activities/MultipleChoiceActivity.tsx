@@ -90,7 +90,6 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
     <div>
       <WordDisplayCard
         currentWord={currentWord}
-        studyMode={studyMode}
         audioEnabled={audioEnabled}
         questionText={question}
         showHints={true}

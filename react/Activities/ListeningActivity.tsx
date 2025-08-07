@@ -128,7 +128,6 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
     <div>
       <WordDisplayCard
         currentWord={currentWord}
-        studyMode={studyMode}
         audioEnabled={audioEnabled}
         questionText="🎧 Listen and choose the correct answer:"
         showAudioButton={true}

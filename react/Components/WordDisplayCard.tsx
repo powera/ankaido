@@ -1,13 +1,13 @@
 
 import React from 'react';
 import audioManager from '../Managers/audioManager';
-import { StudyMode, Word } from '../Utilities/types';
+import { Word } from '../Utilities/types';
 import AudioButton from './AudioButton';
 
 // Props interface for WordDisplayCard component
+// Note: Component is hardcoded for 'source-to-english' mode (Lithuanian question, English answer)
 export interface WordDisplayCardProps {
   currentWord: Word | null;
-  studyMode: StudyMode;
   audioEnabled: boolean;
   showAnswer?: boolean;
   questionText?: string | null;
@@ -25,7 +25,6 @@ export interface WordDisplayCardProps {
 
 const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
   currentWord,
-  studyMode,
   audioEnabled,
   showAnswer = false,
   questionText = null,
@@ -42,20 +41,17 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
 }) => {
   if (!currentWord) return null;
 
-  // Determine question and answer based on study mode if not provided
-  const question = questionText || (studyMode === 'english-to-source' ? currentWord.english : currentWord.lithuanian);
-  const answer = answerText || (studyMode === 'english-to-source' ? currentWord.lithuanian : currentWord.english);
+  // For 'source-to-english' mode: Lithuanian question, English answer
+  const question = questionText || currentWord.lithuanian;
+  const answer = answerText || currentWord.english;
 
-  // Determine which word to use for audio
+  // Audio is always Lithuanian (source language)
   const audioWord = currentWord.lithuanian;
 
-
-  // Determine if we should show the audio button based on study mode and showAudioButton prop
-  const shouldShowAudioButton = showAudioButton && audioEnabled && (
-    (studyMode === 'source-to-english') ||
-    (studyMode === 'english-to-source' && showAnswer) ||
-    (questionText?.includes('🎧')) // For listening activities
-  );
+  // Show audio button when enabled and either:
+  // 1. General audio button is requested, or
+  // 2. It's a listening activity (indicated by 🎧 in question text)
+  const shouldShowAudioButton = showAudioButton && audioEnabled;
 
   // Helper function to pretty-print level names
   const formatLevel = (level: string): string => {
@@ -91,7 +87,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
           <span>{question}</span>
-          {shouldShowAudioButton && (studyMode === 'source-to-english' || questionText?.includes('🎧')) && (
+          {shouldShowAudioButton && (
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
@@ -105,13 +101,6 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
         <div className="trakaido-answer-text">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
             <span>{answer}</span>
-            {shouldShowAudioButton && studyMode === 'english-to-source' && (
-              <AudioButton 
-                word={audioWord}
-                audioEnabled={audioEnabled}
-                audioManager={audioManager}
-              />
-            )}
           </div>
         </div>
       )}

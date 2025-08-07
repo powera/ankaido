@@ -71,7 +71,6 @@ const FlashCardActivity: React.FC<FlashCardActivityProps> = ({
   return (
     <WordDisplayCard
       currentWord={currentWord}
-      studyMode={studyMode}
       audioEnabled={audioEnabled}
       questionText={question}
       answerText={answer}

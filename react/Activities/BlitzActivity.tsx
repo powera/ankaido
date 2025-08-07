@@ -140,7 +140,6 @@ const BlitzActivity: React.FC<BlitzActivityProps> = ({
 
       <WordDisplayCard
         currentWord={currentWord}
-        studyMode={studyMode}
         audioEnabled={audioEnabled}
         questionText={question}
         showHints={true}

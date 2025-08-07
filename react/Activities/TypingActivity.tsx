@@ -194,7 +194,6 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     <div>
       <WordDisplayCard
         currentWord={word}
-        studyMode={studyMode}
         audioEnabled={audioEnabled}
         questionText={question}
         answerText={answer}
