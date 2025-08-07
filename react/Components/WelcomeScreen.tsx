@@ -9,11 +9,10 @@ interface UserInfo {
 }
 
 interface WelcomeScreenProps {
-  onComplete: (level: string | null, storage: string) => void;
+  onComplete: (storage: string) => void;
 }
 
 const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
-  const [selectedLevel, setSelectedLevel] = useState<string>('');
   const [selectedStorage, setSelectedStorage] = useState<string>('');
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loadingUserInfo, setLoadingUserInfo] = useState<boolean>(true);
@@ -50,11 +49,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
   }, []);
 
   const handleContinue = () => {
-    // Users with existing data don't need to select a level
-    if (hasExistingData && selectedStorage) {
-      onComplete(null, selectedStorage); // Pass null for level when user has existing data
-    } else if (selectedLevel && selectedStorage) {
-      onComplete(selectedLevel, selectedStorage);
+    if (selectedStorage) {
+      onComplete(selectedStorage);
     }
   };
 
@@ -83,49 +79,6 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
             <li className="w-welcome-feature-item">📑 <strong>Vocabulary Lists:</strong> Browse and study word collections</li>
           </ul>
         </div>
-
-        {!hasExistingData && (
-          <div className="w-welcome-section">
-            <h3 className="w-welcome-section-title">What's your Lithuanian level?</h3>
-            <div className="w-welcome-options">
-              <label className={`w-welcome-option ${selectedLevel === 'beginner' ? 'w-welcome-option-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="level"
-                  value="beginner"
-                  checked={selectedLevel === 'beginner'}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
-                  className="w-welcome-radio"
-                />
-                <span>🌱 <strong>Completely new to Lithuanian</strong></span>
-              </label>
-              
-              <label className={`w-welcome-option ${selectedLevel === 'intermediate' ? 'w-welcome-option-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="level"
-                  value="intermediate"
-                  checked={selectedLevel === 'intermediate'}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
-                  className="w-welcome-radio"
-                />
-                <span>📚 <strong>Have some skill</strong></span>
-              </label>
-              
-              <label className={`w-welcome-option ${selectedLevel === 'expert' ? 'w-welcome-option-selected' : ''}`}>
-                <input
-                  type="radio"
-                  name="level"
-                  value="expert"
-                  checked={selectedLevel === 'expert'}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedLevel(e.target.value)}
-                  className="w-welcome-radio"
-                />
-                <span>🎓 <strong>Expert</strong></span>
-              </label>
-            </div>
-          </div>
-        )}
 
         {hasExistingData && (
           <div className="w-welcome-section">
@@ -193,8 +146,8 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
 
         <button
           onClick={handleContinue}
-          disabled={hasExistingData ? !selectedStorage : (!selectedLevel || !selectedStorage)}
-          className={`w-button w-welcome-button ${hasExistingData ? (!selectedStorage ? 'w-button-disabled' : '') : ((!selectedLevel || !selectedStorage) ? 'w-button-disabled' : '')}`}
+          disabled={!selectedStorage}
+          className={`w-button w-welcome-button ${!selectedStorage ? 'w-button-disabled' : ''}`}
         >
           {hasExistingData ? 'Continue Learning! 🚀' : 'Let\'s Start Learning! 🚀'}
         </button>
