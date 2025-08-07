@@ -6,7 +6,7 @@ import audioManager from '../Managers/audioManager';
 import { StudyMode, Word } from '../Utilities/types';
 
 interface ListeningActivityProps {
-  currentWord: Word;
+  currentWord: Word | null;
   showAnswer: boolean;
   selectedAnswer: string | null;
   multipleChoiceOptions: string[];

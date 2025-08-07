@@ -22,7 +22,6 @@ import { invalidateWordWeightCache, selectJourneyActivity } from '../Utilities/a
 import { fetchConjugations } from '../Utilities/apiClient';
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import {
-  ActivityMode,
   ExtendedActivityType,
   JourneyFocusMode,
   Stats,
@@ -50,9 +49,6 @@ interface JourneyState {
   currentActivity: ExtendedActivityType | null;
   currentWord: Word | null;
   showNewWordIndicator: boolean;
-  listeningMode: ActivityMode | null;
-  multipleChoiceMode: ActivityMode | null;
-  typingMode: ActivityMode | null;
   multipleChoiceOptions: any[]; // TODO: Type this properly when multipleChoiceGenerator is migrated
   conjugationData: Record<string, any> | null;
   selectedVerb: string | null;
@@ -86,9 +82,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     currentActivity: null,
     currentWord: null,
     showNewWordIndicator: false,
-    listeningMode: null,
-    multipleChoiceMode: null,
-    typingMode: null,
     multipleChoiceOptions: [],
     conjugationData: null,
     selectedVerb: null,
@@ -232,17 +225,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     // Generate multiple choice options for activities that need them
     let multipleChoiceOptions: any[] = [];
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening') && nextActivity.word) {
-      // Determine the effective study mode for option generation
-      let effectiveStudyMode = studyMode;
-      if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
-        effectiveStudyMode = 'lithuanian-to-lithuanian';
-      } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
-        effectiveStudyMode = 'lithuanian-to-english';
-      } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'en-to-lt') {
-        effectiveStudyMode = 'english-to-lithuanian';
-      } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'lt-to-en') {
-        effectiveStudyMode = 'lithuanian-to-english';
-      }
+      // All activities are now LT->EN: Lithuanian prompt, English answers
+      const effectiveStudyMode = 'lithuanian-to-english';
 
       // Determine number of options based on word exposure count
       const wordStats = activityStatsManager.getWordStats(nextActivity.word);
@@ -286,9 +270,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
           currentActivity: fallbackActivity.type,
           currentWord: fallbackActivity.word,
           showNewWordIndicator: fallbackActivity.type === 'new-word',
-          listeningMode: fallbackActivity.type === 'listening' ? (fallbackActivity.mode || null) : null,
-          multipleChoiceMode: fallbackActivity.type === 'multiple-choice' ? (fallbackActivity.mode || null) : null,
-          typingMode: fallbackActivity.type === 'typing' ? (fallbackActivity.mode || null) : null,
           multipleChoiceOptions: [],
           conjugationData: null,
           selectedVerb: null,
@@ -304,9 +285,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
       showNewWordIndicator: nextActivity.type === 'new-word',
-      listeningMode: nextActivity.type === 'listening' ? (nextActivity.mode || null) : null, // Store the listening mode (easy/hard)
-      multipleChoiceMode: nextActivity.type === 'multiple-choice' ? (nextActivity.mode || null) : null, // Store the multiple-choice mode (en-to-lt/lt-to-en)
-      typingMode: nextActivity.type === 'typing' ? (nextActivity.mode || null) : null, // Store the typing mode (en-to-lt/lt-to-en)
       multipleChoiceOptions: multipleChoiceOptions,
       conjugationData: conjugationData,
       selectedVerb: selectedVerb,
@@ -321,7 +299,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
 
     // Note: New words will be marked as exposed by the FlashCardActivity when first shown
 
-    // Generate multiple choice options if needed, or set up typing activities
+    // All activities are now standardized to LT->EN
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening' || nextActivity.type === 'typing') && nextActivity.word) {
       // Set current word for existing components
       const wordIndex = wordListState.allWords.findIndex(w => 
@@ -330,29 +308,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       if (wordIndex >= 0) {
         // Note: WordListManager doesn't expose currentCard setter, 
         // but the word selection is handled by the activity selection logic
-
-        // Determine effective study mode based on activity type and mode
-        let effectiveStudyMode = studyMode;
-        if (nextActivity.type === 'listening' && nextActivity.mode === 'easy') {
-          // Easy listening: always use lithuanian-to-lithuanian regardless of global study mode
-          effectiveStudyMode = 'lithuanian-to-lithuanian';
-        } else if (nextActivity.type === 'listening' && nextActivity.mode === 'hard') {
-          // Hard listening: always use lithuanian-to-english regardless of global study mode
-          effectiveStudyMode = 'lithuanian-to-english';
-        } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'en-to-lt') {
-          // English-to-Lithuanian multiple choice: English prompt, Lithuanian answers
-          effectiveStudyMode = 'english-to-lithuanian';
-        } else if (nextActivity.type === 'multiple-choice' && nextActivity.mode === 'lt-to-en') {
-          // Lithuanian-to-English multiple choice: Lithuanian prompt, English answers
-          effectiveStudyMode = 'lithuanian-to-english';
-        } else if (nextActivity.type === 'typing' && nextActivity.mode === 'en-to-lt') {
-          // English-to-Lithuanian typing: English prompt, type Lithuanian answer
-          effectiveStudyMode = 'english-to-lithuanian';
-        } else if (nextActivity.type === 'typing' && nextActivity.mode === 'lt-to-en') {
-          // Lithuanian-to-English typing: Lithuanian prompt, type English answer
-          effectiveStudyMode = 'lithuanian-to-english';
-        }
-
         // Note: State change notification is handled by the activity selection logic
       }
     }
@@ -394,7 +349,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
         advanceToNextActivity();
       }, defaultDelay * 1000);
     }
-  }, [journeyState.multipleChoiceMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
+  }, [journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
   // Handler for listening answers with stats and auto-advance
   const handleJourneyListening = React.useCallback(async (selectedOption: string, isCorrect: boolean) => {
@@ -404,8 +359,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       selectedAnswer: selectedOption
     });
 
-    // Determine stats mode based on difficulty
-    const statsMode = journeyState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
+    // Listening is always "hard mode" (Lithuanian audio -> English answers)
+    const statsMode = 'listeningHard';
 
     // Update journey stats (Journey Mode can expose words)
     if (journeyState.currentWord) {
@@ -424,7 +379,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
         advanceToNextActivity();
       }, defaultDelay * 1000);
     }
-  }, [journeyState.listeningMode, journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
+  }, [journeyState.currentWord, autoAdvance, defaultDelay, advanceToNextActivity]);
 
   // Handler for typing submissions with stats and auto-advance
   const handleJourneyTyping = React.useCallback(async (typedAnswer: string, isCorrect: boolean) => {
@@ -557,15 +512,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'multiple-choice') {
-    // Calculate effective study mode for multiple choice
-    let effectiveStudyMode = studyMode;
-    if (journeyState.multipleChoiceMode === 'en-to-lt') {
-      // English-to-Lithuanian multiple choice: English prompt, Lithuanian answers
-      effectiveStudyMode = 'english-to-lithuanian';
-    } else if (journeyState.multipleChoiceMode === 'lt-to-en') {
-      // Lithuanian-to-English multiple choice: Lithuanian prompt, English answers
-      effectiveStudyMode = 'lithuanian-to-english';
-    }
+    // Multiple choice is always LT->EN: Lithuanian prompt, English answers
+    const effectiveStudyMode = 'lithuanian-to-english';
 
     return (
       <div>
@@ -592,17 +540,9 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'listening') {
-    // Determine the effective study mode based on listening mode
-    let effectiveStudyMode = studyMode;
-    let challengeTitle = '🎧 Listening Challenge';
-
-    if (journeyState.listeningMode === 'easy') {
-      effectiveStudyMode = 'lithuanian-to-lithuanian';
-      challengeTitle = '🎧 Listening Challenge (Easy)';
-    } else if (journeyState.listeningMode === 'hard') {
-      effectiveStudyMode = 'lithuanian-to-english';
-      challengeTitle = '🎧 Listening Challenge (Hard)';
-    }
+    // Listening is always "hard mode": Lithuanian audio, English answers
+    const effectiveStudyMode = 'lithuanian-to-english';
+    const challengeTitle = '🎧 Listening Challenge';
 
     return (
       <div>
@@ -629,17 +569,9 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'typing') {
-    // Determine the effective study mode based on typing mode
-    let effectiveStudyMode = studyMode;
-    let challengeTitle = '⌨️ Typing Challenge';
-
-    if (journeyState.typingMode === 'en-to-lt') {
-      effectiveStudyMode = 'english-to-lithuanian';
-      challengeTitle = '⌨️ Typing Challenge (EN → LT)';
-    } else if (journeyState.typingMode === 'lt-to-en') {
-      effectiveStudyMode = 'lithuanian-to-english';
-      challengeTitle = '⌨️ Typing Challenge (LT → EN)';
-    }
+    // Typing is always LT->EN: Lithuanian prompt, type English answer
+    const effectiveStudyMode = 'lithuanian-to-english';
+    const challengeTitle = '⌨️ Typing Challenge';
 
     return (
       <div>

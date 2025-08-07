@@ -47,10 +47,8 @@ const FlashCardApp = () => {
   // Initialize selectedGroups - will be loaded from corpus choices manager
   const [selectedGroups, setSelectedGroups] = useState({}); // {corpus: [group1, group2]}
 
-  // Initialize local settings from localStorage where available
-  const [studyMode, setStudyMode] = useState(() => {
-    return safeStorage?.getItem('ankaido-study-mode') || 'english-to-lithuanian';
-  });
+  // Fixed study mode - always Lithuanian questions with English answers
+  const studyMode = 'lithuanian-to-english';
 
   const [quizMode, setQuizMode] = useState(() => {
     return safeStorage?.getItem('ankaido-quiz-mode') || 'journey';
@@ -281,14 +279,13 @@ const FlashCardApp = () => {
   // Combined localStorage persistence
   useEffect(() => {
     const persistenceUpdates = {
-      'ankaido-study-mode': studyMode,
       'ankaido-quiz-mode': quizMode
     };
 
     Object.entries(persistenceUpdates).forEach(([key, value]) => {
       safeStorage.setItem(key, value);
     });
-  }, [studyMode, quizMode]);
+  }, [quizMode]);
 
 
   // Generate all available groups from all corpuses
@@ -341,7 +338,6 @@ const FlashCardApp = () => {
   const resetAllSettings = async () => {
     try {
       // Clear localStorage items
-      safeStorage.removeItem('ankaido-study-mode');
       safeStorage.removeItem('ankaido-quiz-mode');
       safeStorage.removeItem('ankaido-selected-voice');
 
@@ -353,7 +349,6 @@ const FlashCardApp = () => {
       await activityStatsManager.forceReinitialize();
 
       // Reset state to defaults
-      setStudyMode('english-to-lithuanian');
       setQuizMode('flashcard');
       // selectedGroups will be updated by the corpus choices manager listener
       setShowWelcome(true);
@@ -493,7 +488,6 @@ const FlashCardApp = () => {
         quizMode={quizMode}
         setQuizMode={setQuizMode}
         studyMode={studyMode}
-        setStudyMode={setStudyMode}
         journeyFocusMode={journeyFocusMode}
         setJourneyFocusMode={setJourneyFocusMode}
         safeStorage={safeStorage}
@@ -626,7 +620,6 @@ const FlashCardApp = () => {
             wordListManager={wordListManager}
             wordListState={wordListState}
             studyMode={studyMode}
-            setStudyMode={setStudyMode}
             audioEnabled={audioEnabled}
             blitzConfig={blitzConfig}
             corporaData={corporaData}

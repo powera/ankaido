@@ -11,7 +11,6 @@ const StudyModeSelector = ({
   quizMode,
   setQuizMode,
   studyMode,
-  setStudyMode,
   journeyFocusMode,
   setJourneyFocusMode,
   safeStorage,
@@ -190,29 +189,7 @@ const StudyModeSelector = ({
         </div>
       )}
 
-      {/* Hide direction selector for Journey, Drill, and Grammar modes */}
-      {quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'conjugations' && (
-          <div className="w-dropdown-container">
-            <label>
-              <span className="w-hide-mobile">Direction:</span>
-              <span className="w-show-mobile" style={{ display: 'none' }}>Direction:</span>
-            </label>
-            <select 
-              value={studyMode}
-              onChange={(e) => {
-                setStudyMode(e.target.value);
-                safeStorage.setItem('ankaido-study-mode', e.target.value);
-              }}
-            >
-              <option value="english-to-lithuanian">
-                🇺🇸 → 🇱🇹
-              </option>
-              <option value="lithuanian-to-english">
-                🇱🇹 → 🇺🇸
-              </option>
-            </select>
-          </div>
-      )}
+
 
       {/* Voice selector - only show when audio is enabled and voices are available */}
       {audioEnabled && audioManager.getAvailableVoices().length > 0 && (

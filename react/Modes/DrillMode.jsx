@@ -27,9 +27,7 @@ const DrillMode = ({
     currentWord: null,
     currentMultipleChoiceOptions: [],
     showNewWordIndicator: false,
-    listeningMode: null,
-    multipleChoiceMode: null,
-    typingMode: null,
+
     drillWords: [],
     currentDrillIndex: 0,
     drillStats: {
@@ -174,9 +172,7 @@ const DrillMode = ({
         currentActivity: 'drill-complete',
         currentWord: null,
         showNewWordIndicator: false,
-        listeningMode: null,
-        multipleChoiceMode: null,
-        typingMode: null,
+
         currentMultipleChoiceOptions: [],
         // Update index and stats if we advanced
         ...(shouldAdvanceIndex ? {
@@ -206,16 +202,14 @@ const DrillMode = ({
       };
       multipleChoiceOptions = generateMultipleChoiceOptions(
         nextActivity.word,
-        nextActivity.mode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english',
+        'lithuanian-to-english', // All activities are now LT->EN
         'multiple-choice',
         syntheticWordListState,
         { numOptions }
       );
     } else if (nextActivity.type === 'listening') {
-      // For listening activities, generate options based on the mode
-      // Easy mode: Lithuanian audio -> Lithuanian options (lt-to-lt)
-      // Hard mode: Lithuanian audio -> English options (lt-to-en)
-      const studyMode = nextActivity.mode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english';
+      // Listening is always "hard mode": Lithuanian audio -> English options
+      const studyMode = 'lithuanian-to-english';
       const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
       // Create synthetic wordListState from drill words
       const syntheticWordListState = {
@@ -236,9 +230,7 @@ const DrillMode = ({
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
       showNewWordIndicator: nextActivity.type === 'new-word',
-      listeningMode: nextActivity.type === 'listening' ? nextActivity.mode : null,
-      multipleChoiceMode: nextActivity.type === 'multiple-choice' ? nextActivity.mode : null,
-      typingMode: nextActivity.type === 'typing' ? nextActivity.mode : null,
+
       currentMultipleChoiceOptions: multipleChoiceOptions,
       // Update index and stats if we advanced
       ...(shouldAdvanceIndex ? {
@@ -298,7 +290,7 @@ const DrillMode = ({
     setTimeout(() => {
       advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.multipleChoiceMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   // Handler for typing submissions with stats and auto-advance
   const handleDrillTyping = React.useCallback(async (typedAnswer, isCorrect) => {
@@ -346,10 +338,9 @@ const DrillMode = ({
       }
     }));
 
-    // Update journey stats using correct API and mode mapping
+    // Update journey stats using correct API - listening is always "hard mode"
     try {
-      const listeningMode = drillState.listeningMode === 'easy' ? 'listeningEasy' : 'listeningHard';
-      await activityStatsManager.updateWordStats(drillState.currentWord, listeningMode, isCorrect);
+      await activityStatsManager.updateWordStats(drillState.currentWord, 'listeningHard', isCorrect);
     } catch (error) {
       console.error('Error updating journey stats:', error);
     }
@@ -359,7 +350,7 @@ const DrillMode = ({
     setTimeout(() => {
       advanceToNextDrillActivity(true);
     }, delay * 1000);
-  }, [drillState.listeningMode, drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
+  }, [drillState.currentWord, advanceToNextDrillActivity, autoAdvance, defaultDelay]);
 
   if (!drillState.isInitialized) {
     return (
@@ -498,7 +489,7 @@ const DrillMode = ({
           showAnswer={questionInteractionState.showAnswer}
           selectedAnswer={questionInteractionState.selectedAnswer}
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
-          studyMode={drillState.multipleChoiceMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
+          studyMode="lithuanian-to-english"
           audioEnabled={audioEnabled}
           onAnswerClick={handleDrillMultipleChoice}
           autoAdvance={autoAdvance}
@@ -511,7 +502,7 @@ const DrillMode = ({
           showAnswer={questionInteractionState.showAnswer}
           selectedAnswer={questionInteractionState.selectedAnswer}
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
-          studyMode={drillState.listeningMode === 'easy' ? 'lithuanian-to-lithuanian' : 'lithuanian-to-english'}
+          studyMode="lithuanian-to-english"
           audioEnabled={audioEnabled}
           onAnswerClick={handleDrillListening}
           autoAdvance={autoAdvance}
@@ -522,7 +513,7 @@ const DrillMode = ({
         <div>
           <TypingActivity
             currentWord={drillState.currentWord}
-            studyMode={drillState.typingMode === 'en-to-lt' ? 'english-to-lithuanian' : 'lithuanian-to-english'}
+            studyMode="lithuanian-to-english"
             onSubmit={handleDrillTyping}
             audioEnabled={audioEnabled}
             autoAdvance={autoAdvance}

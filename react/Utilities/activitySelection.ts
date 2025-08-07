@@ -7,7 +7,6 @@ import { JourneyModeState } from '../Managers/journeyModeManager';
 import { LevelsResponse } from './apiClient';
 import { filterWordsByLevel } from './levelUtils';
 import {
-  ActivityMode,
   ActivityResult,
   ActivityType,
   DifficultyLevel,
@@ -22,7 +21,6 @@ interface TierConfig {
   correctAnswersRange: [number, number];
   activityProbabilities: Record<ActivityType, number>;
   baseWeight: number;
-  hardListeningProbability: number;
 }
 
 export const TIER_CONFIGS: Record<number, TierConfig> = {
@@ -33,8 +31,7 @@ export const TIER_CONFIGS: Record<number, TierConfig> = {
       'listening': 50,
       'typing': 0
     },
-    baseWeight: 1.0,
-    hardListeningProbability: 0.0 // Always easy
+    baseWeight: 1.0
   },
   2: {
     correctAnswersRange: [4, 7],
@@ -43,8 +40,7 @@ export const TIER_CONFIGS: Record<number, TierConfig> = {
       'listening': 40,
       'typing': 20
     },
-    baseWeight: 0.85,
-    hardListeningProbability: 0.4 // 40% hard, 60% easy
+    baseWeight: 0.85
   },
   3: {
     correctAnswersRange: [8, 14],
@@ -53,8 +49,7 @@ export const TIER_CONFIGS: Record<number, TierConfig> = {
       'listening': 30,
       'typing': 40
     },
-    baseWeight: 0.6,
-    hardListeningProbability: 0.8 // 80% hard, 20% easy
+    baseWeight: 0.6
   },
   4: {
     correctAnswersRange: [15, Infinity],
@@ -63,8 +58,7 @@ export const TIER_CONFIGS: Record<number, TierConfig> = {
       'listening': 25,
       'typing': 75
     },
-    baseWeight: 0.25,
-    hardListeningProbability: 1.0 // Always hard
+    baseWeight: 0.25
   }
 };
 
@@ -143,30 +137,20 @@ const createActivityResult = (
 ): ActivityResult | null => {
   switch (activityType) {
     case 'multiple-choice': {
-      const mcMode: ActivityMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-      return { type: 'multiple-choice', word: selectedWord, mode: mcMode };
+      // Multiple choice is always LT->EN: Lithuanian prompt, English answers
+      return { type: 'multiple-choice', word: selectedWord };
     }
     case 'listening': {
       if (!audioEnabled) return null;
-      let listeningMode: ActivityMode;
-      
-      if (tier && TIER_CONFIGS[tier]) {
-        const hardProbability = TIER_CONFIGS[tier].hardListeningProbability;
-        listeningMode = Math.random() < hardProbability ? 'hard' : 'easy';
-      } else {
-        // Fallback to easy if tier is invalid
-        listeningMode = 'easy';
-      }
-      
+      // Listening is always "hard mode": Lithuanian audio, English answers
       return {
         type: 'listening',
-        word: selectedWord,
-        mode: listeningMode
+        word: selectedWord
       };
     }
     case 'typing': {
-      const typingMode: ActivityMode = Math.random() < 0.5 ? 'en-to-lt' : 'lt-to-en';
-      return { type: 'typing', word: selectedWord, mode: typingMode };
+      // Typing is always LT->EN: Lithuanian prompt, type English answer
+      return { type: 'typing', word: selectedWord };
     }
     default:
       return null;

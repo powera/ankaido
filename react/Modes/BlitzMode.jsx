@@ -7,7 +7,6 @@ const BlitzMode = ({
   wordListManager,
   wordListState,
   studyMode,
-  setStudyMode,
   audioEnabled,
   blitzConfig, // { corpus, useSelectedGroupsOnly } or { levelKey, contentFilter, mode }
   corporaData,
