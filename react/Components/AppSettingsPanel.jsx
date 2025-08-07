@@ -134,12 +134,10 @@ const AppSettingsPanel = ({
       <div className="w-dropdown-container">
         <label className="w-hide-mobile">Mode:</label>
         <select 
-          value={quizMode === 'conjugations' ? 'grammar' : quizMode}
+          value={quizMode}
           onChange={(e) => {
             const selectedMode = e.target.value;
-            if (selectedMode === 'grammar') {
-              setQuizMode('conjugations');
-            } else if (selectedMode === 'drill') {
+            if (selectedMode === 'drill') {
               // For drill mode, we need to open the drill mode selector
               // Temporarily set the quiz mode to show the selector
               setQuizMode('drill');
@@ -152,7 +150,7 @@ const AppSettingsPanel = ({
             } else {
               setQuizMode(selectedMode);
             }
-            safeStorage.setItem('ankaido-quiz-mode', selectedMode === 'grammar' ? 'conjugations' : selectedMode);
+            safeStorage.setItem('ankaido-quiz-mode', selectedMode);
           }}
         >
           <option value="journey">🚀 Journey Mode</option>
@@ -164,7 +162,7 @@ const AppSettingsPanel = ({
           <option value="typing">⌨️ Typing</option>
           <option value="flashcard">🃏 Flash Cards</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
-          <option value="grammar">📚 Grammar</option>
+
         </select>
       </div>
 

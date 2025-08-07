@@ -37,15 +37,9 @@ export interface VoicesResponse {
   voices: string[];
 }
 
-export interface VerbCorpusesResponse {
-  verb_corpuses: string[];
-}
 
-export interface ConjugationsResponse {
-  conjugations: Record<string, any>;
-  verbs: string[];
-  corpus: string;
-}
+
+
 
 
 
@@ -138,31 +132,7 @@ export const fetchAvailableVoices = async (): Promise<string[]> => {
   }
 };
 
-export const fetchVerbCorpuses = async (): Promise<string[]> => {
-  try {
-    const response = await fetch(`${API_BASE}/conjugations/corpuses`);
-    if (!response.ok) throw new Error('Failed to fetch verb corpuses');
-    const data: VerbCorpusesResponse = await response.json();
-    return data.verb_corpuses;
-  } catch (error) {
-    console.warn('Failed to fetch verb corpuses:', error);
-    return ['verbs_present']; // fallback to default
-  }
-};
 
-export const fetchConjugations = async (
-  corpus: string = 'verbs_present'
-): Promise<ConjugationsResponse> => {
-  try {
-    const response = await fetch(`${API_BASE}/conjugations?corpus=${encodeURIComponent(corpus)}`);
-    if (!response.ok) throw new Error('Failed to fetch conjugations');
-    const data: ConjugationsResponse = await response.json();
-    return data;
-  } catch (error) {
-    console.warn('Failed to fetch conjugations:', error);
-    return { conjugations: {}, verbs: [], corpus };
-  }
-};
 
 
 

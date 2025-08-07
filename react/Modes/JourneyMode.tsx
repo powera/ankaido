@@ -1,5 +1,5 @@
 import React from 'react';
-import ConjugationTable from '../Activities/ConjugationTable';
+
 import FlashCardActivity from '../Activities/FlashCardActivity';
 import ListeningActivity from '../Activities/ListeningActivity';
 import MotivationalBreakActivity from '../Activities/MotivationalBreakActivity';
@@ -19,7 +19,7 @@ import safeStorage from '../DataStorage/safeStorage';
 import journeyModeManager from '../Managers/journeyModeManager';
 import WordListManager from '../Managers/wordListManager';
 import { invalidateWordWeightCache, selectJourneyActivity } from '../Utilities/activitySelection';
-import { fetchConjugations } from '../Utilities/apiClient';
+
 import { generateMultipleChoiceOptions } from '../Utilities/multipleChoiceGenerator';
 import {
   ExtendedActivityType,
@@ -50,9 +50,7 @@ interface JourneyState {
   currentWord: Word | null;
   showNewWordIndicator: boolean;
   multipleChoiceOptions: any[]; // TODO: Type this properly when multipleChoiceGenerator is migrated
-  conjugationData: Record<string, any> | null;
-  selectedVerb: string | null;
-  verbCorpus: string | null;
+
 }
 
 interface ActivityAnswerState {
@@ -83,9 +81,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     currentWord: null,
     showNewWordIndicator: false,
     multipleChoiceOptions: [],
-    conjugationData: null,
-    selectedVerb: null,
-    verbCorpus: null
+
   });
 
   const [activityAnswerState, setActivityAnswerState] = React.useState<ActivityAnswerState>({
@@ -241,21 +237,13 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       );
     }
 
-    // Handle conjugation table activity
-    let conjugationData = null;
-    let selectedVerb = null;
-    let verbCorpus = null;
-
     // Update journey state in one place
     setJourneyState({
       isInitialized: true,
       currentActivity: nextActivity.type,
       currentWord: nextActivity.word,
       showNewWordIndicator: nextActivity.type === 'new-word',
-      multipleChoiceOptions: multipleChoiceOptions,
-      conjugationData: conjugationData,
-      selectedVerb: selectedVerb,
-      verbCorpus: verbCorpus
+      multipleChoiceOptions: multipleChoiceOptions
     });
 
     // Reset answer state for new activity
@@ -563,37 +551,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     );
   }
 
-  if (journeyState.currentActivity === 'conjugation-table') {
-    // Determine tense display name
-    let tenseDisplayName = 'Present Tense';
-    if (journeyState.verbCorpus === 'verbs_past') {
-      tenseDisplayName = 'Past Tense';
-    } else if (journeyState.verbCorpus === 'verbs_future') {
-      tenseDisplayName = 'Future Tense';
-    }
 
-    return (
-      <div>
-        <ActivityHeader 
-          title={`📚 Verb Conjugation - ${tenseDisplayName}`}
-          subtitle={journeyState.selectedVerb ? `Conjugating "${journeyState.selectedVerb}"` : 'Loading...'}
-          background="linear-gradient(135deg, #8BC34A, #689F38)"
-        />
-        {journeyState.conjugationData && journeyState.selectedVerb && (
-          <ConjugationTable 
-            verb={journeyState.selectedVerb}
-            conjugations={journeyState.conjugationData}
-            audioEnabled={audioEnabled}
-            compact={true}
-            hideHeader={true}
-          />
-        )}
-        <div className="w-nav-controls">
-          <button className="w-button" onClick={advanceToNextActivity}>Next Activity →</button>
-        </div>
-      </div>
-    );
-  }
 
   return null;
 };
