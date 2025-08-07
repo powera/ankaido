@@ -59,9 +59,9 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     }));
   }, [word]);
 
-  // Auto-play audio for LT->EN typing (Lithuanian prompt, player types English answer)
+  // Auto-play audio for source->EN typing (source language prompt, player types English answer)
   React.useEffect(() => {
-    if (audioEnabled && word && studyMode === 'lithuanian-to-english') {
+    if (audioEnabled && word && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
         audioManager.playAudio(word.lithuanian);
@@ -133,7 +133,7 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
       
       if (matchingWord) {
         // Determine which word field to show based on study mode
-        const sourceField = studyMode === 'english-to-lithuanian' ? 'english' : 'lithuanian';
+        const sourceField = studyMode === 'english-to-source' ? 'english' : 'lithuanian';
         const sourceWord = matchingWord[sourceField];
         
         // Show all valid answers
@@ -186,8 +186,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   
   // Generate prompt text based on study mode
   // TODO: re-display this or remove it
-  const promptText: string = studyMode === 'english-to-lithuanian' ? 
-    'Type the Lithuanian word (with proper accents)' : 
+  const promptText: string = studyMode === 'english-to-source' ? 
+    'Type the source language word (with proper accents)' : 
     'Type the English word';
 
   return (

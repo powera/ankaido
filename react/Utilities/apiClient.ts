@@ -1,6 +1,6 @@
-// apiClient.ts - API client for Lithuanian language features
+// apiClient.ts - API client for language learning features
 
-const API_BASE = '/api/lithuanian';
+const API_BASE = '/api/language';
 
 // --- Type Definitions ---
 

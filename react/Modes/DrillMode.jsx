@@ -202,14 +202,14 @@ const DrillMode = ({
       };
       multipleChoiceOptions = generateMultipleChoiceOptions(
         nextActivity.word,
-        'lithuanian-to-english', // All activities are now LT->EN
+        'source-to-english', // All activities are now source->EN
         'multiple-choice',
         syntheticWordListState,
         { numOptions }
       );
     } else if (nextActivity.type === 'listening') {
-      // Listening is always "hard mode": Lithuanian audio -> English options
-      const studyMode = 'lithuanian-to-english';
+      // Listening is always "hard mode": source language audio -> English options
+      const studyMode = 'source-to-english';
       const numOptions = getNumOptionsForDifficulty(drillConfig?.difficulty);
       // Create synthetic wordListState from drill words
       const syntheticWordListState = {
@@ -489,7 +489,7 @@ const DrillMode = ({
           showAnswer={questionInteractionState.showAnswer}
           selectedAnswer={questionInteractionState.selectedAnswer}
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
-          studyMode="lithuanian-to-english"
+          studyMode="source-to-english"
           audioEnabled={audioEnabled}
           onAnswerClick={handleDrillMultipleChoice}
           autoAdvance={autoAdvance}
@@ -502,7 +502,7 @@ const DrillMode = ({
           showAnswer={questionInteractionState.showAnswer}
           selectedAnswer={questionInteractionState.selectedAnswer}
           multipleChoiceOptions={drillState.currentMultipleChoiceOptions}
-          studyMode="lithuanian-to-english"
+          studyMode="source-to-english"
           audioEnabled={audioEnabled}
           onAnswerClick={handleDrillListening}
           autoAdvance={autoAdvance}
@@ -513,7 +513,7 @@ const DrillMode = ({
         <div>
           <TypingActivity
             currentWord={drillState.currentWord}
-            studyMode="lithuanian-to-english"
+            studyMode="source-to-english"
             onSubmit={handleDrillTyping}
             audioEnabled={audioEnabled}
             autoAdvance={autoAdvance}

@@ -13,7 +13,7 @@ const MotivationalBreakActivity: React.FC<MotivationalBreakActivityProps> = ({ o
     "Your dedication is paying off! 🎯",
     "You're becoming more fluent every day! 🌱",
     "Great job staying consistent! 👏",
-    "Your Lithuanian journey is inspiring! 🏆",
+    "Your language learning journey is inspiring! 🏆",
     "Keep up the excellent work! 💫",
     "You're mastering this language! 🎉"
   ];

@@ -64,12 +64,12 @@ export type ExtendedActivityType = ActivityType | 'motivational-break' | 'new-wo
 
 // Study modes - unified naming convention
 export type StudyMode = 
-  | 'english-to-lithuanian'
-  | 'lithuanian-to-english' 
-  | 'lithuanian-to-lithuanian';
+  | 'english-to-source'
+  | 'source-to-english' 
+  | 'source-to-source';
 
-// Activity modes - DEPRECATED: All activities are now standardized to LT->EN
-// @deprecated Use standardized LT->EN flow instead
+// Activity modes - DEPRECATED: All activities are now standardized to source->EN
+// @deprecated Use standardized source->EN flow instead
 export type ActivityMode = 'en-to-lt' | 'lt-to-en' | 'easy' | 'hard';
 
 // Difficulty levels
@@ -85,7 +85,7 @@ export type JourneyFocusMode = 'normal' | 'new-words' | 'review-words';
 export interface ActivityResult {
   type: ExtendedActivityType;
   word: Word | null;
-  // mode field removed - all activities are now standardized to LT->EN
+  // mode field removed - all activities are now standardized to source->EN
 }
 
 // Activity state interface for UI components

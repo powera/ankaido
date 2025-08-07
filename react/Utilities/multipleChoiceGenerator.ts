@@ -18,17 +18,17 @@ export const generateMultipleChoiceOptions = (
   let answerField: string;
   
   if (quizMode === 'listening') {
-    if (studyMode === 'lithuanian-to-lithuanian') {
+    if (studyMode === 'source-to-source') {
       correctAnswer = word.lithuanian;
       answerField = 'lithuanian';
     } else {
-      correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
-      answerField = studyMode === 'lithuanian-to-english' ? 'english' : 'lithuanian';
+      correctAnswer = studyMode === 'source-to-english' ? word.english : word.lithuanian;
+      answerField = studyMode === 'source-to-english' ? 'english' : 'lithuanian';
     }
   } else {
     // Multiple choice mode
-    correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
-    answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
+    correctAnswer = studyMode === 'english-to-source' ? word.lithuanian : word.english;
+    answerField = studyMode === 'english-to-source' ? 'lithuanian' : 'english';
   }
 
   // Use provided number of options, default to 4

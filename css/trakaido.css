@@ -1299,7 +1299,7 @@
     text-align: center;
 }
 
-.sequence-option-lithuanian {
+.sequence-option-source {
     font-weight: bold;
     font-size: 1.1rem;
     color: var(--color-text);
@@ -1423,7 +1423,7 @@
         padding: var(--spacing-small);
     }
     
-    .sequence-option-lithuanian {
+    .sequence-option-source {
         font-size: 1rem;
     }
     

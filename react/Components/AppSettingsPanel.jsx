@@ -7,10 +7,9 @@ import { STORAGE_MODES, storageConfigManager } from '../Managers/storageConfigMa
 // API Configuration - using Vite proxy
 const API_BASE_URL = '/api/trakaido/journeystats';
 
-const StudyModeSelector = ({
+const AppSettingsPanel = ({
   quizMode,
   setQuizMode,
-  studyMode,
   journeyFocusMode,
   setJourneyFocusMode,
   safeStorage,
@@ -244,4 +243,4 @@ const StudyModeSelector = ({
   );
 };
 
-export default StudyModeSelector;
+export default AppSettingsPanel;

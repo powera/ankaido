@@ -25,11 +25,11 @@ export const createInitialActivityState = (
  */
 export const getCorrectAnswer = (word: Word, studyMode: StudyMode): string => {
   switch (studyMode) {
-    case 'english-to-lithuanian':
+    case 'english-to-source':
       return word.lithuanian;
-    case 'lithuanian-to-english':
+    case 'source-to-english':
       return word.english;
-    case 'lithuanian-to-lithuanian':
+    case 'source-to-source':
       return word.lithuanian;
     default:
       console.warn(`Unknown study mode in getCorrectAnswer: ${studyMode}`);
@@ -47,17 +47,17 @@ export const getAllValidAnswers = (word: Word, studyMode: StudyMode): string[] =
   // Add alternatives based on study mode
   if (word.alternatives) {
     switch (studyMode) {
-      case 'english-to-lithuanian':
+      case 'english-to-source':
         if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
           validAnswers.push(...word.alternatives.lithuanian);
         }
         break;
-      case 'lithuanian-to-english':
+      case 'source-to-english':
         if (word.alternatives.english && Array.isArray(word.alternatives.english)) {
           validAnswers.push(...word.alternatives.english);
         }
         break;
-      case 'lithuanian-to-lithuanian':
+      case 'source-to-source':
         if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
           validAnswers.push(...word.alternatives.lithuanian);
         }
@@ -74,11 +74,11 @@ export const getAllValidAnswers = (word: Word, studyMode: StudyMode): string[] =
  */
 export const getQuestionText = (word: Word, studyMode: StudyMode): string => {
   switch (studyMode) {
-    case 'english-to-lithuanian':
+    case 'english-to-source':
       return word.english;
-    case 'lithuanian-to-english':
+    case 'source-to-english':
       return word.lithuanian;
-    case 'lithuanian-to-lithuanian':
+    case 'source-to-source':
       return word.lithuanian;
     default:
       console.warn(`Unknown study mode in getQuestionText: ${studyMode}`);

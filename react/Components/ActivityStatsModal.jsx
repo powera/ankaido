@@ -29,16 +29,10 @@ const ActivityStatsModal = ({
   const [queueSize, setQueueSize] = useState(0);
   const [isQueueFull, setIsQueueFull] = useState(false);
 
-  // Helper function to convert levels array to display string
-  const formatLevelsForDisplay = (levels) => {
-    if (!levels || levels.length === 0) return 'Other';
-    if (levels.length === 1) {
-      const levelNum = levels[0].replace('level_', '');
-      return `Level ${levelNum}`;
-    }
-    // For multiple levels, show the range or list
-    const levelNums = levels.map(level => level.replace('level_', '')).sort((a, b) => parseInt(a) - parseInt(b));
-    return `Levels ${levelNums.join(', ')}`;
+  // Helper function to format corpus and group for display
+  const formatCorpusGroupForDisplay = (corpus, group) => {
+    if (!corpus || !group) return 'Unknown';
+    return `${corpus} - ${group}`;
   };
 
   // Helper function to get words from selected groups only
@@ -50,7 +44,7 @@ const ActivityStatsModal = ({
           if (corporaData[corpus].groups[group]) {
             const groupWords = corporaData[corpus].groups[group].map(word => ({
               ...word,
-              level: formatLevelsForDisplay(word.levels)
+              corpusGroup: formatCorpusGroupForDisplay(word.corpus, word.group)
             }));
             allWords.push(...groupWords);
           }
@@ -94,12 +88,12 @@ const ActivityStatsModal = ({
             return !wordStats || !wordStats.exposed;
           });
 
-          // Format levels for display
-          const unexposedWithFormattedLevels = unexposed.map(word => ({
+          // Format corpus/group for display
+          const unexposedWithFormattedCorpusGroup = unexposed.map(word => ({
             ...word,
-            level: formatLevelsForDisplay(word.levels)
+            corpusGroup: formatCorpusGroupForDisplay(word.corpus, word.group)
           }));
-          setUnexposedWords(unexposedWithFormattedLevels);
+          setUnexposedWords(unexposedWithFormattedCorpusGroup);
 
           // Load daily stats
           const dailyStatsData = await fetchDailyStats();
@@ -194,9 +188,9 @@ const ActivityStatsModal = ({
         aValue = a.corpus?.toLowerCase() || '';
         bValue = b.corpus?.toLowerCase() || '';
         break;
-      case 'level':
-        aValue = a.level?.toLowerCase() || '';
-        bValue = b.level?.toLowerCase() || '';
+      case 'corpusGroup':
+        aValue = a.corpusGroup?.toLowerCase() || '';
+        bValue = b.corpusGroup?.toLowerCase() || '';
         break;
       case 'totalCorrect':
         aValue = a.totalCorrect || 0;
@@ -646,19 +640,7 @@ const ActivityStatsModal = ({
                   </div>
                 )
               },
-              {
-                header: 'Level',
-                sortKey: 'level',
-                align: 'center',
-                render: (word) => (
-                  <div style={{ 
-                    fontWeight: 'bold',
-                    color: word.level === 'Other' ? 'var(--color-text-muted)' : 'var(--color-primary)'
-                  }}>
-                    {word.level}
-                  </div>
-                )
-              },
+
               {
                 header: 'Actions',
                 align: 'center',

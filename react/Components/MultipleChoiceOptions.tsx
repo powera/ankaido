@@ -50,13 +50,13 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
         // Determine correct answer based on mode
         let correctAnswer: string;
         if (quizMode === 'listening') {
-          if (studyMode === 'lithuanian-to-lithuanian') {
+          if (studyMode === 'source-to-source') {
             correctAnswer = word.lithuanian;
           } else {
-            correctAnswer = studyMode === 'lithuanian-to-english' ? word.english : word.lithuanian;
+            correctAnswer = studyMode === 'source-to-english' ? word.english : word.lithuanian;
           }
         } else {
-          correctAnswer = studyMode === 'english-to-lithuanian' ? word.lithuanian : word.english;
+          correctAnswer = studyMode === 'english-to-source' ? word.lithuanian : word.english;
         }
 
         const isCorrect: boolean = option === correctAnswer;
@@ -76,8 +76,8 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
         // Find the translation for all options when showAnswer is true
         let translation: string | null = null;
         if (shouldShowAnswer) {
-          if (studyMode === 'lithuanian-to-lithuanian') {
-            // For LT-to-LT mode, show English translation
+          if (studyMode === 'source-to-source') {
+            // For source-to-source mode, show English translation
             if (isCorrect) {
               translation = word.english;
             } else {

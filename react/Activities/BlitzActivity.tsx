@@ -41,9 +41,9 @@ const BlitzActivity: React.FC<BlitzActivityProps> = ({
   targetWordIndex,
   onExitBlitz
 }) => {
-  // Auto-play audio for LT->EN blitz (Lithuanian prompt, player chooses English answer)
+  // Auto-play audio for source->EN blitz (source language prompt, player chooses English answer)
   React.useEffect(() => {
-    if (audioEnabled && currentWord && studyMode === 'lithuanian-to-english') {
+    if (audioEnabled && currentWord && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
         audioManager.playAudio(currentWord.lithuanian);

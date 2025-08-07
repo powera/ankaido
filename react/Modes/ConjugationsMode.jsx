@@ -65,7 +65,7 @@ const ConjugationsMode = ({
   if (loading) {
     return (
       <div className="w-card">
-        <h3>Lithuanian Verb Conjugations</h3>
+        <h3>Verb Conjugations</h3>
         <div>Loading conjugations data...</div>
       </div>
     );
@@ -74,7 +74,7 @@ const ConjugationsMode = ({
   if (error) {
     return (
       <div className="w-card">
-        <h3>Lithuanian Verb Conjugations</h3>
+        <h3>Verb Conjugations</h3>
         <div style={{ color: 'var(--color-error)' }}>{error}</div>
       </div>
     );

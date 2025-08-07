@@ -72,7 +72,7 @@ const ConjugationTable: React.FC<ConjugationTableProps> = ({
       accessor: 'english'
     },
     {
-      header: 'Lithuanian',
+      header: 'Source Language',
       accessor: 'lithuanian'
     },
     {

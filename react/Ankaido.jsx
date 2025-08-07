@@ -9,7 +9,7 @@ import DrillModeSelector from './Components/DrillModeSelector.jsx';
 
 import SplashScreen from './Components/SplashScreen.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
-import StudyModeSelector from './Components/StudyModeSelector.jsx';
+import AppSettingsPanel from './Components/AppSettingsPanel.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import activityStatsManager from './Managers/activityStatsManager';
 import audioManager from './Managers/audioManager';
@@ -45,8 +45,8 @@ const FlashCardApp = () => {
   // Initialize selectedGroups - will be loaded from corpus choices manager
   const [selectedGroups, setSelectedGroups] = useState({}); // {corpus: [group1, group2]}
 
-  // Fixed study mode - always Lithuanian questions with English answers
-  const studyMode = 'lithuanian-to-english';
+  // Fixed study mode - always source language questions with English answers
+  const studyMode = 'source-to-english';
 
   const [quizMode, setQuizMode] = useState(() => {
     return safeStorage?.getItem('ankaido-quiz-mode') || 'journey';
@@ -424,7 +424,7 @@ const FlashCardApp = () => {
   if (showWelcome && !loading && !error) {
     return (
       <div className="w-container">
-        <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>
+        <h1>📚 Vocabulary Flash Cards</h1>
         <div className="w-card">
           <div className="w-text-center w-mb-large">
             <div className="w-question w-mb-large">Welcome!</div>
@@ -445,7 +445,7 @@ const FlashCardApp = () => {
   if (loading) {
     return (
       <div className="w-container">
-        <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>
+        <h1>📚 Vocabulary Flash Cards</h1>
         <div className="w-card">
           <div className="w-text-center w-mb-large">
             <div className="w-question w-mb-large">Loading vocabulary data...</div>
@@ -459,7 +459,7 @@ const FlashCardApp = () => {
   if (error) {
     return (
       <div className="w-container">
-        <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>
+        <h1>📚 Vocabulary Flash Cards</h1>
         <div className="w-card">
           <div className="w-text-center w-mb-large">
             <div className="w-feedback w-error">⚠️ Error</div>
@@ -478,12 +478,11 @@ const FlashCardApp = () => {
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
 
-      {!isFullscreen && <h1>🇱🇹 Trakaido!</h1>}
+      {!isFullscreen && <h1>🇱🇹 Ankaido!</h1>}
 
-      <StudyModeSelector
+      <AppSettingsPanel
         quizMode={quizMode}
         setQuizMode={setQuizMode}
-        studyMode={studyMode}
         journeyFocusMode={journeyFocusMode}
         setJourneyFocusMode={setJourneyFocusMode}
         safeStorage={safeStorage}

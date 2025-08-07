@@ -261,7 +261,7 @@ const MultiWordSequenceActivity: React.FC<MultiWordSequenceActivityProps> = ({
                   <div className="sequence-selection-number">{selectionPosition}</div>
                 )}
                 <div className="sequence-option-text">
-                  <div className="sequence-option-lithuanian">{option.lithuanian}</div>
+                  <div className="sequence-option-source">{option.lithuanian}</div>
                   <div className="sequence-option-english">({option.english})</div>
                 </div>
               </div>

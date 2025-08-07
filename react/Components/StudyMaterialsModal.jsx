@@ -50,12 +50,12 @@ const StudyMaterialsModal = ({
     
     let newGroups;
     if (availableGroups) {
-      // Level-specific toggle: only toggle the groups available in this level
+      // Group-specific toggle: only toggle the specified groups
       if (allSelected) {
-        // Remove only the level-specific groups
+        // Remove only the specified groups
         newGroups = currentGroups.filter(g => !availableGroups.includes(g));
       } else {
-        // Add the level-specific groups that aren't already selected
+        // Add the specified groups that aren't already selected
         newGroups = [...new Set([...currentGroups, ...availableGroups])];
       }
     } else {

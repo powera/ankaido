@@ -65,9 +65,9 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
     
     // Determine correct answer based on study mode
     let correctAnswer: string;
-    if (studyMode === 'lithuanian-to-lithuanian') {
+    if (studyMode === 'source-to-source') {
       correctAnswer = currentWord.lithuanian;
-    } else if (studyMode === 'lithuanian-to-english') {
+    } else if (studyMode === 'source-to-english') {
       correctAnswer = currentWord.english;
     } else {
       correctAnswer = currentWord.lithuanian; // Default fallback
@@ -87,12 +87,12 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
   // Generate instruction text based on study mode
   const getInstructionText = (): string => {
     switch (studyMode) {
-      case 'lithuanian-to-english':
+      case 'source-to-english':
         return 'Choose the English translation:';
-      case 'lithuanian-to-lithuanian':
-        return 'Choose the matching Lithuanian word:';
+      case 'source-to-source':
+        return 'Choose the matching source language word:';
       default:
-        return 'Choose the matching Lithuanian word:';
+        return 'Choose the matching source language word:';
     }
   };
 
@@ -104,9 +104,9 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
     
     // Determine if the selected answer was correct
     let correctAnswer: string;
-    if (studyMode === 'lithuanian-to-lithuanian') {
+    if (studyMode === 'source-to-source') {
       correctAnswer = currentWord.lithuanian;
-    } else if (studyMode === 'lithuanian-to-english') {
+    } else if (studyMode === 'source-to-english') {
       correctAnswer = currentWord.english;
     } else {
       correctAnswer = currentWord.lithuanian; // Default fallback

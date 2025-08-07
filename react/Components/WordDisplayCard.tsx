@@ -43,18 +43,17 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
   if (!currentWord) return null;
 
   // Determine question and answer based on study mode if not provided
-  const question = questionText || (studyMode === 'english-to-lithuanian' ? currentWord.english : currentWord.lithuanian);
-  const answer = answerText || (studyMode === 'english-to-lithuanian' ? currentWord.lithuanian : currentWord.english);
+  const question = questionText || (studyMode === 'english-to-source' ? currentWord.english : currentWord.lithuanian);
+  const answer = answerText || (studyMode === 'english-to-source' ? currentWord.lithuanian : currentWord.english);
 
   // Determine which word to use for audio
   const audioWord = currentWord.lithuanian;
 
 
-
   // Determine if we should show the audio button based on study mode and showAudioButton prop
   const shouldShowAudioButton = showAudioButton && audioEnabled && (
-    (studyMode === 'lithuanian-to-english') ||
-    (studyMode === 'english-to-lithuanian' && showAnswer) ||
+    (studyMode === 'source-to-english') ||
+    (studyMode === 'english-to-source' && showAnswer) ||
     (questionText?.includes('🎧')) // For listening activities
   );
 
@@ -92,7 +91,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
           <span>{question}</span>
-          {shouldShowAudioButton && (studyMode === 'lithuanian-to-english' || questionText?.includes('🎧')) && (
+          {shouldShowAudioButton && (studyMode === 'source-to-english' || questionText?.includes('🎧')) && (
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
@@ -106,7 +105,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
         <div className="trakaido-answer-text">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
             <span>{answer}</span>
-            {shouldShowAudioButton && studyMode === 'english-to-lithuanian' && (
+            {shouldShowAudioButton && studyMode === 'english-to-source' && (
               <AudioButton 
                 word={audioWord}
                 audioEnabled={audioEnabled}

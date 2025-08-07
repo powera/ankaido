@@ -49,14 +49,14 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
     // Get words for this specific group
     const words: Word[] = corporaData[corpus].groups[group];
 
-    // Sort alphabetically by Lithuanian word
+    // Sort alphabetically by source language word
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
     setVocabListWords(words);
   };
 
   return (
     <div className="w-card">
-      <h3>Lithuanian Vocabulary List</h3>
+      <h3>Vocabulary List</h3>
       <div style={{ marginBottom: 'var(--spacing-base)' }}>
         <label htmlFor="group-select" style={{ marginRight: 'var(--spacing-small)' }}>
           Select a vocabulary group:
@@ -83,7 +83,7 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
           <DataTable
             columns={[
               {
-                header: 'Lithuanian',
+                header: 'Source Language',
                 accessor: 'lithuanian'
               },
               {

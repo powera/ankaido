@@ -121,7 +121,7 @@ describe('MultiWordSequenceMode - Smoke Tests', () => {
   const defaultProps = {
     wordListManager: mockWordListManager,
     wordListState: mockWordListState,
-    studyMode: 'lithuanian-to-english',
+    studyMode: 'source-to-english',
     audioEnabled: true,
     autoAdvance: false,
     defaultDelay: 3,
@@ -313,7 +313,7 @@ describe('MultiWordSequenceMode - Smoke Tests', () => {
   });
 
   test('renders with different study modes', () => {
-    const studyModes = ['lithuanian-to-english', 'english-to-lithuanian', 'lithuanian-to-lithuanian'];
+    const studyModes = ['source-to-english', 'english-to-source', 'source-to-source'];
     
     studyModes.forEach(mode => {
       const { rerender } = render(<MultiWordSequenceMode {...defaultProps} studyMode={mode} />);

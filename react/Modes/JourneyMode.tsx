@@ -225,8 +225,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     // Generate multiple choice options for activities that need them
     let multipleChoiceOptions: any[] = [];
     if ((nextActivity.type === 'multiple-choice' || nextActivity.type === 'listening') && nextActivity.word) {
-      // All activities are now LT->EN: Lithuanian prompt, English answers
-      const effectiveStudyMode = 'lithuanian-to-english';
+      // All activities are now source->EN: source language prompt, English answers
+      const effectiveStudyMode = 'source-to-english';
 
       // Determine number of options based on word exposure count
       const wordStats = activityStatsManager.getWordStats(nextActivity.word);
@@ -359,7 +359,7 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       selectedAnswer: selectedOption
     });
 
-    // Listening is always "hard mode" (Lithuanian audio -> English answers)
+    // Listening is always "hard mode" (source language audio -> English answers)
     const statsMode = 'listeningHard';
 
     // Update journey stats (Journey Mode can expose words)
@@ -512,8 +512,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'multiple-choice') {
-    // Multiple choice is always LT->EN: Lithuanian prompt, English answers
-    const effectiveStudyMode = 'lithuanian-to-english';
+    // Multiple choice is always source->EN: source language prompt, English answers
+    const effectiveStudyMode = 'source-to-english';
 
     return (
       <div>
@@ -540,8 +540,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'listening') {
-    // Listening is always "hard mode": Lithuanian audio, English answers
-    const effectiveStudyMode = 'lithuanian-to-english';
+    // Listening is always "hard mode": source language audio, English answers
+    const effectiveStudyMode = 'source-to-english';
     const challengeTitle = '🎧 Listening Challenge';
 
     return (
@@ -569,8 +569,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'typing') {
-    // Typing is always LT->EN: Lithuanian prompt, type English answer
-    const effectiveStudyMode = 'lithuanian-to-english';
+    // Typing is always source->EN: source language prompt, type English answer
+    const effectiveStudyMode = 'source-to-english';
     const challengeTitle = '⌨️ Typing Challenge';
 
     return (

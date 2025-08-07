@@ -39,7 +39,7 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
 }) => {
   // Auto-play audio for LT->EN multiple choice (Lithuanian prompt, player chooses English answer)
   React.useEffect(() => {
-    if (audioEnabled && currentWord && studyMode === 'lithuanian-to-english') {
+    if (audioEnabled && currentWord && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
         audioManager.playAudio(currentWord.lithuanian);

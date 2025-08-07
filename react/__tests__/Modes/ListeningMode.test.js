@@ -77,7 +77,7 @@ describe('ListeningMode - Smoke Tests', () => {
   const defaultProps = {
     wordListManager: mockWordListManager,
     wordListState: mockWordListState,
-    studyMode: 'lithuanian-to-english',
+    studyMode: 'source-to-english',
     audioEnabled: true,
     autoAdvance: false,
     defaultDelay: 3
@@ -96,24 +96,24 @@ describe('ListeningMode - Smoke Tests', () => {
     expect(screen.getByText('Next →')).toBeInTheDocument();
   });
 
-  test('renders with lithuanian-to-english study mode', () => {
-    render(<ListeningMode {...defaultProps} studyMode="lithuanian-to-english" />);
+  test('renders with source-to-english study mode', () => {
+    render(<ListeningMode {...defaultProps} studyMode="source-to-english" />);
     
-    expect(screen.getByTestId('study-mode')).toHaveTextContent('lithuanian-to-english');
+    expect(screen.getByTestId('study-mode')).toHaveTextContent('source-to-english');
     expect(screen.getByTestId('listening-activity')).toBeInTheDocument();
   });
 
-  test('renders with english-to-lithuanian study mode', () => {
-    render(<ListeningMode {...defaultProps} studyMode="english-to-lithuanian" />);
+  test('renders with english-to-source study mode', () => {
+    render(<ListeningMode {...defaultProps} studyMode="english-to-source" />);
     
-    expect(screen.getByTestId('study-mode')).toHaveTextContent('english-to-lithuanian');
+    expect(screen.getByTestId('study-mode')).toHaveTextContent('english-to-source');
     expect(screen.getByTestId('listening-activity')).toBeInTheDocument();
   });
 
-  test('renders with lithuanian-to-lithuanian study mode', () => {
-    render(<ListeningMode {...defaultProps} studyMode="lithuanian-to-lithuanian" />);
+  test('renders with source-to-source study mode', () => {
+    render(<ListeningMode {...defaultProps} studyMode="source-to-source" />);
     
-    expect(screen.getByTestId('study-mode')).toHaveTextContent('lithuanian-to-lithuanian');
+    expect(screen.getByTestId('study-mode')).toHaveTextContent('source-to-source');
     expect(screen.getByTestId('listening-activity')).toBeInTheDocument();
   });
 

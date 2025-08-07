@@ -64,11 +64,11 @@ const ListeningMode = ({
         // Determine stats mode based on study mode
         let statsMode;
         switch (studyMode) {
-          case 'lithuanian-to-lithuanian':
-          case 'english-to-lithuanian':
+          case 'source-to-source':
+          case 'english-to-source':
             statsMode = 'listeningEasy';
             break;
-          case 'lithuanian-to-english':
+          case 'source-to-english':
             statsMode = 'listeningHard';
             break;
           default:
