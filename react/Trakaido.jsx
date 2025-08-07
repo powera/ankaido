@@ -6,7 +6,7 @@ import { useFullscreen } from './Utilities/useFullscreen';
 import ActivityStatsModal from './Components/ActivityStatsModal.jsx';
 import BlitzModeSelector from './Components/BlitzModeSelector.jsx';
 import DrillModeSelector from './Components/DrillModeSelector.jsx';
-import OnboardingFlow from './Components/Onboarding/OnboardingFlow.jsx';
+
 import SplashScreen from './Components/SplashScreen.jsx';
 import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import StudyModeSelector from './Components/StudyModeSelector.jsx';
@@ -29,7 +29,7 @@ import {
     fetchAvailableVoices,
     fetchLevels
 } from './Utilities/apiClient.js';
-import { handleOnboardingSetup } from './Utilities/onboardingSetup';
+
 
 const FlashCardApp = () => {
   // Audio settings - simple local state
@@ -79,10 +79,9 @@ const FlashCardApp = () => {
   });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
-    // Check both intro and storage configuration
-    const hasSeenIntro = safeStorage?.getItem('ankaido-has-seen-intro');
+    // Only check storage configuration - no more onboarding flow
     const storageConfigured = storageConfigManager.isConfigured();
-    return !hasSeenIntro || !storageConfigured;
+    return !storageConfigured;
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -121,12 +120,12 @@ const FlashCardApp = () => {
 
   // Handle splash screen timing
   useEffect(() => {
-    // For new users (showWelcome = true), auto-advance after 2 seconds
+    // For users without storage config (showWelcome = true), auto-advance after 2 seconds
     // For returning users (showWelcome = false), require user interaction
     if (showWelcome) {
       const splashTimer = setTimeout(() => {
         setShowSplash(false);
-      }, 2000); // Show splash for 2 seconds for new users
+      }, 2000); // Show splash for 2 seconds for users without storage config
 
       return () => clearTimeout(splashTimer);
     }
@@ -177,9 +176,8 @@ const FlashCardApp = () => {
           await corpusChoicesManager.initialize();
           const currentChoices = corpusChoicesManager.getAllChoices();
 
-          // Only set defaults if user has seen intro but has no choices
-          const hasSeenIntro = safeStorage?.getItem('ankaido-has-seen-intro');
-          const shouldSetDefaults = Object.keys(currentChoices).length === 0 && hasSeenIntro;
+          // Set defaults if user has no choices (first time or after reset)
+          const shouldSetDefaults = Object.keys(currentChoices).length === 0;
 
           if (shouldSetDefaults) {
             const defaultSelectedGroups = {};
@@ -316,8 +314,28 @@ const FlashCardApp = () => {
   }, [corporaData]);
 
 
-  const handleWelcomeComplete = async (skillLevel, storageMode) => {
-    await handleOnboardingSetup(skillLevel, storageMode, corporaData, setShowWelcome);
+  const handleStorageSetup = async (storageMode = 'localStorage') => {
+    try {
+      // Set storage configuration
+      storageConfigManager.setStorageMode(storageMode);
+
+      // Initialize storage managers with the new configuration
+      await corpusChoicesManager.forceReinitialize();
+      await activityStatsManager.forceReinitialize();
+
+      // Set default corpus selection (all groups enabled)
+      const defaultSelectedGroups = {};
+      Object.keys(corporaData).forEach(corpus => {
+        defaultSelectedGroups[corpus] = Object.keys(corporaData[corpus]?.groups || {});
+      });
+      await corpusChoicesManager.setAllChoices(defaultSelectedGroups);
+
+      setShowWelcome(false);
+    } catch (error) {
+      console.error('Error setting up storage:', error);
+      // Still close welcome screen even if there's an error
+      setShowWelcome(false);
+    }
   };
 
   const resetAllSettings = async () => {
@@ -326,7 +344,6 @@ const FlashCardApp = () => {
       safeStorage.removeItem('ankaido-study-mode');
       safeStorage.removeItem('ankaido-quiz-mode');
       safeStorage.removeItem('ankaido-selected-voice');
-      safeStorage.removeItem('ankaido-has-seen-intro');
 
       // Reset storage configuration
       storageConfigManager.reset();
@@ -412,9 +429,25 @@ const FlashCardApp = () => {
     );
   }
 
-  // Onboarding flow for new users
+  // Storage setup for new users
   if (showWelcome && !loading && !error) {
-    return <OnboardingFlow onComplete={handleWelcomeComplete} />;
+    return (
+      <div className="w-container">
+        <h1>🇱🇹 Lithuanian Vocabulary Flash Cards</h1>
+        <div className="w-card">
+          <div className="w-text-center w-mb-large">
+            <div className="w-question w-mb-large">Welcome!</div>
+            <div className="w-stat-label w-mb-large">Setting up your vocabulary learning experience...</div>
+            <button 
+              className="w-button" 
+              onClick={() => handleStorageSetup('localStorage')}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Loading state
