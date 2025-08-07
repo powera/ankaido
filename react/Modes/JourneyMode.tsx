@@ -208,7 +208,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
       journeyModeManager,
       getWordWeights,
       currentFocusMode,
-      null, // levelsData - not used in this context
       isFirstActivityOrModeChange
     );
   }, [getExposedWordsList, getNewWordsList, wordListState.allWords, wordListManager, getTotalCorrectForWord, audioEnabled, getWordWeights, currentFocusMode, isFirstActivityOrModeChange]);
@@ -246,38 +245,6 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
     let conjugationData = null;
     let selectedVerb = null;
     let verbCorpus = null;
-    
-    if (nextActivity.type === 'conjugation-table') {
-      // Determine corpus based on available verb corpuses
-      const availableCorpuses = ['verbs_present', 'verbs_past', 'verbs_future'];
-      verbCorpus = availableCorpuses[Math.floor(Math.random() * availableCorpuses.length)];
-      
-      // Fetch conjugation data
-      try {
-        const conjugationResponse = await fetchConjugations(verbCorpus);
-        conjugationData = conjugationResponse.conjugations;
-        const availableVerbs = conjugationResponse.verbs;
-        
-        if (availableVerbs.length > 0) {
-          selectedVerb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
-        }
-      } catch (error) {
-        console.error('Failed to fetch conjugation data:', error);
-        // Fall back to a regular activity if conjugation data fails
-        const fallbackActivity = selectNextActivity();
-        setJourneyState({
-          isInitialized: true,
-          currentActivity: fallbackActivity.type,
-          currentWord: fallbackActivity.word,
-          showNewWordIndicator: fallbackActivity.type === 'new-word',
-          multipleChoiceOptions: [],
-          conjugationData: null,
-          selectedVerb: null,
-          verbCorpus: null
-        });
-        return;
-      }
-    }
 
     // Update journey state in one place
     setJourneyState({

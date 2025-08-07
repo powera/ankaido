@@ -4,8 +4,7 @@
  */
 
 import { JourneyModeState } from '../Managers/journeyModeManager';
-import { LevelsResponse } from './apiClient';
-import { filterWordsByLevel } from './levelUtils';
+
 import {
   ActivityResult,
   ActivityType,
@@ -325,47 +324,12 @@ export const getWordWeightCacheStats = (): {
 
 
 /**
- * Select a new word with level-based probability
+ * Select a new word randomly
  * @param newWords - Array of new/unknown words
- * @param levelsData - The levels data from the API
  * @returns Selected word
  */
-const selectNewWordWithLevelProbability = (
-  newWords: Word[],
-  levelsData: LevelsResponse['levels'] | null
-): Word => {
-  if (!levelsData || newWords.length === 0) {
-    // Fallback to random selection if no level data
-    return newWords[Math.floor(Math.random() * newWords.length)];
-  }
-  
-  // Get words grouped by level, sorted from lowest to highest
-  const wordsByLevel = filterWordsByLevel(newWords, levelsData);
-  
-  // Get available levels and sort them to ensure we get the lowest
-  const availableLevels = Object.keys(wordsByLevel).sort((a, b) => {
-    const levelA = parseInt(a.replace('Level ', ''));
-    const levelB = parseInt(b.replace('Level ', ''));
-    return levelA - levelB;
-  });
-  
-  if (availableLevels.length === 0) {
-    // No level information available, fallback to random
-    return newWords[Math.floor(Math.random() * newWords.length)];
-  }
-  
-  const lowestLevel = availableLevels[0]; // First level after sorting
-  
-  // 25% chance to select from lowest level, 75% chance from all words
-  const useLowestLevel = Math.random() < 0.25;
-  
-  if (useLowestLevel && wordsByLevel[lowestLevel] && wordsByLevel[lowestLevel].length > 0) {
-    const lowestLevelWords = wordsByLevel[lowestLevel];
-    return lowestLevelWords[Math.floor(Math.random() * lowestLevelWords.length)];
-  } else {
-    // Select from all new words
-    return newWords[Math.floor(Math.random() * newWords.length)];
-  }
+const selectNewWordRandomly = (newWords: Word[]): Word => {
+  return newWords[Math.floor(Math.random() * newWords.length)];
 };
 
 export const selectJourneyActivity = (
@@ -378,7 +342,6 @@ export const selectJourneyActivity = (
   journeyState?: JourneyModeState,
   getWordStats: ((word: Word) => WordStats) | null = null,
   focusMode: JourneyFocusMode = 'normal',
-  levelsData: LevelsResponse['levels'] | null = null,
   isFirstActivityOrModeChange: boolean = false
 ): ActivityResult => {
   const exposedWords = getExposedWordsList();
@@ -460,7 +423,7 @@ export const selectJourneyActivity = (
       newWords.length > 0 &&
       (!journeyState || !journeyState.shouldBlockNewWords())
     ) {
-      const selectedNewWord = selectNewWordWithLevelProbability(newWords, levelsData);
+      const selectedNewWord = selectNewWordRandomly(newWords);
       const result: ActivityResult = { type: 'new-word', word: selectedNewWord };
       if (journeyState) {
         journeyState.recordNewWordIntroduced(result.word!);
@@ -469,21 +432,14 @@ export const selectJourneyActivity = (
       return result;
     }
 
-    // 3% chance to show a conjugation table
-    random = Math.random() * 100;
-    if (random < 3) {
-      const result: ActivityResult = { type: 'conjugation-table', word: null };
-      if (journeyState) {
-        journeyState.updateAfterActivity();
-      }
-      return result;
-    }
+
   }
 
-  // If we reach here and have no exposed words, fall back to grammar break
+  // If we reach here and have no exposed words, fall back to motivational break
   if (exposedWords.length === 0) {
-    const result: ActivityResult = { type: 'grammar-break', word: null };
+    const result: ActivityResult = { type: 'motivational-break', word: null };
     if (journeyState) {
+      journeyState.recordMotivationalBreak();
       journeyState.updateAfterActivity();
     }
     return result;
@@ -498,9 +454,10 @@ export const selectJourneyActivity = (
     if (getWordStats) {
       const weightedWord = selectWordByWeight(exposedWords, getTotalCorrectForWord, getWordStats, focusMode);
       if (!weightedWord) {
-        // No eligible words found, fallback to grammar break
-        const result: ActivityResult = { type: 'grammar-break', word: null };
+        // No eligible words found, fallback to motivational break
+        const result: ActivityResult = { type: 'motivational-break', word: null };
         if (journeyState) {
+          journeyState.recordMotivationalBreak();
           journeyState.updateAfterActivity();
         }
         return result;
@@ -516,9 +473,10 @@ export const selectJourneyActivity = (
       }
       
       if (eligibleWords.length === 0) {
-        // Fallback to grammar break if no eligible words
-        const result: ActivityResult = { type: 'grammar-break', word: null };
+        // Fallback to motivational break if no eligible words
+        const result: ActivityResult = { type: 'motivational-break', word: null };
         if (journeyState) {
+          journeyState.recordMotivationalBreak();
           journeyState.updateAfterActivity();
         }
         return result;
