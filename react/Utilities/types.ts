@@ -68,10 +68,6 @@ export type StudyMode =
   | 'source-to-english' 
   | 'source-to-source';
 
-// Activity modes - DEPRECATED: All activities are now standardized to source->EN
-// @deprecated Use standardized source->EN flow instead
-export type ActivityMode = 'en-to-lt' | 'lt-to-en' | 'easy' | 'hard';
-
 // Difficulty levels
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 

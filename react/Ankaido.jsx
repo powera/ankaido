@@ -14,7 +14,7 @@ import safeStorage from './DataStorage/safeStorage';
 import activityStatsManager from './Managers/activityStatsManager';
 import audioManager from './Managers/audioManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
-import storageConfigManager from './Managers/storageConfigManager';
+import storageConfigManager, { STORAGE_MODES } from './Managers/storageConfigManager';
 import WordListManager from './Managers/wordListManager';
 import BlitzMode from './Modes/BlitzMode.jsx';
 import ConjugationsMode from './Modes/ConjugationsMode.jsx';
@@ -307,7 +307,7 @@ const FlashCardApp = () => {
   }, [corporaData]);
 
 
-  const handleStorageSetup = async (storageMode = 'localStorage') => {
+  const handleStorageSetup = async (storageMode = STORAGE_MODES.LOCAL) => {
     try {
       // Set storage configuration
       storageConfigManager.setStorageMode(storageMode);
@@ -431,7 +431,7 @@ const FlashCardApp = () => {
             <div className="w-stat-label w-mb-large">Setting up your vocabulary learning experience...</div>
             <button 
               className="w-button" 
-              onClick={() => handleStorageSetup('localStorage')}
+              onClick={() => handleStorageSetup(STORAGE_MODES.LOCAL)}
             >
               Continue
             </button>
