@@ -49,14 +49,7 @@ export interface ConjugationsResponse {
 
 
 
-export interface LevelsResponse {
-  levels: {
-    [key: string]: Array<{
-      corpus: string;
-      group: string;
-    }>;
-  };
-}
+
 
 export interface ActivityProgress {
   correct: number;
@@ -173,17 +166,7 @@ export const fetchConjugations = async (
 
 
 
-export const fetchLevels = async (): Promise<LevelsResponse['levels']> => {
-  try {
-    const response = await fetch(`${API_BASE}/wordlists/levels`);
-    if (!response.ok) throw new Error('Failed to fetch levels');
-    const data: LevelsResponse = await response.json();
-    return data.levels;
-  } catch (error) {
-    console.warn('Failed to fetch levels:', error);
-    return {};
-  }
-};
+
 
 export const fetchDailyStats = async (): Promise<DailyStatsResponse | null> => {
   try {

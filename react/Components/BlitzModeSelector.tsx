@@ -1,33 +1,21 @@
 import React from 'react';
-import type { CorporaData, LevelsData, SelectedGroups } from '../Utilities/studyMaterialsUtils';
-import { organizeLevelsForDisplay } from '../Utilities/studyMaterialsUtils';
+import type { CorporaData, SelectedGroups } from '../Utilities/studyMaterialsUtils';
 
 // Types for content filtering
 type ContentFilter = 'all' | 'words' | 'verbs';
-type SelectionMode = 'corpus' | 'level';
 type CorpusType = 'words' | 'verbs' | 'phrases';
 
 // Types for Blitz mode configuration
-interface BlitzCorpusConfig {
+interface BlitzConfig {
   corpus: string;
   useSelectedGroupsOnly: boolean;
-  mode: 'corpus';
 }
-
-interface BlitzLevelConfig {
-  levelKey: string;
-  contentFilter: ContentFilter;
-  mode: 'level';
-}
-
-type BlitzConfig = BlitzCorpusConfig | BlitzLevelConfig;
 
 // Props interface
 interface BlitzModeSelectorProps {
   availableCorpora: string[];
   corporaData: CorporaData;
   selectedGroups: SelectedGroups | null;
-  levelsData: LevelsData | null;
   onStartBlitz: (config: BlitzConfig) => void;
   onCancel: () => void;
 }
@@ -36,15 +24,11 @@ const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
   availableCorpora,
   corporaData,
   selectedGroups,
-  levelsData,
   onStartBlitz,
   onCancel
 }) => {
   const [selectedCorpus, setSelectedCorpus] = React.useState<string>('');
-  const [selectedLevel, setSelectedLevel] = React.useState<string>('');
   const [useSelectedGroupsOnly, setUseSelectedGroupsOnly] = React.useState<boolean>(false);
-  const [selectionMode, setSelectionMode] = React.useState<SelectionMode>('level'); // 'corpus' or 'level'
-  const [contentFilter, setContentFilter] = React.useState<ContentFilter>('all'); // 'all', 'words', 'verbs'
 
   // Helper function to determine if a corpus contains verbs or words
   const getCorpusType = (corpus: string): CorpusType => {
@@ -53,54 +37,7 @@ const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
     return 'words';
   };
 
-  // Get word count for a specific level with content filtering
-  const getLevelWordCount = (levelKey: string, filter: ContentFilter = 'all'): number => {
-    if (!levelsData || !levelsData[levelKey]) return 0;
-    
-    const levelItems = levelsData[levelKey];
-    let totalWords = 0;
-    
-    levelItems.forEach(item => {
-      if (availableCorpora.includes(item.corpus)) {
-        const corpusType = getCorpusType(item.corpus);
-        
-        // Apply content filter
-        if (filter === 'words' && corpusType !== 'words') return;
-        if (filter === 'verbs' && corpusType !== 'verbs' && corpusType !== 'phrases') return;
-        
-        const corporaStructure = corporaData[item.corpus];
-        if (corporaStructure && corporaStructure.groups[item.group]) {
-          // Check if this group is selected (if using selected groups only)
-          if (useSelectedGroupsOnly && selectedGroups && selectedGroups[item.corpus]) {
-            const selectedCorpusGroups = selectedGroups[item.corpus];
-            if (selectedCorpusGroups.includes(item.group)) {
-              totalWords += corporaStructure.groups[item.group].length;
-            }
-          } else {
-            totalWords += corporaStructure.groups[item.group].length;
-          }
-        }
-      }
-    });
-    
-    return totalWords;
-  };
 
-  // Check if a level has mixed content types
-  const levelHasMixedContent = (levelKey: string): boolean => {
-    if (!levelsData || !levelsData[levelKey]) return false;
-    
-    const levelItems = levelsData[levelKey];
-    const contentTypes = new Set<CorpusType>();
-    
-    levelItems.forEach(item => {
-      if (availableCorpora.includes(item.corpus)) {
-        contentTypes.add(getCorpusType(item.corpus));
-      }
-    });
-    
-    return contentTypes.size > 1;
-  };
 
   // Get word count for all groups in corpus
   const getAllGroupsWordCount = (corpus: string): number => {
@@ -127,30 +64,20 @@ const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
   }, [selectedCorpus, selectedGroups, useSelectedGroupsOnly]);
 
   const handleStartBlitz = (): void => {
-    if (selectionMode === 'corpus' && selectedCorpus) {
+    if (selectedCorpus) {
       onStartBlitz({
         corpus: selectedCorpus,
-        useSelectedGroupsOnly,
-        mode: 'corpus'
-      });
-    } else if (selectionMode === 'level' && selectedLevel) {
-      onStartBlitz({
-        levelKey: selectedLevel,
-        contentFilter,
-        mode: 'level'
+        useSelectedGroupsOnly
       });
     }
   };
 
-  const isStartEnabled: boolean = (selectionMode === 'corpus' && selectedCorpus !== '') || 
-                        (selectionMode === 'level' && selectedLevel !== '');
+  const isStartEnabled: boolean = selectedCorpus !== '';
 
-  // Get current word count based on selection mode
+  // Get current word count
   const getCurrentWordCount = (): number => {
-    if (selectionMode === 'corpus' && selectedCorpus) {
+    if (selectedCorpus) {
       return getCorpusWordCount(selectedCorpus);
-    } else if (selectionMode === 'level' && selectedLevel) {
-      return getLevelWordCount(selectedLevel, contentFilter);
     }
     return 0;
   };
@@ -185,71 +112,9 @@ const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-        {/* Selection Mode Toggle */}
-        <div>
-          <label style={{ 
-            display: 'block', 
-            marginBottom: '0.5rem', 
-            fontWeight: 'bold',
-            color: 'var(--color-text)'
-          }}>
-            🎯 Selection Mode:
-          </label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <label style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem',
-              cursor: 'pointer',
-              padding: '0.5rem 1rem',
-              borderRadius: 'var(--border-radius)',
-              border: '1px solid var(--color-border)',
-              background: selectionMode === 'corpus' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
-              flex: 1,
-              justifyContent: 'center'
-            }}>
-              <input
-                type="radio"
-                name="selectionMode"
-                checked={selectionMode === 'corpus'}
-                onChange={() => {
-                  setSelectionMode('corpus');
-                  setSelectedLevel('');
-                }}
-              />
-              <span>📚 By Corpus</span>
-            </label>
-            <label style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem',
-              cursor: levelsData && Object.keys(levelsData).length > 0 ? 'pointer' : 'not-allowed',
-              padding: '0.5rem 1rem',
-              borderRadius: 'var(--border-radius)',
-              border: '1px solid var(--color-border)',
-              background: selectionMode === 'level' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
-              opacity: levelsData && Object.keys(levelsData).length > 0 ? 1 : 0.6,
-              flex: 1,
-              justifyContent: 'center'
-            }}>
-              <input
-                type="radio"
-                name="selectionMode"
-                checked={selectionMode === 'level'}
-                disabled={!levelsData || Object.keys(levelsData).length === 0}
-                onChange={() => {
-                  setSelectionMode('level');
-                  setSelectedCorpus('');
-                }}
-              />
-              <span>🎚️ By Level</span>
-            </label>
-          </div>
-        </div>
 
-        {/* Corpus Selection Mode */}
-        {selectionMode === 'corpus' && (
-          <>
+
+        {/* Corpus Selection */}
             <div>
               <label style={{ 
                 display: 'block', 
@@ -389,157 +254,7 @@ const BlitzModeSelector: React.FC<BlitzModeSelectorProps> = ({
                 )}
               </div>
             )}
-          </>
-        )}
 
-        {/* Level Selection Mode */}
-        {selectionMode === 'level' && levelsData && Object.keys(levelsData).length > 0 && (
-          <>
-            <div>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '0.5rem', 
-                fontWeight: 'bold',
-                color: 'var(--color-text)'
-              }}>
-                🎚️ Study Level:
-              </label>
-              <select 
-                value={selectedLevel}
-                onChange={(e) => setSelectedLevel(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-border)',
-                  background: 'var(--color-card-bg)',
-                  fontSize: '1rem',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value="">Select a level...</option>
-                {organizeLevelsForDisplay(levelsData, availableCorpora, corporaData, selectedGroups).map(({ levelKey, level, description, totalWords }) => (
-                  <option key={levelKey} value={levelKey}>
-                    {level}: {description} ({totalWords} words)
-                  </option>
-                ))}
-              </select>
-              {selectedLevel && (
-                <div style={{ 
-                  marginTop: '0.5rem', 
-                  fontSize: '0.85rem', 
-                  color: 'var(--color-text-secondary)' 
-                }}>
-                  {getCurrentWordCount() >= 20 ? 
-                    `✓ Ready for Blitz mode (${getCurrentWordCount()} words available)` :
-                    `⚠️ Need at least 20 words for Blitz mode (only ${getCurrentWordCount()} available)`
-                  }
-                </div>
-              )}
-            </div>
-
-            {/* Content Filter for Level Mode */}
-            {selectedLevel && levelHasMixedContent(selectedLevel) && (
-              <div>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '0.5rem', 
-                  fontWeight: 'bold',
-                  color: 'var(--color-text)'
-                }}>
-                  📝 Content Type:
-                </label>
-                <div style={{ 
-                  padding: '0.5rem',
-                  borderRadius: 'var(--border-radius)',
-                  border: '1px solid var(--color-warning)',
-                  background: 'var(--color-warning-light)',
-                  fontSize: '0.85rem',
-                  color: 'var(--color-text)',
-                  marginBottom: '0.5rem'
-                }}>
-                  ⚠️ This level contains mixed content types (individual words and verb phrases). Choose what to practice:
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <label style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.5rem',
-                    cursor: 'pointer',
-                    padding: '0.5rem',
-                    borderRadius: 'var(--border-radius)',
-                    border: '1px solid var(--color-border)',
-                    background: contentFilter === 'all' ? 'var(--color-primary-light)' : 'var(--color-card-bg)'
-                  }}>
-                    <input
-                      type="radio"
-                      name="contentFilter"
-                      checked={contentFilter === 'all'}
-                      onChange={() => setContentFilter('all')}
-                    />
-                    <span>
-                      All content types ({getLevelWordCount(selectedLevel, 'all')} words)
-                    </span>
-                  </label>
-                  <label style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.5rem',
-                    cursor: getLevelWordCount(selectedLevel, 'words') >= 20 ? 'pointer' : 'not-allowed',
-                    padding: '0.5rem',
-                    borderRadius: 'var(--border-radius)',
-                    border: '1px solid var(--color-border)',
-                    background: contentFilter === 'words' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
-                    opacity: getLevelWordCount(selectedLevel, 'words') >= 20 ? 1 : 0.6
-                  }}>
-                    <input
-                      type="radio"
-                      name="contentFilter"
-                      checked={contentFilter === 'words'}
-                      disabled={getLevelWordCount(selectedLevel, 'words') < 20}
-                      onChange={() => setContentFilter('words')}
-                    />
-                    <span>
-                      Individual words only ({getLevelWordCount(selectedLevel, 'words')} words)
-                      {getLevelWordCount(selectedLevel, 'words') < 20 && (
-                        <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
-                          (Need at least 20)
-                        </span>
-                      )}
-                    </span>
-                  </label>
-                  <label style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '0.5rem',
-                    cursor: getLevelWordCount(selectedLevel, 'verbs') >= 20 ? 'pointer' : 'not-allowed',
-                    padding: '0.5rem',
-                    borderRadius: 'var(--border-radius)',
-                    border: '1px solid var(--color-border)',
-                    background: contentFilter === 'verbs' ? 'var(--color-primary-light)' : 'var(--color-card-bg)',
-                    opacity: getLevelWordCount(selectedLevel, 'verbs') >= 20 ? 1 : 0.6
-                  }}>
-                    <input
-                      type="radio"
-                      name="contentFilter"
-                      checked={contentFilter === 'verbs'}
-                      disabled={getLevelWordCount(selectedLevel, 'verbs') < 20}
-                      onChange={() => setContentFilter('verbs')}
-                    />
-                    <span>
-                      Verb phrases only ({getLevelWordCount(selectedLevel, 'verbs')} words)
-                      {getLevelWordCount(selectedLevel, 'verbs') < 20 && (
-                        <span style={{ color: 'var(--color-error)', marginLeft: '0.5rem' }}>
-                          (Need at least 20)
-                        </span>
-                      )}
-                    </span>
-                  </label>
-                </div>
-              </div>
-            )}
-          </>
-        )}
 
         {/* Info Box */}
         <div style={{

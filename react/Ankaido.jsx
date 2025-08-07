@@ -26,8 +26,7 @@ import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import {
     fetchAllWordlists,
-    fetchAvailableVoices,
-    fetchLevels
+    fetchAvailableVoices
 } from './Utilities/apiClient.js';
 
 
@@ -43,7 +42,6 @@ const FlashCardApp = () => {
 
   const [corporaData, setCorporaData] = useState({}); // Cache for corpus structures
   const [availableCorpora, setAvailableCorpora] = useState([]);
-  const [levelsData, setLevelsData] = useState({}); // Cache for levels data
   // Initialize selectedGroups - will be loaded from corpus choices manager
   const [selectedGroups, setSelectedGroups] = useState({}); // {corpus: [group1, group2]}
 
@@ -139,17 +137,15 @@ const FlashCardApp = () => {
       setLoading(true);
       setError(null);
       try {
-        const [allWords, voices, levels] = await Promise.all([
+        const [allWords, voices] = await Promise.all([
           fetchAllWordlists(),
-          fetchAvailableVoices(),
-          fetchLevels()
+          fetchAvailableVoices()
         ]);
         
         // Extract corpora from words
         const corpora = [...new Set(allWords.map(word => word.corpus))].sort();
         setAvailableCorpora(corpora);
         setAvailableVoices(voices);
-        setLevelsData(levels || {});
         
         // Initialize audioManager with available voices
         await audioManager.initialize(voices);
@@ -611,7 +607,6 @@ const FlashCardApp = () => {
             availableCorpora={availableCorpora}
             corporaData={corporaData}
             selectedGroups={selectedGroups}
-            levelsData={levelsData}
             onStartBlitz={handleStartBlitz}
             onCancel={handleCancelBlitz}
           />
@@ -624,7 +619,6 @@ const FlashCardApp = () => {
             blitzConfig={blitzConfig}
             corporaData={corporaData}
             selectedGroups={selectedGroups}
-            levelsData={levelsData}
             onExitBlitz={handleExitBlitz}
             onBackToBlitzSelector={handleBackToBlitzSelector}
           />
@@ -656,7 +650,6 @@ const FlashCardApp = () => {
         availableCorpora={availableCorpora}
         corporaData={corporaData}
         selectedGroups={selectedGroups}
-        levelsData={levelsData}
         resetAllSettings={resetAllSettings}
         safeStorage={safeStorage}
       />
