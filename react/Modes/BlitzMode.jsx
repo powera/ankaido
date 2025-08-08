@@ -152,11 +152,40 @@ const BlitzMode = ({
 
     // Update journey stats
     const currentTargetWord = blitzWords[targetWordIndex];
-    if (currentTargetWord && typeof isCorrect === 'boolean') {
-      try {
-        await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', isCorrect);
-      } catch (error) {
-        console.error('Error updating journey stats:', error);
+    
+    if (isCorrect) {
+      // For correct answers, only update the target word as correct
+      if (currentTargetWord) {
+        try {
+          await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', true);
+        } catch (error) {
+          console.error('Error updating journey stats for correct answer:', error);
+        }
+      }
+    } else {
+      // For incorrect answers, update both the clicked word and the target word as wrong
+      const answerField = studyMode === 'english-to-lithuanian' ? 'lithuanian' : 'english';
+      
+      // Find the word that was clicked (the incorrect choice)
+      const clickedWordIndex = multipleChoiceOptions.indexOf(selectedOption);
+      const clickedWord = clickedWordIndex >= 0 ? blitzWords[clickedWordIndex] : null;
+      
+      // Update stats for the target word (the correct answer that was missed)
+      if (currentTargetWord) {
+        try {
+          await activityStatsManager.updateWordStats(currentTargetWord, 'blitz', false);
+        } catch (error) {
+          console.error('Error updating journey stats for target word:', error);
+        }
+      }
+      
+      // Update stats for the clicked word (the incorrect choice that was selected)
+      if (clickedWord && clickedWord !== currentTargetWord) {
+        try {
+          await activityStatsManager.updateWordStats(clickedWord, 'blitz', false);
+        } catch (error) {
+          console.error('Error updating journey stats for clicked word:', error);
+        }
       }
     }
 
