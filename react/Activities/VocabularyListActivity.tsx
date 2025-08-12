@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from '../Components/shared/DataTable';
 import { CorporaData } from '../Utilities/studyMaterialsUtils';
 import { AudioManager, Word } from '../Utilities/types';
+import { ActivityStatsManager, calculateTotalCorrect, calculateTotalIncorrect, getTotalExposures } from '../Managers/activityStatsManager';
 
 // Interface for vocabulary group options
 interface VocabGroupOption {
@@ -21,6 +22,7 @@ interface VocabularyListActivityProps {
   corporaData: CorporaData;
   audioEnabled: boolean;
   audioManager: AudioManager;
+  activityStatsManager: ActivityStatsManager;
 }
 
 const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({ 
@@ -31,7 +33,8 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
   setVocabListWords,
   corporaData,
   audioEnabled,
-  audioManager
+  audioManager,
+  activityStatsManager
 }) => {
   const loadVocabListForGroup = (optionValue: string) => {
     if (!optionValue) {
@@ -89,6 +92,24 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
               {
                 header: 'English', 
                 accessor: 'english'
+              },
+              {
+                header: 'Total Correct',
+                render: (rowData: Word, rowIndex: number) => {
+                  const stats = activityStatsManager.getWordStats(rowData);
+                  return calculateTotalCorrect(stats);
+                },
+                align: 'center',
+                width: '80px'
+              },
+              {
+                header: 'Total Attempts',
+                render: (rowData: Word, rowIndex: number) => {
+                  const stats = activityStatsManager.getWordStats(rowData);
+                  return getTotalExposures(stats);
+                },
+                align: 'center',
+                width: '80px'
               },
               {
                 header: 'Audio',

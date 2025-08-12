@@ -8,7 +8,8 @@ const VocabularyListMode = ({
   setVocabListWords,
   corporaData,
   audioEnabled,
-  audioManager
+  audioManager,
+  activityStatsManager
 }) => {
   return (
     <VocabularyListActivity
@@ -20,6 +21,7 @@ const VocabularyListMode = ({
       corporaData={corporaData}
       audioEnabled={audioEnabled}
       audioManager={audioManager}
+      activityStatsManager={activityStatsManager}
     />
   );
 };

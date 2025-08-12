@@ -523,6 +523,7 @@ const FlashCardApp = () => {
           corporaData={corporaData}
           audioEnabled={audioEnabled}
           audioManager={audioManager}
+          activityStatsManager={activityStatsManager}
         />
       ) : quizMode === 'journey' ? (
         <JourneyMode 
