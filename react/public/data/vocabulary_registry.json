@@ -1,0 +1,62 @@
+{
+  "vocabularies": [
+    {
+      "id": "gre",
+      "name": "GRE Vocabulary",
+      "corpus": "GRE",
+      "file": "gre_words_full.json",
+      "description": "Graduate Record Examination vocabulary words",
+      "enabled": true,
+      "metadata": {
+        "source": "GRE test preparation",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "intermediate",
+          "advanced",
+          "expert"
+        ],
+        "word_count": null,
+        "last_updated": "2024-01-01"
+      }
+    },
+    {
+      "id": "lithuanian",
+      "name": "Lithuanian Vocabulary",
+      "corpus": "Lithuanian",
+      "file": "lithuanian_words.json",
+      "description": "Lithuanian language vocabulary",
+      "enabled": true,
+      "metadata": {
+        "source": "Lithuanian language learning",
+        "language_pair": "lithuanian-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": null,
+        "last_updated": "2024-01-01"
+      }
+    },
+    {
+      "id": "imported",
+      "name": "Imported Vocabulary",
+      "corpus": "Imported",
+      "file": "imported_words.json",
+      "description": "Imported Imported vocabulary from Anki deck",
+      "enabled": true,
+      "metadata": {
+        "source": "Anki deck import",
+        "language_pair": "mixed-english",
+        "difficulty_levels": [
+          "advanced",
+          "expert"
+        ],
+        "word_count": 26,
+        "last_updated": "2025-08-12T14:31:54.962921"
+      }
+    }
+  ],
+  "schema_version": "1.0",
+  "last_updated": "2025-08-12T14:31:54.962926Z"
+}

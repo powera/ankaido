@@ -1,0 +1,6762 @@
+[
+  {
+    "lithuanian": "duona",
+    "english": "bread",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_1",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "duona"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 1,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vanduo",
+    "english": "water",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_2",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vanduo"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 2,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kava",
+    "english": "coffee",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_3",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kava"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 3,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "arbata",
+    "english": "tea",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_4",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "arbata"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 4,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "alus",
+    "english": "beer",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_5",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "alus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 5,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vynas",
+    "english": "wine",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_6",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vynas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 6,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mėsa",
+    "english": "meat",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_7",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mėsa"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 7,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "žuvis",
+    "english": "fish",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_8",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "žuvis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 8,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kiaušinis",
+    "english": "egg",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_9",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kiaušinis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 9,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sūris",
+    "english": "cheese",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_10",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sūris"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 10,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sviestas",
+    "english": "butter",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_11",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sviestas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 11,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "cukrus",
+    "english": "sugar",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_12",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "cukrus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 12,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "druska",
+    "english": "salt",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_13",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "druska"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 13,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "bulvė",
+    "english": "potato",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_14",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "bulvė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 14,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "obuolys",
+    "english": "apple",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_15",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "obuolys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 15,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "bananas",
+    "english": "banana",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_16",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "bananas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 16,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "apelsinas",
+    "english": "orange (fruit)",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_17",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "apelsinas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 17,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pomidoras",
+    "english": "tomato",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_18",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pomidoras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 18,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "svogūnas",
+    "english": "onion",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_19",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "svogūnas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 19,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ryžiai",
+    "english": "rice",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_20",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ryžiai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 20,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sriuba",
+    "english": "soup",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_21",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sriuba"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 21,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "tortas",
+    "english": "cake",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_22",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "tortas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 22,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šokoladas",
+    "english": "chocolate",
+    "corpus": "Lithuanian Basics",
+    "group": "Food + Drink",
+    "guid": "lithuanian_basics_1755025861633_23",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šokoladas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 23,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šuo",
+    "english": "dog",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_24",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šuo"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 24,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "katė",
+    "english": "cat",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_25",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "katė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 25,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "paukštis",
+    "english": "bird",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_26",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "paukštis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 26,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "arklys",
+    "english": "horse",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_27",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "arklys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 27,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "karvė",
+    "english": "cow",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_28",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "karvė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 28,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kiaulė",
+    "english": "pig",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_29",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kiaulė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 29,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "višta",
+    "english": "chicken",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_30",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "višta"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 30,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pelė",
+    "english": "mouse",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_31",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pelė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 31,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "lokys",
+    "english": "bear",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_32",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "lokys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 32,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vilkas",
+    "english": "wolf",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_33",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vilkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 33,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "medis",
+    "english": "tree",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_34",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "medis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 34,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "gėlė",
+    "english": "flower",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_35",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "gėlė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 35,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "žolė",
+    "english": "grass",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_36",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "žolė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 36,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "lapas",
+    "english": "leaf",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_37",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "lapas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 37,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sodas",
+    "english": "garden",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_38",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sodas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 38,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "parkas",
+    "english": "park",
+    "corpus": "Lithuanian Basics",
+    "group": "Plants + Animals",
+    "guid": "lithuanian_basics_1755025861633_39",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "parkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 39,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "marškiniai",
+    "english": "shirt",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_40",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "marškiniai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 40,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kelnės",
+    "english": "pants",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_41",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kelnės"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 41,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "suknelė",
+    "english": "dress",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_42",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "suknelė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 42,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "paltas",
+    "english": "coat",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_43",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "paltas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 43,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "striukė",
+    "english": "jacket",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_44",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "striukė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 44,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "batai",
+    "english": "shoes",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_45",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "batai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 45,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kojinės",
+    "english": "socks",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_46",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kojinės"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 46,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kepurė",
+    "english": "hat",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_47",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kepurė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 47,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pirštinės",
+    "english": "gloves",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_48",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pirštinės"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 48,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kaklaraištis",
+    "english": "tie",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_49",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kaklaraištis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 49,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "megztinis",
+    "english": "sweater",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_50",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "megztinis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 50,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "apatiniai",
+    "english": "underwear",
+    "corpus": "Lithuanian Basics",
+    "group": "Clothing",
+    "guid": "lithuanian_basics_1755025861633_51",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "apatiniai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 51,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šakutė",
+    "english": "fork",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_52",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šakutė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 52,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šaukštas",
+    "english": "spoon",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_53",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šaukštas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 53,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "puodelis",
+    "english": "cup",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_54",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "puodelis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 54,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "lėkštė",
+    "english": "plate",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_55",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "lėkštė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 55,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "knyga",
+    "english": "book",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_56",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "knyga"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 56,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "raktas",
+    "english": "key",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_57",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "raktas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 57,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "telefonas",
+    "english": "phone",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_58",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "telefonas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 58,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "laikrodis",
+    "english": "watch",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_59",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "laikrodis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 59,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "krepšys",
+    "english": "bag",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_60",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "krepšys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 60,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "piniginė",
+    "english": "wallet",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_61",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "piniginė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 61,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "akiniai",
+    "english": "eyeglasses",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_62",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "akiniai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 62,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "butelis",
+    "english": "bottle",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_63",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "butelis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 63,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dėžė",
+    "english": "box",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_64",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dėžė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 64,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "popierius",
+    "english": "paper",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_65",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "popierius"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 65,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "žirklės",
+    "english": "scissors",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_66",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "žirklės"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 66,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "veidrodis",
+    "english": "mirror",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_67",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "veidrodis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 67,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "rankšluostis",
+    "english": "towel",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_68",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "rankšluostis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 68,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kėdė",
+    "english": "chair",
+    "corpus": "Lithuanian Basics",
+    "group": "Small Physical Objects",
+    "guid": "lithuanian_basics_1755025861633_69",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kėdė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 69,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "namas",
+    "english": "house",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_70",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "namas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 70,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mokykla",
+    "english": "school",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_71",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mokykla"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 71,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ligoninė",
+    "english": "hospital",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_72",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ligoninė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 72,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "bažnyčia",
+    "english": "church",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_73",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "bažnyčia"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 73,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "parduotuvė",
+    "english": "store",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_74",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "parduotuvė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 74,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "restoranas",
+    "english": "restaurant",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_75",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "restoranas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 75,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "viešbutis",
+    "english": "hotel",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_76",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "viešbutis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 76,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "bankas",
+    "english": "bank",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_77",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "bankas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 77,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "biblioteka",
+    "english": "library",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_78",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "biblioteka"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 78,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "muziejus",
+    "english": "museum",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_79",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "muziejus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 79,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "gaisrinė",
+    "english": "fire station",
+    "corpus": "Lithuanian Basics",
+    "group": "Buildings",
+    "guid": "lithuanian_basics_1755025861633_80",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "gaisrinė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 80,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "automobilis",
+    "english": "car",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_81",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "automobilis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 81,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "autobusas",
+    "english": "bus",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_82",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "autobusas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 82,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "traukinys",
+    "english": "train",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_83",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "traukinys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 83,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "lėktuvas",
+    "english": "airplane",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_84",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "lėktuvas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 84,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dviratis",
+    "english": "bicycle",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_85",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dviratis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 85,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "valtis",
+    "english": "boat",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_86",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "valtis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 86,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "laivas",
+    "english": "ship",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_87",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "laivas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 87,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "taksi",
+    "english": "taxi",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_88",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "taksi"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 88,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sunkvežimis",
+    "english": "truck",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_89",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sunkvežimis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 89,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "motociklas",
+    "english": "motorcycle",
+    "corpus": "Lithuanian Basics",
+    "group": "Transportation",
+    "guid": "lithuanian_basics_1755025861633_90",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "motociklas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 90,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "juodas",
+    "english": "black",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_91",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "juodas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 91,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "baltas",
+    "english": "white",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_92",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "baltas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 92,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "raudonas",
+    "english": "red",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_93",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "raudonas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 93,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mėlynas",
+    "english": "blue",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_94",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mėlynas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 94,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "žalias",
+    "english": "green",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_95",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "žalias"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 95,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "geltonas",
+    "english": "yellow",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_96",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "geltonas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 96,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "rudas",
+    "english": "brown",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_97",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "rudas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 97,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pilkas",
+    "english": "gray",
+    "corpus": "Lithuanian Basics",
+    "group": "Colors",
+    "guid": "lithuanian_basics_1755025861633_98",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pilkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "frequency_rank": 98,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mokytojas",
+    "english": "teacher",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_1",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mokytojas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 1,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "gydytojas",
+    "english": "doctor",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_2",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "gydytojas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 2,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "slaugytoja",
+    "english": "nurse",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_3",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "slaugytoja"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 3,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "inžinierius",
+    "english": "engineer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_4",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "inžinierius"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 4,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "advokatas",
+    "english": "lawyer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_5",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "advokatas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 5,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "policininkas",
+    "english": "police officer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_6",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "policininkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 6,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ugniagesys",
+    "english": "firefighter",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_7",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ugniagesys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 7,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "virėjas",
+    "english": "chef",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_8",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "virėjas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 8,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ūkininkas",
+    "english": "farmer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_9",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ūkininkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 9,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pilotas",
+    "english": "pilot",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_10",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pilotas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 10,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vairuotojas",
+    "english": "driver",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_11",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vairuotojas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 11,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mechanikas",
+    "english": "mechanic",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_12",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mechanikas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 12,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "elektrikas",
+    "english": "electrician",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_13",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "elektrikas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 13,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "santechnikas",
+    "english": "plumber",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_14",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "santechnikas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 14,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dailidė",
+    "english": "carpenter",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_15",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dailidė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 15,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dažytojas",
+    "english": "painter",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_16",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dažytojas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 16,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "muzikas",
+    "english": "musician",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_17",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "muzikas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 17,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "menininkas",
+    "english": "artist",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_18",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "menininkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 18,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "rašytojas",
+    "english": "writer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_19",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "rašytojas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 19,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "žurnalistas",
+    "english": "journalist",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_20",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "žurnalistas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 20,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "fotografas",
+    "english": "photographer",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_21",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "fotografas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 21,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "odontologas",
+    "english": "dentist",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_22",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "odontologas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 22,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "veterinaras",
+    "english": "veterinarian",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_23",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "veterinaras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 23,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "buhalteris",
+    "english": "accountant",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_24",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "buhalteris"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 24,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sekretorius",
+    "english": "secretary",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_25",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sekretorius"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 25,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vadybininkas",
+    "english": "manager",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_26",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vadybininkas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 26,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pardavėjas",
+    "english": "salesperson",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_27",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pardavėjas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 27,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kirpėjas",
+    "english": "barber",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_28",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kirpėjas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 28,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kepėjas",
+    "english": "baker",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_29",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kepėjas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 29,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kareivis",
+    "english": "soldier",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Occupations",
+    "guid": "lithuanian_intermediate_1755025861633_30",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kareivis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 30,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nulis",
+    "english": "zero",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_31",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nulis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 31,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vienas",
+    "english": "one",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_32",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vienas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 32,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "du",
+    "english": "two",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_33",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "du"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 33,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "trys",
+    "english": "three",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_34",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "trys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 34,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "keturi",
+    "english": "four",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_35",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "keturi"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 35,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "penki",
+    "english": "five",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_36",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "penki"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 36,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šeši",
+    "english": "six",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_37",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šeši"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 37,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "septyni",
+    "english": "seven",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_38",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "septyni"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 38,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "aštuoni",
+    "english": "eight",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_39",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "aštuoni"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 39,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "devyni",
+    "english": "nine",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_40",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "devyni"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 40,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dešimt",
+    "english": "ten",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_41",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 41,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vienuolika",
+    "english": "eleven",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_42",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vienuolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 42,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dvylika",
+    "english": "twelve",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_43",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dvylika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 43,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "trylika",
+    "english": "thirteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_44",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "trylika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 44,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "keturiolika",
+    "english": "fourteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_45",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "keturiolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 45,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "penkiolika",
+    "english": "fifteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_46",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "penkiolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 46,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šešiolika",
+    "english": "sixteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_47",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šešiolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 47,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "septyniolika",
+    "english": "seventeen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_48",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "septyniolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 48,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "aštuoniolika",
+    "english": "eighteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_49",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "aštuoniolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 49,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "devyniolika",
+    "english": "nineteen",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_50",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "devyniolika"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 50,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dvidešimt",
+    "english": "twenty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_51",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dvidešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 51,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "trisdešimt",
+    "english": "thirty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_52",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "trisdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 52,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "keturiasdešimt",
+    "english": "forty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_53",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "keturiasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 53,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "penkiasdešimt",
+    "english": "fifty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_54",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "penkiasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 54,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šešiasdešimt",
+    "english": "sixty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_55",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šešiasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 55,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "septyniasdešimt",
+    "english": "seventy",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_56",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "septyniasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 56,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "aštuoniasdešimt",
+    "english": "eighty",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_57",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "aštuoniasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 57,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "devyniasdešimt",
+    "english": "ninety",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_58",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "devyniasdešimt"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 58,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šimtas",
+    "english": "one hundred",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_59",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šimtas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 59,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "tūkstantis",
+    "english": "one thousand",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Numbers",
+    "guid": "lithuanian_intermediate_1755025861633_60",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "tūkstantis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 60,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "apskritimas",
+    "english": "circle",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_61",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "apskritimas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 61,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kvadratas",
+    "english": "square",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_62",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kvadratas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 62,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "stačiakampis",
+    "english": "rectangle",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_63",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "stačiakampis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 63,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "trikampis",
+    "english": "triangle",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_64",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "trikampis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 64,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ovalas",
+    "english": "oval",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_65",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ovalas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 65,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kubas",
+    "english": "cube",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_66",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kubas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 66,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "rutulys",
+    "english": "sphere",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_67",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "rutulys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 67,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "cilindras",
+    "english": "cylinder",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_68",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "cilindras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 68,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kūgis",
+    "english": "cone",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_69",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kūgis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 69,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "piramidė",
+    "english": "pyramid",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_70",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "piramidė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 70,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šešiakampis",
+    "english": "hexagon",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_71",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šešiakampis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 71,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "penkiakampis",
+    "english": "pentagon",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_72",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "penkiakampis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 72,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "aštuonkampis",
+    "english": "octagon",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Shapes",
+    "guid": "lithuanian_intermediate_1755025861633_73",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "aštuonkampis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 73,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "laimingas",
+    "english": "happy",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_74",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "laimingas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 74,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "liūdnas",
+    "english": "sad",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_75",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "liūdnas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 75,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "piktas",
+    "english": "angry",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_76",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "piktas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 76,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "susijaudinęs",
+    "english": "excited",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_77",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "susijaudinęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 77,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pavargęs",
+    "english": "tired",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_78",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pavargęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 78,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "išsigandęs",
+    "english": "scared",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_79",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "išsigandęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 79,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nustebęs",
+    "english": "surprised",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_80",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nustebęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 80,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "susirūpinęs",
+    "english": "worried",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_81",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "susirūpinęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 81,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ramus",
+    "english": "calm",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_82",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ramus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 82,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nervuotas",
+    "english": "nervous",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_83",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nervuotas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 83,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sumišęs",
+    "english": "confused",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_84",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sumišęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 84,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sugėdintas",
+    "english": "embarrassed",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_85",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sugėdintas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 85,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "didžiuojantis",
+    "english": "proud",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_86",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "didžiuojantis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 86,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pavydus",
+    "english": "jealous",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_87",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pavydus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 87,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vienišas",
+    "english": "lonely",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_88",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vienišas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 88,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dėkingas",
+    "english": "grateful",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_89",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dėkingas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 89,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nusivylęs",
+    "english": "frustrated",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_90",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nusivylęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 90,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "viltingas",
+    "english": "hopeful",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_91",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "viltingas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 91,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nusivylęs",
+    "english": "disappointed",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_92",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nusivylęs"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 92,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "smalsus",
+    "english": "curious",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_93",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "smalsus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 93,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nuobodus",
+    "english": "bored",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_94",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nuobodus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 94,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "linksmas",
+    "english": "cheerful",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_95",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "linksmas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 95,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "taikingmas",
+    "english": "peaceful",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_96",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "taikingmas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 96,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "neramus",
+    "english": "anxious",
+    "corpus": "Lithuanian Intermediate",
+    "group": "Emotions",
+    "guid": "lithuanian_intermediate_1755025861633_97",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "neramus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "frequency_rank": 97,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "metras",
+    "english": "meter",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_1",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "metras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 1,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "centimetras",
+    "english": "centimeter",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_2",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "centimetras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 2,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kilometras",
+    "english": "kilometer",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_3",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kilometras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 3,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mylia",
+    "english": "mile",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_4",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mylia"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 4,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "gramas",
+    "english": "gram",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_5",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "gramas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 5,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kilogramas",
+    "english": "kilogram",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_6",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kilogramas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 6,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "litras",
+    "english": "liter",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_7",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "litras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 7,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "mililitras",
+    "english": "milliliter",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_8",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "mililitras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 8,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "laipsnis",
+    "english": "degree (temp.)",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_9",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "laipsnis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 9,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "celsijaus",
+    "english": "celsius",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_10",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "celsijaus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 10,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "farenheitas",
+    "english": "fahrenheit",
+    "corpus": "Lithuanian Advanced",
+    "group": "Units of Measurement",
+    "guid": "lithuanian_advanced_1755025861633_11",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "farenheitas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 11,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kalnas",
+    "english": "mountain",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_12",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kalnas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 12,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kalva",
+    "english": "hill",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_13",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kalva"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 13,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "slėnis",
+    "english": "valley",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_14",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "slėnis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 14,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "upė",
+    "english": "river",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_15",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "upė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 15,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ežeras",
+    "english": "lake",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_16",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ežeras"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 16,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "vandenynas",
+    "english": "ocean",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_17",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "vandenynas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 17,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "jūra",
+    "english": "sea",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_18",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "jūra"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 18,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "paplūdimys",
+    "english": "beach",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_19",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "paplūdimys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 19,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pakrantė",
+    "english": "coast",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_20",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pakrantė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 20,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "sala",
+    "english": "island",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_21",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "sala"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 21,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pusiasalis",
+    "english": "peninsula",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_22",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pusiasalis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 22,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dykuma",
+    "english": "desert",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_23",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dykuma"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 23,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "plokščiakalnis",
+    "english": "plateau",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_24",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "plokščiakalnis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 24,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kanjonas",
+    "english": "canyon",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_25",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kanjonas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 25,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "uola",
+    "english": "cliff",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_26",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "uola"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 26,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "urvas",
+    "english": "cave",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_27",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "urvas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 27,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "krioklys",
+    "english": "waterfall",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_28",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "krioklys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 28,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ledynas",
+    "english": "glacier",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_29",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ledynas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 29,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ugnikalnis",
+    "english": "volcano",
+    "corpus": "Lithuanian Advanced",
+    "group": "Geographic Features",
+    "guid": "lithuanian_advanced_1755025861633_30",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ugnikalnis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 30,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "galva",
+    "english": "head (body)",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_31",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "galva"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 31,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "veidas",
+    "english": "face",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_32",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "veidas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 32,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "akis",
+    "english": "eye",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_33",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "akis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 33,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nosis",
+    "english": "nose",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_34",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nosis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 34,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "burna",
+    "english": "mouth",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_35",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "burna"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 35,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ausis",
+    "english": "ear",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_36",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ausis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 36,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "dantis",
+    "english": "tooth",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_37",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "dantis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 37,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "liežuvis",
+    "english": "tongue",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_38",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "liežuvis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 38,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kaklas",
+    "english": "neck",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_39",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kaklas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 39,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "petys",
+    "english": "shoulder",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_40",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "petys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 40,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "ranka",
+    "english": "arm",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_41",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "ranka"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 41,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "alkūnė",
+    "english": "elbow",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_42",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "alkūnė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 42,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "riešas",
+    "english": "wrist",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_43",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "riešas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 43,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "plaštaka",
+    "english": "hand",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_44",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "plaštaka"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 44,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pirštas",
+    "english": "finger",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_45",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pirštas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 45,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nykštys",
+    "english": "thumb",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_46",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nykštys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 46,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "krūtinė",
+    "english": "chest",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_47",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "krūtinė"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 47,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "nugaros",
+    "english": "back (body)",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_48",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "nugaros"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 48,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pilvas",
+    "english": "stomach",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_49",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pilvas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 49,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "koja",
+    "english": "leg",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_50",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "koja"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 50,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "šlaunis",
+    "english": "thigh",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_51",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "šlaunis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 51,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kelis",
+    "english": "knee",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_52",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kelis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 52,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kulkšnis",
+    "english": "ankle",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_53",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kulkšnis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 53,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "pėda",
+    "english": "foot",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_54",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "pėda"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 54,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kojos pirštas",
+    "english": "toe",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_55",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kojos pirštas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 55,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "oda",
+    "english": "skin",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_56",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "oda"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 56,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "plaukai",
+    "english": "hair",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_57",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "plaukai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 57,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "širdis",
+    "english": "heart",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_58",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "širdis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 58,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "smegenys",
+    "english": "brain",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_59",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "smegenys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 59,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "plaučiai",
+    "english": "lung",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_60",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "plaučiai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 60,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kepenys",
+    "english": "liver",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_61",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kepenys"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 61,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "inkstai",
+    "english": "kidney",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_62",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "inkstai"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 62,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kaulas",
+    "english": "bone",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_63",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kaulas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 63,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "raumuo",
+    "english": "muscle",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_64",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "raumuo"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 64,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  },
+  {
+    "lithuanian": "kraujas",
+    "english": "blood",
+    "corpus": "Lithuanian Advanced",
+    "group": "Body Parts",
+    "guid": "lithuanian_advanced_1755025861633_65",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "english": [],
+      "lithuanian": [
+        "kraujas"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "frequency_rank": 65,
+      "notes": "",
+      "tags": [
+        "noun",
+        "lithuanian",
+        "vocabulary"
+      ]
+    }
+  }
+]
