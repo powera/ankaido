@@ -17,10 +17,10 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ requiresInteraction = false
       <div className="w-card w-splash-card">
         <div className="w-splash-content">
           <h1 className="w-splash-title">
-            🇱🇹 Trakaido
+            📚 Ankaido
           </h1>
           <p className="w-splash-subtitle">
-            Learn Lithuanian
+            The Flashcard App
           </p>
         </div>
         {requiresInteraction && (

@@ -53,7 +53,7 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
     const words: Word[] = corporaData[corpus].groups[group];
 
     // Sort alphabetically by source language word
-    words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian));
+    words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian, undefined, { sensitivity: 'base' }));
     setVocabListWords(words);
   };
 

@@ -72,19 +72,8 @@ export const generateMultipleChoiceOptions = (
 
   // Sort alphabetically for 6+ options, otherwise shuffle
   if (numOptions >= 6) {
-    // Use Lithuanian locale for proper alphabetical sorting when sorting Lithuanian words
-    const isLithuanianTarget = answerField === 'lithuanian';
-    
-    if (isLithuanianTarget) {
-      const lithuanianCollator = new Intl.Collator('lt', { 
-        sensitivity: 'base',
-        numeric: true 
-      });
-      options = options.sort(lithuanianCollator.compare);
-    } else {
-      // Use default English sorting for English words
-      options = options.sort();
-    }
+    // Use default alphabetical sorting for all words
+    options = options.sort();
     
     // Rearrange to fill columns first
     const rearranged: string[] = [];
