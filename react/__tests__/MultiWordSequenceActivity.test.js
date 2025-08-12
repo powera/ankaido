@@ -4,8 +4,8 @@ import '@testing-library/jest-dom';
 import MultiWordSequenceActivity from '../Activities/MultiWordSequenceActivity';
 import { generateMultiWordSequence, canGenerateMultiWordSequence } from '../Utilities/multiWordSequenceGenerator';
 
-// Mock audioManager
-jest.mock('../Managers/audioManager', () => {
+// Mock ttsAudioManager
+jest.mock('../Managers/ttsAudioManager', () => {
   const mockAudioManager = {
     playAudio: jest.fn().mockResolvedValue(true),
     getAvailableVoices: jest.fn().mockReturnValue(['nova', 'alloy', 'ash']),
@@ -101,7 +101,7 @@ describe('MultiWordSequenceActivity', () => {
   });
 
   test('replay button triggers sequence playback', async () => {
-    const audioManager = require('../Managers/audioManager').default;
+    const audioManager = require('../Managers/ttsAudioManager').default;
     render(<MultiWordSequenceActivity {...defaultProps} />);
     
     const replayButton = screen.getByTitle('Replay the sequence');

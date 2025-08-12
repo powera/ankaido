@@ -12,7 +12,7 @@ import StudyMaterialsModal from './Components/StudyMaterialsModal.jsx';
 import AppSettingsPanel from './Components/AppSettingsPanel.jsx';
 import safeStorage from './DataStorage/safeStorage';
 import activityStatsManager from './Managers/activityStatsManager';
-import audioManager from './Managers/audioManager';
+import ttsAudioManager from './Managers/ttsAudioManager';
 import corpusChoicesManager from './Managers/corpusChoicesManager';
 import storageConfigManager, { STORAGE_MODES } from './Managers/storageConfigManager';
 import WordListManager from './Managers/wordListManager';
@@ -25,8 +25,7 @@ import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
 import {
-    fetchAllWordlists,
-    fetchAvailableVoices
+    fetchAllWordlists
 } from './Utilities/apiClient.js';
 
 
@@ -71,7 +70,7 @@ const FlashCardApp = () => {
   const [wordListManager] = useState(() => new WordListManager(safeStorage, {}));
   const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(() => {
-    return safeStorage?.getItem('ankaido-selected-voice') || 'random';
+    return safeStorage?.getItem('ankaido-selected-voice') || 'default';
   });
   const [showSplash, setShowSplash] = useState(true);
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -137,18 +136,18 @@ const FlashCardApp = () => {
       setLoading(true);
       setError(null);
       try {
-        const [allWords, voices] = await Promise.all([
-          fetchAllWordlists(),
-          fetchAvailableVoices()
-        ]);
+        const allWords = await fetchAllWordlists();
         
         // Extract corpora from words
         const corpora = [...new Set(allWords.map(word => word.corpus))].sort();
         setAvailableCorpora(corpora);
-        setAvailableVoices(voices);
         
-        // Initialize audioManager with available voices
-        await audioManager.initialize(voices);
+        // Initialize TTS audio manager
+        await ttsAudioManager.initialize();
+        
+        // Get available TTS voices
+        const ttsVoices = ttsAudioManager.getAvailableVoices();
+        setAvailableVoices(ttsVoices);
         
         // Build corpus structures from all words
         const corporaStructures = {};
@@ -522,7 +521,7 @@ const FlashCardApp = () => {
           setVocabListWords={setVocabListWords}
           corporaData={corporaData}
           audioEnabled={audioEnabled}
-          audioManager={audioManager}
+          audioManager={ttsAudioManager}
           activityStatsManager={activityStatsManager}
         />
       ) : quizMode === 'journey' ? (

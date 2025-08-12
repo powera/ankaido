@@ -135,17 +135,6 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
                   </div>
                 )}
               </div>
-              {shouldShowAnswer && isCorrect && (
-                <div className="trakaido-audio-button-container">
-                  <AudioButton 
-                    word={studyMode === 'english-to-lithuanian' ? option : word.lithuanian}
-                    audioEnabled={audioEnabled}
-                    audioManager={audioManager}
-                    size="small"
-                    asSpan={true}
-                  />
-                </div>
-              )}
             </div>
           </button>
         );

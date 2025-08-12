@@ -1,6 +1,6 @@
 
 import React from 'react';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { Word } from '../Utilities/types';
 import AudioButton from './AudioButton';
 
@@ -91,7 +91,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
             <AudioButton 
               word={audioWord}
               audioEnabled={audioEnabled}
-              audioManager={audioManager}
+              audioManager={ttsAudioManager}
             />
           )}
         </div>

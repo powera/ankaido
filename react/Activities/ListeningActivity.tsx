@@ -2,7 +2,7 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { StudyMode, Word } from '../Utilities/types';
 
 interface ListeningActivityProps {
@@ -49,7 +49,7 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
       // Small delay to ensure the UI has updated and audio context is ready
       const timer = setTimeout(async () => {
         try {
-          await audioManager.playAudio(currentWord.lithuanian);
+          await ttsAudioManager.playAudio(currentWord.lithuanian);
         } catch (error) {
           console.warn('Auto-play failed, user interaction may be required:', error);
         }
@@ -141,7 +141,7 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
         quizMode="listening"
         handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        audioManager={audioManager}
+        audioManager={ttsAudioManager}
         multipleChoiceOptions={multipleChoiceOptions}
         selectedAnswer={selectedAnswer}
         showAnswer={showAnswer}

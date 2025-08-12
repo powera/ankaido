@@ -1,6 +1,6 @@
 import React from 'react';
 import { activityStatsManager } from '../Managers/activityStatsManager';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { corpusChoicesManager } from '../Managers/corpusChoicesManager';
 import { STORAGE_MODES, storageConfigManager } from '../Managers/storageConfigManager';
 
@@ -188,8 +188,8 @@ const AppSettingsPanel = ({
 
 
 
-      {/* Voice selector - only show when audio is enabled and voices are available */}
-      {audioEnabled && audioManager.getAvailableVoices().length > 0 && (
+      {/* Voice selector - only show when audio is enabled */}
+      {audioEnabled && (
         <div className="w-dropdown-container">
           <label>
             <span className="w-hide-mobile">Voice:</span>
@@ -199,12 +199,8 @@ const AppSettingsPanel = ({
             value={selectedVoice || ''} 
             onChange={(e) => setSelectedVoice(e.target.value)}
           >
-            <option value="random">🎲 Random Voice</option>
-            {audioManager.getAvailableVoices().map(voice => (
-              <option key={voice} value={voice}>
-                🎤 {voice}
-              </option>
-            ))}
+            <option value="default">🔊 Default Voice</option>
+            <option value="random">🎲 Rotate Voices</option>
           </select>
         </div>
       )}

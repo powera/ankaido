@@ -1,7 +1,7 @@
 import React from 'react';
 import MultipleChoiceOptions from '../Components/MultipleChoiceOptions';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 import { MultipleChoiceSettings, StudyMode, Word } from '../Utilities/types';
 
@@ -42,11 +42,11 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
     if (audioEnabled && currentWord && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        audioManager.playAudio(currentWord.lithuanian);
+        ttsAudioManager.playAudio(currentWord.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [currentWord, studyMode, audioEnabled, audioManager]);
+  }, [currentWord, studyMode, audioEnabled]);
 
   // Handle answer click with correctness determination
   const handleAnswerClick = React.useCallback((selectedOption: string) => {
@@ -102,7 +102,7 @@ const MultipleChoiceActivity: React.FC<MultipleChoiceActivityProps> = ({
         quizMode="multiple-choice"
         handleMultipleChoiceAnswer={handleAnswerClick}
         audioEnabled={audioEnabled}
-        audioManager={audioManager}
+        audioManager={ttsAudioManager}
         multipleChoiceOptions={multipleChoiceOptions}
         selectedAnswer={selectedAnswer}
         showAnswer={showAnswer}

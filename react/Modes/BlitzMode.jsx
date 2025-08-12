@@ -1,7 +1,7 @@
 import React from 'react';
 import BlitzActivity from '../Activities/BlitzActivity';
 import { activityStatsManager } from '../Managers/activityStatsManager';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 
 const BlitzMode = ({ 
   wordListManager,

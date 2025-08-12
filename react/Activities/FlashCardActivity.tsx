@@ -2,7 +2,7 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
 import activityStatsManager from '../Managers/activityStatsManager';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 import { invalidateWordWeightCache } from '../Utilities/activitySelection';
 import { StudyMode, Word } from '../Utilities/types';
@@ -51,7 +51,7 @@ const FlashCardActivity: React.FC<FlashCardActivityProps> = ({
       if (audioEnabled) {
         // Small delay to ensure the component is fully rendered
         setTimeout(() => {
-          audioManager.playAudio(currentWord.lithuanian).catch((error: unknown) => {
+          ttsAudioManager.playAudio(currentWord.lithuanian).catch((error: unknown) => {
             console.warn('Failed to auto-play audio for new word:', error);
           });
         }, 100);

@@ -1,6 +1,6 @@
 import React from 'react';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { getQuestionText } from '../Utilities/activityHelpers';
 import { StudyMode, Word } from '../Utilities/types';
 
@@ -46,7 +46,7 @@ const BlitzActivity: React.FC<BlitzActivityProps> = ({
     if (audioEnabled && currentWord && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        audioManager.playAudio(currentWord.lithuanian);
+        ttsAudioManager.playAudio(currentWord.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }

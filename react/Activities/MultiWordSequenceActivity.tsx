@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import safeStorage from '../DataStorage/safeStorage';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 
 // Type definitions
 interface Word {
@@ -63,7 +63,7 @@ const MultiWordSequenceActivity: React.FC<MultiWordSequenceActivityProps> = ({
       for (let i = 0; i < currentWord.sequence.length; i++) {
         const word = currentWord.sequence[i];
         // Use sequential=true to allow multiple audio files to play in sequence
-        await audioManager.playAudio(word.lithuanian, false, true);
+        await ttsAudioManager.playAudio(word.lithuanian, false, true);
         
         // Add 0.2s pause between words (except after the last word)
         if (i < currentWord.sequence.length - 1) {
@@ -88,7 +88,7 @@ const MultiWordSequenceActivity: React.FC<MultiWordSequenceActivityProps> = ({
       
       if (selectedVoiceSetting === 'random') {
         // For random voice, select one and stick with it for this question
-        const availableVoices = audioManager.getAvailableVoices();
+        const availableVoices = ttsAudioManager.getAvailableVoices();
         if (availableVoices.length > 0) {
           const randomIndex = Math.floor(Math.random() * availableVoices.length);
           setQuestionVoice(availableVoices[randomIndex]);
@@ -116,14 +116,14 @@ const MultiWordSequenceActivity: React.FC<MultiWordSequenceActivityProps> = ({
   useEffect(() => {
     setHasPlayedInitial(false);
     // Stop any currently playing audio when the word changes
-    audioManager.stopCurrentAudio();
+    ttsAudioManager.stopCurrentAudio();
   }, [currentWord]);
 
   // Cleanup: stop audio when component unmounts
   useEffect(() => {
     return () => {
       // Stop all audio playback and clear queue when component unmounts
-      audioManager.stopAllAudio();
+      ttsAudioManager.stopAllAudio();
       setIsPlaying(false);
     };
   }, []);

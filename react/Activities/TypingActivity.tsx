@@ -2,7 +2,7 @@
 import React from 'react';
 import TypingResponse from '../Components/TypingResponse';
 import WordDisplayCard from '../Components/WordDisplayCard';
-import audioManager from '../Managers/audioManager';
+import ttsAudioManager from '../Managers/ttsAudioManager';
 import { createInitialActivityState, getAllValidAnswers, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 import { StudyMode, Word, WordListState } from '../Utilities/types';
 
@@ -64,11 +64,11 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     if (audioEnabled && word && studyMode === 'source-to-english') {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        audioManager.playAudio(word.lithuanian);
+        ttsAudioManager.playAudio(word.lithuanian);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [word, studyMode, audioEnabled, audioManager]);
+  }, [word, studyMode, audioEnabled]);
 
   // Helper function to normalize text for comparison
   const normalizeForComparison = (text: string): string => {
@@ -205,7 +205,7 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
         currentWord={word}
         studyMode={studyMode}
         audioEnabled={audioEnabled}
-        audioManager={audioManager}
+        audioManager={ttsAudioManager}
         onSubmit={handleSubmit}
         showAnswer={activityState.showAnswer}
         feedback={activityState.typingFeedback}

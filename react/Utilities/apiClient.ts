@@ -33,9 +33,7 @@ export interface CorpusStructure {
   };
 }
 
-export interface VoicesResponse {
-  voices: string[];
-}
+// Removed VoicesResponse - now using browser TTS voices
 
 
 
@@ -73,6 +71,21 @@ export interface DailyStatsResponse {
 // --- API Functions ---
 
 export const fetchAllWordlists = async (): Promise<Word[]> => {
+  // Try to load from local GRE words file first
+  try {
+    const response = await fetch('/data/gre_words_full.json');
+    if (response.ok) {
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        console.log(`Loaded ${data.length} words from local GRE file`);
+        return data as Word[];
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to load local GRE words, falling back to API:', error);
+  }
+  
+  // Fallback to original API
   const response = await fetch('/api/trakaido/lithuanian/wordlists');
   if (!response.ok) throw new Error('Failed to fetch wordlists');
   const data = await response.json();
@@ -120,17 +133,7 @@ export const fetchCorpusStructure = async (corpus: string): Promise<CorpusStruct
   return { groups };
 };
 
-export const fetchAvailableVoices = async (): Promise<string[]> => {
-  try {
-    const response = await fetch(`${API_BASE}/audio/voices`);
-    if (!response.ok) throw new Error('Failed to fetch voices');
-    const data: VoicesResponse = await response.json();
-    return data.voices;
-  } catch (error) {
-    console.warn('Failed to fetch available voices:', error);
-    return [];
-  }
-};
+// Removed fetchAvailableVoices - now using browser TTS voices
 
 
 
