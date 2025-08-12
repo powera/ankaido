@@ -61,22 +61,22 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
       <div className="w-card w-welcome-card">
         <div className="w-welcome-header">
           <h1 className="w-welcome-title">
-            🇱🇹 Welcome to Trakaido!
+            📚 Welcome to Ankaido!
           </h1>
           <p className="w-welcome-subtitle">
-            Your Lithuanian Learning Companion
+            The Flashcard App
           </p>
         </div>
 
         <div className="w-welcome-features">
-          <h3 className="w-welcome-features-title">What can you do with Trakaido?</h3>
+          <h3 className="w-welcome-features-title">What can you do with Ankaido?</h3>
           <ul className="w-welcome-features-list">
-            <li className="w-welcome-feature-item">📚 <strong>Flash Cards:</strong> Learn vocabulary with interactive cards</li>
+            <li className="w-welcome-feature-item">📚 <strong>Flash Cards:</strong> Learn with interactive cards</li>
             <li className="w-welcome-feature-item">✏️ <strong>Multiple Choice:</strong> Test your knowledge with quizzes</li>
             <li className="w-welcome-feature-item">⌨️ <strong>Typing Practice:</strong> Improve spelling and recall</li>
             <li className="w-welcome-feature-item">🎧 <strong>Listening Mode:</strong> Train your ear with audio</li>
 
-            <li className="w-welcome-feature-item">📑 <strong>Vocabulary Lists:</strong> Browse and study word collections</li>
+            <li className="w-welcome-feature-item">📑 <strong>Card Collections:</strong> Browse and study card sets</li>
           </ul>
         </div>
 

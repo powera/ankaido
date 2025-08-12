@@ -95,18 +95,18 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
               },
               {
                 header: 'Total Correct',
-                render: (rowData: Word, rowIndex: number) => {
+                render: (rowData: any, rowIndex: number) => {
                   const stats = activityStatsManager.getWordStats(rowData);
-                  return calculateTotalCorrect(stats);
+                  return <span>{calculateTotalCorrect(stats)}</span>;
                 },
                 align: 'center',
                 width: '80px'
               },
               {
                 header: 'Total Attempts',
-                render: (rowData: Word, rowIndex: number) => {
+                render: (rowData: any, rowIndex: number) => {
                   const stats = activityStatsManager.getWordStats(rowData);
-                  return getTotalExposures(stats);
+                  return <span>{getTotalExposures(stats)}</span>;
                 },
                 align: 'center',
                 width: '80px'
