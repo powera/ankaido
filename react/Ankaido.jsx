@@ -474,7 +474,7 @@ const FlashCardApp = () => {
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
 
-      {!isFullscreen && <h1>🇱🇹 Ankaido!</h1>}
+      {!isFullscreen && <h1>📚 Ankaido!</h1>}
 
       <AppSettingsPanel
         quizMode={quizMode}

@@ -87,17 +87,27 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
                 translation = matchingWord.english;
               }
             }
-          } else if (isCorrect) {
-            // For correct answer, show the opposite translation
-            translation = studyMode === 'lithuanian-to-english' ? word.lithuanian : word.english;
-          } else {
-            // For all other options, find the word that matches this option
-            const matchingWord: Word | undefined = wordsForTranslation?.find(w => 
-              (studyMode === 'lithuanian-to-english' ? w.english : w.lithuanian) === option ||
-              (studyMode === 'english-to-lithuanian' ? w.lithuanian : w.english) === option
-            );
-            if (matchingWord) {
-              translation = studyMode === 'lithuanian-to-english' ? matchingWord.lithuanian : matchingWord.english;
+          } else if (studyMode === 'source-to-english') {
+            // Lithuanian question, English answers - show Lithuanian translation for all options
+            if (isCorrect) {
+              translation = word.lithuanian;
+            } else {
+              // Find the word that matches this English option
+              const matchingWord: Word | undefined = wordsForTranslation?.find(w => w.english === option);
+              if (matchingWord) {
+                translation = matchingWord.lithuanian;
+              }
+            }
+          } else if (studyMode === 'english-to-source') {
+            // English question, Lithuanian answers - show English translation for all options
+            if (isCorrect) {
+              translation = word.english;
+            } else {
+              // Find the word that matches this Lithuanian option
+              const matchingWord: Word | undefined = wordsForTranslation?.find(w => w.lithuanian === option);
+              if (matchingWord) {
+                translation = matchingWord.english;
+              }
             }
           }
         }
