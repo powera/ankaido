@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataTable from '../Components/shared/DataTable';
 import { CorporaData } from '../Utilities/studyMaterialsUtils';
-import { AudioManager, Word } from '../Utilities/types';
+import { AudioManager, Word, SortDirection } from '../Utilities/types';
 import { ActivityStatsManager, calculateTotalCorrect, calculateTotalIncorrect, getTotalExposures } from '../Managers/activityStatsManager';
 
 // Interface for vocabulary group options
@@ -36,10 +36,16 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
   audioManager,
   activityStatsManager
 }) => {
+  // State for table sorting
+  const [sortField, setSortField] = useState<string>('');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+
   const loadVocabListForGroup = (optionValue: string) => {
     if (!optionValue) {
       setSelectedVocabGroup(null);
       setVocabListWords([]);
+      setSortField('');
+      setSortDirection('asc');
       return;
     }
 
@@ -52,9 +58,64 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
     // Get words for this specific group
     const words: Word[] = corporaData[corpus].groups[group];
 
-    // Sort alphabetically by source language word
+    // Sort alphabetically by source language word (default sort)
     words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian, undefined, { sensitivity: 'base' }));
     setVocabListWords(words);
+    
+    // Reset sorting to default
+    setSortField('lithuanian');
+    setSortDirection('asc');
+  };
+
+  const handleSort = (field: string) => {
+    let newDirection: SortDirection = 'asc';
+    
+    // If clicking the same field, toggle direction
+    if (sortField === field) {
+      newDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    }
+    
+    setSortField(field);
+    setSortDirection(newDirection);
+    
+    // Create a copy of the words array and sort it
+    const sortedWords = [...vocabListWords];
+    
+    sortedWords.sort((a, b) => {
+      let aValue: any;
+      let bValue: any;
+      
+      if (field === 'totalCorrect') {
+        const aStats = activityStatsManager.getWordStats(a);
+        const bStats = activityStatsManager.getWordStats(b);
+        aValue = calculateTotalCorrect(aStats);
+        bValue = calculateTotalCorrect(bStats);
+      } else if (field === 'totalAttempts') {
+        const aStats = activityStatsManager.getWordStats(a);
+        const bStats = activityStatsManager.getWordStats(b);
+        aValue = getTotalExposures(aStats);
+        bValue = getTotalExposures(bStats);
+      } else {
+        // For text fields (lithuanian, english)
+        aValue = a[field as keyof Word];
+        bValue = b[field as keyof Word];
+      }
+      
+      // Handle numeric sorting
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return newDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+      
+      // Handle string sorting
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        const comparison = aValue.localeCompare(bValue, undefined, { sensitivity: 'base' });
+        return newDirection === 'asc' ? comparison : -comparison;
+      }
+      
+      return 0;
+    });
+    
+    setVocabListWords(sortedWords);
   };
 
   return (
@@ -87,11 +148,15 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
             columns={[
               {
                 header: 'Source Language',
-                accessor: 'lithuanian'
+                accessor: 'lithuanian',
+                sortable: true,
+                sortKey: 'lithuanian'
               },
               {
                 header: 'English', 
-                accessor: 'english'
+                accessor: 'english',
+                sortable: true,
+                sortKey: 'english'
               },
               {
                 header: 'Total Correct',
@@ -100,7 +165,9 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
                   return <span>{calculateTotalCorrect(stats)}</span>;
                 },
                 align: 'center',
-                width: '80px'
+                width: '80px',
+                sortable: true,
+                sortKey: 'totalCorrect'
               },
               {
                 header: 'Total Attempts',
@@ -109,17 +176,24 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
                   return <span>{getTotalExposures(stats)}</span>;
                 },
                 align: 'center',
-                width: '80px'
+                width: '80px',
+                sortable: true,
+                sortKey: 'totalAttempts'
               },
               {
                 header: 'Audio',
                 type: 'audio',
                 audioWord: 'lithuanian',
                 align: 'center',
-                width: '60px'
+                width: '60px',
+                sortable: false
               }
             ]}
             data={vocabListWords}
+            sortable={true}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onSort={handleSort}
             audioEnabled={audioEnabled}
             audioManager={audioManager}
             maxHeight="60vh"
