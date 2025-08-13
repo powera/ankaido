@@ -15,6 +15,7 @@ interface TypingResponseProps {
   defaultDelay?: number;
   onNext?: () => void;
   autoAdvanceTimer?: NodeJS.Timeout | null;
+  promptText?: string;
 }
 
 const TypingResponse: React.FC<TypingResponseProps> = ({
@@ -30,7 +31,8 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
   autoAdvance,
   defaultDelay,
   onNext,
-  autoAdvanceTimer
+  autoAdvanceTimer,
+  promptText
 }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,9 +43,10 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
   const correctAnswer = studyMode === 'english-to-lithuanian' ? 
     currentWord?.lithuanian : currentWord?.english;
 
-  const promptText = studyMode === 'english-to-lithuanian' ? 
+  // Use provided promptText or fallback to default based on study mode
+  const finalPromptText = promptText || (studyMode === 'english-to-lithuanian' ? 
     'Type the Lithuanian word (with proper accents)' : 
-    'Type the English word';
+    'Type the English word');
 
   return (
     <div>
@@ -81,13 +84,26 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
       <div className="w-typing-area" style={{ marginBottom: 'var(--spacing-base)' }}>
         {!showAnswer ? (
           <div>
+            {/* Prominent typing directions */}
+            <div style={{ 
+              marginBottom: 'var(--spacing-base)', 
+              padding: 'var(--spacing-small)',
+              backgroundColor: 'var(--color-primary-light, rgba(0, 123, 255, 0.1))',
+              border: '1px solid var(--color-primary, #007bff)',
+              borderRadius: 'var(--border-radius)',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              color: 'var(--color-primary, #007bff)'
+            }}>
+              {finalPromptText}
+            </div>
             <div style={{ display: 'flex', gap: 'var(--spacing-small)' }}>
               <form onSubmit={handleSubmit}>
                 <input
                   type="text"
                   value={typedAnswer}
                   onChange={(e) => onTypedAnswerChange(e.target.value)}
-                  placeholder={promptText}
+                  placeholder="Type your answer here..."
                   className="w-typing-input"
                   disabled={showAnswer}
                   autoFocus

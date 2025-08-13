@@ -7,6 +7,7 @@
       "file": "gre_words_full.json",
       "description": "Graduate Record Examination vocabulary words",
       "enabled": true,
+      "typing_directions": "What word has this definition?",
       "metadata": {
         "source": "GRE test preparation",
         "language_pair": "english-english",
@@ -22,10 +23,11 @@
     {
       "id": "lithuanian",
       "name": "Lithuanian Vocabulary",
-      "corpus": "Lithuanian",
+      "corpus": "Lithuanian Basics",
       "file": "lithuanian_words.json",
       "description": "Lithuanian language vocabulary",
       "enabled": true,
+      "typing_directions": "Type this word in Lithuanian",
       "metadata": {
         "source": "Lithuanian language learning",
         "language_pair": "lithuanian-english",
@@ -45,6 +47,7 @@
       "file": "imported_words.json",
       "description": "Imported Imported vocabulary from Anki deck",
       "enabled": true,
+      "typing_directions": "What word has this definition?",
       "metadata": {
         "source": "Anki deck import",
         "language_pair": "mixed-english",
@@ -63,6 +66,7 @@
       "file": "legal_terms.json",
       "description": "Legal terminology covering legal processes and criminal law",
       "enabled": true,
+      "typing_directions": "What legal term has this definition?",
       "metadata": {
         "source": "Legal education",
         "language_pair": "english-english",

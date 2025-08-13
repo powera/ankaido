@@ -5,6 +5,7 @@ import WordDisplayCard from '../Components/WordDisplayCard';
 import ttsAudioManager from '../Managers/ttsAudioManager';
 import { createInitialActivityState, getAllValidAnswers, getCorrectAnswer, getQuestionText } from '../Utilities/activityHelpers';
 import { StudyMode, Word, WordListState } from '../Utilities/types';
+import { getTypingDirectionsForCorpus } from '../Utilities/apiClient';
 
 // WordListManager interface - based on the actual implementation
 interface WordListManager {
@@ -45,6 +46,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   const [activityState, setActivityState] = React.useState(() =>
     createInitialActivityState(false, null, '', '')
   );
+  
+  const [typingDirections, setTypingDirections] = React.useState<string>('Type the term');
 
   // Use currentWord from props, fallback to wordListManager if available
   const word: Word | null = currentWord || (wordListManager?.getCurrentWord ? wordListManager.getCurrentWord() : null) || null;
@@ -57,6 +60,15 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
       typedAnswer: '',
       typingFeedback: ''
     }));
+  }, [word]);
+
+  // Fetch typing directions when word changes
+  React.useEffect(() => {
+    if (word && word.corpus) {
+      getTypingDirectionsForCorpus(word.corpus).then(directions => {
+        setTypingDirections(directions);
+      });
+    }
   }, [word]);
 
   // Auto-play audio for typing mode (play the definition, user types the term)
@@ -186,8 +198,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   const question: string = word.english;  // This contains the definition
   const answer: string = word.lithuanian;  // This contains the term
   
-  // Generate prompt text for typing mode (always asking for the term)
-  const promptText: string = 'Type the term';
+  // Use dynamic typing directions based on corpus
+  const promptText: string = typingDirections;
 
   return (
     <div>
@@ -213,6 +225,7 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
         autoAdvance={autoAdvance}
         defaultDelay={defaultDelay}
         autoAdvanceTimer={autoAdvanceTimer}
+        promptText={promptText}
       />
     </div>
   );

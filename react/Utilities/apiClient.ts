@@ -46,6 +46,7 @@ export interface VocabularyRegistryEntry {
   file: string;
   description: string;
   enabled: boolean;
+  typing_directions?: string;
   metadata: {
     source: string;
     language_pair: string;
@@ -192,5 +193,27 @@ export const fetchWeeklyStats = async (): Promise<DailyStatsResponse | null> => 
   } catch (error) {
     console.warn('Failed to fetch weekly stats:', error);
     return null;
+  }
+};
+
+export const getTypingDirectionsForCorpus = async (corpus: string): Promise<string> => {
+  try {
+    const registryResponse = await fetch('/data/vocabulary_registry.json');
+    if (!registryResponse.ok) {
+      throw new Error('Failed to fetch vocabulary registry');
+    }
+    
+    const registry: VocabularyRegistry = await registryResponse.json();
+    const vocabularyEntry = registry.vocabularies.find(vocab => vocab.corpus === corpus);
+    
+    if (vocabularyEntry && vocabularyEntry.typing_directions) {
+      return vocabularyEntry.typing_directions;
+    }
+    
+    // Fallback to generic direction
+    return 'Type the term';
+  } catch (error) {
+    console.warn('Failed to fetch typing directions for corpus:', corpus, error);
+    return 'Type the term';
   }
 };
