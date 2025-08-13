@@ -23,7 +23,7 @@ import FlashCardMode from './Modes/FlashCardMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
-import MultiWordSequenceMode from './Modes/MultiWordSequenceMode.jsx';
+
 import {
     fetchAllWordlists
 } from './Utilities/apiClient.js';
@@ -496,7 +496,7 @@ const FlashCardApp = () => {
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'multi-word-sequence' && (
+      {!showNoGroupsMessage && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -614,16 +614,6 @@ const FlashCardApp = () => {
             onBackToBlitzSelector={handleBackToBlitzSelector}
           />
         )
-      ) : quizMode === 'multi-word-sequence' ? (
-        <MultiWordSequenceMode 
-          wordListManager={wordListManager}
-          wordListState={wordListState}
-          studyMode={studyMode}
-          audioEnabled={audioEnabled}
-          autoAdvance={true}
-          defaultDelay={10}
-          settings={{}}
-        />
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>

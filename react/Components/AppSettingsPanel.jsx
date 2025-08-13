@@ -156,7 +156,7 @@ const AppSettingsPanel = ({
           <option value="journey">🚀 Journey Mode</option>
           <option value="drill">🎯 Drill Mode</option>
           <option value="blitz">⚡ Blitz Mode</option>
-          <option value="multi-word-sequence">🎵 Multi-Word Sequence</option>
+
           <option value="multiple-choice">🎯 Multiple Choice</option>
           <option value="listening">🎧 Listening</option>
           <option value="typing">⌨️ Typing</option>

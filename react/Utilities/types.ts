@@ -60,7 +60,7 @@ export interface SessionStats {
 export type ActivityType = 'multiple-choice' | 'listening' | 'typing';
 
 // Extended activity types including special activities
-export type ExtendedActivityType = ActivityType | 'motivational-break' | 'new-word' | 'multi-word-sequence' | 'welcome-interstitial';
+export type ExtendedActivityType = ActivityType | 'motivational-break' | 'new-word' | 'welcome-interstitial';
 
 // Study modes - unified naming convention
 export type StudyMode = 
@@ -111,32 +111,7 @@ export interface MultipleChoiceSettings {
   [key: string]: any;
 }
 
-export interface MultiWordSequenceSettings {
-  sequenceLength?: number;
-}
 
-// Multi-word sequence specific interfaces
-export interface MultiWordSequenceActivity {
-  sequence: Word[];
-  options: Word[];
-  corpus: string;
-  type: 'multi-word-sequence';
-  sequenceLength: number;
-}
-
-export interface CorpusStats {
-  corpus: string;
-  wordCount: number;
-  minRequired: number;
-}
-
-export interface MultiWordSequenceStats {
-  eligible: CorpusStats[];
-  ineligible: CorpusStats[];
-  totalWords: number;
-  sequenceLength: number;
-  minRequired: number;
-}
 
 // Stats manager interface
 export interface ActivityStatsManager {
