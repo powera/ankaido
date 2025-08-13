@@ -6,7 +6,6 @@ import { activityStatsManager } from '../Managers/activityStatsManager';
 const TypingMode = ({ 
   wordListManager,
   wordListState,
-  studyMode,
   audioEnabled,
   autoAdvance,
   defaultDelay
@@ -75,7 +74,7 @@ const TypingMode = ({
       <TypingActivity
         wordListManager={wordListManager}
         wordListState={wordListState}
-        studyMode={studyMode}
+        studyMode="english-to-source"
         audioEnabled={audioEnabled}
         onSubmit={handleTypingSubmit}
         autoAdvance={autoAdvance}

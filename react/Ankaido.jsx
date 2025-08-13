@@ -570,7 +570,6 @@ const FlashCardApp = () => {
         <TypingMode 
           wordListManager={wordListManager}
           wordListState={wordListState}
-          studyMode={studyMode}
           audioEnabled={audioEnabled}
           autoAdvance={false}
           defaultDelay={5}

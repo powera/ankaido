@@ -59,16 +59,17 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     }));
   }, [word]);
 
-  // Auto-play audio for source->EN typing (source language prompt, player types English answer)
+  // Auto-play audio for typing mode (play the definition, user types the term)
   React.useEffect(() => {
-    if (audioEnabled && word && studyMode === 'source-to-english') {
+    if (audioEnabled && word) {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        ttsAudioManager.playAudio(word.lithuanian);
+        // Play the definition (stored in english field due to data mapping)
+        ttsAudioManager.playAudio(word.english);
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [word, studyMode, audioEnabled]);
+  }, [word, audioEnabled]);
 
   // Helper function to normalize text for comparison
   const normalizeForComparison = (text: string): string => {
@@ -83,7 +84,6 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   const findMatchingWord = React.useCallback((
     typedAnswer: string, 
     currentWord: Word | null, 
-    studyMode: StudyMode, 
     allWords?: Word[]
   ): Word | null => {
     if (!allWords || !Array.isArray(allWords)) return null;
@@ -98,8 +98,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
         return false;
       }
       
-      // Get all valid answers for this word and check if any match
-      const wordValidAnswers = getAllValidAnswers(word, studyMode);
+      // Get all valid answers for this word (always terms in typing mode)
+      const wordValidAnswers = getAllValidAnswers(word, 'english-to-source');
       return wordValidAnswers.some(validAnswer => 
         normalizeForComparison(validAnswer) === normalizedTyped
       );
@@ -112,8 +112,9 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   const handleSubmit = React.useCallback(async (typedAnswer: string): Promise<void> => {
     if (!word) return;
     
-    const correctAnswer = getCorrectAnswer(word, studyMode);
-    const allValidAnswers = getAllValidAnswers(word, studyMode);
+    // Always use english-to-source mode for typing (definition -> term)
+    const correctAnswer = getCorrectAnswer(word, 'english-to-source');
+    const allValidAnswers = getAllValidAnswers(word, 'english-to-source');
     
     // Normalize typed answer for comparison
     const normalizedTyped = normalizeForComparison(typedAnswer);
@@ -129,12 +130,11 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
       feedback = '✅ Correct!';
     } else {
       // Check if the typed answer matches a different word's translation
-      const matchingWord = findMatchingWord(typedAnswer, word, studyMode, allWords);
+      const matchingWord = findMatchingWord(typedAnswer, word, allWords);
       
       if (matchingWord) {
-        // Determine which word field to show based on study mode
-        const sourceField = studyMode === 'english-to-source' ? 'english' : 'lithuanian';
-        const sourceWord = matchingWord[sourceField];
+        // Always show the definition for the matching word
+        const sourceWord = matchingWord.english;
         
         // Show all valid answers
         const validAnswersText = allValidAnswers.length > 1 
@@ -163,7 +163,7 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     if (onSubmit) {
       onSubmit(typedAnswer, isCorrect);
     }
-  }, [word, studyMode, onSubmit, findMatchingWord, allWords, normalizeForComparison, getAllValidAnswers]);
+  }, [word, onSubmit, findMatchingWord, allWords, normalizeForComparison, getAllValidAnswers]);
 
   // Handle typed answer changes
   const handleTypedAnswerChange = React.useCallback((value: string): void => {
@@ -181,14 +181,13 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     );
   }
 
-  const question: string = getQuestionText(word, studyMode);
-  const answer: string = getCorrectAnswer(word, studyMode);
+  // Always show definition as question and ask for term as answer
+  // Note: Due to data mapping, definition is stored in 'english' field and term in 'lithuanian' field
+  const question: string = word.english;  // This contains the definition
+  const answer: string = word.lithuanian;  // This contains the term
   
-  // Generate prompt text based on study mode
-  // TODO: re-display this or remove it
-  const promptText: string = studyMode === 'english-to-source' ? 
-    'Type the source language word (with proper accents)' : 
-    'Type the English word';
+  // Generate prompt text for typing mode (always asking for the term)
+  const promptText: string = 'Type the term';
 
   return (
     <div>

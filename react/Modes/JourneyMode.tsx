@@ -524,8 +524,8 @@ const JourneyMode: React.FC<JourneyModeProps> = ({
   }
 
   if (journeyState.currentActivity === 'typing') {
-    // Typing is always source->EN: source language prompt, type English answer
-    const effectiveStudyMode = 'source-to-english';
+    // Typing is always definition->term: show definition, type the term
+    const effectiveStudyMode = 'english-to-source';
     const challengeTitle = '⌨️ Typing Challenge';
 
     return (

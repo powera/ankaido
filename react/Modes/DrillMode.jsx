@@ -513,7 +513,7 @@ const DrillMode = ({
         <div>
           <TypingActivity
             currentWord={drillState.currentWord}
-            studyMode="source-to-english"
+            studyMode="english-to-source"
             onSubmit={handleDrillTyping}
             audioEnabled={audioEnabled}
             autoAdvance={autoAdvance}
