@@ -1,0 +1,2082 @@
+[
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "jury selection",
+        "jury examination"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "From French meaning 'to speak the truth'",
+      "tags": [
+        "legal",
+        "process",
+        "jury",
+        "french"
+      ]
+    },
+    "term": "voir dire",
+    "definition": "the process of jury selection in which attorneys question potential jurors"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "writ of habeas corpus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'you shall have the body'",
+      "tags": [
+        "legal",
+        "process",
+        "constitutional",
+        "latin"
+      ]
+    },
+    "term": "habeas corpus",
+    "definition": "a legal principle requiring that a person under arrest be brought before a judge or court"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "court summons",
+        "legal summons"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Latin for 'under penalty'",
+      "tags": [
+        "legal",
+        "process",
+        "court",
+        "latin"
+      ]
+    },
+    "term": "subpoena",
+    "definition": "a legal document ordering someone to attend a court proceeding"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_004",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "sworn testimony",
+        "pretrial testimony"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often conducted in attorney's office with court reporter present",
+      "tags": [
+        "legal",
+        "process",
+        "testimony",
+        "pretrial"
+      ]
+    },
+    "term": "deposition",
+    "definition": "sworn testimony taken outside of court for use in legal proceedings"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_005",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "pretrial discovery",
+        "evidence exchange"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Includes document requests, interrogatories, and depositions",
+      "tags": [
+        "legal",
+        "process",
+        "pretrial",
+        "evidence"
+      ]
+    },
+    "term": "discovery",
+    "definition": "the pretrial process where parties exchange information and evidence"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_006",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "legal motion",
+        "court motion"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Can be made orally or in writing",
+      "tags": [
+        "legal",
+        "process",
+        "court",
+        "request"
+      ]
+    },
+    "term": "motion",
+    "definition": "a formal request made to a court for a specific ruling or order"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_007",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "plea agreement",
+        "plea deal"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves reduced charges or sentencing recommendations",
+      "tags": [
+        "legal",
+        "process",
+        "criminal",
+        "agreement"
+      ]
+    },
+    "term": "plea bargain",
+    "definition": "an agreement where a defendant pleads guilty to a lesser charge"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_008",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "formal charging",
+        "plea hearing"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Usually the first court appearance after arrest",
+      "tags": [
+        "legal",
+        "process",
+        "criminal",
+        "court"
+      ]
+    },
+    "term": "arraignment",
+    "definition": "a court proceeding where charges are formally read and a plea is entered"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_009",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "formal charge",
+        "grand jury charge"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Required for felony prosecutions in federal court",
+      "tags": [
+        "legal",
+        "process",
+        "criminal",
+        "grand jury"
+      ]
+    },
+    "term": "indictment",
+    "definition": "a formal charge or accusation of a serious crime by a grand jury"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_010",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "sworn statement",
+        "sworn declaration"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be signed before a notary public or other authorized official",
+      "tags": [
+        "legal",
+        "process",
+        "evidence",
+        "sworn"
+      ]
+    },
+    "term": "affidavit",
+    "definition": "a written statement confirmed by oath for use as evidence in court"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_011",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "court order",
+        "restraining order"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be temporary or permanent",
+      "tags": [
+        "legal",
+        "process",
+        "court order",
+        "remedy"
+      ]
+    },
+    "term": "injunction",
+    "definition": "a court order requiring someone to do or stop doing a specific action"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_012",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "legal authority",
+        "court authority"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be based on geography, subject matter, or other factors",
+      "tags": [
+        "legal",
+        "process",
+        "court",
+        "authority"
+      ]
+    },
+    "term": "jurisdiction",
+    "definition": "the authority of a court to hear and decide a case"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_013",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "trial location",
+        "court location"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Different from jurisdiction; relates to convenience and fairness",
+      "tags": [
+        "legal",
+        "process",
+        "geography",
+        "trial"
+      ]
+    },
+    "term": "venue",
+    "definition": "the proper geographic location for a trial"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_014",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "time limit",
+        "filing deadline"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Varies by type of case and jurisdiction",
+      "tags": [
+        "legal",
+        "process",
+        "time limit",
+        "statute"
+      ]
+    },
+    "term": "statute of limitations",
+    "definition": "the time limit for filing a lawsuit or bringing criminal charges"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_015",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "case law",
+        "legal precedent"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Foundation of common law system",
+      "tags": [
+        "legal",
+        "process",
+        "case law",
+        "principle"
+      ]
+    },
+    "term": "precedent",
+    "definition": "a legal principle established by a court decision that guides future cases"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_016",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "precedent doctrine",
+        "following precedent"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'to stand by things decided'",
+      "tags": [
+        "legal",
+        "process",
+        "precedent",
+        "latin"
+      ]
+    },
+    "term": "stare decisis",
+    "definition": "the legal principle of following established precedents"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_017",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "friend of the court",
+        "amicus brief"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'friend of the court'",
+      "tags": [
+        "legal",
+        "process",
+        "court",
+        "latin"
+      ]
+    },
+    "term": "amicus curiae",
+    "definition": "a person or organization that offers information to assist a court's decision"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_018",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "free legal work",
+        "charitable legal work"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Latin for 'for the public good'",
+      "tags": [
+        "legal",
+        "process",
+        "charity",
+        "latin"
+      ]
+    },
+    "term": "pro bono",
+    "definition": "legal work done without charge for the public good"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_019",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "self-representation",
+        "appearing without counsel"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Latin for 'for oneself'",
+      "tags": [
+        "legal",
+        "process",
+        "self-representation",
+        "latin"
+      ]
+    },
+    "term": "pro se",
+    "definition": "representing oneself in court without an attorney"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_020",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "cert petition",
+        "writ of certiorari"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'to be informed'; commonly used for Supreme Court appeals",
+      "tags": [
+        "legal",
+        "process",
+        "appeal",
+        "latin"
+      ]
+    },
+    "term": "certiorari",
+    "definition": "a writ by which a higher court reviews a lower court's decision"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_021",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "writ of mandamus",
+        "compulsory order"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'we command'",
+      "tags": [
+        "legal",
+        "process",
+        "government",
+        "latin"
+      ]
+    },
+    "term": "mandamus",
+    "definition": "a court order compelling a government official to perform a duty"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_022",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "one-sided proceeding",
+        "without notice"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'from one party'",
+      "tags": [
+        "legal",
+        "process",
+        "emergency",
+        "latin"
+      ]
+    },
+    "term": "ex parte",
+    "definition": "a legal proceeding brought by one party without notice to the other party"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_023",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "in chambers",
+        "private proceeding"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'in chamber'",
+      "tags": [
+        "legal",
+        "process",
+        "private",
+        "latin"
+      ]
+    },
+    "term": "in camera",
+    "definition": "a legal proceeding held in private, usually in a judge's chambers"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_024",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "final judgment",
+        "settled matter"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Latin for 'a matter decided'",
+      "tags": [
+        "legal",
+        "process",
+        "finality",
+        "latin"
+      ]
+    },
+    "term": "res judicata",
+    "definition": "a matter that has been adjudicated and cannot be pursued further"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_025",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "issue preclusion",
+        "judicial estoppel"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Prevents parties from relitigating the same factual issues",
+      "tags": [
+        "legal",
+        "process",
+        "preclusion",
+        "doctrine"
+      ]
+    },
+    "term": "collateral estoppel",
+    "definition": "a legal doctrine preventing relitigation of issues already decided"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_026",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "judgment without trial",
+        "pretrial judgment"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Granted when there are no genuine issues of material fact",
+      "tags": [
+        "legal",
+        "process",
+        "judgment",
+        "pretrial"
+      ]
+    },
+    "term": "summary judgment",
+    "definition": "a court ruling made without a full trial when no material facts are disputed"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_027",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "judgment by default",
+        "failure to appear judgment"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Occurs when defendant fails to respond to lawsuit",
+      "tags": [
+        "legal",
+        "process",
+        "judgment",
+        "default"
+      ]
+    },
+    "term": "default judgment",
+    "definition": "a court ruling in favor of one party due to the other party's failure to respond"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_028",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "class action lawsuit",
+        "representative action"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Allows efficient resolution of similar claims by many people",
+      "tags": [
+        "legal",
+        "process",
+        "lawsuit",
+        "group"
+      ]
+    },
+    "term": "class action",
+    "definition": "a lawsuit filed by one or more plaintiffs on behalf of a larger group"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_029",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "joining parties",
+        "adding claims"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be permissive or compulsory depending on circumstances",
+      "tags": [
+        "legal",
+        "process",
+        "parties",
+        "claims"
+      ]
+    },
+    "term": "joinder",
+    "definition": "the inclusion of additional parties or claims in a lawsuit"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_030",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "stakeholder action",
+        "deposit with court"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Used when multiple parties claim the same property or funds",
+      "tags": [
+        "legal",
+        "process",
+        "property",
+        "dispute"
+      ]
+    },
+    "term": "interpleader",
+    "definition": "a legal action where a party deposits disputed property with the court"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_031",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "wage garnishment",
+        "asset seizure"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Requires court order and notice to debtor",
+      "tags": [
+        "legal",
+        "process",
+        "debt",
+        "collection"
+      ]
+    },
+    "term": "garnishment",
+    "definition": "a legal process to collect debt by seizing a debtor's wages or assets"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_032",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "property seizure",
+        "legal seizure"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can occur before or after judgment",
+      "tags": [
+        "legal",
+        "process",
+        "property",
+        "seizure"
+      ]
+    },
+    "term": "attachment",
+    "definition": "the legal seizure of property to secure payment of a judgment"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_033",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "judgment enforcement",
+        "writ of execution"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Final step in collecting on a court judgment",
+      "tags": [
+        "legal",
+        "process",
+        "enforcement",
+        "judgment"
+      ]
+    },
+    "term": "execution",
+    "definition": "the enforcement of a court judgment, typically involving seizure of assets"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_034",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "court contempt",
+        "disrespect of court"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be civil or criminal contempt",
+      "tags": [
+        "legal",
+        "process",
+        "court",
+        "violation"
+      ]
+    },
+    "term": "contempt of court",
+    "definition": "behavior that defies or disrespects the authority of a court"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_035",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "aborted trial",
+        "terminated trial"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "May result in retrial or dismissal of charges",
+      "tags": [
+        "legal",
+        "process",
+        "trial",
+        "error"
+      ]
+    },
+    "term": "mistrial",
+    "definition": "a trial that is terminated without a verdict due to procedural error or misconduct"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_036",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "deadlocked jury",
+        "undecided jury"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Usually results in mistrial and possible retrial",
+      "tags": [
+        "legal",
+        "process",
+        "jury",
+        "deadlock"
+      ]
+    },
+    "term": "hung jury",
+    "definition": "a jury that cannot reach a unanimous or required majority verdict"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_037",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "jury isolation",
+        "jury confinement"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Prevents exposure to media coverage or outside pressure",
+      "tags": [
+        "legal",
+        "process",
+        "jury",
+        "isolation"
+      ]
+    },
+    "term": "sequestration",
+    "definition": "the isolation of a jury from outside influences during deliberation"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_038",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "unreasoned challenge",
+        "automatic rejection"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Limited in number and cannot be based on race or gender",
+      "tags": [
+        "legal",
+        "process",
+        "jury",
+        "selection"
+      ]
+    },
+    "term": "peremptory challenge",
+    "definition": "the right to reject a potential juror without stating a reason"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_039",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "reasoned challenge",
+        "cause challenge"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must show bias, prejudice, or inability to be impartial",
+      "tags": [
+        "legal",
+        "process",
+        "jury",
+        "bias"
+      ]
+    },
+    "term": "challenge for cause",
+    "definition": "the right to reject a potential juror for a specific stated reason"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Legal Process",
+    "guid": "legal_process_040",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "venue change",
+        "trial relocation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often requested in high-profile cases to ensure fair trial",
+      "tags": [
+        "legal",
+        "process",
+        "trial",
+        "fairness"
+      ]
+    },
+    "term": "change of venue",
+    "definition": "moving a trial to a different location due to prejudice or convenience"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "theft",
+        "stealing"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Distinguished from robbery by lack of force or threat",
+      "tags": [
+        "criminal",
+        "theft",
+        "property",
+        "crime"
+      ]
+    },
+    "term": "larceny",
+    "definition": "the unlawful taking of someone else's property with intent to permanently deprive"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "breaking and entering",
+        "unlawful entry"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Does not require actual theft, only intent to commit crime",
+      "tags": [
+        "criminal",
+        "property",
+        "entry",
+        "crime"
+      ]
+    },
+    "term": "burglary",
+    "definition": "unlawfully entering a building with intent to commit a crime inside"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "armed robbery",
+        "theft by force"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Distinguished from larceny by use of force or intimidation",
+      "tags": [
+        "criminal",
+        "violence",
+        "theft",
+        "crime"
+      ]
+    },
+    "term": "robbery",
+    "definition": "taking property from another person by force or threat of force"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_004",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "misappropriation",
+        "breach of trust"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Requires position of trust or fiduciary relationship",
+      "tags": [
+        "criminal",
+        "financial",
+        "trust",
+        "crime"
+      ]
+    },
+    "term": "embezzlement",
+    "definition": "theft of funds by someone entrusted with those assets"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_005",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "deception",
+        "swindle"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be civil or criminal depending on circumstances",
+      "tags": [
+        "criminal",
+        "deception",
+        "financial",
+        "crime"
+      ]
+    },
+    "term": "fraud",
+    "definition": "intentional deception to secure unfair or unlawful gain"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_006",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "threat of violence",
+        "menacing"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Does not require actual physical contact, only fear of it",
+      "tags": [
+        "criminal",
+        "violence",
+        "threat",
+        "crime"
+      ]
+    },
+    "term": "assault",
+    "definition": "intentionally causing apprehension of harmful or offensive contact"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_007",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "physical assault",
+        "unlawful touching"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Requires actual physical contact, unlike assault",
+      "tags": [
+        "criminal",
+        "violence",
+        "contact",
+        "crime"
+      ]
+    },
+    "term": "battery",
+    "definition": "intentional harmful or offensive physical contact with another person"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_008",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "killing",
+        "taking of life"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Includes both lawful and unlawful killings",
+      "tags": [
+        "criminal",
+        "violence",
+        "death",
+        "crime"
+      ]
+    },
+    "term": "homicide",
+    "definition": "the killing of one human being by another"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_009",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "unintentional killing",
+        "negligent homicide"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Distinguished from murder by lack of premeditation",
+      "tags": [
+        "criminal",
+        "violence",
+        "death",
+        "crime"
+      ]
+    },
+    "term": "manslaughter",
+    "definition": "unlawful killing without malice aforethought"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_010",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "intentional killing",
+        "premeditated homicide"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Requires intent to kill or cause serious bodily harm",
+      "tags": [
+        "criminal",
+        "violence",
+        "death",
+        "crime"
+      ]
+    },
+    "term": "murder",
+    "definition": "unlawful killing with malice aforethought"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_011",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "fire setting",
+        "incendiarism"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Traditionally applied to burning of dwellings",
+      "tags": [
+        "criminal",
+        "property",
+        "fire",
+        "crime"
+      ]
+    },
+    "term": "arson",
+    "definition": "the criminal act of deliberately setting fire to property"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_012",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "abduction",
+        "unlawful detention"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "May involve ransom demand or other criminal purpose",
+      "tags": [
+        "criminal",
+        "violence",
+        "detention",
+        "crime"
+      ]
+    },
+    "term": "kidnapping",
+    "definition": "unlawfully seizing and carrying away a person by force or fraud"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_013",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "blackmail",
+        "coercion"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Threats may involve violence, property damage, or reputation harm",
+      "tags": [
+        "criminal",
+        "coercion",
+        "financial",
+        "crime"
+      ]
+    },
+    "term": "extortion",
+    "definition": "obtaining money or property through coercion or threats"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_014",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "corruption",
+        "payoff"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can involve public officials or private parties",
+      "tags": [
+        "criminal",
+        "corruption",
+        "influence",
+        "crime"
+      ]
+    },
+    "term": "bribery",
+    "definition": "offering or accepting something of value to influence official action"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_015",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "false testimony",
+        "lying under oath"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be material to the proceeding and willfully false",
+      "tags": [
+        "criminal",
+        "testimony",
+        "deception",
+        "crime"
+      ]
+    },
+    "term": "perjury",
+    "definition": "lying under oath in a legal proceeding"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_016",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "interference with justice",
+        "impeding investigation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can include tampering with evidence or intimidating witnesses",
+      "tags": [
+        "criminal",
+        "justice",
+        "interference",
+        "crime"
+      ]
+    },
+    "term": "obstruction of justice",
+    "definition": "interfering with the administration of justice in legal proceedings"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_017",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "criminal agreement",
+        "plot"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Usually requires an overt act in furtherance of the conspiracy",
+      "tags": [
+        "criminal",
+        "agreement",
+        "planning",
+        "crime"
+      ]
+    },
+    "term": "conspiracy",
+    "definition": "an agreement between two or more people to commit a crime"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_018",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "incitement",
+        "criminal encouragement"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Crime is complete when request is made, regardless of response",
+      "tags": [
+        "criminal",
+        "incitement",
+        "encouragement",
+        "crime"
+      ]
+    },
+    "term": "solicitation",
+    "definition": "encouraging or requesting another person to commit a crime"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_019",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "criminal attempt",
+        "incomplete crime"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Requires substantial step toward completion of the crime",
+      "tags": [
+        "criminal",
+        "incomplete",
+        "effort",
+        "crime"
+      ]
+    },
+    "term": "attempt",
+    "definition": "trying to commit a crime but failing to complete it"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_020",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "accessory",
+        "co-conspirator"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be charged with the same crime as the principal",
+      "tags": [
+        "criminal",
+        "participation",
+        "assistance",
+        "crime"
+      ]
+    },
+    "term": "accomplice",
+    "definition": "a person who helps another commit a crime"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_021",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "accessory after the fact",
+        "accomplice"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Distinguished from accomplice by absence during crime",
+      "tags": [
+        "criminal",
+        "assistance",
+        "after the fact",
+        "crime"
+      ]
+    },
+    "term": "accessory",
+    "definition": "a person who assists in a crime but is not present during its commission"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_022",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "assisting",
+        "facilitating"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Makes one liable as if they committed the crime themselves",
+      "tags": [
+        "criminal",
+        "assistance",
+        "encouragement",
+        "crime"
+      ]
+    },
+    "term": "aiding and abetting",
+    "definition": "helping or encouraging someone to commit a crime"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_023",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "organized crime",
+        "criminal enterprise"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Often prosecuted under RICO Act in federal court",
+      "tags": [
+        "criminal",
+        "organized",
+        "enterprise",
+        "crime"
+      ]
+    },
+    "term": "racketeering",
+    "definition": "operating an illegal business or scheme, especially involving organized crime"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_024",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "financial laundering",
+        "cleaning dirty money"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves complex financial transactions",
+      "tags": [
+        "criminal",
+        "financial",
+        "concealment",
+        "crime"
+      ]
+    },
+    "term": "money laundering",
+    "definition": "concealing the origins of illegally obtained money"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_025",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "tax fraud",
+        "tax avoidance"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Distinguished from legal tax avoidance by fraudulent intent",
+      "tags": [
+        "criminal",
+        "tax",
+        "evasion",
+        "crime"
+      ]
+    },
+    "term": "tax evasion",
+    "definition": "illegally avoiding payment of taxes owed to the government"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_026",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "securities fraud",
+        "illegal trading"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Violates securities laws and fiduciary duties",
+      "tags": [
+        "criminal",
+        "securities",
+        "information",
+        "crime"
+      ]
+    },
+    "term": "insider trading",
+    "definition": "trading securities based on material nonpublic information"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_027",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "computer crime",
+        "internet crime"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Includes hacking, identity theft, and online fraud",
+      "tags": [
+        "criminal",
+        "computer",
+        "internet",
+        "crime"
+      ]
+    },
+    "term": "cybercrime",
+    "definition": "criminal activity carried out using computers or the internet"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_028",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "identity fraud",
+        "personal information theft"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves credit cards, social security numbers, or bank accounts",
+      "tags": [
+        "criminal",
+        "identity",
+        "fraud",
+        "crime"
+      ]
+    },
+    "term": "identity theft",
+    "definition": "unlawfully using another person's personal information for fraudulent purposes"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_029",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "harassment",
+        "following"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves pattern of behavior causing reasonable fear",
+      "tags": [
+        "criminal",
+        "harassment",
+        "following",
+        "crime"
+      ]
+    },
+    "term": "stalking",
+    "definition": "repeatedly following or harassing someone in a way that causes fear"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_030",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "intimate partner violence",
+        "family violence"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can include physical, emotional, or financial abuse",
+      "tags": [
+        "criminal",
+        "violence",
+        "domestic",
+        "crime"
+      ]
+    },
+    "term": "domestic violence",
+    "definition": "violence or abuse between people in a domestic relationship"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_031",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "bias crime",
+        "prejudice crime"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Enhanced penalties for crimes motivated by bias",
+      "tags": [
+        "criminal",
+        "bias",
+        "prejudice",
+        "crime"
+      ]
+    },
+    "term": "hate crime",
+    "definition": "a crime motivated by bias against a protected characteristic"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_032",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "political violence",
+        "intimidation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves targeting civilians to achieve political goals",
+      "tags": [
+        "criminal",
+        "violence",
+        "political",
+        "crime"
+      ]
+    },
+    "term": "terrorism",
+    "definition": "the use of violence or threats to intimidate for political purposes"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_033",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "betrayal of country",
+        "sedition"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Specifically defined in U.S. Constitution",
+      "tags": [
+        "criminal",
+        "betrayal",
+        "government",
+        "crime"
+      ]
+    },
+    "term": "treason",
+    "definition": "the crime of betraying one's country, especially by attempting to overthrow the government"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_034",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "spying",
+        "intelligence gathering"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves national security information",
+      "tags": [
+        "criminal",
+        "spying",
+        "secrets",
+        "crime"
+      ]
+    },
+    "term": "espionage",
+    "definition": "the practice of spying to obtain secret information, especially for a foreign government"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_035",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "illegal transport",
+        "contraband"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often involves avoiding customs duties or import restrictions",
+      "tags": [
+        "criminal",
+        "transport",
+        "borders",
+        "crime"
+      ]
+    },
+    "term": "smuggling",
+    "definition": "illegally transporting goods or people across borders"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_036",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "drug dealing",
+        "narcotics trafficking"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Penalties often depend on type and quantity of drugs",
+      "tags": [
+        "criminal",
+        "drugs",
+        "trafficking",
+        "crime"
+      ]
+    },
+    "term": "drug trafficking",
+    "definition": "the illegal trade in controlled substances"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_037",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "drug possession",
+        "contraband possession"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be actual possession or constructive possession",
+      "tags": [
+        "criminal",
+        "drugs",
+        "control",
+        "crime"
+      ]
+    },
+    "term": "possession",
+    "definition": "having illegal drugs or other contraband in one's control"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_038",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "DUI",
+        "drunk driving",
+        "impaired driving"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often measured by blood alcohol content or field sobriety tests",
+      "tags": [
+        "criminal",
+        "driving",
+        "impairment",
+        "crime"
+      ]
+    },
+    "term": "driving under the influence",
+    "definition": "operating a vehicle while impaired by alcohol or drugs"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_039",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "public drunkenness",
+        "disorderly intoxication"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often a misdemeanor offense with fines or brief detention",
+      "tags": [
+        "criminal",
+        "intoxication",
+        "public",
+        "crime"
+      ]
+    },
+    "term": "public intoxication",
+    "definition": "being visibly drunk or under the influence of drugs in a public place"
+  },
+  {
+    "corpus": "Legal Terms",
+    "group": "Criminal Law",
+    "guid": "criminal_law_040",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "disturbing the peace",
+        "public disorder"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Catch-all offense for various disruptive behaviors",
+      "tags": [
+        "criminal",
+        "disorder",
+        "public",
+        "crime"
+      ]
+    },
+    "term": "disorderly conduct",
+    "definition": "behavior that disturbs the peace or public order"
+  }
+]

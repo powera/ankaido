@@ -55,8 +55,27 @@
         "word_count": 26,
         "last_updated": "2025-08-12T14:31:54.962921"
       }
+    },
+    {
+      "id": "legal_terms",
+      "name": "Legal Terms Vocabulary",
+      "corpus": "Legal Terms",
+      "file": "legal_terms.json",
+      "description": "Legal terminology covering legal processes and criminal law",
+      "enabled": true,
+      "metadata": {
+        "source": "Legal education",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": 80,
+        "last_updated": "2025-01-27T00:00:00.000000"
+      }
     }
   ],
   "schema_version": "1.0",
-  "last_updated": "2025-08-12T14:31:54.962926Z"
+  "last_updated": "2025-01-27T00:00:00.000000Z"
 }

@@ -1,10 +1,12 @@
 // apiClient.ts - API client for language learning features
 
-const API_BASE = '/api/language';
-
 // --- Type Definitions ---
 
 export interface Word {
+  // New field names (preferred)
+  term: string;
+  definition: string;
+  // Legacy field names (deprecated - use term/definition instead)
   lithuanian: string;
   english: string;
   corpus: string;
@@ -12,6 +14,10 @@ export interface Word {
   guid: string;
   levels: string[];
   alternatives: {
+    // New field names (preferred)
+    term: string[];
+    definition: string[];
+    // Legacy field names (deprecated - use term/definition instead)
     english: string[];
     lithuanian: string[];
   };
@@ -55,15 +61,6 @@ export interface VocabularyRegistry {
   last_updated: string;
 }
 
-// Removed VoicesResponse - now using browser TTS voices
-
-
-
-
-
-
-
-
 
 export interface ActivityProgress {
   correct: number;
@@ -96,86 +93,60 @@ export const fetchAllWordlists = async (): Promise<Word[]> => {
   const allWords: Word[] = [];
   
   // Load vocabulary registry and process all enabled vocabularies
-  try {
-    const registryResponse = await fetch('/data/vocabulary_registry.json');
-    if (registryResponse.ok) {
-      const registry: VocabularyRegistry = await registryResponse.json();
-      
-      // Load each enabled vocabulary
-      for (const vocab of registry.vocabularies) {
-        if (!vocab.enabled) {
-          console.log(`Skipping disabled vocabulary: ${vocab.name}`);
-          continue;
-        }
-        
-        try {
-          const vocabResponse = await fetch(`/data/${vocab.file}`);
-          if (vocabResponse.ok) {
-            const vocabData = await vocabResponse.json();
-            if (Array.isArray(vocabData)) {
-              allWords.push(...vocabData as Word[]);
-              console.log(`Loaded ${vocabData.length} words from ${vocab.name} (${vocab.corpus})`);
-            } else {
-              console.warn(`Invalid data format in ${vocab.file}: expected array`);
-            }
-          } else {
-            console.warn(`Failed to fetch ${vocab.file}: ${vocabResponse.status}`);
-          }
-        } catch (error) {
-          console.warn(`Failed to load ${vocab.name}:`, error);
-        }
-      }
-      
-      if (allWords.length > 0) {
-        console.log(`Total vocabulary loaded: ${allWords.length} words from ${registry.vocabularies.filter(v => v.enabled).length} sources`);
-        return allWords;
-      }
-    } else {
-      console.warn('Vocabulary registry not found, falling back to hardcoded loading');
-      
-      // Fallback to hardcoded loading if registry is not available
-      // Load GRE words
-      try {
-        const greResponse = await fetch('/data/gre_words_full.json');
-        if (greResponse.ok) {
-          const greData = await greResponse.json();
-          if (Array.isArray(greData)) {
-            allWords.push(...greData as Word[]);
-            console.log(`Loaded ${greData.length} words from GRE vocabulary`);
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to load GRE words:', error);
-      }
-      
-      // Load Lithuanian words
-      try {
-        const lithuanianResponse = await fetch('/data/lithuanian_words.json');
-        if (lithuanianResponse.ok) {
-          const lithuanianData = await lithuanianResponse.json();
-          if (Array.isArray(lithuanianData)) {
-            allWords.push(...lithuanianData as Word[]);
-            console.log(`Loaded ${lithuanianData.length} words from Lithuanian vocabulary`);
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to load Lithuanian words:', error);
-      }
-      
-      if (allWords.length > 0) {
-        console.log(`Total vocabulary loaded: ${allWords.length} words`);
-        return allWords;
-      }
-    }
-  } catch (error) {
-    console.error('Failed to load vocabulary registry:', error);
+  const registryResponse = await fetch('/data/vocabulary_registry.json');
+  if (!registryResponse.ok) {
+    throw new Error('Failed to fetch vocabulary registry');
   }
   
-  // If no words were loaded from any source, throw an error
+  const registry: VocabularyRegistry = await registryResponse.json();
+  
+  // Load each enabled vocabulary
+  for (const vocab of registry.vocabularies) {
+    if (!vocab.enabled) {
+      console.log(`Skipping disabled vocabulary: ${vocab.name}`);
+      continue;
+    }
+    
+    try {
+      const vocabResponse = await fetch(`/data/${vocab.file}`);
+      if (vocabResponse.ok) {
+        const vocabData = await vocabResponse.json();
+        if (Array.isArray(vocabData)) {
+          // Ensure both new and legacy field names are populated
+          const mappedWords = vocabData.map((word: any) => {
+            const mappedWord = { ...word };
+            
+            // If the word has 'term' and 'definition', ensure legacy fields are populated
+            if (word.term && word.definition) {
+              mappedWord.lithuanian = word.term;
+              mappedWord.english = word.definition;
+            }
+            // If the word has legacy fields but not new ones, populate new fields
+            else if (word.lithuanian && word.english) {
+              mappedWord.term = word.lithuanian;
+              mappedWord.definition = word.english;
+            }
+            
+            return mappedWord;
+          });
+          allWords.push(...mappedWords as Word[]);
+          console.log(`Loaded ${vocabData.length} words from ${vocab.name} (${vocab.corpus})`);
+        } else {
+          console.warn(`Invalid data format in ${vocab.file}: expected array`);
+        }
+      } else {
+        console.warn(`Failed to fetch ${vocab.file}: ${vocabResponse.status}`);
+      }
+    } catch (error) {
+      console.warn(`Failed to load ${vocab.name}:`, error);
+    }
+  }
+  
   if (allWords.length === 0) {
     throw new Error('No vocabulary data could be loaded from local sources');
   }
   
+  console.log(`Total vocabulary loaded: ${allWords.length} words from ${registry.vocabularies.filter(v => v.enabled).length} sources`);
   return allWords;
 };
 
@@ -200,14 +171,6 @@ export const fetchCorpusStructure = async (corpus: string): Promise<CorpusStruct
   return { groups };
 };
 
-// Removed fetchAvailableVoices - now using browser TTS voices
-
-
-
-
-
-
-
 export const fetchDailyStats = async (): Promise<DailyStatsResponse | null> => {
   try {
     const response = await fetch('/api/trakaido/journeystats/daily');
@@ -231,5 +194,3 @@ export const fetchWeeklyStats = async (): Promise<DailyStatsResponse | null> => 
     return null;
   }
 };
-
-export const getApiBase = (): string => API_BASE;
