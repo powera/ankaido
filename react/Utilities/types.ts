@@ -17,7 +17,6 @@ export interface Word {
   };
   metadata: {
     difficulty_level: number | null;
-    frequency_rank: number;
     notes: string;
     tags: string[];
   };
