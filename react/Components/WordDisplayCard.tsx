@@ -53,10 +53,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
   // 2. It's a listening activity (indicated by 🎧 in question text)
   const shouldShowAudioButton = showAudioButton && audioEnabled;
 
-  // Helper function to pretty-print level names
-  const formatLevel = (level: string): string => {
-    return level.replace(/level_(\d+)/i, 'Level $1').replace(/_/g, ' ');
-  };
+
 
   const cardClasses = `w-card ${isClickable ? 'w-card-interactive' : ''} ${className}`;
 
@@ -68,13 +65,7 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
     >
       {showBadge && (
         <div className="w-badge w-hide-mobile">
-          {currentWord.levels && currentWord.levels.length > 0 ? (
-            // Show only levels if they exist
-            currentWord.levels.map(formatLevel).join(', ')
-          ) : (
-            // Show corpus and group if no levels
-            `${currentWord.corpus} → ${currentWord.group}`
-          )}
+          {`${currentWord.corpus} → ${currentWord.group}`}
         </div>
       )}
       
