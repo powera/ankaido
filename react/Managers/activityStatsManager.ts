@@ -9,10 +9,7 @@ import indexedDBManager from '../DataStorage/indexedDBManager';
 import { StatMode, Stats, Word, WordStats } from '../Utilities/types';
 import storageConfigManager from './storageConfigManager';
 
-// Feature flag for GUID usage
-// Set to true to enable GUID keys in development (requires word list updates to be complete)
-// Set to false to use legacy lithuanian-english keys (current production behavior)
-const USE_GUID_KEYS = false;
+// All word lists now have GUIDs, so we use GUID-based keys for stats storage
 
 // API Configuration
 const API_BASE_URL = '/api/trakaido/journeystats';
@@ -176,14 +173,12 @@ export const DEFAULT_WORD_STATS: WordStats = {
   lastIncorrectAnswer: null
 };
 
-// Create a unique key for a word using GUID (if enabled) or legacy format
+// Create a unique key for a word using GUID
 export const createWordKey = (word: Word): string => {
-  // Use GUID if feature flag is enabled and GUID is available
-  if (USE_GUID_KEYS && word.guid) {
-    return word.guid;
+  if (!word.guid) {
+    throw new Error(`Word is missing required GUID: ${word.lithuanian || 'unknown'}-${word.english || 'unknown'}`);
   }
-  // Otherwise use legacy format
-  return `${word.lithuanian}-${word.english}`;
+  return word.guid;
 };
 
 // Create the old format key for migration purposes
@@ -362,22 +357,20 @@ export class ActivityStatsManager {
       return this.stats[wordKey];
     }
     
-    // If GUID feature is enabled and word has GUID, try legacy key for migration
-    if (USE_GUID_KEYS && word.guid) {
-      const legacyKey = createLegacyWordKey(word);
-      if (this.stats[legacyKey]) {
-        // Found stats with legacy key, migrate to GUID key
-        const legacyStats = this.stats[legacyKey];
-        this.stats[wordKey] = legacyStats;
-        delete this.stats[legacyKey];
-        
-        // Save the migrated stats (async, but don't wait for it)
-        this.saveMigratedStats().catch(error => {
-          console.error('Error saving migrated stats:', error);
-        });
-        
-        return legacyStats;
-      }
+    // Try legacy key for migration from old lithuanian-english format
+    const legacyKey = createLegacyWordKey(word);
+    if (this.stats[legacyKey]) {
+      // Found stats with legacy key, migrate to GUID key
+      const legacyStats = this.stats[legacyKey];
+      this.stats[wordKey] = legacyStats;
+      delete this.stats[legacyKey];
+      
+      // Save the migrated stats (async, but don't wait for it)
+      this.saveMigratedStats().catch(error => {
+        console.error('Error saving migrated stats:', error);
+      });
+      
+      return legacyStats;
     }
     
     // Return default stats if no existing stats found

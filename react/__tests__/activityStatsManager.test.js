@@ -22,22 +22,25 @@ import activityStatsManager, {
 
 describe('activityStatsManager utility functions', () => {
   describe('createWordKey', () => {
-    it('should create correct word key using legacy format when GUID feature is disabled', () => {
+    it('should create correct word key using GUID', () => {
       const word = { guid: 'guid-123', lithuanian: 'labas', english: 'hello' };
       const key = createWordKey(word);
-      expect(key).toBe('labas-hello'); // Should use legacy format since USE_GUID_KEYS is false
+      expect(key).toBe('guid-123');
     });
 
-    it('should use legacy format for words without GUID', () => {
+    it('should throw error for words without GUID', () => {
       const word = { lithuanian: 'labas', english: 'hello' };
-      const key = createWordKey(word);
-      expect(key).toBe('labas-hello');
+      expect(() => createWordKey(word)).toThrow('Word is missing required GUID: labas-hello');
     });
 
-    it('should handle words with special characters', () => {
-      const word = { lithuanian: 'ačiū', english: 'thank you' };
-      const key = createWordKey(word);
-      expect(key).toBe('ačiū-thank you');
+    it('should throw error for words with empty GUID', () => {
+      const word = { guid: '', lithuanian: 'ačiū', english: 'thank you' };
+      expect(() => createWordKey(word)).toThrow('Word is missing required GUID: ačiū-thank you');
+    });
+
+    it('should handle words with null/undefined lithuanian/english gracefully in error message', () => {
+      const word = { guid: null };
+      expect(() => createWordKey(word)).toThrow('Word is missing required GUID: unknown-unknown');
     });
   });
 
