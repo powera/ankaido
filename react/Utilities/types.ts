@@ -38,7 +38,7 @@ export interface ModeStats {
 }
 
 // Stat modes for different activity types
-export type StatMode = 'multipleChoice' | 'listeningEasy' | 'listeningHard' | 'typing';
+export type StatMode = 'multipleChoice' | 'listeningEasy' | 'listeningHard' | 'typing' | 'blitz';
 
 // Word statistics interface for activity tracking
 export interface WordStats {
@@ -47,6 +47,7 @@ export interface WordStats {
   listeningEasy: ModeStats;
   listeningHard: ModeStats;
   typing: ModeStats;
+  blitz: ModeStats;
   lastSeen: number | null;
   lastCorrectAnswer: number | null;
   lastIncorrectAnswer: number | null;

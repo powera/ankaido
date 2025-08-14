@@ -168,6 +168,7 @@ export const DEFAULT_WORD_STATS: WordStats = {
   listeningEasy: { correct: 0, incorrect: 0 },
   listeningHard: { correct: 0, incorrect: 0 },
   typing: { correct: 0, incorrect: 0 },
+  blitz: { correct: 0, incorrect: 0 },
   lastSeen: null,
   lastCorrectAnswer: null,
   lastIncorrectAnswer: null
@@ -196,7 +197,8 @@ export const calculateTotalCorrect = (wordStats: WordStats): number => {
   return (wordStats.multipleChoice?.correct || 0) + 
          (wordStats.listeningEasy?.correct || 0) + 
          (wordStats.listeningHard?.correct || 0) + 
-         (wordStats.typing?.correct || 0);
+         (wordStats.typing?.correct || 0) + 
+         (wordStats.blitz?.correct || 0);
 };
 
 /**
@@ -206,7 +208,8 @@ export const calculateTotalIncorrect = (wordStats: WordStats): number => {
   return (wordStats.multipleChoice?.incorrect || 0) + 
          (wordStats.listeningEasy?.incorrect || 0) + 
          (wordStats.listeningHard?.incorrect || 0) + 
-         (wordStats.typing?.incorrect || 0);
+         (wordStats.typing?.incorrect || 0) + 
+         (wordStats.blitz?.incorrect || 0);
 };
 
 /**

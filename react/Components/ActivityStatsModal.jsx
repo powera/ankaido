@@ -636,7 +636,8 @@ const ActivityStatsModal = ({
                       MC: {word.multipleChoice?.correct || 0} | 
                       Listen Easy: {word.listeningEasy?.correct || 0} | 
                       Listen Hard: {word.listeningHard?.correct || 0} | 
-                      Type: {word.typing?.correct || 0}
+                      Type: {word.typing?.correct || 0} | 
+                      Blitz: {word.blitz?.correct || 0}
                     </div>
                   </div>
                 )
@@ -652,7 +653,8 @@ const ActivityStatsModal = ({
                       MC: {word.multipleChoice?.incorrect || 0} | 
                       Listen Easy: {word.listeningEasy?.incorrect || 0} | 
                       Listen Hard: {word.listeningHard?.incorrect || 0} | 
-                      Type: {word.typing?.incorrect || 0}
+                      Type: {word.typing?.incorrect || 0} | 
+                      Blitz: {word.blitz?.incorrect || 0}
                     </div>
                   </div>
                 )
