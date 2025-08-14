@@ -1,7 +1,7 @@
 [
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_001",
     "levels": [
       "beginner"
@@ -19,7 +19,8 @@
         "unix",
         "file",
         "directory",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "ls",
@@ -27,7 +28,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_002",
     "levels": [
       "beginner"
@@ -45,7 +46,8 @@
         "unix",
         "directory",
         "navigation",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "cd",
@@ -53,7 +55,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_003",
     "levels": [
       "beginner"
@@ -71,7 +73,8 @@
         "unix",
         "directory",
         "navigation",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "pwd",
@@ -79,7 +82,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_004",
     "levels": [
       "beginner"
@@ -97,7 +100,8 @@
         "unix",
         "directory",
         "create",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "mkdir",
@@ -105,7 +109,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_005",
     "levels": [
       "beginner"
@@ -123,7 +127,8 @@
         "unix",
         "directory",
         "delete",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "rmdir",
@@ -131,7 +136,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_006",
     "levels": [
       "beginner"
@@ -149,7 +154,8 @@
         "unix",
         "file",
         "delete",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "rm",
@@ -157,7 +163,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_007",
     "levels": [
       "beginner"
@@ -175,7 +181,8 @@
         "unix",
         "file",
         "copy",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "cp",
@@ -183,7 +190,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_008",
     "levels": [
       "beginner"
@@ -202,7 +209,8 @@
         "file",
         "move",
         "rename",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "mv",
@@ -210,7 +218,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Operations",
+    "group": "Unix Commands",
     "guid": "unix_file_009",
     "levels": [
       "beginner"
@@ -228,7 +236,8 @@
         "unix",
         "file",
         "create",
-        "basic"
+        "basic",
+        "file operations"
       ]
     },
     "term": "touch",
@@ -236,7 +245,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Viewing",
+    "group": "Unix Commands",
     "guid": "unix_view_001",
     "levels": [
       "beginner"
@@ -254,7 +263,8 @@
         "unix",
         "file",
         "view",
-        "basic"
+        "basic",
+        "file viewing"
       ]
     },
     "term": "cat",
@@ -262,7 +272,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Viewing",
+    "group": "Unix Commands",
     "guid": "unix_view_002",
     "levels": [
       "intermediate"
@@ -280,7 +290,8 @@
         "unix",
         "file",
         "view",
-        "pager"
+        "pager",
+        "file viewing"
       ]
     },
     "term": "less",
@@ -288,7 +299,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Viewing",
+    "group": "Unix Commands",
     "guid": "unix_view_003",
     "levels": [
       "intermediate"
@@ -306,7 +317,8 @@
         "unix",
         "file",
         "view",
-        "pager"
+        "pager",
+        "file viewing"
       ]
     },
     "term": "more",
@@ -314,7 +326,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Viewing",
+    "group": "Unix Commands",
     "guid": "unix_view_004",
     "levels": [
       "beginner"
@@ -332,7 +344,8 @@
         "unix",
         "file",
         "view",
-        "basic"
+        "basic",
+        "file viewing"
       ]
     },
     "term": "head",
@@ -340,7 +353,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Viewing",
+    "group": "Unix Commands",
     "guid": "unix_view_005",
     "levels": [
       "beginner"
@@ -358,7 +371,8 @@
         "unix",
         "file",
         "view",
-        "basic"
+        "basic",
+        "file viewing"
       ]
     },
     "term": "tail",
@@ -366,7 +380,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_001",
     "levels": [
       "intermediate"
@@ -384,7 +398,8 @@
         "unix",
         "text",
         "search",
-        "regex"
+        "regex",
+        "text processing"
       ]
     },
     "term": "grep",
@@ -392,7 +407,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_002",
     "levels": [
       "intermediate"
@@ -410,7 +425,8 @@
         "unix",
         "text",
         "edit",
-        "stream"
+        "stream",
+        "text processing"
       ]
     },
     "term": "sed",
@@ -418,7 +434,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_003",
     "levels": [
       "advanced"
@@ -436,7 +452,8 @@
         "unix",
         "text",
         "programming",
-        "advanced"
+        "advanced",
+        "text processing"
       ]
     },
     "term": "awk",
@@ -444,7 +461,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_004",
     "levels": [
       "intermediate"
@@ -462,7 +479,8 @@
         "unix",
         "text",
         "sort",
-        "organize"
+        "organize",
+        "text processing"
       ]
     },
     "term": "sort",
@@ -470,7 +488,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_005",
     "levels": [
       "intermediate"
@@ -488,7 +506,8 @@
         "unix",
         "text",
         "unique",
-        "duplicates"
+        "duplicates",
+        "text processing"
       ]
     },
     "term": "uniq",
@@ -496,7 +515,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Text Processing",
+    "group": "Unix Commands",
     "guid": "unix_text_006",
     "levels": [
       "intermediate"
@@ -514,7 +533,8 @@
         "unix",
         "text",
         "count",
-        "statistics"
+        "statistics",
+        "text processing"
       ]
     },
     "term": "wc",
@@ -522,7 +542,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Permissions",
+    "group": "Unix Commands",
     "guid": "unix_perm_001",
     "levels": [
       "intermediate"
@@ -540,7 +560,8 @@
         "unix",
         "permissions",
         "security",
-        "file"
+        "file",
+        "file permissions"
       ]
     },
     "term": "chmod",
@@ -548,7 +569,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Permissions",
+    "group": "Unix Commands",
     "guid": "unix_perm_002",
     "levels": [
       "intermediate"
@@ -566,7 +587,8 @@
         "unix",
         "permissions",
         "ownership",
-        "file"
+        "file",
+        "file permissions"
       ]
     },
     "term": "chown",
@@ -574,7 +596,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "File Permissions",
+    "group": "Unix Commands",
     "guid": "unix_perm_003",
     "levels": [
       "intermediate"
@@ -592,7 +614,8 @@
         "unix",
         "permissions",
         "group",
-        "file"
+        "file",
+        "file permissions"
       ]
     },
     "term": "chgrp",
@@ -600,7 +623,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_001",
     "levels": [
       "beginner"
@@ -618,7 +641,8 @@
         "unix",
         "system",
         "processes",
-        "basic"
+        "basic",
+        "system information"
       ]
     },
     "term": "ps",
@@ -626,7 +650,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_002",
     "levels": [
       "beginner"
@@ -644,7 +668,8 @@
         "unix",
         "system",
         "processes",
-        "monitor"
+        "monitor",
+        "system information"
       ]
     },
     "term": "top",
@@ -652,7 +677,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_003",
     "levels": [
       "beginner"
@@ -670,7 +695,8 @@
         "unix",
         "system",
         "disk",
-        "storage"
+        "storage",
+        "system information"
       ]
     },
     "term": "df",
@@ -678,7 +704,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_004",
     "levels": [
       "beginner"
@@ -696,7 +722,8 @@
         "unix",
         "system",
         "disk",
-        "directory"
+        "directory",
+        "system information"
       ]
     },
     "term": "du",
@@ -704,7 +731,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_005",
     "levels": [
       "beginner"
@@ -722,7 +749,8 @@
         "unix",
         "system",
         "uptime",
-        "load"
+        "load",
+        "system information"
       ]
     },
     "term": "uptime",
@@ -730,7 +758,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_006",
     "levels": [
       "beginner"
@@ -748,7 +776,8 @@
         "unix",
         "system",
         "user",
-        "basic"
+        "basic",
+        "system information"
       ]
     },
     "term": "whoami",
@@ -756,7 +785,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "System Information",
+    "group": "Unix Commands",
     "guid": "unix_sys_007",
     "levels": [
       "beginner"
@@ -774,7 +803,8 @@
         "unix",
         "system",
         "users",
-        "basic"
+        "basic",
+        "system information"
       ]
     },
     "term": "who",
@@ -782,7 +812,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Process Control",
+    "group": "Unix Commands",
     "guid": "unix_proc_001",
     "levels": [
       "intermediate"
@@ -800,7 +830,8 @@
         "unix",
         "process",
         "control",
-        "signal"
+        "signal",
+        "process control"
       ]
     },
     "term": "kill",
@@ -808,7 +839,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Process Control",
+    "group": "Unix Commands",
     "guid": "unix_proc_002",
     "levels": [
       "intermediate"
@@ -826,7 +857,8 @@
         "unix",
         "process",
         "control",
-        "name"
+        "name",
+        "process control"
       ]
     },
     "term": "killall",
@@ -834,7 +866,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Process Control",
+    "group": "Unix Commands",
     "guid": "unix_proc_003",
     "levels": [
       "intermediate"
@@ -852,7 +884,8 @@
         "unix",
         "process",
         "background",
-        "job"
+        "job",
+        "process control"
       ]
     },
     "term": "nohup",
@@ -860,7 +893,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Network",
+    "group": "Unix Commands",
     "guid": "unix_net_001",
     "levels": [
       "intermediate"
@@ -886,7 +919,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Network",
+    "group": "Unix Commands",
     "guid": "unix_net_002",
     "levels": [
       "intermediate"
@@ -912,7 +945,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Network",
+    "group": "Unix Commands",
     "guid": "unix_net_003",
     "levels": [
       "intermediate"
@@ -938,7 +971,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Archive",
+    "group": "Unix Commands",
     "guid": "unix_arch_001",
     "levels": [
       "intermediate"
@@ -964,7 +997,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Archive",
+    "group": "Unix Commands",
     "guid": "unix_arch_002",
     "levels": [
       "intermediate"
@@ -982,7 +1015,8 @@
         "unix",
         "compression",
         "file",
-        "size"
+        "size",
+        "archive"
       ]
     },
     "term": "gzip",
@@ -990,7 +1024,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Archive",
+    "group": "Unix Commands",
     "guid": "unix_arch_003",
     "levels": [
       "intermediate"
@@ -1008,7 +1042,8 @@
         "unix",
         "compression",
         "extract",
-        "decompress"
+        "decompress",
+        "archive"
       ]
     },
     "term": "gunzip",
@@ -1016,7 +1051,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Search",
+    "group": "Unix Commands",
     "guid": "unix_search_001",
     "levels": [
       "intermediate"
@@ -1042,7 +1077,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Search",
+    "group": "Unix Commands",
     "guid": "unix_search_002",
     "levels": [
       "intermediate"
@@ -1068,7 +1103,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Search",
+    "group": "Unix Commands",
     "guid": "unix_search_003",
     "levels": [
       "intermediate"
@@ -1086,7 +1121,8 @@
         "unix",
         "command",
         "path",
-        "location"
+        "location",
+        "search"
       ]
     },
     "term": "which",
@@ -1094,7 +1130,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Environment",
+    "group": "Unix Commands",
     "guid": "unix_env_001",
     "levels": [
       "intermediate"
@@ -1120,7 +1156,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Environment",
+    "group": "Unix Commands",
     "guid": "unix_env_002",
     "levels": [
       "intermediate"
@@ -1146,7 +1182,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Environment",
+    "group": "Unix Commands",
     "guid": "unix_env_003",
     "levels": [
       "beginner"
@@ -1164,7 +1200,8 @@
         "unix",
         "history",
         "commands",
-        "shell"
+        "shell",
+        "environment"
       ]
     },
     "term": "history",
@@ -1172,7 +1209,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Environment",
+    "group": "Unix Commands",
     "guid": "unix_env_004",
     "levels": [
       "beginner"
@@ -1190,7 +1227,8 @@
         "unix",
         "alias",
         "shortcut",
-        "shell"
+        "shell",
+        "environment"
       ]
     },
     "term": "alias",
@@ -1198,7 +1236,7 @@
   },
   {
     "corpus": "Unix Commands",
-    "group": "Help",
+    "group": "Unix Commands",
     "guid": "unix_help_001",
     "levels": [
       "beginner"

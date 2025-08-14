@@ -1,7 +1,7 @@
 [
   {
     "corpus": "Special Education Law",
-    "group": "Educational Planning",
+    "group": "Special Education Law",
     "guid": "sped_law_001",
     "levels": [
       "beginner"
@@ -19,7 +19,8 @@
         "special education",
         "planning",
         "IDEA",
-        "individualized"
+        "individualized",
+        "educational planning"
       ]
     },
     "term": "Individualized Education Program",
@@ -27,7 +28,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Assessment",
+    "group": "Special Education Law",
     "guid": "sped_law_002",
     "levels": [
       "intermediate"
@@ -53,7 +54,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Placement",
+    "group": "Special Education Law",
     "guid": "sped_law_003",
     "levels": [
       "beginner"
@@ -79,7 +80,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Legal Framework",
+    "group": "Special Education Law",
     "guid": "sped_law_004",
     "levels": [
       "beginner"
@@ -97,7 +98,8 @@
         "special education",
         "federal law",
         "disability rights",
-        "education"
+        "education",
+        "legal framework"
       ]
     },
     "term": "Individuals with Disabilities Education Act",
@@ -105,7 +107,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Services",
+    "group": "Special Education Law",
     "guid": "sped_law_005",
     "levels": [
       "beginner"
@@ -131,7 +133,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Legal Framework",
+    "group": "Special Education Law",
     "guid": "sped_law_006",
     "levels": [
       "intermediate"
@@ -149,7 +151,8 @@
         "special education",
         "civil rights",
         "accommodation",
-        "federal law"
+        "federal law",
+        "legal framework"
       ]
     },
     "term": "Section 504 of the Rehabilitation Act",
@@ -157,7 +160,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Legal Framework",
+    "group": "Special Education Law",
     "guid": "sped_law_007",
     "levels": [
       "intermediate"
@@ -175,7 +178,8 @@
         "special education",
         "civil rights",
         "disability rights",
-        "federal law"
+        "federal law",
+        "legal framework"
       ]
     },
     "term": "Americans with Disabilities Act",
@@ -183,7 +187,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Dispute Resolution",
+    "group": "Special Education Law",
     "guid": "sped_law_008",
     "levels": [
       "intermediate"
@@ -209,7 +213,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Dispute Resolution",
+    "group": "Special Education Law",
     "guid": "sped_law_009",
     "levels": [
       "intermediate"
@@ -235,7 +239,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Assessment",
+    "group": "Special Education Law",
     "guid": "sped_law_010",
     "levels": [
       "intermediate"
@@ -261,7 +265,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Behavioral Support",
+    "group": "Special Education Law",
     "guid": "sped_law_011",
     "levels": [
       "intermediate"
@@ -279,7 +283,8 @@
         "special education",
         "behavior",
         "intervention",
-        "planning"
+        "planning",
+        "behavioral support"
       ]
     },
     "term": "Behavior Intervention Plan",
@@ -287,7 +292,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Transition Services",
+    "group": "Special Education Law",
     "guid": "sped_law_012",
     "levels": [
       "intermediate"
@@ -305,7 +310,8 @@
         "special education",
         "transition",
         "post-secondary",
-        "planning"
+        "planning",
+        "transition services"
       ]
     },
     "term": "Transition Services",
@@ -313,7 +319,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Related Services",
+    "group": "Special Education Law",
     "guid": "sped_law_013",
     "levels": [
       "intermediate"
@@ -331,7 +337,8 @@
         "special education",
         "services",
         "support",
-        "therapy"
+        "therapy",
+        "related services"
       ]
     },
     "term": "Related Services",
@@ -339,7 +346,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Assessment",
+    "group": "Special Education Law",
     "guid": "sped_law_014",
     "levels": [
       "intermediate"
@@ -365,7 +372,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Services",
+    "group": "Special Education Law",
     "guid": "sped_law_015",
     "levels": [
       "intermediate"
@@ -383,7 +390,8 @@
         "special education",
         "services",
         "summer",
-        "regression"
+        "regression",
+        "educational services"
       ]
     },
     "term": "Extended School Year Services",
@@ -391,7 +399,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Parent Rights",
+    "group": "Special Education Law",
     "guid": "sped_law_016",
     "levels": [
       "intermediate"
@@ -417,7 +425,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Parent Rights",
+    "group": "Special Education Law",
     "guid": "sped_law_017",
     "levels": [
       "intermediate"
@@ -443,7 +451,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Parent Rights",
+    "group": "Special Education Law",
     "guid": "sped_law_018",
     "levels": [
       "beginner"
@@ -469,7 +477,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Assessment",
+    "group": "Special Education Law",
     "guid": "sped_law_019",
     "levels": [
       "intermediate"
@@ -495,7 +503,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Services",
+    "group": "Special Education Law",
     "guid": "sped_law_020",
     "levels": [
       "intermediate"
@@ -513,7 +521,8 @@
         "special education",
         "inclusion",
         "supports",
-        "regular education"
+        "regular education",
+        "educational services"
       ]
     },
     "term": "Supplementary Aids and Services",
@@ -521,7 +530,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Planning",
+    "group": "Special Education Law",
     "guid": "sped_law_021",
     "levels": [
       "intermediate"
@@ -539,7 +548,8 @@
         "special education",
         "team",
         "planning",
-        "collaboration"
+        "collaboration",
+        "educational planning"
       ]
     },
     "term": "IEP Team",
@@ -547,7 +557,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Assessment",
+    "group": "Special Education Law",
     "guid": "sped_law_022",
     "levels": [
       "intermediate"
@@ -573,7 +583,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Services",
+    "group": "Special Education Law",
     "guid": "sped_law_023",
     "levels": [
       "advanced"
@@ -591,7 +601,8 @@
         "special education",
         "remedy",
         "services",
-        "FAPE"
+        "FAPE",
+        "educational services"
       ]
     },
     "term": "Compensatory Education",
@@ -599,7 +610,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Placement",
+    "group": "Special Education Law",
     "guid": "sped_law_024",
     "levels": [
       "intermediate"
@@ -625,7 +636,7 @@
   },
   {
     "corpus": "Special Education Law",
-    "group": "Educational Services",
+    "group": "Special Education Law",
     "guid": "sped_law_025",
     "levels": [
       "advanced"
@@ -643,7 +654,8 @@
         "special education",
         "dispute resolution",
         "placement",
-        "legal protection"
+        "legal protection",
+        "educational services"
       ]
     },
     "term": "Stay Put Provision",

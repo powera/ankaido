@@ -1,7 +1,7 @@
 [
   {
     "corpus": "Medical Diseases",
-    "group": "Cardiovascular",
+    "group": "Medical Diseases",
     "guid": "cardiovascular_001",
     "levels": [
       "intermediate"
@@ -27,7 +27,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Cardiovascular",
+    "group": "Medical Diseases",
     "guid": "cardiovascular_002",
     "levels": [
       "beginner"
@@ -51,7 +51,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Respiratory",
+    "group": "Medical Diseases",
     "guid": "respiratory_001",
     "levels": [
       "beginner"
@@ -76,7 +76,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Respiratory",
+    "group": "Medical Diseases",
     "guid": "respiratory_002",
     "levels": [
       "intermediate"
@@ -102,7 +102,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Endocrine",
+    "group": "Medical Diseases",
     "guid": "endocrine_001",
     "levels": [
       "beginner"
@@ -128,7 +128,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Endocrine",
+    "group": "Medical Diseases",
     "guid": "endocrine_002",
     "levels": [
       "intermediate"
@@ -153,7 +153,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Neurological",
+    "group": "Medical Diseases",
     "guid": "neurological_001",
     "levels": [
       "intermediate"
@@ -180,7 +180,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Neurological",
+    "group": "Medical Diseases",
     "guid": "neurological_002",
     "levels": [
       "advanced"
@@ -206,7 +206,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Neurological",
+    "group": "Medical Diseases",
     "guid": "neurological_003",
     "levels": [
       "advanced"
@@ -232,7 +232,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Autoimmune",
+    "group": "Medical Diseases",
     "guid": "autoimmune_001",
     "levels": [
       "intermediate"
@@ -257,7 +257,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Autoimmune",
+    "group": "Medical Diseases",
     "guid": "autoimmune_002",
     "levels": [
       "advanced"
@@ -283,7 +283,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Infectious",
+    "group": "Medical Diseases",
     "guid": "infectious_001",
     "levels": [
       "beginner"
@@ -308,7 +308,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Infectious",
+    "group": "Medical Diseases",
     "guid": "infectious_002",
     "levels": [
       "intermediate"
@@ -334,7 +334,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Infectious",
+    "group": "Medical Diseases",
     "guid": "infectious_003",
     "levels": [
       "advanced"
@@ -359,7 +359,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Cancer",
+    "group": "Medical Diseases",
     "guid": "cancer_001",
     "levels": [
       "intermediate"
@@ -384,7 +384,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Cancer",
+    "group": "Medical Diseases",
     "guid": "cancer_002",
     "levels": [
       "intermediate"
@@ -409,7 +409,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Gastrointestinal",
+    "group": "Medical Diseases",
     "guid": "gastrointestinal_001",
     "levels": [
       "intermediate"
@@ -435,7 +435,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Gastrointestinal",
+    "group": "Medical Diseases",
     "guid": "gastrointestinal_002",
     "levels": [
       "advanced"
@@ -461,7 +461,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Kidney",
+    "group": "Medical Diseases",
     "guid": "kidney_001",
     "levels": [
       "intermediate"
@@ -486,7 +486,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Kidney",
+    "group": "Medical Diseases",
     "guid": "kidney_002",
     "levels": [
       "advanced"
@@ -512,7 +512,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Skin",
+    "group": "Medical Diseases",
     "guid": "skin_001",
     "levels": [
       "beginner"
@@ -537,7 +537,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Skin",
+    "group": "Medical Diseases",
     "guid": "skin_002",
     "levels": [
       "intermediate"
@@ -562,7 +562,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Mental Health",
+    "group": "Medical Diseases",
     "guid": "mental_001",
     "levels": [
       "beginner"
@@ -588,7 +588,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Mental Health",
+    "group": "Medical Diseases",
     "guid": "mental_002",
     "levels": [
       "intermediate"
@@ -613,7 +613,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Bone",
+    "group": "Medical Diseases",
     "guid": "bone_001",
     "levels": [
       "intermediate"
@@ -638,7 +638,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Blood",
+    "group": "Medical Diseases",
     "guid": "blood_001",
     "levels": [
       "intermediate"
@@ -663,7 +663,7 @@
   },
   {
     "corpus": "Medical Diseases",
-    "group": "Blood",
+    "group": "Medical Diseases",
     "guid": "blood_002",
     "levels": [
       "advanced"
