@@ -1,27 +1,6 @@
 {
   "vocabularies": [
     {
-      "id": "gre",
-      "name": "GRE Vocabulary",
-      "corpus": "GRE",
-      "file": "gre_words_full.json",
-      "description": "Graduate Record Examination vocabulary words",
-      "enabled": true,
-      "typing_directions": "What word has this definition?",
-      "vocabulary_list_display_tags": [],
-      "metadata": {
-        "source": "GRE test preparation",
-        "language_pair": "english-english",
-        "difficulty_levels": [
-          "intermediate",
-          "advanced",
-          "expert"
-        ],
-        "word_count": null,
-        "last_updated": "2024-01-01"
-      }
-    },
-    {
       "id": "lithuanian",
       "name": "Lithuanian Vocabulary",
       "corpus": "Lithuanian Basics",
@@ -144,6 +123,27 @@
           "advanced"
         ],
         "word_count": 20,
+        "last_updated": "2025-01-27T00:00:00.000000"
+      }
+    },
+    {
+      "id": "us_airport_codes",
+      "name": "US Airport Codes",
+      "corpus": "Airport Codes",
+      "file": "us_airport_codes.json",
+      "description": "Major US airport codes and their corresponding airport names, including hubs and major city airports",
+      "enabled": true,
+      "typing_directions": "What airport code corresponds to this airport?",
+      "vocabulary_list_display_tags": ["group"],
+      "metadata": {
+        "source": "US aviation infrastructure",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": 40,
         "last_updated": "2025-01-27T00:00:00.000000"
       }
     }

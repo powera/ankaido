@@ -1,0 +1,642 @@
+[
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_001",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Chicago O'Hare", "O'Hare"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "One of the busiest airports in the world, major United Airlines hub",
+      "tags": ["hub", "chicago", "united", "major"]
+    },
+    "term": "ORD",
+    "definition": "Chicago O'Hare International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_002",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Los Angeles", "LAX Airport"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Primary airport serving Los Angeles, major international gateway",
+      "tags": ["hub", "los angeles", "international", "major"]
+    },
+    "term": "LAX",
+    "definition": "Los Angeles International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_003",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["JFK", "Kennedy Airport"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major international gateway in New York, named after President Kennedy",
+      "tags": ["hub", "new york", "international", "major"]
+    },
+    "term": "JFK",
+    "definition": "John F. Kennedy International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_004",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Atlanta", "Hartsfield"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "World's busiest airport by passenger traffic, major Delta hub",
+      "tags": ["hub", "atlanta", "delta", "busiest"]
+    },
+    "term": "ATL",
+    "definition": "Hartsfield-Jackson Atlanta International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_005",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Miami", "Miami International"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major gateway to Latin America and the Caribbean",
+      "tags": ["hub", "miami", "international", "latin america"]
+    },
+    "term": "MIA",
+    "definition": "Miami International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_006",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Houston Intercontinental", "Bush Airport"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major United Airlines hub, named after President George H.W. Bush",
+      "tags": ["hub", "houston", "united", "intercontinental"]
+    },
+    "term": "IAH",
+    "definition": "George Bush Intercontinental Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_007",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Denver", "Denver International"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major United and Frontier hub, known for its distinctive tent-like roof",
+      "tags": ["hub", "denver", "united", "frontier"]
+    },
+    "term": "DEN",
+    "definition": "Denver International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_008",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["San Francisco", "SFO"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major United hub serving the San Francisco Bay Area",
+      "tags": ["hub", "san francisco", "united", "bay area"]
+    },
+    "term": "SFO",
+    "definition": "San Francisco International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_009",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Seattle", "Seattle-Tacoma"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major Delta and Alaska Airlines hub in the Pacific Northwest",
+      "tags": ["hub", "seattle", "delta", "alaska airlines"]
+    },
+    "term": "SEA",
+    "definition": "Seattle-Tacoma International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Hubs",
+    "guid": "airport_010",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Phoenix", "Sky Harbor"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major American Airlines and Southwest hub in Arizona",
+      "tags": ["hub", "phoenix", "american", "southwest"]
+    },
+    "term": "PHX",
+    "definition": "Phoenix Sky Harbor International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_011",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Boston", "Logan"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Primary airport serving Boston and New England",
+      "tags": ["major", "boston", "new england", "jetblue"]
+    },
+    "term": "BOS",
+    "definition": "Boston Logan International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_012",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Las Vegas", "McCarran"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major tourist destination airport in Nevada",
+      "tags": ["major", "las vegas", "tourism", "southwest"]
+    },
+    "term": "LAS",
+    "definition": "Harry Reid International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_013",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Detroit", "Detroit Metro"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major Delta hub serving Detroit and Michigan",
+      "tags": ["hub", "detroit", "delta", "michigan"]
+    },
+    "term": "DTW",
+    "definition": "Detroit Metropolitan Wayne County Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_014",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Minneapolis", "Twin Cities"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major Delta hub serving Minneapolis-St. Paul",
+      "tags": ["hub", "minneapolis", "delta", "twin cities"]
+    },
+    "term": "MSP",
+    "definition": "Minneapolis-St. Paul International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_015",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Orlando", "Orlando International"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major tourist destination airport serving Disney World area",
+      "tags": ["major", "orlando", "tourism", "disney"]
+    },
+    "term": "MCO",
+    "definition": "Orlando International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_016",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Charlotte", "Charlotte Douglas"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major American Airlines hub in North Carolina",
+      "tags": ["hub", "charlotte", "american", "north carolina"]
+    },
+    "term": "CLT",
+    "definition": "Charlotte Douglas International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_017",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Newark", "Newark Liberty"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major United hub serving New York metropolitan area",
+      "tags": ["hub", "newark", "united", "new york"]
+    },
+    "term": "EWR",
+    "definition": "Newark Liberty International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_018",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Fort Lauderdale", "FLL"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major JetBlue and Spirit hub in South Florida",
+      "tags": ["hub", "fort lauderdale", "jetblue", "spirit"]
+    },
+    "term": "FLL",
+    "definition": "Fort Lauderdale-Hollywood International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_019",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Washington Dulles", "Dulles"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major international gateway serving Washington D.C. area",
+      "tags": ["major", "washington dc", "international", "united"]
+    },
+    "term": "IAD",
+    "definition": "Washington Dulles International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_020",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Reagan National", "DCA"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Closest airport to downtown Washington D.C., named after President Reagan",
+      "tags": ["major", "washington dc", "reagan", "downtown"]
+    },
+    "term": "DCA",
+    "definition": "Ronald Reagan Washington National Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_021",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Baltimore", "BWI"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major Southwest hub serving Baltimore-Washington area",
+      "tags": ["hub", "baltimore", "southwest", "washington"]
+    },
+    "term": "BWI",
+    "definition": "Baltimore/Washington International Thurgood Marshall Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_022",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Philadelphia", "Philly"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major American Airlines hub in Pennsylvania",
+      "tags": ["hub", "philadelphia", "american", "pennsylvania"]
+    },
+    "term": "PHL",
+    "definition": "Philadelphia International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_023",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["LaGuardia", "LGA"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "New York airport primarily for domestic flights",
+      "tags": ["major", "new york", "domestic", "delta"]
+    },
+    "term": "LGA",
+    "definition": "LaGuardia Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_024",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Dallas Love Field", "Love Field"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Southwest Airlines headquarters and major hub",
+      "tags": ["hub", "dallas", "southwest", "love field"]
+    },
+    "term": "DAL",
+    "definition": "Dallas Love Field"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_025",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["DFW", "Dallas Fort Worth"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Major American Airlines hub, one of the largest airports in the world",
+      "tags": ["hub", "dallas", "american", "major"]
+    },
+    "term": "DFW",
+    "definition": "Dallas/Fort Worth International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_026",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["San Diego", "Lindbergh"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport in Southern California, named after aviator Charles Lindbergh",
+      "tags": ["major", "san diego", "california", "lindbergh"]
+    },
+    "term": "SAN",
+    "definition": "San Diego International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_027",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Portland", "PDX"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport in Oregon, known for its unique carpet design",
+      "tags": ["major", "portland", "oregon", "alaska airlines"]
+    },
+    "term": "PDX",
+    "definition": "Portland International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_028",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Salt Lake City", "SLC"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major Delta hub serving Utah and the Mountain West",
+      "tags": ["hub", "salt lake city", "delta", "utah"]
+    },
+    "term": "SLC",
+    "definition": "Salt Lake City International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_029",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Tampa", "Tampa International"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport serving Tampa Bay area in Florida",
+      "tags": ["major", "tampa", "florida", "southwest"]
+    },
+    "term": "TPA",
+    "definition": "Tampa International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Major Cities",
+    "guid": "airport_030",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Nashville", "BNA"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport serving Music City, Tennessee",
+      "tags": ["major", "nashville", "tennessee", "southwest"]
+    },
+    "term": "BNA",
+    "definition": "Nashville International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_031",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Austin", "Austin-Bergstrom"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport serving Austin, Texas",
+      "tags": ["major", "austin", "texas", "southwest"]
+    },
+    "term": "AUS",
+    "definition": "Austin-Bergstrom International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_032",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["St. Louis", "Lambert"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Former TWA hub, now serves St. Louis metropolitan area",
+      "tags": ["major", "st louis", "missouri", "southwest"]
+    },
+    "term": "STL",
+    "definition": "St. Louis Lambert International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_033",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Kansas City", "MCI"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport serving Kansas City, Missouri",
+      "tags": ["major", "kansas city", "missouri", "southwest"]
+    },
+    "term": "MCI",
+    "definition": "Kansas City International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_034",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Cleveland", "Hopkins"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Major airport serving Cleveland, Ohio",
+      "tags": ["major", "cleveland", "ohio", "united"]
+    },
+    "term": "CLE",
+    "definition": "Cleveland Hopkins International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_035",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Cincinnati", "CVG"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Former Delta hub serving Cincinnati area",
+      "tags": ["major", "cincinnati", "ohio", "delta"]
+    },
+    "term": "CVG",
+    "definition": "Cincinnati/Northern Kentucky International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_036",
+    "levels": ["intermediate"],
+    "alternatives": {
+      "term": ["Pittsburgh", "PIT"]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Former US Airways hub serving Pittsburgh, Pennsylvania",
+      "tags": ["major", "pittsburgh", "pennsylvania", "american"]
+    },
+    "term": "PIT",
+    "definition": "Pittsburgh International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_037",
+    "levels": ["advanced"],
+    "alternatives": {
+      "term": ["Memphis", "MEM"]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Major FedEx hub and cargo airport in Tennessee",
+      "tags": ["hub", "memphis", "fedex", "cargo"]
+    },
+    "term": "MEM",
+    "definition": "Memphis International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_038",
+    "levels": ["advanced"],
+    "alternatives": {
+      "term": ["Louisville", "Standiford"]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Major UPS hub and cargo airport in Kentucky",
+      "tags": ["hub", "louisville", "ups", "cargo"]
+    },
+    "term": "SDF",
+    "definition": "Louisville Muhammad Ali International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_039",
+    "levels": ["advanced"],
+    "alternatives": {
+      "term": ["Anchorage", "ANC"]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Major cargo hub for flights between Asia and North America",
+      "tags": ["hub", "anchorage", "alaska", "cargo"]
+    },
+    "term": "ANC",
+    "definition": "Ted Stevens Anchorage International Airport"
+  },
+  {
+    "corpus": "Airport Codes",
+    "group": "Regional Hubs",
+    "guid": "airport_040",
+    "levels": ["advanced"],
+    "alternatives": {
+      "term": ["Honolulu", "HNL"]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Major Pacific hub serving Hawaii and trans-Pacific flights",
+      "tags": ["hub", "honolulu", "hawaii", "pacific"]
+    },
+    "term": "HNL",
+    "definition": "Daniel K. Inouye International Airport"
+  }
+]
