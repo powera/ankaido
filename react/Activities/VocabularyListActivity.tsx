@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DataTable from '../Components/shared/DataTable';
 import { CorporaData } from '../Utilities/studyMaterialsUtils';
 import { AudioManager, Word, SortDirection } from '../Utilities/types';
 import { ActivityStatsManager, calculateTotalCorrect, calculateTotalIncorrect, getTotalExposures } from '../Managers/activityStatsManager';
+import { getVocabularyListDisplayTags } from '../Utilities/apiClient';
 
 // Interface for vocabulary group options
 interface VocabGroupOption {
@@ -39,13 +40,16 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
   // State for table sorting
   const [sortField, setSortField] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  // State for display tags
+  const [displayTags, setDisplayTags] = useState<string[]>([]);
 
-  const loadVocabListForGroup = (optionValue: string) => {
+  const loadVocabListForGroup = async (optionValue: string) => {
     if (!optionValue) {
       setSelectedVocabGroup(null);
       setVocabListWords([]);
       setSortField('');
       setSortDirection('asc');
+      setDisplayTags([]);
       return;
     }
 
@@ -58,13 +62,51 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
     // Get words for this specific group
     const words: Word[] = corporaData[corpus].groups[group];
 
-    // Sort alphabetically by source language word (default sort)
-    words.sort((a, b) => a.lithuanian.localeCompare(b.lithuanian, undefined, { sensitivity: 'base' }));
+    // Load display tags for this corpus
+    const tags = await getVocabularyListDisplayTags(corpus);
+    setDisplayTags(tags);
+
+    // Sort alphabetically by term (default sort)
+    words.sort((a, b) => {
+      const aValue = a.term || a.lithuanian || '';
+      const bValue = b.term || b.lithuanian || '';
+      return aValue.localeCompare(bValue, undefined, { sensitivity: 'base' });
+    });
     setVocabListWords(words);
     
     // Reset sorting to default
-    setSortField('lithuanian');
+    setSortField('term');
     setSortDirection('asc');
+  };
+
+  // Helper function to extract tag values from structured tags
+  const getTagValue = (word: Word, tagPrefix: string): string => {
+    if (!word.metadata?.tags) return '';
+    
+    const tag = word.metadata.tags.find(t => t.startsWith(`${tagPrefix}:`));
+    if (!tag) return '';
+    
+    const value = tag.split(':')[1];
+    
+    // Special handling for different tag types
+    if (tagPrefix === 'court') {
+      if (value === 'supreme') return 'Supreme Court';
+      if (value === 'circuit') return 'Circuit Court';
+      if (value === 'district') return 'District Court';
+      if (value === 'state') return 'State Court';
+      return value;
+    }
+    
+    if (tagPrefix === 'circuit') {
+      if (value === 'supreme') return 'Supreme';
+      return `${value} Circuit`;
+    }
+    
+    if (tagPrefix === 'year') {
+      return value;
+    }
+    
+    return value;
   };
 
   const handleSort = (field: string) => {
@@ -95,10 +137,28 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
         const bStats = activityStatsManager.getWordStats(b);
         aValue = getTotalExposures(aStats);
         bValue = getTotalExposures(bStats);
+      } else if (displayTags.includes(field)) {
+        // Handle structured tag fields
+        aValue = getTagValue(a, field);
+        bValue = getTagValue(b, field);
+        
+        // Special numeric sorting for year
+        if (field === 'year') {
+          aValue = parseInt(aValue) || 0;
+          bValue = parseInt(bValue) || 0;
+        }
       } else {
-        // For text fields (lithuanian, english)
-        aValue = a[field as keyof Word];
-        bValue = b[field as keyof Word];
+        // For text fields (term, definition, lithuanian, english)
+        if (field === 'term') {
+          aValue = a.term || a.lithuanian || '';
+          bValue = b.term || b.lithuanian || '';
+        } else if (field === 'definition') {
+          aValue = a.definition || a.english || '';
+          bValue = b.definition || b.english || '';
+        } else {
+          aValue = a[field as keyof Word];
+          bValue = b[field as keyof Word];
+        }
       }
       
       // Handle numeric sorting
@@ -147,17 +207,29 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
           <DataTable
             columns={[
               {
-                header: 'Source Language',
-                accessor: 'lithuanian',
+                header: 'Term',
+                render: (rowData: any) => rowData.term || rowData.lithuanian || '',
                 sortable: true,
-                sortKey: 'lithuanian'
+                sortKey: 'term'
               },
               {
-                header: 'English', 
-                accessor: 'english',
+                header: 'Definition', 
+                render: (rowData: any) => rowData.definition || rowData.english || '',
                 sortable: true,
-                sortKey: 'english'
+                sortKey: 'definition'
               },
+              // Dynamic columns based on display tags
+              ...displayTags.map(tag => ({
+                header: tag === 'court' ? 'Court' : 
+                       tag === 'circuit' ? 'Circuit' : 
+                       tag === 'year' ? 'Year' : 
+                       tag.charAt(0).toUpperCase() + tag.slice(1),
+                render: (rowData: any) => getTagValue(rowData, tag),
+                sortable: true,
+                sortKey: tag,
+                align: 'center' as const,
+                width: tag === 'year' ? '80px' : '120px'
+              })),
               {
                 header: 'Total Correct',
                 render: (rowData: any, rowIndex: number) => {
@@ -183,7 +255,8 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
               {
                 header: 'Audio',
                 type: 'audio',
-                audioWord: 'lithuanian',
+                audioWord: 'term',
+                render: (rowData: any) => rowData.term || rowData.lithuanian || '',
                 align: 'center',
                 width: '60px',
                 sortable: false

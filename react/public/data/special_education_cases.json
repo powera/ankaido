@@ -1,0 +1,573 @@
+[
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Endrew F. v. Douglas County School District",
+        "Endrew F."
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "2017 Supreme Court case that clarified the FAPE standard under IDEA",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:FAPE",
+        "topic:educational_benefit",
+        "year:2017",
+        "era:modern"
+      ]
+    },
+    "term": "Endrew F. v. Douglas County School District RE-1",
+    "definition": "Supreme Court case establishing that schools must offer an IEP reasonably calculated to enable a child to make progress appropriate in light of the child's circumstances"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_002",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "Board of Education v. Rowley",
+        "Rowley case",
+        "Amy Rowley case"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "1982 landmark case that first defined FAPE and established the two-part Rowley test",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:FAPE",
+        "topic:rowley_test",
+        "year:1982",
+        "era:foundational"
+      ]
+    },
+    "term": "Board of Education of Hendrick Hudson Central School District v. Rowley",
+    "definition": "landmark Supreme Court case establishing that FAPE requires procedural compliance and educational benefit, but not the best possible education"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Burlington case",
+        "Burlington School Committee v. Department of Education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1985 case establishing parents' right to reimbursement for private school tuition when schools fail to provide FAPE",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:tuition_reimbursement",
+        "topic:private_school",
+        "year:1985",
+        "era:foundational"
+      ]
+    },
+    "term": "School Committee of Burlington v. Department of Education",
+    "definition": "Supreme Court case establishing that parents may be reimbursed for private school costs when a school fails to provide FAPE and the private placement is appropriate"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_004",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Carter case",
+        "Florence County School District v. Carter"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1993 case expanding Burlington by allowing reimbursement even for schools not meeting state approval requirements",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:tuition_reimbursement",
+        "topic:private_school",
+        "year:1993",
+        "era:expansion"
+      ]
+    },
+    "term": "Florence County School District Four v. Carter",
+    "definition": "Supreme Court case holding that parents can receive tuition reimbursement for private schools even if the school lacks state approval, if it provides appropriate education"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_005",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Honig case",
+        "Honig v. Doe"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1988 case establishing the stay-put provision and limits on disciplining students with disabilities",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:discipline",
+        "topic:stay_put",
+        "year:1988",
+        "era:foundational"
+      ]
+    },
+    "term": "Honig v. Doe",
+    "definition": "Supreme Court case establishing that schools cannot unilaterally exclude students with disabilities for behavior related to their disability and must maintain current placement during disputes"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_006",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Cedar Rapids case",
+        "Cedar Rapids Community School District v. Garret F."
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1999 case requiring schools to provide intensive medical services as related services",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:related_services",
+        "topic:medical_services",
+        "year:1999",
+        "era:expansion"
+      ]
+    },
+    "term": "Cedar Rapids Community School District v. Garret F.",
+    "definition": "Supreme Court case requiring schools to provide continuous nursing services as a related service if needed for a student to attend school"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_007",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Tatro case",
+        "Irving Independent School District v. Tatro"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1984 case establishing the medical services exception for related services",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:related_services",
+        "topic:medical_services",
+        "year:1984",
+        "era:foundational"
+      ]
+    },
+    "term": "Irving Independent School District v. Tatro",
+    "definition": "Supreme Court case establishing that schools must provide medical services that can be performed by a nurse or trained layperson as related services"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_008",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Schaffer case",
+        "Schaffer v. Weast"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "2005 case establishing that the burden of proof in due process hearings lies with the party seeking relief",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:burden_of_proof",
+        "topic:due_process",
+        "year:2005",
+        "era:modern"
+      ]
+    },
+    "term": "Schaffer v. Weast",
+    "definition": "Supreme Court case establishing that the burden of proof in administrative hearings challenging IEPs is on the party seeking relief, typically the parents"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_009",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Winkelman case",
+        "Winkelman v. Parma City School District"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "2007 case establishing parents' independent rights under IDEA to represent themselves in federal court",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:parent_rights",
+        "topic:pro_se_representation",
+        "year:2007",
+        "era:modern"
+      ]
+    },
+    "term": "Winkelman v. Parma City School District",
+    "definition": "Supreme Court case establishing that parents have independent rights under IDEA and may represent themselves in federal court without an attorney"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Supreme Court Cases",
+    "guid": "sped_cases_010",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Forest Grove case",
+        "Forest Grove School District v. T.A."
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "2009 case allowing tuition reimbursement even when students never received special education services from the public school",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:tuition_reimbursement",
+        "topic:private_school",
+        "year:2009",
+        "era:modern"
+      ]
+    },
+    "term": "Forest Grove School District v. T.A.",
+    "definition": "Supreme Court case allowing parents to seek tuition reimbursement for private special education services even when the child never received special education from the public school"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_011",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Daniel R.R. case",
+        "Daniel R.R. v. State Board of Education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "5th Circuit case establishing the two-part test for LRE determinations",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:5th",
+        "topic:LRE",
+        "topic:inclusion",
+        "year:1989",
+        "era:foundational"
+      ]
+    },
+    "term": "Daniel R.R. v. State Board of Education",
+    "definition": "Fifth Circuit case establishing a two-part test for LRE: whether education in regular classroom can be achieved satisfactorily with supplementary aids, and if not, whether mainstreaming has been to the maximum extent appropriate"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_012",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Oberti case",
+        "Oberti v. Board of Education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "3rd Circuit case establishing factors for LRE analysis and presumption toward inclusion",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:3rd",
+        "topic:LRE",
+        "topic:inclusion",
+        "year:1993",
+        "era:expansion"
+      ]
+    },
+    "term": "Oberti v. Board of Education",
+    "definition": "Third Circuit case establishing that schools must consider the full range of supplementary aids and services before removing a student from regular education and must justify more restrictive placements"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_013",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Doe v. Withers",
+        "Withers case"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "West Virginia case holding individual teachers personally liable for failing to implement IEP accommodations",
+      "tags": [
+        "special education",
+        "court:state",
+        "state:west_virginia",
+        "topic:teacher_liability",
+        "topic:IEP_implementation",
+        "year:1995",
+        "era:expansion"
+      ]
+    },
+    "term": "Doe v. Withers",
+    "definition": "West Virginia case establishing that individual teachers can be held personally liable under Section 1983 for failing to implement required IEP accommodations"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_014",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Timothy W. case",
+        "Timothy W. v. Rochester School District"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1st Circuit case establishing that all children with disabilities are entitled to education regardless of severity",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:1st",
+        "topic:zero_reject",
+        "topic:severe_disabilities",
+        "year:1989",
+        "era:foundational"
+      ]
+    },
+    "term": "Timothy W. v. Rochester School District",
+    "definition": "First Circuit case establishing that IDEA's zero reject principle means all children with disabilities are entitled to education, regardless of the severity of their disabilities"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_015",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Polk v. Central Susquehanna",
+        "Polk case"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "3rd Circuit case establishing the snapshot rule for evaluating IEP appropriateness",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:3rd",
+        "topic:IEP_evaluation",
+        "topic:snapshot_rule",
+        "year:1993",
+        "era:expansion"
+      ]
+    },
+    "term": "Polk v. Central Susquehanna Intermediate Unit 16",
+    "definition": "Third Circuit case establishing that IEP appropriateness should be judged prospectively based on information available at the time it was developed, not in hindsight"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_016",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Greer case",
+        "Greer v. Rome City School District"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "11th Circuit case establishing factors for LRE analysis similar to Daniel R.R.",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:11th",
+        "topic:LRE",
+        "topic:inclusion",
+        "year:1991",
+        "era:foundational"
+      ]
+    },
+    "term": "Greer v. Rome City School District",
+    "definition": "Eleventh Circuit case establishing a four-factor test for LRE determinations, including educational benefits, non-academic benefits, effect on other students, and cost"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_017",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Deal case",
+        "Deal v. Hamilton County Board of Education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "6th Circuit case addressing graduation requirements and diploma standards for students with disabilities",
+      "tags": [
+        "special education",
+        "court:circuit",
+        "circuit:6th",
+        "topic:graduation",
+        "topic:diploma",
+        "year:2004",
+        "era:modern"
+      ]
+    },
+    "term": "Deal v. Hamilton County Board of Education",
+    "definition": "Sixth Circuit case establishing that schools cannot deny diplomas to students with disabilities who complete their IEP requirements, even if they don't meet standard graduation requirements"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_018",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Mills case",
+        "Mills v. Board of Education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1972 D.C. case that helped establish the right to education for children with disabilities",
+      "tags": [
+        "special education",
+        "court:district",
+        "district:dc",
+        "topic:right_to_education",
+        "topic:due_process",
+        "year:1972",
+        "era:pre_idea"
+      ]
+    },
+    "term": "Mills v. Board of Education of District of Columbia",
+    "definition": "landmark 1972 case establishing that children with disabilities cannot be excluded from public education and must receive due process before any change in educational status"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_019",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "PARC case",
+        "Pennsylvania Association for Retarded Children v. Commonwealth"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "1971 consent decree establishing education rights for children with intellectual disabilities in Pennsylvania",
+      "tags": [
+        "special education",
+        "court:district",
+        "district:pennsylvania",
+        "topic:right_to_education",
+        "topic:intellectual_disabilities",
+        "year:1971",
+        "era:pre_idea"
+      ]
+    },
+    "term": "Pennsylvania Association for Retarded Children v. Commonwealth of Pennsylvania",
+    "definition": "landmark 1971 consent decree establishing that children with intellectual disabilities have a right to free public education and cannot be excluded from school"
+  },
+  {
+    "corpus": "Special Education Legal Cases",
+    "group": "Circuit Court Cases",
+    "guid": "sped_cases_020",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "Fry case",
+        "Fry v. Napoleon Community Schools"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "2017 Supreme Court case clarifying when IDEA exhaustion is required for Section 504 and ADA claims",
+      "tags": [
+        "special education",
+        "court:supreme",
+        "topic:exhaustion",
+        "topic:section_504",
+        "topic:ADA",
+        "year:2017",
+        "era:modern"
+      ]
+    },
+    "term": "Fry v. Napoleon Community Schools",
+    "definition": "Supreme Court case establishing that IDEA exhaustion is not required when the gravamen of the complaint seeks relief for denial of equal access rather than denial of FAPE"
+  }
+]

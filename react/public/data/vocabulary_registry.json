@@ -8,6 +8,7 @@
       "description": "Graduate Record Examination vocabulary words",
       "enabled": true,
       "typing_directions": "What word has this definition?",
+      "vocabulary_list_display_tags": [],
       "metadata": {
         "source": "GRE test preparation",
         "language_pair": "english-english",
@@ -28,6 +29,7 @@
       "description": "Lithuanian language vocabulary",
       "enabled": true,
       "typing_directions": "Type this word in Lithuanian",
+      "vocabulary_list_display_tags": [],
       "metadata": {
         "source": "Lithuanian language learning",
         "language_pair": "lithuanian-english",
@@ -48,6 +50,7 @@
       "description": "Legal terminology covering legal processes and criminal law",
       "enabled": true,
       "typing_directions": "What legal term has this definition?",
+      "vocabulary_list_display_tags": [],
       "metadata": {
         "source": "Legal education",
         "language_pair": "english-english",
@@ -68,6 +71,7 @@
       "description": "Essential Unix/Linux command line tools and utilities",
       "enabled": true,
       "typing_directions": "What Unix command has this definition?",
+      "vocabulary_list_display_tags": [],
       "metadata": {
         "source": "Unix/Linux documentation",
         "language_pair": "english-english",
@@ -79,8 +83,71 @@
         "word_count": 46,
         "last_updated": "2025-01-27T00:00:00.000000"
       }
+    },
+    {
+      "id": "diseases",
+      "name": "Medical Diseases Vocabulary",
+      "corpus": "Medical Diseases",
+      "file": "diseases.json",
+      "description": "Common diseases and medical conditions with their characteristic symptoms and impacts",
+      "enabled": true,
+      "typing_directions": "What disease has this description?",
+      "vocabulary_list_display_tags": [],
+      "metadata": {
+        "source": "Medical education",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": 26,
+        "last_updated": "2025-01-27T00:00:00.000000"
+      }
+    },
+    {
+      "id": "special_education_law",
+      "name": "Special Education Law Vocabulary",
+      "corpus": "Special Education Law",
+      "file": "special_education_law.json",
+      "description": "Legal terms and concepts in special education law, including IDEA, IEP, and procedural safeguards",
+      "enabled": true,
+      "typing_directions": "What special education law term has this definition?",
+      "vocabulary_list_display_tags": [],
+      "metadata": {
+        "source": "Special education legal framework",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": 25,
+        "last_updated": "2025-01-27T00:00:00.000000"
+      }
+    },
+    {
+      "id": "special_education_cases",
+      "name": "Special Education Legal Cases",
+      "corpus": "Special Education Legal Cases",
+      "file": "special_education_cases.json",
+      "description": "Landmark court cases that have shaped special education law, including Supreme Court and Circuit Court decisions",
+      "enabled": true,
+      "typing_directions": "What legal case has this description?",
+      "vocabulary_list_display_tags": ["court", "circuit", "year"],
+      "metadata": {
+        "source": "Special education case law",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner",
+          "intermediate",
+          "advanced"
+        ],
+        "word_count": 20,
+        "last_updated": "2025-01-27T00:00:00.000000"
+      }
     }
   ],
   "schema_version": "1.0",
-  "last_updated": "2025-01-27T00:00:00.000000Z"
+  "last_updated": "2025-01-27T12:00:00.000000Z"
 }

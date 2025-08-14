@@ -1,0 +1,689 @@
+[
+  {
+    "corpus": "Medical Diseases",
+    "group": "Cardiovascular",
+    "guid": "cardiovascular_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "heart attack",
+        "MI"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Leading cause of death worldwide, often caused by blocked coronary arteries",
+      "tags": [
+        "heart",
+        "cardiovascular",
+        "emergency",
+        "coronary"
+      ]
+    },
+    "term": "myocardial infarction",
+    "definition": "death of heart muscle tissue due to insufficient blood supply, causing chest pain and potentially fatal complications"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Cardiovascular",
+    "guid": "cardiovascular_002",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "high blood pressure"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Often called the 'silent killer' because it typically has no symptoms",
+      "tags": [
+        "blood pressure",
+        "cardiovascular",
+        "chronic"
+      ]
+    },
+    "term": "hypertension",
+    "definition": "persistently elevated blood pressure that increases risk of heart disease, stroke, and kidney problems"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Respiratory",
+    "guid": "respiratory_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "lung inflammation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Can be caused by bacteria, viruses, or other pathogens",
+      "tags": [
+        "lungs",
+        "respiratory",
+        "infection",
+        "inflammation"
+      ]
+    },
+    "term": "pneumonia",
+    "definition": "infection that inflames air sacs in lungs, causing cough with phlegm, fever, chills, and difficulty breathing"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Respiratory",
+    "guid": "respiratory_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "chronic bronchitis",
+        "emphysema"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Primarily caused by smoking, affects millions worldwide",
+      "tags": [
+        "lungs",
+        "respiratory",
+        "chronic",
+        "smoking"
+      ]
+    },
+    "term": "COPD",
+    "definition": "chronic obstructive pulmonary disease causing airflow blockage and breathing problems, often from smoking"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Endocrine",
+    "guid": "endocrine_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "diabetes mellitus",
+        "high blood sugar"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Type 1 is autoimmune, Type 2 is often lifestyle-related",
+      "tags": [
+        "blood sugar",
+        "endocrine",
+        "chronic",
+        "insulin"
+      ]
+    },
+    "term": "diabetes",
+    "definition": "chronic condition where blood sugar levels are too high due to insulin problems, causing frequent urination and thirst"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Endocrine",
+    "guid": "endocrine_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "overactive thyroid"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can cause rapid heartbeat, weight loss, and anxiety",
+      "tags": [
+        "thyroid",
+        "endocrine",
+        "metabolism",
+        "hormone"
+      ]
+    },
+    "term": "hyperthyroidism",
+    "definition": "condition where thyroid gland produces too much hormone, causing rapid metabolism, weight loss, and nervousness"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Neurological",
+    "guid": "neurological_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "brain attack",
+        "cerebrovascular accident",
+        "CVA"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Time-critical emergency requiring immediate medical attention",
+      "tags": [
+        "brain",
+        "neurological",
+        "emergency",
+        "blood flow"
+      ]
+    },
+    "term": "stroke",
+    "definition": "sudden interruption of blood flow to the brain causing brain cell death and potential paralysis or speech problems"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Neurological",
+    "guid": "neurological_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "PD",
+        "shaking palsy"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Progressive neurodegenerative disorder affecting movement",
+      "tags": [
+        "brain",
+        "neurological",
+        "progressive",
+        "movement"
+      ]
+    },
+    "term": "Parkinson's disease",
+    "definition": "progressive nervous system disorder causing tremors, stiffness, and difficulty with movement and coordination"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Neurological",
+    "guid": "neurological_003",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "AD",
+        "dementia"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Most common cause of dementia in elderly",
+      "tags": [
+        "brain",
+        "neurological",
+        "memory",
+        "dementia"
+      ]
+    },
+    "term": "Alzheimer's disease",
+    "definition": "progressive brain disorder causing memory loss, confusion, and eventual inability to carry out simple tasks"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Autoimmune",
+    "guid": "autoimmune_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "RA"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Affects joints symmetrically, unlike osteoarthritis",
+      "tags": [
+        "joints",
+        "autoimmune",
+        "inflammation",
+        "chronic"
+      ]
+    },
+    "term": "rheumatoid arthritis",
+    "definition": "autoimmune disease causing chronic inflammation of joints, leading to pain, swelling, and eventual joint deformity"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Autoimmune",
+    "guid": "autoimmune_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "SLE",
+        "systemic lupus"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Can affect multiple organ systems, often has butterfly rash",
+      "tags": [
+        "autoimmune",
+        "systemic",
+        "inflammation",
+        "multi-organ"
+      ]
+    },
+    "term": "lupus",
+    "definition": "autoimmune disease where immune system attacks healthy tissues, causing inflammation in skin, joints, and organs"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Infectious",
+    "guid": "infectious_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "flu"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Seasonal outbreaks occur annually, vaccine available",
+      "tags": [
+        "viral",
+        "infectious",
+        "respiratory",
+        "seasonal"
+      ]
+    },
+    "term": "influenza",
+    "definition": "contagious viral infection causing fever, body aches, cough, and fatigue, typically lasting 1-2 weeks"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Infectious",
+    "guid": "infectious_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "TB",
+        "consumption"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be latent or active, requires long-term antibiotic treatment",
+      "tags": [
+        "bacterial",
+        "infectious",
+        "lungs",
+        "chronic"
+      ]
+    },
+    "term": "tuberculosis",
+    "definition": "bacterial infection primarily affecting lungs, causing persistent cough, weight loss, and night sweats"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Infectious",
+    "guid": "infectious_003",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "hepatitis B"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Can become chronic and lead to liver cirrhosis or cancer",
+      "tags": [
+        "viral",
+        "infectious",
+        "liver",
+        "chronic"
+      ]
+    },
+    "term": "hepatitis",
+    "definition": "inflammation of the liver often caused by viral infection, leading to jaundice, fatigue, and abdominal pain"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Cancer",
+    "guid": "cancer_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "lung cancer"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Strongly associated with smoking, leading cause of cancer death",
+      "tags": [
+        "cancer",
+        "lungs",
+        "smoking",
+        "malignant"
+      ]
+    },
+    "term": "bronchogenic carcinoma",
+    "definition": "malignant tumor originating in lungs or bronchi, often causing persistent cough, chest pain, and weight loss"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Cancer",
+    "guid": "cancer_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "breast cancer"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Second most common cancer in women, screening important for early detection",
+      "tags": [
+        "cancer",
+        "breast",
+        "malignant",
+        "screening"
+      ]
+    },
+    "term": "mammary carcinoma",
+    "definition": "malignant tumor in breast tissue, often detected as a lump, causing changes in breast shape or skin texture"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Gastrointestinal",
+    "guid": "gastrointestinal_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "peptic ulcer",
+        "stomach ulcer"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Often caused by H. pylori bacteria or NSAIDs",
+      "tags": [
+        "stomach",
+        "gastrointestinal",
+        "ulcer",
+        "bacterial"
+      ]
+    },
+    "term": "gastric ulcer",
+    "definition": "open sore in stomach lining causing burning pain, nausea, and potential bleeding if untreated"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Gastrointestinal",
+    "guid": "gastrointestinal_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "IBD",
+        "inflammatory bowel disease"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Chronic inflammatory condition affecting the colon",
+      "tags": [
+        "colon",
+        "gastrointestinal",
+        "inflammatory",
+        "chronic"
+      ]
+    },
+    "term": "ulcerative colitis",
+    "definition": "chronic inflammatory disease of the colon causing bloody diarrhea, abdominal pain, and urgency"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Kidney",
+    "guid": "kidney_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "kidney stones"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can cause excruciating pain when passing through urinary tract",
+      "tags": [
+        "kidney",
+        "urinary",
+        "stones",
+        "pain"
+      ]
+    },
+    "term": "nephrolithiasis",
+    "definition": "formation of hard deposits in kidneys causing severe flank pain, nausea, and blood in urine"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Kidney",
+    "guid": "kidney_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "chronic kidney disease",
+        "CKD"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Progressive loss of kidney function, may require dialysis",
+      "tags": [
+        "kidney",
+        "chronic",
+        "progressive",
+        "dialysis"
+      ]
+    },
+    "term": "chronic renal failure",
+    "definition": "gradual loss of kidney function over time, leading to waste buildup and eventual need for dialysis or transplant"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Skin",
+    "guid": "skin_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "atopic dermatitis"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Common chronic skin condition, often starts in childhood",
+      "tags": [
+        "skin",
+        "chronic",
+        "allergic",
+        "itching"
+      ]
+    },
+    "term": "eczema",
+    "definition": "chronic skin condition causing red, itchy, inflamed patches that may weep or become scaly"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Skin",
+    "guid": "skin_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "skin cancer"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Most deadly form of skin cancer, often appears as changing moles",
+      "tags": [
+        "skin",
+        "cancer",
+        "malignant",
+        "moles"
+      ]
+    },
+    "term": "melanoma",
+    "definition": "aggressive form of skin cancer developing from pigment cells, appearing as dark, irregular, changing moles"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Mental Health",
+    "guid": "mental_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "clinical depression",
+        "major depression"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Common mental health condition affecting mood and daily functioning",
+      "tags": [
+        "mental health",
+        "mood",
+        "psychiatric",
+        "depression"
+      ]
+    },
+    "term": "major depressive disorder",
+    "definition": "persistent feelings of sadness, hopelessness, and loss of interest in activities, affecting daily functioning"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Mental Health",
+    "guid": "mental_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "manic depression"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Characterized by alternating episodes of mania and depression",
+      "tags": [
+        "mental health",
+        "mood",
+        "psychiatric",
+        "manic"
+      ]
+    },
+    "term": "bipolar disorder",
+    "definition": "mental health condition causing extreme mood swings between manic highs and depressive lows"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Bone",
+    "guid": "bone_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "bone thinning"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Common in postmenopausal women, increases fracture risk",
+      "tags": [
+        "bone",
+        "density",
+        "fracture",
+        "aging"
+      ]
+    },
+    "term": "osteoporosis",
+    "definition": "condition where bones become weak and brittle, increasing risk of fractures from minor falls or stress"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Blood",
+    "guid": "blood_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "low red blood cells"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Can be caused by iron deficiency, chronic disease, or blood loss",
+      "tags": [
+        "blood",
+        "red blood cells",
+        "iron",
+        "fatigue"
+      ]
+    },
+    "term": "anemia",
+    "definition": "condition with insufficient healthy red blood cells or hemoglobin, causing fatigue, weakness, and pale skin"
+  },
+  {
+    "corpus": "Medical Diseases",
+    "group": "Blood",
+    "guid": "blood_002",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "blood cancer"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Cancer of blood-forming tissues, affects white blood cells",
+      "tags": [
+        "blood",
+        "cancer",
+        "white blood cells",
+        "bone marrow"
+      ]
+    },
+    "term": "leukemia",
+    "definition": "cancer of blood-forming tissues causing overproduction of abnormal white blood cells, leading to infections and bleeding"
+  }
+]

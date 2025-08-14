@@ -1,0 +1,652 @@
+[
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Planning",
+    "guid": "sped_law_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "IEP",
+        "individualized education plan"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Required for all students receiving special education services under IDEA",
+      "tags": [
+        "special education",
+        "planning",
+        "IDEA",
+        "individualized"
+      ]
+    },
+    "term": "Individualized Education Program",
+    "definition": "a written plan developed for each student with a disability that outlines specific educational goals, services, and accommodations"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Assessment",
+    "guid": "sped_law_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "IEE",
+        "independent educational evaluation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Parents have the right to request an IEE at public expense if they disagree with the school's evaluation",
+      "tags": [
+        "special education",
+        "assessment",
+        "evaluation",
+        "parent rights"
+      ]
+    },
+    "term": "Independent Educational Evaluation",
+    "definition": "an evaluation conducted by a qualified examiner who is not employed by the school district responsible for the student's education"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Placement",
+    "guid": "sped_law_003",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "LRE",
+        "least restrictive environment"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Students with disabilities should be educated with non-disabled peers to the maximum extent appropriate",
+      "tags": [
+        "special education",
+        "placement",
+        "inclusion",
+        "IDEA"
+      ]
+    },
+    "term": "Least Restrictive Environment",
+    "definition": "the educational setting that allows a student with disabilities to be educated with non-disabled peers to the greatest extent possible while still meeting their needs"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Legal Framework",
+    "guid": "sped_law_004",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "IDEA",
+        "Individuals with Disabilities Education Act"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Originally enacted as the Education for All Handicapped Children Act in 1975",
+      "tags": [
+        "special education",
+        "federal law",
+        "disability rights",
+        "education"
+      ]
+    },
+    "term": "Individuals with Disabilities Education Act",
+    "definition": "federal law ensuring students with disabilities receive free appropriate public education tailored to their individual needs"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Services",
+    "guid": "sped_law_005",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "FAPE",
+        "free appropriate public education"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Core requirement under IDEA - education must be both free and appropriate to the child's needs",
+      "tags": [
+        "special education",
+        "IDEA",
+        "educational services",
+        "rights"
+      ]
+    },
+    "term": "Free Appropriate Public Education",
+    "definition": "special education and related services provided at public expense that meet state educational standards and the individual needs of the student"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Legal Framework",
+    "guid": "sped_law_006",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "Section 504",
+        "504 plan"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Broader than IDEA - covers students who have disabilities but may not need special education services",
+      "tags": [
+        "special education",
+        "civil rights",
+        "accommodation",
+        "federal law"
+      ]
+    },
+    "term": "Section 504 of the Rehabilitation Act",
+    "definition": "federal civil rights law prohibiting discrimination against individuals with disabilities in programs receiving federal funding"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Legal Framework",
+    "guid": "sped_law_007",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "ADA",
+        "Americans with Disabilities Act"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Broader civil rights law that applies to public and private entities, not just federally funded programs",
+      "tags": [
+        "special education",
+        "civil rights",
+        "disability rights",
+        "federal law"
+      ]
+    },
+    "term": "Americans with Disabilities Act",
+    "definition": "comprehensive civil rights law prohibiting discrimination based on disability in employment, public services, and public accommodations"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Dispute Resolution",
+    "guid": "sped_law_008",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "due process hearing",
+        "impartial hearing"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Parents or schools can request a due process hearing when they disagree about a student's education",
+      "tags": [
+        "special education",
+        "dispute resolution",
+        "legal process",
+        "parent rights"
+      ]
+    },
+    "term": "Due Process Hearing",
+    "definition": "a formal legal proceeding where an impartial hearing officer resolves disputes between parents and schools regarding special education services"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Dispute Resolution",
+    "guid": "sped_law_009",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "mediation",
+        "special education mediation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Voluntary process that can help resolve disputes without going to a due process hearing",
+      "tags": [
+        "special education",
+        "dispute resolution",
+        "alternative resolution",
+        "voluntary"
+      ]
+    },
+    "term": "Mediation",
+    "definition": "a voluntary process where a neutral third party helps parents and schools resolve special education disputes through discussion and negotiation"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Assessment",
+    "guid": "sped_law_010",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "FBA",
+        "functional behavioral assessment"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Required when a student's behavior impedes their learning or that of others",
+      "tags": [
+        "special education",
+        "behavior",
+        "assessment",
+        "intervention"
+      ]
+    },
+    "term": "Functional Behavioral Assessment",
+    "definition": "a systematic process to identify the purpose or function of a student's problem behavior and develop appropriate interventions"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Behavioral Support",
+    "guid": "sped_law_011",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "BIP",
+        "behavior intervention plan"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be based on the results of a functional behavioral assessment",
+      "tags": [
+        "special education",
+        "behavior",
+        "intervention",
+        "planning"
+      ]
+    },
+    "term": "Behavior Intervention Plan",
+    "definition": "a written plan that uses positive behavioral interventions and supports to address problem behaviors based on the results of a functional behavioral assessment"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Transition Services",
+    "guid": "sped_law_012",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "transition services",
+        "transition planning"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must begin by age 16, or earlier if appropriate, and be updated annually",
+      "tags": [
+        "special education",
+        "transition",
+        "post-secondary",
+        "planning"
+      ]
+    },
+    "term": "Transition Services",
+    "definition": "coordinated activities designed to help students with disabilities move from school to post-school activities including higher education, employment, and independent living"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Related Services",
+    "guid": "sped_law_013",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "related services",
+        "supportive services"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Includes services like speech therapy, occupational therapy, physical therapy, and transportation",
+      "tags": [
+        "special education",
+        "services",
+        "support",
+        "therapy"
+      ]
+    },
+    "term": "Related Services",
+    "definition": "transportation and developmental, corrective, and other supportive services required to assist a student with disabilities to benefit from special education"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Assessment",
+    "guid": "sped_law_014",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "manifestation determination",
+        "manifestation review"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Required within 10 school days of a disciplinary action that constitutes a change of placement",
+      "tags": [
+        "special education",
+        "discipline",
+        "assessment",
+        "behavior"
+      ]
+    },
+    "term": "Manifestation Determination",
+    "definition": "a review to determine if a student's misconduct was caused by or had a direct relationship to their disability or was the result of the school's failure to implement the IEP"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Services",
+    "guid": "sped_law_015",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "ESY",
+        "extended school year"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Provided when a student would experience significant regression without continuous educational services",
+      "tags": [
+        "special education",
+        "services",
+        "summer",
+        "regression"
+      ]
+    },
+    "term": "Extended School Year Services",
+    "definition": "special education and related services provided beyond the normal school year to prevent significant regression of skills or knowledge"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Parent Rights",
+    "guid": "sped_law_016",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "prior written notice",
+        "PWN"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be provided whenever the school proposes or refuses to initiate or change identification, evaluation, or placement",
+      "tags": [
+        "special education",
+        "parent rights",
+        "notice",
+        "communication"
+      ]
+    },
+    "term": "Prior Written Notice",
+    "definition": "written notice that schools must provide to parents before proposing or refusing to initiate or change their child's identification, evaluation, or educational placement"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Parent Rights",
+    "guid": "sped_law_017",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "procedural safeguards",
+        "parent rights notice"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be provided at least once per year and upon initial referral, request for evaluation, and filing of a complaint",
+      "tags": [
+        "special education",
+        "parent rights",
+        "safeguards",
+        "notice"
+      ]
+    },
+    "term": "Procedural Safeguards Notice",
+    "definition": "a document that explains parents' rights under special education law, including their right to participate in meetings and request evaluations"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Parent Rights",
+    "guid": "sped_law_018",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "informed consent",
+        "parental consent"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Required before initial evaluation, initial provision of services, and reevaluations",
+      "tags": [
+        "special education",
+        "parent rights",
+        "consent",
+        "evaluation"
+      ]
+    },
+    "term": "Informed Consent",
+    "definition": "agreement by a parent who has been fully informed of all information relevant to the activity for which consent is sought, in their native language"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Assessment",
+    "guid": "sped_law_019",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "reevaluation",
+        "triennial evaluation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must occur at least every three years, unless parent and school agree it's not necessary",
+      "tags": [
+        "special education",
+        "assessment",
+        "evaluation",
+        "triennial"
+      ]
+    },
+    "term": "Reevaluation",
+    "definition": "a comprehensive assessment conducted at least every three years to determine if a student continues to have a disability and needs special education services"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Services",
+    "guid": "sped_law_020",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "supplementary aids",
+        "supports and services"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Provided in regular education classes to help students with disabilities succeed alongside their non-disabled peers",
+      "tags": [
+        "special education",
+        "inclusion",
+        "supports",
+        "regular education"
+      ]
+    },
+    "term": "Supplementary Aids and Services",
+    "definition": "aids, services, and supports provided in regular education classes or other education-related settings to enable students with disabilities to be educated with non-disabled students"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Planning",
+    "guid": "sped_law_021",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "IEP team",
+        "multidisciplinary team"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Includes parents, teachers, school administrators, and other professionals as appropriate",
+      "tags": [
+        "special education",
+        "team",
+        "planning",
+        "collaboration"
+      ]
+    },
+    "term": "IEP Team",
+    "definition": "a group of individuals responsible for developing, reviewing, and revising a student's Individualized Education Program"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Assessment",
+    "guid": "sped_law_022",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "comprehensive evaluation",
+        "initial evaluation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Must be completed within 60 days of receiving parental consent, unless state law provides otherwise",
+      "tags": [
+        "special education",
+        "assessment",
+        "evaluation",
+        "initial"
+      ]
+    },
+    "term": "Initial Evaluation",
+    "definition": "the first comprehensive assessment conducted to determine if a student has a disability and needs special education services"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Services",
+    "guid": "sped_law_023",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "compensatory education",
+        "compensatory services"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Awarded when a school has failed to provide FAPE and the student has been denied educational benefit",
+      "tags": [
+        "special education",
+        "remedy",
+        "services",
+        "FAPE"
+      ]
+    },
+    "term": "Compensatory Education",
+    "definition": "additional educational services provided to remedy a school's failure to provide a free appropriate public education"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Placement",
+    "guid": "sped_law_024",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "continuum of services",
+        "service delivery options"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Ranges from regular classroom with supports to residential placement",
+      "tags": [
+        "special education",
+        "placement",
+        "services",
+        "options"
+      ]
+    },
+    "term": "Continuum of Alternative Placements",
+    "definition": "the range of placement options available to meet the needs of students with disabilities, from least to most restrictive"
+  },
+  {
+    "corpus": "Special Education Law",
+    "group": "Educational Services",
+    "guid": "sped_law_025",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "stay put",
+        "pendency provision"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Student remains in current placement during dispute resolution proceedings",
+      "tags": [
+        "special education",
+        "dispute resolution",
+        "placement",
+        "legal protection"
+      ]
+    },
+    "term": "Stay Put Provision",
+    "definition": "the requirement that a student remain in their current educational placement during the pendency of any due process hearing or court proceeding"
+  }
+]
