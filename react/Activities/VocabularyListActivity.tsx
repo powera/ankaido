@@ -223,10 +223,7 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
               },
               // Dynamic columns based on display tags
               ...displayTags.map(tag => ({
-                header: tag === 'court' ? 'Court' : 
-                       tag === 'circuit' ? 'Circuit' : 
-                       tag === 'year' ? 'Year' : 
-                       tag.charAt(0).toUpperCase() + tag.slice(1),
+                header: tag.charAt(0).toUpperCase() + tag.slice(1),
                 render: (rowData: any) => getTagValue(rowData, tag),
                 sortable: true,
                 sortKey: tag,

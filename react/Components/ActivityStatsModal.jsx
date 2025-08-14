@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
     activityStatsManager,
     convertStatsToDisplayArray,
+    convertCorpusStatsToDisplayArray,
     formatDate
 } from '../Managers/activityStatsManager';
 import journeyModeManager from '../Managers/journeyModeManager';
@@ -24,7 +25,7 @@ const ActivityStatsModal = ({
   const [loading, setLoading] = useState(false);
   const [activityStats, setActivityStats] = useState({});
   const [viewMode, setViewMode] = useState('exposed'); // 'exposed', 'unexposed', 'daily', or 'weekly'
-
+  const [selectedCorpus, setSelectedCorpus] = useState(''); // Selected corpus for filtering
 
   const [queueSize, setQueueSize] = useState(0);
   const [isQueueFull, setIsQueueFull] = useState(false);
@@ -35,24 +36,12 @@ const ActivityStatsModal = ({
     return `${corpus} - ${group}`;
   };
 
-  // Helper function to get words from selected groups only
-  const getAllWordsFromSelectedGroups = () => {
-    const allWords = [];
-    Object.entries(selectedGroups).forEach(([corpus, groups]) => {
-      if (corporaData[corpus] && groups.length > 0) {
-        groups.forEach(group => {
-          if (corporaData[corpus].groups[group]) {
-            const groupWords = corporaData[corpus].groups[group].map(word => ({
-              ...word,
-              corpusGroup: formatCorpusGroupForDisplay(word.corpus, word.group)
-            }));
-            allWords.push(...groupWords);
-          }
-        });
-      }
-    });
-    return allWords;
+  // Get all available corpora from corporaData
+  const getAvailableCorpora = () => {
+    return Object.keys(corporaData).sort();
   };
+
+
 
   // Helper function to check if a progress entry is an activity progress (has correct/incorrect)
   const isActivityProgress = (stats) => {
@@ -76,14 +65,49 @@ const ActivityStatsModal = ({
           console.log('ActivityStatsModal loaded activityStats:', stats);
           setActivityStats(stats);
 
-          // Get all words from selected study materials
-          const allWords = getAllWordsFromSelectedGroups();
+          // Set default corpus if none selected and corpora are available
+          const availableCorpora = getAvailableCorpora();
+          if (!selectedCorpus && availableCorpora.length > 0) {
+            setSelectedCorpus(availableCorpora[0]);
+          }
 
-          const wordsArray = convertStatsToDisplayArray(stats, allWords);
-          setExposedWords(wordsArray);
-          
-          // Filter unexposed words (words that exist in study materials but aren't exposed)
-          const unexposed = allWords.filter(word => {
+          // Load daily stats
+          const dailyStatsData = await fetchDailyStats();
+          setDailyStats(dailyStatsData);
+
+          // Load weekly stats
+          const weeklyStatsData = await fetchWeeklyStats();
+          setWeeklyStats(weeklyStatsData);
+        } catch (error) {
+          console.error('Error loading activity stats in ActivityStatsModal:', error);
+          setDailyStats(null);
+          setWeeklyStats(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadStats();
+    }
+  }, [isOpen, corporaData]);
+
+  // Update exposed/unexposed words when selectedCorpus changes
+  useEffect(() => {
+    if (selectedCorpus && activityStats && Object.keys(activityStats).length > 0) {
+      try {
+        // Get exposed words for the selected corpus
+        const exposedWordsArray = convertCorpusStatsToDisplayArray(activityStats, selectedCorpus, corporaData);
+        setExposedWords(exposedWordsArray);
+
+        // Get unexposed words for the selected corpus
+        if (corporaData[selectedCorpus]) {
+          const corpusWords = [];
+          const groups = corporaData[selectedCorpus].groups || {};
+          Object.values(groups).forEach(groupWords => {
+            corpusWords.push(...groupWords);
+          });
+
+          const unexposed = corpusWords.filter(word => {
             const wordStats = activityStatsManager.getWordStats(word);
             return !wordStats || !wordStats.exposed;
           });
@@ -94,32 +118,19 @@ const ActivityStatsModal = ({
             corpusGroup: formatCorpusGroupForDisplay(word.corpus, word.group)
           }));
           setUnexposedWords(unexposedWithFormattedCorpusGroup);
-
-          // Load daily stats
-          const dailyStatsData = await fetchDailyStats();
-          setDailyStats(dailyStatsData);
-
-          // Load weekly stats
-          const weeklyStatsData = await fetchWeeklyStats();
-          setWeeklyStats(weeklyStatsData);
-
-          if (wordsArray.length === 0) {
-            console.warn('No activity stats available or empty object');
-          }
-        } catch (error) {
-          console.error('Error loading activity stats in ActivityStatsModal:', error);
-          setExposedWords([]);
+        } else {
           setUnexposedWords([]);
-          setDailyStats(null);
-          setWeeklyStats(null);
-        } finally {
-          setLoading(false);
         }
-      };
-
-      loadStats();
+      } catch (error) {
+        console.error('Error updating corpus-specific stats:', error);
+        setExposedWords([]);
+        setUnexposedWords([]);
+      }
+    } else {
+      setExposedWords([]);
+      setUnexposedWords([]);
     }
-  }, [isOpen, corporaData, selectedGroups]);
+  }, [selectedCorpus, activityStats, corporaData]);
 
   // Monitor Journey Mode queue status
   useEffect(() => {
@@ -243,10 +254,11 @@ const ActivityStatsModal = ({
 
   // Get modal title based on current mode
   const getModalTitle = () => {
+    const corpusInfo = selectedCorpus ? ` - ${selectedCorpus}` : '';
     if (viewMode === 'exposed') {
-      return `Exposed Words (${exposedWords.length} words)`;
+      return `Exposed Words (${exposedWords.length} words)${corpusInfo}`;
     } else if (viewMode === 'unexposed') {
-      return `Unexposed Words (${unexposedWords.length} words)`;
+      return `Unexposed Words (${unexposedWords.length} words)${corpusInfo}`;
     } else if (viewMode === 'daily') {
       return `Daily Stats${dailyStats ? ` - ${dailyStats.currentDay}` : ''}`;
     } else if (viewMode === 'weekly') {
@@ -302,6 +314,35 @@ const ActivityStatsModal = ({
             Weekly Stats
           </button>
         </div>
+
+        {/* Corpus Selection Dropdown - only show for exposed/unexposed views */}
+        {(viewMode === 'exposed' || viewMode === 'unexposed') && (
+          <div style={{ 
+            marginBottom: 'var(--spacing-base)', 
+            display: 'flex', 
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 'var(--spacing-small)'
+          }}>
+            <label htmlFor="corpus-select" style={{ fontWeight: 'bold' }}>
+              Corpus:
+            </label>
+            <select
+              id="corpus-select"
+              value={selectedCorpus}
+              onChange={(e) => setSelectedCorpus(e.target.value)}
+              className="w-settings-select"
+              style={{ minWidth: '200px' }}
+            >
+              <option value="">Select a corpus...</option>
+              {getAvailableCorpora().map(corpus => (
+                <option key={corpus} value={corpus}>
+                  {corpus}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -547,20 +588,27 @@ const ActivityStatsModal = ({
               );
             })()}
           </div>
+        ) : !selectedCorpus && (viewMode === 'exposed' || viewMode === 'unexposed') ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            <div>Please select a corpus to view statistics.</div>
+            <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
+              Choose a corpus from the dropdown above to see {viewMode} words.
+            </div>
+          </div>
         ) : sortedWords.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '2rem' }}>
             {viewMode === 'exposed' ? (
               <>
-                <div>No journey statistics available yet.</div>
+                <div>No journey statistics available yet for {selectedCorpus}.</div>
                 <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
                   Start practicing in Journey Mode to see your progress here!
                 </div>
               </>
             ) : (
               <>
-                <div>All words from your study materials have been exposed!</div>
+                <div>All words from {selectedCorpus} have been exposed!</div>
                 <div style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}>
-                  Great job! You've practiced all available words.
+                  Great job! You've practiced all available words from this corpus.
                 </div>
               </>
             )}

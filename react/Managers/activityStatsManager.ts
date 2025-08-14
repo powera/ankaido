@@ -173,12 +173,15 @@ export const DEFAULT_WORD_STATS: WordStats = {
   lastIncorrectAnswer: null
 };
 
-// Create a unique key for a word using GUID
+// Create a unique key for a word using corpus-prefixed GUID
 export const createWordKey = (word: Word): string => {
   if (!word.guid) {
     throw new Error(`Word is missing required GUID: ${word.term || 'unknown'}-${word.definition || 'unknown'}`);
   }
-  return word.guid;
+  if (!word.corpus) {
+    throw new Error(`Word is missing required corpus: ${word.term || 'unknown'}-${word.definition || 'unknown'}`);
+  }
+  return `${word.corpus}_${word.guid}`;
 };
 
 // Create the old format key for migration purposes
@@ -222,12 +225,16 @@ export const convertStatsToDisplayArray = (stats: Stats, allWords: Word[] = []):
     return [];
   }
 
-  // Create a lookup map for words by GUID and legacy key
+  // Create a lookup map for words by corpus-prefixed GUID and legacy key
+  const wordByCorpusGuid = new Map<string, Word>();
   const wordByGuid = new Map<string, Word>();
   const wordByLegacyKey = new Map<string, Word>();
   
   allWords.forEach(word => {
-    if (word.guid) {
+    if (word.guid && word.corpus) {
+      // New corpus-prefixed GUID format
+      wordByCorpusGuid.set(`${word.corpus}_${word.guid}`, word);
+      // Also store by plain GUID for migration
       wordByGuid.set(word.guid, word);
     }
     wordByLegacyKey.set(`${word.term}-${word.definition}`, word);
@@ -237,23 +244,30 @@ export const convertStatsToDisplayArray = (stats: Stats, allWords: Word[] = []):
     let term = 'Unknown';
     let definition = 'Unknown';
     
-    // Try to find word by GUID first, then by legacy key format
-    const wordByGuidLookup = wordByGuid.get(key);
-    if (wordByGuidLookup) {
-      term = wordByGuidLookup.term || 'Unknown';
-      definition = wordByGuidLookup.definition || 'Unknown';
+    // Try to find word by corpus-prefixed GUID first
+    const wordByCorpusGuidLookup = wordByCorpusGuid.get(key);
+    if (wordByCorpusGuidLookup) {
+      term = wordByCorpusGuidLookup.term || 'Unknown';
+      definition = wordByCorpusGuidLookup.definition || 'Unknown';
     } else {
-      // Check if it's a legacy key format
-      const wordByLegacyLookup = wordByLegacyKey.get(key);
-      if (wordByLegacyLookup) {
-        term = wordByLegacyLookup.term || 'Unknown';
-        definition = wordByLegacyLookup.definition || 'Unknown';
+      // Try plain GUID for migration
+      const wordByGuidLookup = wordByGuid.get(key);
+      if (wordByGuidLookup) {
+        term = wordByGuidLookup.term || 'Unknown';
+        definition = wordByGuidLookup.definition || 'Unknown';
       } else {
-        // Fallback: try to parse as legacy format
-        const keyParts = key.split('-');
-        if (keyParts.length >= 2) {
-          term = keyParts[0];
-          definition = keyParts.slice(1).join('-'); // Handle cases where definition might contain dashes
+        // Check if it's a legacy key format
+        const wordByLegacyLookup = wordByLegacyKey.get(key);
+        if (wordByLegacyLookup) {
+          term = wordByLegacyLookup.term || 'Unknown';
+          definition = wordByLegacyLookup.definition || 'Unknown';
+        } else {
+          // Fallback: try to parse as legacy format
+          const keyParts = key.split('-');
+          if (keyParts.length >= 2) {
+            term = keyParts[0];
+            definition = keyParts.slice(1).join('-'); // Handle cases where definition might contain dashes
+          }
         }
       }
     }
@@ -266,6 +280,34 @@ export const convertStatsToDisplayArray = (stats: Stats, allWords: Word[] = []):
       totalIncorrect: calculateTotalIncorrect(wordStats)
     };
   });
+};
+
+/**
+ * Convert activity stats for a specific corpus to display array format
+ * This function filters stats to only include words from the specified corpus
+ */
+export const convertCorpusStatsToDisplayArray = (stats: Stats, corpus: string, corporaData: any): DisplayWordStats[] => {
+  if (!stats || Object.keys(stats).length === 0 || !corpus || !corporaData[corpus]) {
+    return [];
+  }
+
+  // Get all words from the specified corpus
+  const corpusWords: Word[] = [];
+  const groups = corporaData[corpus].groups || {};
+  Object.values(groups).forEach((groupWords: Word[]) => {
+    corpusWords.push(...groupWords);
+  });
+
+  // Filter stats to only include entries from this corpus
+  const corpusStats: Stats = {};
+  Object.entries(stats).forEach(([key, wordStats]) => {
+    // Check if this stat key belongs to the specified corpus
+    if (key.startsWith(`${corpus}_`)) {
+      corpusStats[key] = wordStats;
+    }
+  });
+
+  return convertStatsToDisplayArray(corpusStats, corpusWords);
 };
 
 /**
@@ -347,20 +389,34 @@ export class ActivityStatsManager {
 
   /**
    * Get stats for a specific word
-   * Handles migration from legacy keys to GUID keys when GUID feature is enabled
+   * Handles migration from legacy keys to corpus-prefixed GUID keys
    */
   getWordStats(word: Word): WordStats {
     const wordKey = createWordKey(word);
     
-    // First try to get stats with the current key
+    // First try to get stats with the current corpus-prefixed key
     if (this.stats[wordKey]) {
       return this.stats[wordKey];
+    }
+    
+    // Try plain GUID for migration from old GUID format
+    if (word.guid && this.stats[word.guid]) {
+      const oldGuidStats = this.stats[word.guid];
+      this.stats[wordKey] = oldGuidStats;
+      delete this.stats[word.guid];
+      
+      // Save the migrated stats (async, but don't wait for it)
+      this.saveMigratedStats().catch(error => {
+        console.error('Error saving migrated stats:', error);
+      });
+      
+      return oldGuidStats;
     }
     
     // Try legacy key for migration from old term-definition format
     const legacyKey = createLegacyWordKey(word);
     if (this.stats[legacyKey]) {
-      // Found stats with legacy key, migrate to GUID key
+      // Found stats with legacy key, migrate to corpus-prefixed GUID key
       const legacyStats = this.stats[legacyKey];
       this.stats[wordKey] = legacyStats;
       delete this.stats[legacyKey];
