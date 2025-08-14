@@ -1,0 +1,1226 @@
+[
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "list",
+        "list files"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Most commonly used Unix command",
+      "tags": [
+        "unix",
+        "file",
+        "directory",
+        "basic"
+      ]
+    },
+    "term": "ls",
+    "definition": "list directory contents"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_002",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "change directory",
+        "navigate"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Essential for navigation",
+      "tags": [
+        "unix",
+        "directory",
+        "navigation",
+        "basic"
+      ]
+    },
+    "term": "cd",
+    "definition": "change the current directory"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_003",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "print working directory",
+        "current directory"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows current location in filesystem",
+      "tags": [
+        "unix",
+        "directory",
+        "navigation",
+        "basic"
+      ]
+    },
+    "term": "pwd",
+    "definition": "print the current working directory path"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_004",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "create directory",
+        "make folder"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Creates new directories",
+      "tags": [
+        "unix",
+        "directory",
+        "create",
+        "basic"
+      ]
+    },
+    "term": "mkdir",
+    "definition": "create a new directory"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_005",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "remove directory",
+        "delete directory"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Removes empty directories",
+      "tags": [
+        "unix",
+        "directory",
+        "delete",
+        "basic"
+      ]
+    },
+    "term": "rmdir",
+    "definition": "remove an empty directory"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_006",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "remove",
+        "delete file"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Use with caution - deletion is permanent",
+      "tags": [
+        "unix",
+        "file",
+        "delete",
+        "basic"
+      ]
+    },
+    "term": "rm",
+    "definition": "remove files and directories"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_007",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "copy file",
+        "duplicate"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Creates exact copies of files",
+      "tags": [
+        "unix",
+        "file",
+        "copy",
+        "basic"
+      ]
+    },
+    "term": "cp",
+    "definition": "copy files or directories"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_008",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "move file",
+        "rename"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Also used for renaming files",
+      "tags": [
+        "unix",
+        "file",
+        "move",
+        "rename",
+        "basic"
+      ]
+    },
+    "term": "mv",
+    "definition": "move or rename files and directories"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Operations",
+    "guid": "unix_file_009",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "create file",
+        "update timestamp"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Creates empty files or updates timestamps",
+      "tags": [
+        "unix",
+        "file",
+        "create",
+        "basic"
+      ]
+    },
+    "term": "touch",
+    "definition": "create an empty file or update file timestamps"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Viewing",
+    "guid": "unix_view_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "display file",
+        "show file"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Displays entire file content",
+      "tags": [
+        "unix",
+        "file",
+        "view",
+        "basic"
+      ]
+    },
+    "term": "cat",
+    "definition": "display the contents of a file"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Viewing",
+    "guid": "unix_view_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "page through",
+        "view file"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Allows scrolling through large files",
+      "tags": [
+        "unix",
+        "file",
+        "view",
+        "pager"
+      ]
+    },
+    "term": "less",
+    "definition": "view file contents one page at a time"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Viewing",
+    "guid": "unix_view_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "page viewer",
+        "file pager"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Older pager program, less flexible than 'less'",
+      "tags": [
+        "unix",
+        "file",
+        "view",
+        "pager"
+      ]
+    },
+    "term": "more",
+    "definition": "view file contents one screen at a time"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Viewing",
+    "guid": "unix_view_004",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "show beginning",
+        "first lines"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows first 10 lines by default",
+      "tags": [
+        "unix",
+        "file",
+        "view",
+        "basic"
+      ]
+    },
+    "term": "head",
+    "definition": "display the first lines of a file"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Viewing",
+    "guid": "unix_view_005",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "show end",
+        "last lines"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows last 10 lines by default",
+      "tags": [
+        "unix",
+        "file",
+        "view",
+        "basic"
+      ]
+    },
+    "term": "tail",
+    "definition": "display the last lines of a file"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "search text",
+        "pattern matching"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Supports regular expressions",
+      "tags": [
+        "unix",
+        "text",
+        "search",
+        "regex"
+      ]
+    },
+    "term": "grep",
+    "definition": "search for patterns in text files"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "stream editor",
+        "text substitution"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Powerful stream editor for filtering and transforming text",
+      "tags": [
+        "unix",
+        "text",
+        "edit",
+        "stream"
+      ]
+    },
+    "term": "sed",
+    "definition": "stream editor for filtering and transforming text"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_003",
+    "levels": [
+      "advanced"
+    ],
+    "alternatives": {
+      "term": [
+        "pattern scanning",
+        "text processing"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 3,
+      "notes": "Programming language for pattern scanning and processing",
+      "tags": [
+        "unix",
+        "text",
+        "programming",
+        "advanced"
+      ]
+    },
+    "term": "awk",
+    "definition": "pattern scanning and processing language"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_004",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "sort lines",
+        "arrange text"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Sorts lines of text alphabetically or numerically",
+      "tags": [
+        "unix",
+        "text",
+        "sort",
+        "organize"
+      ]
+    },
+    "term": "sort",
+    "definition": "sort lines of text files"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_005",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "remove duplicates",
+        "unique lines"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Reports or omits repeated lines",
+      "tags": [
+        "unix",
+        "text",
+        "unique",
+        "duplicates"
+      ]
+    },
+    "term": "uniq",
+    "definition": "report or omit repeated lines"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Text Processing",
+    "guid": "unix_text_006",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "word count",
+        "line count"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Counts lines, words, and characters",
+      "tags": [
+        "unix",
+        "text",
+        "count",
+        "statistics"
+      ]
+    },
+    "term": "wc",
+    "definition": "count lines, words, and characters in files"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Permissions",
+    "guid": "unix_perm_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "change mode",
+        "file permissions"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Changes file permissions using octal or symbolic notation",
+      "tags": [
+        "unix",
+        "permissions",
+        "security",
+        "file"
+      ]
+    },
+    "term": "chmod",
+    "definition": "change file permissions"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Permissions",
+    "guid": "unix_perm_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "change owner",
+        "file ownership"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Changes file ownership",
+      "tags": [
+        "unix",
+        "permissions",
+        "ownership",
+        "file"
+      ]
+    },
+    "term": "chown",
+    "definition": "change file ownership"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "File Permissions",
+    "guid": "unix_perm_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "change group",
+        "file group"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Changes group ownership of files",
+      "tags": [
+        "unix",
+        "permissions",
+        "group",
+        "file"
+      ]
+    },
+    "term": "chgrp",
+    "definition": "change group ownership of files"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "running processes",
+        "process list"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows currently running processes",
+      "tags": [
+        "unix",
+        "system",
+        "processes",
+        "basic"
+      ]
+    },
+    "term": "ps",
+    "definition": "display running processes"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_002",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "system monitor",
+        "process monitor"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Real-time display of running processes",
+      "tags": [
+        "unix",
+        "system",
+        "processes",
+        "monitor"
+      ]
+    },
+    "term": "top",
+    "definition": "display and update sorted information about running processes"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_003",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "disk usage",
+        "space usage"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows disk space usage",
+      "tags": [
+        "unix",
+        "system",
+        "disk",
+        "storage"
+      ]
+    },
+    "term": "df",
+    "definition": "display filesystem disk space usage"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_004",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "directory usage",
+        "folder size"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows directory space usage",
+      "tags": [
+        "unix",
+        "system",
+        "disk",
+        "directory"
+      ]
+    },
+    "term": "du",
+    "definition": "display directory space usage"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_005",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "system uptime",
+        "load average"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows system uptime and load",
+      "tags": [
+        "unix",
+        "system",
+        "uptime",
+        "load"
+      ]
+    },
+    "term": "uptime",
+    "definition": "show how long the system has been running"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_006",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "current user",
+        "username"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Displays current username",
+      "tags": [
+        "unix",
+        "system",
+        "user",
+        "basic"
+      ]
+    },
+    "term": "whoami",
+    "definition": "display the current username"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "System Information",
+    "guid": "unix_sys_007",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "logged in users",
+        "active users"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows who is logged into the system",
+      "tags": [
+        "unix",
+        "system",
+        "users",
+        "basic"
+      ]
+    },
+    "term": "who",
+    "definition": "show who is logged into the system"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Process Control",
+    "guid": "unix_proc_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "terminate process",
+        "stop process"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Sends signals to processes, typically to terminate them",
+      "tags": [
+        "unix",
+        "process",
+        "control",
+        "signal"
+      ]
+    },
+    "term": "kill",
+    "definition": "terminate processes by sending signals"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Process Control",
+    "guid": "unix_proc_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "kill by name",
+        "terminate by name"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Kills processes by name instead of PID",
+      "tags": [
+        "unix",
+        "process",
+        "control",
+        "name"
+      ]
+    },
+    "term": "killall",
+    "definition": "kill processes by name"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Process Control",
+    "guid": "unix_proc_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "background job",
+        "run in background"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Runs commands in the background",
+      "tags": [
+        "unix",
+        "process",
+        "background",
+        "job"
+      ]
+    },
+    "term": "nohup",
+    "definition": "run commands immune to hangups, with output to a non-tty"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Network",
+    "guid": "unix_net_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "network connectivity",
+        "test connection"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Tests network connectivity to hosts",
+      "tags": [
+        "unix",
+        "network",
+        "connectivity",
+        "test"
+      ]
+    },
+    "term": "ping",
+    "definition": "test network connectivity to a host"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Network",
+    "guid": "unix_net_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "download file",
+        "web request"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Command-line tool for transferring data with URLs",
+      "tags": [
+        "unix",
+        "network",
+        "download",
+        "http"
+      ]
+    },
+    "term": "curl",
+    "definition": "transfer data from or to a server"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Network",
+    "guid": "unix_net_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "download file",
+        "web download"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Non-interactive network downloader",
+      "tags": [
+        "unix",
+        "network",
+        "download",
+        "web"
+      ]
+    },
+    "term": "wget",
+    "definition": "retrieve files from web servers"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Archive",
+    "guid": "unix_arch_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "tape archive",
+        "create archive"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Creates and extracts archive files",
+      "tags": [
+        "unix",
+        "archive",
+        "compression",
+        "backup"
+      ]
+    },
+    "term": "tar",
+    "definition": "archive files and directories"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Archive",
+    "guid": "unix_arch_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "compress file",
+        "reduce size"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Compresses files using gzip algorithm",
+      "tags": [
+        "unix",
+        "compression",
+        "file",
+        "size"
+      ]
+    },
+    "term": "gzip",
+    "definition": "compress files using gzip compression"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Archive",
+    "guid": "unix_arch_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "decompress file",
+        "extract gzip"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Decompresses gzip compressed files",
+      "tags": [
+        "unix",
+        "compression",
+        "extract",
+        "decompress"
+      ]
+    },
+    "term": "gunzip",
+    "definition": "decompress gzip compressed files"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Search",
+    "guid": "unix_search_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "find files",
+        "search filesystem"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Powerful file search utility",
+      "tags": [
+        "unix",
+        "search",
+        "file",
+        "filesystem"
+      ]
+    },
+    "term": "find",
+    "definition": "search for files and directories in a directory hierarchy"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Search",
+    "guid": "unix_search_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "locate file",
+        "find by name"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Finds files by name using a database",
+      "tags": [
+        "unix",
+        "search",
+        "database",
+        "fast"
+      ]
+    },
+    "term": "locate",
+    "definition": "find files by name using a database"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Search",
+    "guid": "unix_search_003",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "which command",
+        "command location"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Shows the path of commands",
+      "tags": [
+        "unix",
+        "command",
+        "path",
+        "location"
+      ]
+    },
+    "term": "which",
+    "definition": "locate a command and display its pathname"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Environment",
+    "guid": "unix_env_001",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "environment variables",
+        "shell variables"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Displays environment variables",
+      "tags": [
+        "unix",
+        "environment",
+        "variables",
+        "shell"
+      ]
+    },
+    "term": "env",
+    "definition": "display environment variables"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Environment",
+    "guid": "unix_env_002",
+    "levels": [
+      "intermediate"
+    ],
+    "alternatives": {
+      "term": [
+        "export variable",
+        "set environment"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 2,
+      "notes": "Sets and exports environment variables",
+      "tags": [
+        "unix",
+        "environment",
+        "variables",
+        "export"
+      ]
+    },
+    "term": "export",
+    "definition": "set environment variables"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Environment",
+    "guid": "unix_env_003",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "command history",
+        "previous commands"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Shows command history",
+      "tags": [
+        "unix",
+        "history",
+        "commands",
+        "shell"
+      ]
+    },
+    "term": "history",
+    "definition": "display command history"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Environment",
+    "guid": "unix_env_004",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "command alias",
+        "shortcut"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Creates command shortcuts",
+      "tags": [
+        "unix",
+        "alias",
+        "shortcut",
+        "shell"
+      ]
+    },
+    "term": "alias",
+    "definition": "create an alias for a command"
+  },
+  {
+    "corpus": "Unix Commands",
+    "group": "Help",
+    "guid": "unix_help_001",
+    "levels": [
+      "beginner"
+    ],
+    "alternatives": {
+      "term": [
+        "manual",
+        "help",
+        "documentation"
+      ]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Essential for learning about any Unix command",
+      "tags": [
+        "unix",
+        "help",
+        "manual",
+        "documentation"
+      ]
+    },
+    "term": "man",
+    "definition": "display the manual page for a command"
+  }
+]
