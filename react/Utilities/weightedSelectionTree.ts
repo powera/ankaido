@@ -101,7 +101,7 @@ export class WeightedSelectionTree {
   setWord(index: number, word: Word): void {
     this.words[index - 1] = word; // Convert to 0-indexed for array
     if (!word.guid) {
-      throw new Error(`Word is missing required GUID: ${word.lithuanian || 'unknown'}-${word.english || 'unknown'}`);
+      throw new Error(`Word is missing required GUID: ${word.term || word.lithuanian || 'unknown'}-${word.definition || word.english || 'unknown'}`);
     }
     this.wordToIndex.set(word.guid, index);
   }
@@ -118,7 +118,7 @@ export class WeightedSelectionTree {
    */
   getWordIndex(word: Word): number | undefined {
     if (!word.guid) {
-      throw new Error(`Word is missing required GUID: ${word.lithuanian || 'unknown'}-${word.english || 'unknown'}`);
+      throw new Error(`Word is missing required GUID: ${word.term || word.lithuanian || 'unknown'}-${word.definition || word.english || 'unknown'}`);
     }
     return this.wordToIndex.get(word.guid);
   }
@@ -177,7 +177,7 @@ class WordWeightCache {
 
   getWordKey(word: Word): string {
     if (!word.guid) {
-      throw new Error(`Word is missing required GUID: ${word.lithuanian || 'unknown'}-${word.english || 'unknown'}`);
+      throw new Error(`Word is missing required GUID: ${word.term || word.lithuanian || 'unknown'}-${word.definition || word.english || 'unknown'}`);
     }
     return word.guid;
   }

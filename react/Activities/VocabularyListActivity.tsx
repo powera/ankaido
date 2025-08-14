@@ -89,19 +89,6 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
     const value = tag.split(':')[1];
     
     // Special handling for different tag types
-    if (tagPrefix === 'court') {
-      if (value === 'supreme') return 'Supreme Court';
-      if (value === 'circuit') return 'Circuit Court';
-      if (value === 'district') return 'District Court';
-      if (value === 'state') return 'State Court';
-      return value;
-    }
-    
-    if (tagPrefix === 'circuit') {
-      if (value === 'supreme') return 'Supreme';
-      return `${value} Circuit`;
-    }
-    
     if (tagPrefix === 'year') {
       return value;
     }

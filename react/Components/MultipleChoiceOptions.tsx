@@ -51,12 +51,12 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
         let correctAnswer: string;
         if (quizMode === 'listening') {
           if (studyMode === 'source-to-source') {
-            correctAnswer = word.lithuanian;
+            correctAnswer = word.term || word.lithuanian;
           } else {
-            correctAnswer = studyMode === 'source-to-english' ? word.english : word.lithuanian;
+            correctAnswer = studyMode === 'source-to-english' ? (word.definition || word.english) : (word.term || word.lithuanian);
           }
         } else {
-          correctAnswer = studyMode === 'english-to-source' ? word.lithuanian : word.english;
+          correctAnswer = studyMode === 'english-to-source' ? (word.term || word.lithuanian) : (word.definition || word.english);
         }
 
         const isCorrect: boolean = option === correctAnswer;
@@ -77,36 +77,36 @@ const MultipleChoiceOptions: React.FC<MultipleChoiceOptionsProps> = ({
         let translation: string | null = null;
         if (shouldShowAnswer) {
           if (studyMode === 'source-to-source') {
-            // For source-to-source mode, show English translation
+            // For source-to-source mode, show definition translation
             if (isCorrect) {
-              translation = word.english;
+              translation = word.definition || word.english;
             } else {
-              // Find the word that matches this Lithuanian option
-              const matchingWord: Word | undefined = wordsForTranslation?.find(w => w.lithuanian === option);
+              // Find the word that matches this term option
+              const matchingWord: Word | undefined = wordsForTranslation?.find(w => (w.term || w.lithuanian) === option);
               if (matchingWord) {
-                translation = matchingWord.english;
+                translation = matchingWord.definition || matchingWord.english;
               }
             }
           } else if (studyMode === 'source-to-english') {
-            // Lithuanian question, English answers - show Lithuanian translation for all options
+            // Term question, definition answers - show term translation for all options
             if (isCorrect) {
-              translation = word.lithuanian;
+              translation = word.term || word.lithuanian;
             } else {
-              // Find the word that matches this English option
-              const matchingWord: Word | undefined = wordsForTranslation?.find(w => w.english === option);
+              // Find the word that matches this definition option
+              const matchingWord: Word | undefined = wordsForTranslation?.find(w => (w.definition || w.english) === option);
               if (matchingWord) {
-                translation = matchingWord.lithuanian;
+                translation = matchingWord.term || matchingWord.lithuanian;
               }
             }
           } else if (studyMode === 'english-to-source') {
-            // English question, Lithuanian answers - show English translation for all options
+            // Definition question, term answers - show definition translation for all options
             if (isCorrect) {
-              translation = word.english;
+              translation = word.definition || word.english;
             } else {
-              // Find the word that matches this Lithuanian option
-              const matchingWord: Word | undefined = wordsForTranslation?.find(w => w.lithuanian === option);
+              // Find the word that matches this term option
+              const matchingWord: Word | undefined = wordsForTranslation?.find(w => (w.term || w.lithuanian) === option);
               if (matchingWord) {
-                translation = matchingWord.english;
+                translation = matchingWord.definition || matchingWord.english;
               }
             }
           }

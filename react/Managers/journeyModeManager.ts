@@ -65,7 +65,8 @@ export class JourneyModeManager {
     
     // Check if word is already in queue
     const isAlreadyInQueue = this.manuallyAddedWords.some(queuedWord => 
-      queuedWord.lithuanian === word.lithuanian && queuedWord.english === word.english
+      (queuedWord.term || queuedWord.lithuanian) === (word.term || word.lithuanian) && 
+      (queuedWord.definition || queuedWord.english) === (word.definition || word.english)
     );
     
     if (isAlreadyInQueue) {
@@ -95,7 +96,8 @@ export class JourneyModeManager {
 
   isWordInQueue(word: Word): boolean {
     return this.manuallyAddedWords.some(queuedWord => 
-      queuedWord.lithuanian === word.lithuanian && queuedWord.english === word.english
+      (queuedWord.term || queuedWord.lithuanian) === (word.term || word.lithuanian) && 
+      (queuedWord.definition || queuedWord.english) === (word.definition || word.english)
     );
   }
 

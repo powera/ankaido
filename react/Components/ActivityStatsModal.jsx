@@ -144,12 +144,12 @@ const ActivityStatsModal = ({
   const handleAddToJourneyQueue = (word) => {
     const success = journeyModeManager.addWordToQueue(word);
     if (success) {
-      console.log(`Added "${word.lithuanian}" to Journey Mode queue (${journeyModeManager.getQueueSize()}/10)`);
+      console.log(`Added "${word.term}" to Journey Mode queue (${journeyModeManager.getQueueSize()}/10)`);
     } else {
       if (journeyModeManager.isQueueFull()) {
         console.warn('Journey Mode queue is full (10/10)');
       } else if (journeyModeManager.isWordInQueue(word)) {
-        console.warn(`"${word.lithuanian}" is already in the queue`);
+        console.warn(`"${word.term}" is already in the queue`);
       }
     }
   };
@@ -176,13 +176,13 @@ const ActivityStatsModal = ({
 
     // Handle different sort fields
     switch (sortField) {
-      case 'lithuanian':
-        aValue = a.lithuanian.toLowerCase();
-        bValue = b.lithuanian.toLowerCase();
+      case 'term':
+        aValue = (a.term || '').toLowerCase();
+        bValue = (b.term || '').toLowerCase();
         break;
-      case 'english':
-        aValue = a.english.toLowerCase();
-        bValue = b.english.toLowerCase();
+      case 'definition':
+        aValue = (a.definition || '').toLowerCase();
+        bValue = (b.definition || '').toLowerCase();
         break;
       case 'corpus':
         aValue = a.corpus?.toLowerCase() || '';
@@ -570,12 +570,12 @@ const ActivityStatsModal = ({
             <DataTable
             columns={viewMode === 'exposed' ? [
               {
-                header: 'Lithuanian',
-                accessor: 'lithuanian'
+                header: 'Term',
+                accessor: 'term'
               },
               {
-                header: 'English',
-                accessor: 'english'
+                header: 'Definition',
+                accessor: 'definition'
               },
               {
                 header: 'Correct',
@@ -620,12 +620,12 @@ const ActivityStatsModal = ({
               }
             ] : [
               {
-                header: 'Lithuanian',
-                accessor: 'lithuanian'
+                header: 'Term',
+                accessor: 'term'
               },
               {
-                header: 'English',
-                accessor: 'english'
+                header: 'Definition',
+                accessor: 'definition'
               },
               {
                 header: 'Corpus',

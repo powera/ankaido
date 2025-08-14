@@ -26,14 +26,14 @@ export const createInitialActivityState = (
 export const getCorrectAnswer = (word: Word, studyMode: StudyMode): string => {
   switch (studyMode) {
     case 'english-to-source':
-      return word.lithuanian;
+      return word.term || word.lithuanian;
     case 'source-to-english':
-      return word.english;
+      return word.definition || word.english;
     case 'source-to-source':
-      return word.lithuanian;
+      return word.term || word.lithuanian;
     default:
       console.warn(`Unknown study mode in getCorrectAnswer: ${studyMode}`);
-      return word.lithuanian; // Default fallback
+      return word.term || word.lithuanian; // Default fallback
   }
 };
 
@@ -48,17 +48,23 @@ export const getAllValidAnswers = (word: Word, studyMode: StudyMode): string[] =
   if (word.alternatives) {
     switch (studyMode) {
       case 'english-to-source':
-        if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
+        if (word.alternatives.term && Array.isArray(word.alternatives.term)) {
+          validAnswers.push(...word.alternatives.term);
+        } else if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
           validAnswers.push(...word.alternatives.lithuanian);
         }
         break;
       case 'source-to-english':
-        if (word.alternatives.english && Array.isArray(word.alternatives.english)) {
+        if (word.alternatives.definition && Array.isArray(word.alternatives.definition)) {
+          validAnswers.push(...word.alternatives.definition);
+        } else if (word.alternatives.english && Array.isArray(word.alternatives.english)) {
           validAnswers.push(...word.alternatives.english);
         }
         break;
       case 'source-to-source':
-        if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
+        if (word.alternatives.term && Array.isArray(word.alternatives.term)) {
+          validAnswers.push(...word.alternatives.term);
+        } else if (word.alternatives.lithuanian && Array.isArray(word.alternatives.lithuanian)) {
           validAnswers.push(...word.alternatives.lithuanian);
         }
         break;
@@ -75,14 +81,14 @@ export const getAllValidAnswers = (word: Word, studyMode: StudyMode): string[] =
 export const getQuestionText = (word: Word, studyMode: StudyMode): string => {
   switch (studyMode) {
     case 'english-to-source':
-      return word.english;
+      return word.definition || word.english;
     case 'source-to-english':
-      return word.lithuanian;
+      return word.term || word.lithuanian;
     case 'source-to-source':
-      return word.lithuanian;
+      return word.term || word.lithuanian;
     default:
       console.warn(`Unknown study mode in getQuestionText: ${studyMode}`);
-      return word.english; // Default fallback
+      return word.definition || word.english; // Default fallback
   }
 };
 

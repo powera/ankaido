@@ -76,8 +76,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     if (audioEnabled && word) {
       // Small delay to ensure the UI has updated
       const timer = setTimeout(() => {
-        // Play the definition (stored in english field due to data mapping)
-        ttsAudioManager.playAudio(word.english);
+        // Play the definition
+        ttsAudioManager.playAudio(word.definition || word.english);
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -106,7 +106,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
     const matchingWord = allWords.find(word => {
       // Skip the current word
       if (word === currentWord || 
-          (word.lithuanian === currentWord?.lithuanian && word.english === currentWord?.english)) {
+          ((word.term || word.lithuanian) === (currentWord?.term || currentWord?.lithuanian) && 
+           (word.definition || word.english) === (currentWord?.definition || currentWord?.english))) {
         return false;
       }
       
@@ -146,7 +147,7 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
       
       if (matchingWord) {
         // Always show the definition for the matching word
-        const sourceWord = matchingWord.english;
+        const sourceWord = matchingWord.definition || matchingWord.english;
         
         // Show all valid answers
         const validAnswersText = allValidAnswers.length > 1 
@@ -194,9 +195,8 @@ const TypingActivity: React.FC<TypingActivityProps> = ({
   }
 
   // Always show definition as question and ask for term as answer
-  // Note: Due to data mapping, definition is stored in 'english' field and term in 'lithuanian' field
-  const question: string = word.english;  // This contains the definition
-  const answer: string = word.lithuanian;  // This contains the term
+  const question: string = word.definition || word.english;  // This contains the definition
+  const answer: string = word.term || word.lithuanian;  // This contains the term
   
   // Use dynamic typing directions based on corpus
   const promptText: string = typingDirections;

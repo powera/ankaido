@@ -19,16 +19,16 @@ export const generateMultipleChoiceOptions = (
   
   if (quizMode === 'listening') {
     if (studyMode === 'source-to-source') {
-      correctAnswer = word.lithuanian;
-      answerField = 'lithuanian';
+      correctAnswer = word.term || word.lithuanian;
+      answerField = 'term';
     } else {
-      correctAnswer = studyMode === 'source-to-english' ? word.english : word.lithuanian;
-      answerField = studyMode === 'source-to-english' ? 'english' : 'lithuanian';
+      correctAnswer = studyMode === 'source-to-english' ? (word.definition || word.english) : (word.term || word.lithuanian);
+      answerField = studyMode === 'source-to-english' ? 'definition' : 'term';
     }
   } else {
     // Multiple choice mode
-    correctAnswer = studyMode === 'english-to-source' ? word.lithuanian : word.english;
-    answerField = studyMode === 'english-to-source' ? 'lithuanian' : 'english';
+    correctAnswer = studyMode === 'english-to-source' ? (word.term || word.lithuanian) : (word.definition || word.english);
+    answerField = studyMode === 'english-to-source' ? 'term' : 'definition';
   }
 
   // Use provided number of options, default to 4
@@ -37,17 +37,17 @@ export const generateMultipleChoiceOptions = (
 
   // Use wordListState if available, otherwise create minimal options
   const allWords = wordListState?.allWords || [];
-  const sameCorpusWords = allWords.filter(w => 
-    w.corpus === word.corpus && 
-    w[answerField] !== correctAnswer
-  );
+  const sameCorpusWords = allWords.filter(w => {
+    const wordAnswer = answerField === 'term' ? (w.term || w.lithuanian) : (w.definition || w.english);
+    return w.corpus === word.corpus && wordAnswer !== correctAnswer;
+  });
   const wrongAnswersSet = new Set<string>();
   const wrongAnswers: string[] = [];
   
   // Gather wrong answers from same corpus - shuffle first to get random decoys
   const shuffledSameCorpusWords = [...sameCorpusWords].sort(() => Math.random() - 0.5);
   for (const wrongWord of shuffledSameCorpusWords) {
-    const answer = wrongWord[answerField];
+    const answer = answerField === 'term' ? (wrongWord.term || wrongWord.lithuanian) : (wrongWord.definition || wrongWord.english);
     if (answer !== correctAnswer && !wrongAnswersSet.has(answer)) {
       wrongAnswersSet.add(answer);
       wrongAnswers.push(answer);
@@ -58,7 +58,7 @@ export const generateMultipleChoiceOptions = (
   // Pad with any other words if needed
   if (wrongAnswers.length < numWrongAnswers) {
     const fallbackWords = allWords
-      .map(w => w[answerField])
+      .map(w => answerField === 'term' ? (w.term || w.lithuanian) : (w.definition || w.english))
       .filter(ans => ans !== correctAnswer && !wrongAnswersSet.has(ans))
       .sort(() => Math.random() - 0.5);
     while (wrongAnswers.length < numWrongAnswers && fallbackWords.length > 0) {

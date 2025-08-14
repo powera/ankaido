@@ -176,13 +176,13 @@ export const DEFAULT_WORD_STATS: WordStats = {
 // Create a unique key for a word using GUID
 export const createWordKey = (word: Word): string => {
   if (!word.guid) {
-    throw new Error(`Word is missing required GUID: ${word.lithuanian || 'unknown'}-${word.english || 'unknown'}`);
+    throw new Error(`Word is missing required GUID: ${word.term || 'unknown'}-${word.definition || 'unknown'}`);
   }
   return word.guid;
 };
 
 // Create the old format key for migration purposes
-export const createLegacyWordKey = (word: Word): string => `${word.lithuanian}-${word.english}`;
+export const createLegacyWordKey = (word: Word): string => `${word.term}-${word.definition}`;
 
 // WordListManager no longer stores activity stats - they are managed separately by activityStatsManager
 
@@ -211,8 +211,8 @@ export const calculateTotalIncorrect = (wordStats: WordStats): number => {
  * Each entry includes word data plus calculated totals
  */
 export interface DisplayWordStats extends WordStats {
-  lithuanian: string;
-  english: string;
+  term: string;
+  definition: string;
   totalCorrect: number;
   totalIncorrect: number;
 }
@@ -230,37 +230,37 @@ export const convertStatsToDisplayArray = (stats: Stats, allWords: Word[] = []):
     if (word.guid) {
       wordByGuid.set(word.guid, word);
     }
-    wordByLegacyKey.set(`${word.lithuanian}-${word.english}`, word);
+    wordByLegacyKey.set(`${word.term}-${word.definition}`, word);
   });
 
   return Object.entries(stats).map(([key, wordStats]) => {
-    let lithuanian = 'Unknown';
-    let english = 'Unknown';
+    let term = 'Unknown';
+    let definition = 'Unknown';
     
     // Try to find word by GUID first, then by legacy key format
     const wordByGuidLookup = wordByGuid.get(key);
     if (wordByGuidLookup) {
-      lithuanian = wordByGuidLookup.lithuanian;
-      english = wordByGuidLookup.english;
+      term = wordByGuidLookup.term || 'Unknown';
+      definition = wordByGuidLookup.definition || 'Unknown';
     } else {
       // Check if it's a legacy key format
       const wordByLegacyLookup = wordByLegacyKey.get(key);
       if (wordByLegacyLookup) {
-        lithuanian = wordByLegacyLookup.lithuanian;
-        english = wordByLegacyLookup.english;
+        term = wordByLegacyLookup.term || 'Unknown';
+        definition = wordByLegacyLookup.definition || 'Unknown';
       } else {
         // Fallback: try to parse as legacy format
         const keyParts = key.split('-');
         if (keyParts.length >= 2) {
-          lithuanian = keyParts[0];
-          english = keyParts.slice(1).join('-'); // Handle cases where english might contain dashes
+          term = keyParts[0];
+          definition = keyParts.slice(1).join('-'); // Handle cases where definition might contain dashes
         }
       }
     }
     
     return {
-      lithuanian,
-      english,
+      term,
+      definition,
       ...wordStats,
       totalCorrect: calculateTotalCorrect(wordStats),
       totalIncorrect: calculateTotalIncorrect(wordStats)
@@ -357,7 +357,7 @@ export class ActivityStatsManager {
       return this.stats[wordKey];
     }
     
-    // Try legacy key for migration from old lithuanian-english format
+    // Try legacy key for migration from old term-definition format
     const legacyKey = createLegacyWordKey(word);
     if (this.stats[legacyKey]) {
       // Found stats with legacy key, migrate to GUID key

@@ -41,12 +41,12 @@ const WordDisplayCard: React.FC<WordDisplayCardProps> = ({
 }) => {
   if (!currentWord) return null;
 
-  // For 'source-to-english' mode: Lithuanian question, English answer
-  const question = questionText || currentWord.lithuanian;
-  const answer = answerText || currentWord.english;
+  // For 'source-to-english' mode: term question, definition answer
+  const question = questionText || currentWord.term || currentWord.lithuanian;
+  const answer = answerText || currentWord.definition || currentWord.english;
 
-  // Audio is always Lithuanian (source language)
-  const audioWord = currentWord.lithuanian;
+  // Audio is always the term (source language)
+  const audioWord = currentWord.term || currentWord.lithuanian;
 
   // Show audio button when enabled and either:
   // 1. General audio button is requested, or

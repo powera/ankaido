@@ -84,7 +84,7 @@ describe('activityStatsManager utility functions', () => {
   describe('convertStatsToDisplayArray', () => {
     it('should convert stats object to display array with GUID keys', () => {
       const allWords = [
-        { guid: 'guid-123', lithuanian: 'labas', english: 'hello' }
+        { guid: 'guid-123', term: 'labas', definition: 'hello', lithuanian: 'labas', english: 'hello' }
       ];
       const stats = {
         'guid-123': {
@@ -99,8 +99,8 @@ describe('activityStatsManager utility functions', () => {
       
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
-        lithuanian: 'labas',
-        english: 'hello',
+        term: 'labas',
+        definition: 'hello',
         exposed: true,
         multipleChoice: { correct: 3, incorrect: 1 },
         listeningEasy: { correct: 2, incorrect: 0 },
@@ -112,7 +112,7 @@ describe('activityStatsManager utility functions', () => {
 
     it('should convert stats object to display array with legacy keys', () => {
       const allWords = [
-        { guid: 'guid-123', lithuanian: 'labas', english: 'hello' }
+        { guid: 'guid-123', term: 'labas', definition: 'hello', lithuanian: 'labas', english: 'hello' }
       ];
       const stats = {
         'labas-hello': {
@@ -127,8 +127,8 @@ describe('activityStatsManager utility functions', () => {
       
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
-        lithuanian: 'labas',
-        english: 'hello',
+        term: 'labas',
+        definition: 'hello',
         exposed: true,
         multipleChoice: { correct: 3, incorrect: 1 },
         listeningEasy: { correct: 2, incorrect: 0 },
@@ -152,8 +152,8 @@ describe('activityStatsManager utility functions', () => {
       
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
-        lithuanian: 'labas',
-        english: 'hello',
+        term: 'labas',
+        definition: 'hello',
         exposed: true,
         multipleChoice: { correct: 3, incorrect: 1 },
         listeningEasy: { correct: 2, incorrect: 0 },

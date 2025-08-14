@@ -41,7 +41,7 @@ const TypingResponse: React.FC<TypingResponseProps> = ({
   };
 
   const correctAnswer = studyMode === 'english-to-lithuanian' ? 
-    currentWord?.lithuanian : currentWord?.english;
+    (currentWord?.term || currentWord?.lithuanian) : (currentWord?.definition || currentWord?.english);
 
   // Use provided promptText or fallback to default based on study mode
   const finalPromptText = promptText || (studyMode === 'english-to-lithuanian' ? 

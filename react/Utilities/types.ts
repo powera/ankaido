@@ -5,15 +5,23 @@
 
 // Core Word interface - unified definition used across all utilities
 export interface Word {
-  lithuanian: string;
-  english: string;
+  // Primary field names
+  term: string;
+  definition: string;
+  // Legacy field names (for backward compatibility with existing data)
+  lithuanian?: string;
+  english?: string;
   corpus: string;
   group: string;
   guid: string;
   levels: string[];
   alternatives: {
-    english: string[];
-    lithuanian: string[];
+    // Primary field names
+    term: string[];
+    definition: string[];
+    // Legacy field names (for backward compatibility)
+    english?: string[];
+    lithuanian?: string[];
   };
   metadata: {
     difficulty_level: number | null;

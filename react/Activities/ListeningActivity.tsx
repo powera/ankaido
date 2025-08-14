@@ -66,11 +66,11 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
     // Determine correct answer based on study mode
     let correctAnswer: string;
     if (studyMode === 'source-to-source') {
-      correctAnswer = currentWord.lithuanian;
+      correctAnswer = currentWord.term || currentWord.lithuanian;
     } else if (studyMode === 'source-to-english') {
-      correctAnswer = currentWord.english;
+      correctAnswer = currentWord.definition || currentWord.english;
     } else {
-      correctAnswer = currentWord.lithuanian; // Default fallback
+      correctAnswer = currentWord.term || currentWord.lithuanian; // Default fallback
     }
 
     const isCorrect: boolean = selectedOption === correctAnswer;
@@ -105,11 +105,11 @@ const ListeningActivity: React.FC<ListeningActivityProps> = ({
     // Determine if the selected answer was correct
     let correctAnswer: string;
     if (studyMode === 'source-to-source') {
-      correctAnswer = currentWord.lithuanian;
+      correctAnswer = currentWord.term || currentWord.lithuanian;
     } else if (studyMode === 'source-to-english') {
-      correctAnswer = currentWord.english;
+      correctAnswer = currentWord.definition || currentWord.english;
     } else {
-      correctAnswer = currentWord.lithuanian; // Default fallback
+      correctAnswer = currentWord.term || currentWord.lithuanian; // Default fallback
     }
     
     const isCorrect: boolean = selectedAnswer === correctAnswer;
