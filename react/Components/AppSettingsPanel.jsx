@@ -156,13 +156,11 @@ const AppSettingsPanel = ({
           <option value="journey">🚀 Journey Mode</option>
           <option value="drill">🎯 Drill Mode</option>
           <option value="blitz">⚡ Blitz Mode</option>
-
           <option value="multiple-choice">🎯 Multiple Choice</option>
-          <option value="listening">🎧 Listening</option>
-          <option value="typing">⌨️ Typing</option>
           <option value="flashcard">🃏 Flash Cards</option>
           <option value="vocabulary-list">📑 Vocabulary List</option>
-
+          <option value="typing">⌨️ Typing</option>
+          <option value="listening">🎧 Listening</option>
         </select>
       </div>
 
@@ -182,25 +180,6 @@ const AppSettingsPanel = ({
             <option value="normal">🎯 Normal</option>
             <option value="new-words">🌱 New Words</option>
             <option value="review-words">📚 Review Words</option>
-          </select>
-        </div>
-      )}
-
-
-
-      {/* Voice selector - only show when audio is enabled */}
-      {audioEnabled && (
-        <div className="w-dropdown-container">
-          <label>
-            <span className="w-hide-mobile">Voice:</span>
-            <span className="w-show-mobile" style={{ display: 'none' }}>Voice:</span>
-          </label>
-          <select 
-            value={selectedVoice || ''} 
-            onChange={(e) => setSelectedVoice(e.target.value)}
-          >
-            <option value="default">🔊 Default Voice</option>
-            <option value="random">🎲 Rotate Voices</option>
           </select>
         </div>
       )}

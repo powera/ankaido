@@ -73,10 +73,6 @@ const StudyMaterialsModal = ({
     await corpusChoicesManager.updateCorpusChoices(corpus, newGroups);
   };
 
-
-
-
-
   return (
     <BaseModal
       isOpen={isOpen}
