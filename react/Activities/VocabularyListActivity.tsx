@@ -137,6 +137,10 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
         const bStats = activityStatsManager.getWordStats(b);
         aValue = getTotalExposures(aStats);
         bValue = getTotalExposures(bStats);
+      } else if (field === 'alternateTerms') {
+        // Handle alternate terms sorting
+        aValue = a.alternatives?.term && Array.isArray(a.alternatives.term) ? a.alternatives.term.join(', ') : '';
+        bValue = b.alternatives?.term && Array.isArray(b.alternatives.term) ? b.alternatives.term.join(', ') : '';
       } else if (displayTags.includes(field)) {
         // Handle structured tag fields
         aValue = getTagValue(a, field);
@@ -217,6 +221,18 @@ const VocabularyListActivity: React.FC<VocabularyListActivityProps> = ({
                 render: (rowData: any) => rowData.definition || rowData.english || '',
                 sortable: true,
                 sortKey: 'definition'
+              },
+              {
+                header: 'Alternate Terms',
+                render: (rowData: any) => {
+                  if (rowData.alternatives?.term && Array.isArray(rowData.alternatives.term)) {
+                    return rowData.alternatives.term.join(', ');
+                  }
+                  return '';
+                },
+                sortable: true,
+                sortKey: 'alternateTerms',
+                width: '150px'
               },
               // Dynamic columns based on display tags
               ...displayTags.map(tag => ({
