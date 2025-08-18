@@ -1,6 +1,25 @@
 {
   "vocabularies": [
     {
+      "id": "tarot_cards",
+      "name": "Tarot Cards",
+      "corpus": "Tarot Cards",
+      "file": "tarot_cards.json",
+      "description": "The 78 cards of the traditional Rider-Waite tarot deck with brief interpretations",
+      "enabled": true,
+      "typing_directions": "What tarot card has this meaning?",
+      "vocabulary_list_display_tags": ["group"],
+      "metadata": {
+        "source": "Traditional Rider-Waite tarot interpretations",
+        "language_pair": "english-english",
+        "difficulty_levels": [
+          "beginner"
+        ],
+        "word_count": 78,
+        "last_updated": "2024-07-25T00:00:00.000000"
+      }
+    },
+    {
       "id": "lithuanian",
       "name": "Lithuanian Vocabulary",
       "corpus": "Lithuanian Basics",
@@ -149,5 +168,5 @@
     }
   ],
   "schema_version": "1.0",
-  "last_updated": "2025-01-27T12:00:00.000000Z"
+  "last_updated": "2024-07-25T12:00:00.000000Z"
 }

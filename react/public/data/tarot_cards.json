@@ -1,0 +1,1250 @@
+[
+  {
+    "term": "The Fool",
+    "definition": "New beginnings, innocence, spontaneity",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-001",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Fool", "The Fool Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 0 in the Major Arcana",
+      "tags": ["major arcana", "beginnings"]
+    }
+  },
+  {
+    "term": "The Magician",
+    "definition": "Manifestation, power, skill",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-002",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Magician", "The Magician Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 1 in the Major Arcana",
+      "tags": ["major arcana", "manifestation"]
+    }
+  },
+  {
+    "term": "The High Priestess",
+    "definition": "Intuition, unconscious, mystery",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-003",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["High Priestess", "The High Priestess Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 2 in the Major Arcana",
+      "tags": ["major arcana", "intuition"]
+    }
+  },
+  {
+    "term": "The Empress",
+    "definition": "Abundance, nurturing, fertility",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-004",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Empress", "The Empress Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 3 in the Major Arcana",
+      "tags": ["major arcana", "abundance"]
+    }
+  },
+  {
+    "term": "The Emperor",
+    "definition": "Authority, structure, control",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-005",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Emperor", "The Emperor Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 4 in the Major Arcana",
+      "tags": ["major arcana", "authority"]
+    }
+  },
+  {
+    "term": "The Hierophant",
+    "definition": "Tradition, conformity, belief",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-006",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Hierophant", "The Hierophant Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 5 in the Major Arcana",
+      "tags": ["major arcana", "tradition"]
+    }
+  },
+  {
+    "term": "The Lovers",
+    "definition": "Choice, relationships, values",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-007",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Lovers", "The Lovers Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 6 in the Major Arcana",
+      "tags": ["major arcana", "relationships"]
+    }
+  },
+  {
+    "term": "The Chariot",
+    "definition": "Determination, willpower, victory",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-008",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Chariot", "The Chariot Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 7 in the Major Arcana",
+      "tags": ["major arcana", "willpower"]
+    }
+  },
+  {
+    "term": "Strength",
+    "definition": "Courage, patience, compassion",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-009",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Strength", "Strength Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 8 in the Major Arcana",
+      "tags": ["major arcana", "courage"]
+    }
+  },
+  {
+    "term": "The Hermit",
+    "definition": "Introspection, solitude, guidance",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-010",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Hermit", "The Hermit Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 9 in the Major Arcana",
+      "tags": ["major arcana", "introspection"]
+    }
+  },
+  {
+    "term": "Wheel of Fortune",
+    "definition": "Change, cycles, destiny",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-011",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Wheel", "Fortune's Wheel"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 10 in the Major Arcana",
+      "tags": ["major arcana", "change"]
+    }
+  },
+  {
+    "term": "Justice",
+    "definition": "Fairness, truth, law",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-012",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Justice", "Justice Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 11 in the Major Arcana",
+      "tags": ["major arcana", "fairness"]
+    }
+  },
+  {
+    "term": "The Hanged Man",
+    "definition": "Surrender, perspective, sacrifice",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-013",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Hanged Man", "The Suspended One"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 12 in the Major Arcana",
+      "tags": ["major arcana", "surrender"]
+    }
+  },
+  {
+    "term": "Death",
+    "definition": "Transformation, endings, change",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-014",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Death", "Death Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 13 in the Major Arcana",
+      "tags": ["major arcana", "transformation"]
+    }
+  },
+  {
+    "term": "Temperance",
+    "definition": "Balance, moderation, patience",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-015",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Temperance", "Temperance Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 14 in the Major Arcana",
+      "tags": ["major arcana", "balance"]
+    }
+  },
+  {
+    "term": "The Devil",
+    "definition": "Bondage, materialism, addiction",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-016",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Devil", "The Devil Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 15 in the Major Arcana",
+      "tags": ["major arcana", "bondage"]
+    }
+  },
+  {
+    "term": "The Tower",
+    "definition": "Sudden change, revelation, chaos",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-017",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Tower", "The Tower Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 16 in the Major Arcana",
+      "tags": ["major arcana", "disruption"]
+    }
+  },
+  {
+    "term": "The Star",
+    "definition": "Hope, inspiration, serenity",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-018",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Star", "The Star Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 17 in the Major Arcana",
+      "tags": ["major arcana", "hope"]
+    }
+  },
+  {
+    "term": "The Moon",
+    "definition": "Illusion, fear, subconscious",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-019",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Moon", "The Moon Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 18 in the Major Arcana",
+      "tags": ["major arcana", "illusion"]
+    }
+  },
+  {
+    "term": "The Sun",
+    "definition": "Joy, success, vitality",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-020",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Sun", "The Sun Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 19 in the Major Arcana",
+      "tags": ["major arcana", "joy"]
+    }
+  },
+  {
+    "term": "Judgement",
+    "definition": "Rebirth, inner calling, absolution",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-021",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["The Judgement", "Judgement Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 20 in the Major Arcana",
+      "tags": ["major arcana", "rebirth"]
+    }
+  },
+  {
+    "term": "The World",
+    "definition": "Completion, integration, accomplishment",
+    "corpus": "Tarot Cards",
+    "group": "Major Arcana",
+    "guid": "tarot-022",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["World", "The World Card"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Card 21 in the Major Arcana",
+      "tags": ["major arcana", "completion"]
+    }
+  },
+  {
+    "term": "Ace of Wands",
+    "definition": "Creation, inspiration, potential",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-023",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Ace"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "First card in the Wands suit",
+      "tags": ["minor arcana", "wands", "ace"]
+    }
+  },
+  {
+    "term": "Two of Wands",
+    "definition": "Planning, future vision, discovery",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-024",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Two"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Second card in the Wands suit",
+      "tags": ["minor arcana", "wands", "two"]
+    }
+  },
+  {
+    "term": "Three of Wands",
+    "definition": "Expansion, foresight, leadership",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-025",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Three"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Third card in the Wands suit",
+      "tags": ["minor arcana", "wands", "three"]
+    }
+  },
+  {
+    "term": "Four of Wands",
+    "definition": "Celebration, harmony, homecoming",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-026",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Four"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fourth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "four"]
+    }
+  },
+  {
+    "term": "Five of Wands",
+    "definition": "Conflict, competition, disagreement",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-027",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Five"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fifth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "five"]
+    }
+  },
+  {
+    "term": "Six of Wands",
+    "definition": "Victory, recognition, pride",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-028",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Six"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Sixth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "six"]
+    }
+  },
+  {
+    "term": "Seven of Wands",
+    "definition": "Defense, perseverance, challenge",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-029",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Seven"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Seventh card in the Wands suit",
+      "tags": ["minor arcana", "wands", "seven"]
+    }
+  },
+  {
+    "term": "Eight of Wands",
+    "definition": "Speed, movement, quick action",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-030",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Eight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Eighth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "eight"]
+    }
+  },
+  {
+    "term": "Nine of Wands",
+    "definition": "Resilience, persistence, last stand",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-031",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Nine"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Ninth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "nine"]
+    }
+  },
+  {
+    "term": "Ten of Wands",
+    "definition": "Burden, responsibility, hard work",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-032",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Ten"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Tenth card in the Wands suit",
+      "tags": ["minor arcana", "wands", "ten"]
+    }
+  },
+  {
+    "term": "Page of Wands",
+    "definition": "Exploration, excitement, discovery",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-033",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Page"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Wands suit",
+      "tags": ["minor arcana", "wands", "court card"]
+    }
+  },
+  {
+    "term": "Knight of Wands",
+    "definition": "Energy, passion, adventure",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-034",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Knight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Wands suit",
+      "tags": ["minor arcana", "wands", "court card"]
+    }
+  },
+  {
+    "term": "Queen of Wands",
+    "definition": "Confidence, determination, warmth",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-035",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands Queen"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Wands suit",
+      "tags": ["minor arcana", "wands", "court card"]
+    }
+  },
+  {
+    "term": "King of Wands",
+    "definition": "Leadership, vision, honor",
+    "corpus": "Tarot Cards",
+    "group": "Wands",
+    "guid": "tarot-036",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Wands King"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Wands suit",
+      "tags": ["minor arcana", "wands", "court card"]
+    }
+  },
+  {
+    "term": "Ace of Cups",
+    "definition": "Emotional beginnings, intuition, love",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-037",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Ace"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "First card in the Cups suit",
+      "tags": ["minor arcana", "cups", "ace"]
+    }
+  },
+  {
+    "term": "Two of Cups",
+    "definition": "Partnership, connection, attraction",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-038",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Two"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Second card in the Cups suit",
+      "tags": ["minor arcana", "cups", "two"]
+    }
+  },
+  {
+    "term": "Three of Cups",
+    "definition": "Celebration, friendship, community",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-039",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Three"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Third card in the Cups suit",
+      "tags": ["minor arcana", "cups", "three"]
+    }
+  },
+  {
+    "term": "Four of Cups",
+    "definition": "Apathy, contemplation, discontentment",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-040",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Four"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fourth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "four"]
+    }
+  },
+  {
+    "term": "Five of Cups",
+    "definition": "Loss, regret, disappointment",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-041",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Five"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fifth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "five"]
+    }
+  },
+  {
+    "term": "Six of Cups",
+    "definition": "Nostalgia, childhood, innocence",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-042",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Six"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Sixth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "six"]
+    }
+  },
+  {
+    "term": "Seven of Cups",
+    "definition": "Choices, fantasy, illusion",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-043",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Seven"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Seventh card in the Cups suit",
+      "tags": ["minor arcana", "cups", "seven"]
+    }
+  },
+  {
+    "term": "Eight of Cups",
+    "definition": "Withdrawal, abandonment, moving on",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-044",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Eight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Eighth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "eight"]
+    }
+  },
+  {
+    "term": "Nine of Cups",
+    "definition": "Satisfaction, contentment, wish fulfillment",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-045",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Nine"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Ninth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "nine"]
+    }
+  },
+  {
+    "term": "Ten of Cups",
+    "definition": "Harmony, family, fulfillment",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-046",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Ten"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Tenth card in the Cups suit",
+      "tags": ["minor arcana", "cups", "ten"]
+    }
+  },
+  {
+    "term": "Page of Cups",
+    "definition": "Creativity, intuition, sensitivity",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-047",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Page"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Cups suit",
+      "tags": ["minor arcana", "cups", "court card"]
+    }
+  },
+  {
+    "term": "Knight of Cups",
+    "definition": "Romance, charm, imagination",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-048",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Knight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Cups suit",
+      "tags": ["minor arcana", "cups", "court card"]
+    }
+  },
+  {
+    "term": "Queen of Cups",
+    "definition": "Compassion, empathy, nurturing",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-049",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups Queen"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Cups suit",
+      "tags": ["minor arcana", "cups", "court card"]
+    }
+  },
+  {
+    "term": "King of Cups",
+    "definition": "Emotional balance, diplomacy, wisdom",
+    "corpus": "Tarot Cards",
+    "group": "Cups",
+    "guid": "tarot-050",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Cups King"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Cups suit",
+      "tags": ["minor arcana", "cups", "court card"]
+    }
+  },
+  {
+    "term": "Ace of Swords",
+    "definition": "Clarity, breakthrough, truth",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-051",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Ace"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "First card in the Swords suit",
+      "tags": ["minor arcana", "swords", "ace"]
+    }
+  },
+  {
+    "term": "Two of Swords",
+    "definition": "Decision, stalemate, balance",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-052",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Two"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Second card in the Swords suit",
+      "tags": ["minor arcana", "swords", "two"]
+    }
+  },
+  {
+    "term": "Three of Swords",
+    "definition": "Heartbreak, sorrow, grief",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-053",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Three"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Third card in the Swords suit",
+      "tags": ["minor arcana", "swords", "three"]
+    }
+  },
+  {
+    "term": "Four of Swords",
+    "definition": "Rest, recuperation, contemplation",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-054",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Four"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fourth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "four"]
+    }
+  },
+  {
+    "term": "Five of Swords",
+    "definition": "Conflict, defeat, win-lose",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-055",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Five"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fifth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "five"]
+    }
+  },
+  {
+    "term": "Six of Swords",
+    "definition": "Transition, moving on, recovery",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-056",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Six"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Sixth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "six"]
+    }
+  },
+  {
+    "term": "Seven of Swords",
+    "definition": "Deception, strategy, stealth",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-057",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Seven"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Seventh card in the Swords suit",
+      "tags": ["minor arcana", "swords", "seven"]
+    }
+  },
+  {
+    "term": "Eight of Swords",
+    "definition": "Restriction, imprisonment, victimhood",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-058",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Eight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Eighth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "eight"]
+    }
+  },
+  {
+    "term": "Nine of Swords",
+    "definition": "Anxiety, worry, fear",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-059",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Nine"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Ninth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "nine"]
+    }
+  },
+  {
+    "term": "Ten of Swords",
+    "definition": "Endings, painful loss, betrayal",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-060",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Ten"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Tenth card in the Swords suit",
+      "tags": ["minor arcana", "swords", "ten"]
+    }
+  },
+  {
+    "term": "Page of Swords",
+    "definition": "Curiosity, communication, vigilance",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-061",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Page"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Swords suit",
+      "tags": ["minor arcana", "swords", "court card"]
+    }
+  },
+  {
+    "term": "Knight of Swords",
+    "definition": "Action, impulsiveness, directness",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-062",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Knight"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Swords suit",
+      "tags": ["minor arcana", "swords", "court card"]
+    }
+  },
+  {
+    "term": "Queen of Swords",
+    "definition": "Independence, honesty, clarity",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-063",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords Queen"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Swords suit",
+      "tags": ["minor arcana", "swords", "court card"]
+    }
+  },
+  {
+    "term": "King of Swords",
+    "definition": "Authority, truth, intellect",
+    "corpus": "Tarot Cards",
+    "group": "Swords",
+    "guid": "tarot-064",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Swords King"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Swords suit",
+      "tags": ["minor arcana", "swords", "court card"]
+    }
+  },
+  {
+    "term": "Ace of Pentacles",
+    "definition": "Opportunity, prosperity, new resources",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-065",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Ace", "Ace of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "First card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "ace"]
+    }
+  },
+  {
+    "term": "Two of Pentacles",
+    "definition": "Balance, adaptability, juggling",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-066",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Two", "Two of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Second card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "two"]
+    }
+  },
+  {
+    "term": "Three of Pentacles",
+    "definition": "Teamwork, collaboration, skill",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-067",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Three", "Three of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Third card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "three"]
+    }
+  },
+  {
+    "term": "Four of Pentacles",
+    "definition": "Security, control, possessiveness",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-068",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Four", "Four of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fourth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "four"]
+    }
+  },
+  {
+    "term": "Five of Pentacles",
+    "definition": "Hardship, poverty, insecurity",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-069",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Five", "Five of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Fifth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "five"]
+    }
+  },
+  {
+    "term": "Six of Pentacles",
+    "definition": "Generosity, charity, giving",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-070",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Six", "Six of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Sixth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "six"]
+    }
+  },
+  {
+    "term": "Seven of Pentacles",
+    "definition": "Patience, assessment, evaluation",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-071",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Seven", "Seven of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Seventh card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "seven"]
+    }
+  },
+  {
+    "term": "Eight of Pentacles",
+    "definition": "Diligence, craftsmanship, skill",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-072",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Eight", "Eight of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Eighth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "eight"]
+    }
+  },
+  {
+    "term": "Nine of Pentacles",
+    "definition": "Independence, luxury, self-sufficiency",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-073",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Nine", "Nine of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Ninth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "nine"]
+    }
+  },
+  {
+    "term": "Ten of Pentacles",
+    "definition": "Wealth, legacy, establishment",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-074",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Ten", "Ten of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Tenth card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "ten"]
+    }
+  },
+  {
+    "term": "Page of Pentacles",
+    "definition": "Study, ambition, opportunity",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-075",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Page", "Page of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "court card"]
+    }
+  },
+  {
+    "term": "Knight of Pentacles",
+    "definition": "Reliability, patience, hard work",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-076",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Knight", "Knight of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "court card"]
+    }
+  },
+  {
+    "term": "Queen of Pentacles",
+    "definition": "Nurturing, practicality, abundance",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-077",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles Queen", "Queen of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "court card"]
+    }
+  },
+  {
+    "term": "King of Pentacles",
+    "definition": "Wealth, stability, leadership",
+    "corpus": "Tarot Cards",
+    "group": "Pentacles",
+    "guid": "tarot-078",
+    "levels": ["beginner"],
+    "alternatives": {
+      "term": ["Pentacles King", "King of Coins"]
+    },
+    "metadata": {
+      "difficulty_level": 1,
+      "notes": "Court card in the Pentacles suit",
+      "tags": ["minor arcana", "pentacles", "court card"]
+    }
+  }
+]
