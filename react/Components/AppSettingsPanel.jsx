@@ -161,6 +161,7 @@ const AppSettingsPanel = ({
           <option value="vocabulary-list">📑 Vocabulary List</option>
           <option value="typing">⌨️ Typing</option>
           <option value="listening">🎧 Listening</option>
+          <option value="math-games">🔢 Math Games</option>
         </select>
       </div>
 
@@ -180,6 +181,7 @@ const AppSettingsPanel = ({
             <option value="normal">🎯 Normal</option>
             <option value="new-words">🌱 New Words</option>
             <option value="review-words">📚 Review Words</option>
+            <option value="mistakes">❌ Mistakes</option>
           </select>
         </div>
       )}

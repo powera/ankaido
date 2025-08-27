@@ -71,10 +71,11 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onComplete }) => {
         <div className="w-welcome-features">
           <h3 className="w-welcome-features-title">What can you do with Ankaido?</h3>
           <ul className="w-welcome-features-list">
-            <li className="w-welcome-feature-item">📚 <strong>Flash Cards:</strong> Learn with interactive cards</li>
+            <li className="w-welcome-feature-item">🗺📚 <strong>Flash Cards:</strong> Learn with interactive cards</li>
             <li className="w-welcome-feature-item">✏️ <strong>Multiple Choice:</strong> Test your knowledge with quizzes</li>
             <li className="w-welcome-feature-item">⌨️ <strong>Typing Practice:</strong> Improve spelling and recall</li>
-            <li className="w-welcome-feature-item">🎧 <strong>Listening Mode:</strong> Train your ear with audio</li>
+            <li className="w-welcome-feature-item">🎮 <strong>Mini-Games:</strong> Fun learning activities and brain teasers</li>
+            <li className="w-welcome-feature-item">🎓🎧 <strong>Listening Mode:</strong> Train your ear with audio</li>
 
             <li className="w-welcome-feature-item">📑 <strong>Card Collections:</strong> Browse and study card sets</li>
           </ul>

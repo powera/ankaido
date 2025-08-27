@@ -22,6 +22,7 @@ import DrillMode from './Modes/DrillMode.jsx';
 import FlashCardMode from './Modes/FlashCardMode.jsx';
 import JourneyMode from './Modes/JourneyMode.jsx';
 import ListeningMode from './Modes/ListeningMode.jsx';
+import MathGamesMode from './Modes/MathGamesMode.jsx';
 import MultipleChoiceMode from './Modes/MultipleChoiceMode.jsx';
 
 import {
@@ -468,8 +469,8 @@ const FlashCardApp = () => {
   }
 
   // Show "no groups selected" message but keep the Study Materials section visible
-  // Don't show this message in journey/drill/blitz mode since they don't need word lists or handle them differently
-  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz';
+  // Don't show this message in journey/drill/blitz/math-games mode since they don't need word lists or handle them differently
+  const showNoGroupsMessage = !currentWord && totalSelectedWords === 0 && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'math-games';
 
   return (
     <div ref={containerRef} className={`w-container ${isFullscreen ? 'w-fullscreen' : ''}`}>
@@ -496,7 +497,7 @@ const FlashCardApp = () => {
         activityStats={activityStats}
       />
 
-      {!showNoGroupsMessage && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && (
+      {!showNoGroupsMessage && quizMode !== 'journey' && quizMode !== 'drill' && quizMode !== 'blitz' && quizMode !== 'math-games' && (
         <div className="w-progress">
           Card {wordListState.currentCard + 1} of {wordListState.allWords.length}
         </div>
@@ -614,6 +615,8 @@ const FlashCardApp = () => {
             onBackToBlitzSelector={handleBackToBlitzSelector}
           />
         )
+      ) : quizMode === 'math-games' ? (
+        <MathGamesMode />
       ) : (
         <div className="w-card">
           <div style={{ textAlign: 'center', padding: 'var(--spacing-large)' }}>
